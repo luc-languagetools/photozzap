@@ -86,6 +86,8 @@ $(document).ready(function() {
             <button id='disconnect' type="button" class="btn">Disconnect</button>
         </div>
     </div>
+    <div id="image-cache" style="display:none;">
+    </div>
 </div>
 
 

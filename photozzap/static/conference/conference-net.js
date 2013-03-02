@@ -111,8 +111,15 @@ var Conference = {
             // setup ajax queries to load the image
             $.get(image.url, function(data) {
                 log("image " + image.url + " loaded");
+                image_element = document.createElement('img');
+                $(image_element).attr('src', image.url);
+                $("#image-cache").append(image_element);
                 $.get(image.thumbnail, function(data) {
                     log("thumbnail " + image.thumbnail + " loaded");
+                    
+                    image_element = document.createElement('img');
+                    $(image_element).attr('src', image.thumbnail);
+                    $("#image-cache").append(image_element);                    
                     
                     // add to images
                     Conference.images[image.id] = image;
