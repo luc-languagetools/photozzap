@@ -11,6 +11,10 @@ var Conference = {
     users: {},  // indexed by jid
     images: {}, // indexed by image id
     
+    queued_events: {}, // indexed by image id
+    
+    images_loading: {}, // images are placed here until they're loaded
+    
     on_ping: function(iq) {
         
         var from = $(iq).attr('from');
@@ -60,6 +64,26 @@ var Conference = {
         return true;
     },
     
+    add_queued_event: function(image_id, event_name, data) {
+        var event = {name: event_name,
+                     data: data};
+        if (Conference.queued_events[image_id] == undefined) {
+            // create array
+            Conference.queued_events[image_id] = new Array();
+        }
+        Conference.queued_events[image_id].push(event);
+    },
+    
+    process_queued_events: function(image_id) {
+        var queued_events = Conference.queued_events[image_id];
+        delete Conference.queued_events[image_id];
+        for (var i = 0; i < queued_events.length; i++) {
+            event = queued_events[i];
+            log("processing event: " + event.name);
+            $(document).trigger(event.name, event.data);
+        }
+    },
+    
     on_public_message: function (message) {
         var from = $(message).attr('from');
         var room = Strophe.getBareJidFromJid(from);
@@ -79,12 +103,29 @@ var Conference = {
                          thumbnail: thumbnail,
                          added_by: user,
                          thumbnail_id: "thumbnail_" + image_id};
-                        
-            log("received image: " + image);
-            Conference.images[image.id] = image;
-            $(document).trigger('new_image', image);
-            // don't display image by default
-            // $(document).trigger('display_image', image);
+                       
+
+            Conference.images_loading[image.id] = image;
+            Conference.add_queued_event(image.id, 'new_image', image);
+                       
+            // setup ajax queries to load the image
+            $.get(image.url, function(data) {
+                log("image " + image.url + " loaded");
+                $.get(image.thumbnail, function(data) {
+                    log("thumbnail " + image.thumbnail + " loaded");
+                    
+                    // add to images
+                    Conference.images[image.id] = image;
+                    
+                    // remove from images_loading
+                    delete Conference.images_loading[image.id];
+                    
+                    log(Conference.queued_events[image.id]);
+                    
+                    // any queued events ?
+                    Conference.process_queued_events(image.id);
+                });
+            });
             
         } else if (body == "viewing") {
         
@@ -92,7 +133,12 @@ var Conference = {
             var image = Conference.images[image_id];
             var user = Conference.users[from];
             // only do this if we've got all the data
-            if (image != undefined && user != undefined) {
+            
+            if (Conference.images_loading[image_id] != undefined) {
+                // image loading - add queued event
+                user.viewing = image;
+                Conference.add_queued_event(image.id, 'user_viewing', user);
+            } else if (image != undefined && user != undefined) {
                 // mark that the user is viewing the data
                 user.viewing = image;
                 $(document).trigger('user_viewing', user);

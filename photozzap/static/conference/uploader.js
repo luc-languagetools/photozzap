@@ -10,7 +10,7 @@ function setup_uploader() {
             {title : "Image files", extensions : "jpg,gif,png"},
             {title : "Zip files", extensions : "zip"}
         ],
-        resize : {width : 1200, height : 1200, quality : 95}
+        resize : {width : 800, height : 600, quality : 95}
     });
  
     uploader.bind('Init', function(up, params) {
