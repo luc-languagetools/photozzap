@@ -70,5 +70,13 @@ def conference(request):
         params = {'login': 'guy@photozzap.p1.im', 
                   'password': 'guy', 
                   'nickname': 'guy'}
+    elif request.matchdict["user"] == 'carola':
+        params = {'login': 'carola@photozzap.p1.im', 
+                  'password': 'carola', 
+                  'nickname': 'carola'}                  
+    elif request.matchdict["user"] == 'armelle':
+        params = {'login': 'armelle@photozzap.p1.im', 
+                  'password': 'armelle', 
+                  'nickname': 'armelle'}       
                   
     return params

@@ -42,6 +42,8 @@ $(document).bind('new_image', function(ev, image) {
     
     $("#image-list #"+image.thumbnail_id).fadeIn('slow', function() {
         // Animation complete
+        // open popover
+        
     });
     
 });
