@@ -78,7 +78,10 @@ $(document).ready(function() {
             <h2>Upload</h2>
             <div id="dragdrop_area" style="height: 100px; background-color: #CCCCCC;">
                 Drag drop here
-            </div>    
+            </div>
+            <div id='upload-in-progress'  style="display: none">
+            Uploading, please wait...
+            </div>
             <a id="pickfiles" href="#">[Browse]</a>            
             <h2>Users</h2>
             <ul id="users-list" class="thumbnails">

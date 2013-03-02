@@ -34,6 +34,8 @@ function setup_uploader() {
  
         up.refresh(); // Reposition Flash/Silverlight
         log("FilesAdded, start upload");
+        $('#upload-in-progress').fadeIn('slow', function() {
+        });
         uploader.start();
     });
  
@@ -56,6 +58,9 @@ function setup_uploader() {
         // console.log(response.response);
         json_response = jQuery.parseJSON(response.response);
         Conference.send_img_url(json_response);
+        
+        $('#upload-in-progress').fadeOut('slow', function() {
+        });        
     });
     
 };    
