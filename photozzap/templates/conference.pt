@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Conference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
+</head>
+<body>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/strophe/strophe.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/conference/conference-net.js')}"></script>
+<script src="${request.static_url('photozzap:static/conference/conference-ui.js')}"></script>
+<script src="${request.static_url('photozzap:static/conference/uploader.js')}"></script>
+<script src="${request.static_url('photozzap:static/plupload/plupload.full.js')}"></script>
+<script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
+<script type="text/javascript">
+// Custom example logic
+$(function() {
+    setup_uploader();
+});
+</script>
+<script>
+$(document).ready(function() {
+    connection_initialize("${login}", "${password}", "${nickname}");
+    $("#disconnect").click(function() {
+        disconnect();
+    });
+});
+</script>
+
+<script type="text/html" id="user-wrapper-template">
+<![CDATA[
+    <li class="span12" id="<%= this.element_id %>">
+    </li>
+]]>
+</script>
+
+<script type="text/html" id="user-inner-template">
+<![CDATA[
+
+    <% if (this.viewing != undefined ) { %>
+        <a href="#" class="thumbnail">
+        <h4><%= this.nick %></h4>
+            <img src="<%= this.viewing.thumbnail %>" style="display: none;"/>
+        </a>
+    <% } else { %>
+        <h4><%= this.nick %></h4>
+        not viewing an image
+    <% }; %>
+]]>
+</script>
+
+<script type="text/html" id="image-template">
+<![CDATA[
+    <li id="<%= this.thumbnail_id %>" class="span3" style="display: none;">
+        <a href="#" class="thumbnail">
+            <img src="<%= this.thumbnail %>"/>
+            <p style="text-align: center;">Added by <%= this.added_by.nick %></p>
+        </a>
+    </li>
+]]>
+</script>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span10">
+            <!--Body content-->
+            <h2>Photo</h2>
+            <div id="image" style="text-align: center; margin-bottom: 20px;">
+            </div>
+            <ul id="image-list" class="thumbnails">
+            </ul>
+        </div>
+        <div class="span2">
+            <!--Sidebar content-->
+            <h2>Upload</h2>
+            <div id="dragdrop_area" style="height: 100px; background-color: #CCCCCC;">
+                Drag drop here
+            </div>    
+            <a id="pickfiles" href="#">[Browse]</a>            
+            <h2>Users</h2>
+            <ul id="users-list" class="thumbnails">
+            </ul>
+            <button id='disconnect' type="button" class="btn">Disconnect</button>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
