@@ -34,13 +34,15 @@ function setup_uploader() {
  
         up.refresh(); // Reposition Flash/Silverlight
         log("FilesAdded, start upload");
+        $("#upload-controls").hide();
         $('#upload-in-progress').fadeIn('slow', function() {
         });
         uploader.start();
     });
  
     uploader.bind('UploadProgress', function(up, file) {
-        $('#' + file.id + " b").html(file.percent + "%");
+        // $('#' + file.id + " b").html(file.percent + "%");
+        
     });
  
     uploader.bind('Error', function(up, err) {
@@ -60,7 +62,9 @@ function setup_uploader() {
         Conference.send_img_url(json_response);
         
         $('#upload-in-progress').fadeOut('slow', function() {
+            $("#upload-controls").show();
         });        
+        
     });
     
 };    

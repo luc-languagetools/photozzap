@@ -8,6 +8,10 @@ var Conference = {
     connection: null,
     nickname: null,
     
+    following_user_jid: null,
+    
+    connected_to_chatroom: false,
+    
     users: {},  // indexed by jid
     images: {}, // indexed by image id
     
@@ -49,9 +53,17 @@ var Conference = {
                 $(document).trigger('user_left', user);
             };
         } else if( type != "error") {
+        
+            if( Conference.connected_to_chatroom == false ) {
+                // fully connected
+                Conference.connected_to_chatroom = true;
+                $(document).trigger('connection_complete', "joined chatroom");
+            }
+        
             var user = {
                 jid: from,
                 nick: nick,
+                following: null,
             };        
             $(document).trigger('user_joined', user);
             log(user);
@@ -104,6 +116,7 @@ var Conference = {
                          added_by: user,
                          thumbnail_id: "thumbnail_" + image_id};
                        
+            log("received image id " + image_id + ", processing");
 
             Conference.images_loading[image.id] = image;
             Conference.add_queued_event(image.id, 'new_image', image);
@@ -143,15 +156,35 @@ var Conference = {
             
             if (Conference.images_loading[image_id] != undefined) {
                 // image loading - add queued event
+                image = Conference.images_loading[image_id];
                 user.viewing = image;
-                Conference.add_queued_event(image.id, 'user_viewing', user);
+                Conference.add_queued_event(image_id, 'user_update', user);
+                Conference.add_queued_event(image_id, 'display_image', image);
             } else if (image != undefined && user != undefined) {
                 // mark that the user is viewing the data
                 user.viewing = image;
-                $(document).trigger('user_viewing', user);
+                $(document).trigger('user_update', user);
+                
+                if (Conference.following_user_jid != null &&
+                    user.jid == Conference.following_user_jid) {
+                    // we are following this user
+                    $(document).trigger('display_image', image);
+                }
             };
         
-        };
+        } else if (body == "following" ) {
+        
+            var user = Conference.users[from];
+            var following_jid = $(message).children('following').text();
+            
+            user.following = Conference.users[following_jid];
+            $(document).trigger('user_update', user);
+            
+        } else if (body == "unfollowing" ) {
+            var user = Conference.users[from];
+            user.following = null;
+            $(document).trigger('user_update', user);            
+        }
         
         return true;
     },
@@ -172,6 +205,35 @@ var Conference = {
         to: CONF_ROOM,
         type: "groupchat"}).c('body').t(msg);
         Conference.connection.send(message);
+    },
+    
+    follow_user: function (user) {
+        log("following user " + user.jid);
+        Conference.following_user_jid = user.jid;
+        
+        message = $msg({
+        to: CONF_ROOM,
+        type: "groupchat"});
+        message.c('body').t("following").up();
+        message.c('following').t(user.jid);
+        
+        Conference.connection.send(message);
+    },
+    
+    unfollow_user: function() {
+        log("not following any users");
+        
+        if ( Conference.following_user_jid != null ) {
+        
+            Conference.following_user_jid = null;
+            
+            message = $msg({
+            to: CONF_ROOM,
+            type: "groupchat"});
+            message.c('body').t("unfollowing");
+           
+            Conference.connection.send(message);        
+        }
     },
     
     send_img_url: function (image) {
@@ -212,19 +274,26 @@ function connection_callback(status) {
     log("status: " + status);
     if (status == Strophe.Status.CONNECTED) {
         log("CONNECTED");
+        $(document).trigger('connection_status', "Connected, joining conference");
         Conference.send_presence_to_chatroom();
     } else if (status == Strophe.Status.DISCONNECTED) {
         log("DISCONNECTED");
+        $(document).trigger('connection_error', "Disconnected");
     } else if (status == Strophe.Status.AUTHENTICATING) {
         log("AUTHENTICATING");
+        $(document).trigger('connection_status', "Authenticating");
     } else if (status == Strophe.Status.DISCONNECTING) {
         log("DISCONNECTING");
+        $(document).trigger('connection_status', "Disconnecting");
     } else if (status == Strophe.Status.CONNECTING) {
         log("CONNECTING");
+        $(document).trigger('connection_status', "Connecting");
     } else if (status == Strophe.Status.CONNFAIL) {
         log("CONNFAIL");
+        $(document).trigger('connection_status', "Connection failure");
     } else if (status == Strophe.Status.AUTHFAIL) {
         log("AUTHFAIL");
+        $(document).trigger('connection_status', "Authentication failure");
     }
 };
 
@@ -258,4 +327,12 @@ function dom_id_from_user(user) {
 $(document).bind('display_image', function(ev, image) {
     log("conference-net display_image");
     Conference.viewing_image(image);
+});
+
+$(document).bind('following_user', function(ev, user) {
+    Conference.follow_user(user);
+});
+
+$(document).bind('not_following_user', function(ev) {
+    Conference.unfollow_user();
 });

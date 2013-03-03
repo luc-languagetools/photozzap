@@ -27,6 +27,7 @@ $(document).ready(function() {
     $("#disconnect").click(function() {
         disconnect();
     });
+    $('#connection-status-modal').modal('show');
 });
 </script>
 
@@ -43,6 +44,9 @@ $(document).ready(function() {
     <% if (this.viewing != undefined ) { %>
         <a href="#" class="thumbnail">
         <h4><%= this.nick %></h4>
+            <% if (this.following != null) { %>
+                following <%= this.following.nick %>
+            <% } %>
             <img src="<%= this.viewing.thumbnail %>" style="display: none;"/>
         </a>
     <% } else { %>
@@ -57,17 +61,30 @@ $(document).ready(function() {
     <li id="<%= this.thumbnail_id %>" class="span3" style="display: none;">
         <a href="#" class="thumbnail">
             <img src="<%= this.thumbnail %>"/>
-            <p style="text-align: center;">Added by <%= this.added_by.nick %></p>
         </a>
     </li>
 ]]>
 </script>
 
+
+<div id="connection-status-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    <h3 id="myModalLabel">Please Wait</h3>
+    </div>
+    <div class="modal-body">
+    <p><span id="connection-status-text"></span></p>
+    </div>
+    <div class="progress progress-striped active" style="margin-left: 30px; margin-right: 30px;">
+        <div class="bar" style="width: 100%;"></div>
+    </div>
+</div>
+
+
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span10">
             <!--Body content-->
-            <h2>Photo</h2>
+            <h3>Photo</h3>
             <div id="image" style="text-align: center; margin-bottom: 20px;">
             </div>
             <ul id="image-list" class="thumbnails">
@@ -75,15 +92,21 @@ $(document).ready(function() {
         </div>
         <div class="span2">
             <!--Sidebar content-->
-            <h2>Upload</h2>
-            <div id="dragdrop_area" style="height: 100px; background-color: #CCCCCC;">
-                Drag drop here
+            <h3>Upload</h3>
+            <div id="upload-controls">
+                <div id="dragdrop_area" style="height: 100px; background-color: #CCCCCC;">
+                    Drag drop here
+                </div>
+                <a id="pickfiles" href="#">[Browse]</a>
             </div>
             <div id='upload-in-progress'  style="display: none">
-            Uploading, please wait...
+                <div class="progress progress-striped active" style="margin-left: 5px; margin-right: 5px;">
+                    <div class="bar" style="width: 100%;"></div>
+                </div>            
+                <p>Uploading, please wait...</p>
             </div>
-            <a id="pickfiles" href="#">[Browse]</a>            
-            <h2>Users</h2>
+           
+            <h3>Users</h3>
             <ul id="users-list" class="thumbnails">
             </ul>
             <button id='disconnect' type="button" class="btn">Disconnect</button>

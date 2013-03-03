@@ -32,18 +32,42 @@ $(document).bind('new_image', function(ev, image) {
     // create element from template
     image_element = $("#image-template").jqote(image);
    
+    //$(image_element).popover({title: "my title", content: "my content"});
     $('#image-list').prepend(image_element);
 
     $("#image-list #"+image.thumbnail_id + " a").click(function() {
         // thumbnail clicked
         log("image thumbnail clicked");
+        $(document).trigger('not_following_user');
         $(document).trigger('display_image', image);
+        
     });
     
-    $("#image-list #"+image.thumbnail_id).fadeIn('slow', function() {
+    var selector_string = "#image-list #"+image.thumbnail_id;
+    
+    $(selector_string).fadeIn('slow', function() {
         // Animation complete
         // open popover
+        $(selector_string).popover({title: "<b>" + image.added_by.nick + " added a photo</b>", 
+                                                       content: "click to view",
+                                                       placement: "top",
+                                                       trigger: "manual",
+                                                       html: "true"});
+        $(selector_string).popover('show');
         
+        // hide popover after one second
+        setTimeout(function() {
+            $(selector_string).popover('destroy');
+            
+            // insert regular popover
+            $(selector_string).popover({title: "<b>Added by " + image.added_by.nick + "</b>", 
+                                                           content: "click to view",
+                                                           placement: "top",
+                                                           trigger: "hover",
+                                                           html: "true"});
+            //$(selector_string).popover('show');                                                           
+            
+        }, 1000);
     });
     
 });
@@ -60,11 +84,12 @@ $(document).bind('display_image', function(ev, image) {
     });
 });
 
-$(document).bind('user_viewing', function(ev, user) {
+$(document).bind('user_update', function(ev, user) {
 
     // create inner element from template
     user_element = $('#user-inner-template').jqote(user);
 
+         
     // replace it in the DOM
     $("#users-list #" + dom_id_from_user(user)).html(user_element);
     
@@ -73,11 +98,31 @@ $(document).bind('user_viewing', function(ev, user) {
         // thumbnail clicked
         log("image thumbnail clicked");
         $(document).trigger('display_image', user.viewing);
+        $(document).trigger('following_user', user);
     });
     
+    // insert regular popover
+    $("#users-list #" + dom_id_from_user(user)).popover({title: "<b>Click to follow " + user.nick + "</b>", 
+                                                   content: "You will see the photos that he is viewing",
+                                                   placement: "left",
+                                                   trigger: "hover",
+                                                   html: "true"});    
+    
     // fade in
-    // $("#users-list #" + dom_id_from_user(user) + " a").css("display", "none");
     $("#users-list #" + dom_id_from_user(user) + " img").fadeIn('slow', function() {
         // Animation complete
     });
+});
+
+$(document).bind('connection_status', function(ev, status) {
+    $("#connection-status-text").html(status);
+});
+
+$(document).bind('connection_complete', function(ev, status) {
+    $('#connection-status-modal').modal('hide');
+});
+
+$(document).bind('connection_error', function(ev, status) {
+    $("#connection-status-text").html(status);
+    $('#connection-status-modal').modal('show');
 });
