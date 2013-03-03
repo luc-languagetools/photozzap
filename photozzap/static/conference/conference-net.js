@@ -208,6 +208,12 @@ var Conference = {
     },
     
     follow_user: function (user) {
+    
+        if( user.nick == Conference.nickname){
+            // cannot follow self
+            return;
+        }
+    
         log("following user " + user.jid);
         Conference.following_user_jid = user.jid;
         
