@@ -14,7 +14,7 @@ Description: photozzap README
         
         -  Initial version
         
-Keywords: web pyramid pylons
+Keywords: web wsgi bfg pylons pyramid
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: Framework :: Pyramid
