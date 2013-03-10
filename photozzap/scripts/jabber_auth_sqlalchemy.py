@@ -6,6 +6,10 @@ import struct
 from struct import *
 from sqlalchemy import engine_from_config
 
+# on windows, use the following configuration in ejabberd.cfg
+# {auth_method, external}.
+# {extauth_program, "d:/storage/dev/photozzap/env/bin/python3.2m.exe -m photozzap.scripts.jabber_auth_sqlalchemy /cygdrive/d/storage/dev/photozzap/env/photozzap/development.ini"}.
+
 from pyramid.paster import (
     get_appsettings,
     setup_logging,
@@ -120,12 +124,12 @@ class JabberAuthHandler:
                 self.ejabberd_out(op_result)
                 self.log_result(ejab_request[0], ejab_request[1], op_result)    
             
+            
 if __name__ == "__main__":
     argv = sys.argv
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
-    #setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
     auth_handler = JabberAuthHandler(settings)
