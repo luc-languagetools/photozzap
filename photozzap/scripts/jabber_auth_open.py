@@ -7,10 +7,10 @@ import logging
 import struct
 from struct import *
 
-sys.stderr = open('d:/storage/dev/photozzap/env/photozzap/jabber_auth_err.log', 'a')
+sys.stderr = open('/cygdrive/d/storage/dev/photozzap/env/photozzap/jabber_auth_err.log', 'a')
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s',
-                    filename='d:/storage/dev/photozzap/env/photozzap/jabber_auth.log',
+                    filename='/cygdrive/d/storage/dev/photozzap/env/photozzap/jabber_auth.log',
                     filemode='a')
 
 logging.info('extauth script started, waiting for ejabberd requests')
