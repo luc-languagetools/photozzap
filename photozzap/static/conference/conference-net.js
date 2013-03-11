@@ -1,7 +1,7 @@
 
-var BOSH_SERVICE = 'https://hosted.im/http-bind';
 var NS_MUC = "http://jabber.org/protocol/muc";
-var CONF_ROOM = "conf10@conference.photozzap.p1.im";
+// var CONF_ROOM = "conf10@conference.photozzap.p1.im";
+var CONF_ROOM = "conf2@conference.desktop.dev.jabber.photozzap.com";
 
 
 var Conference = {
@@ -177,13 +177,18 @@ var Conference = {
             var user = Conference.users[from];
             var following_jid = $(message).children('following').text();
             
-            user.following = Conference.users[following_jid];
-            $(document).trigger('user_update', user);
+            if (user != undefined && Conference.users[following_jid] != undefined) {
+                user.following = Conference.users[following_jid];
+                $(document).trigger('user_update', user);
+            }
             
         } else if (body == "unfollowing" ) {
             var user = Conference.users[from];
-            user.following = null;
-            $(document).trigger('user_update', user);            
+            
+            if (user != undefined) {
+                user.following = null;
+                $(document).trigger('user_update', user);            
+            }
         }
         
         return true;
@@ -308,9 +313,9 @@ function disconnect() {
     Conference.connection.disconnect();
 };
 
-function connection_initialize(username, password, nickname) {
+function connection_initialize(username, password, nickname, bosh_service) {
    log("initialize");
-   var conn = new Strophe.Connection(BOSH_SERVICE);
+   var conn = new Strophe.Connection(bosh_service);
    Conference.connection = conn;
    Conference.nickname = nickname;
    Conference.connection.addHandler(Conference.on_presence, null, "presence");   

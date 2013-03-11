@@ -6,13 +6,14 @@ import shutil
 import datetime
 import tempfile
 import subprocess
+import transaction
 
 
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from .models import (
     DBSession,
-    MyModel,
+    User,
     )
 
 log = logging.getLogger(__name__)    
@@ -92,22 +93,28 @@ try it again.
 
 @view_config(route_name='conference', renderer='templates/conference.pt')
 def conference(request):
-    if request.matchdict["user"] == 'luc':
-        params = {'login': 'luc@photozzap.p1.im', 
-                  'password': 'luc', 
-                  'nickname': 'luc'}
-    elif request.matchdict["user"] == 'guy':
-        params = {'login': 'guy@photozzap.p1.im', 
-                  'password': 'guy', 
-                  'nickname': 'guy'}
-    elif request.matchdict["user"] == 'carola':
-        params = {'login': 'carola@photozzap.p1.im', 
-                  'password': 'carola', 
-                  'nickname': 'carola'}                  
-    elif request.matchdict["user"] == 'armelle':
-        params = {'login': 'armelle@photozzap.p1.im', 
-                  'password': 'armelle', 
-                  'nickname': 'armelle'}       
+
+    settings = request.registry.settings
+    jabber_server = settings['jabber_server']
+    bosh_service = settings['bosh_service']
+
+    # create new user
+    user_created = False
+    
+    params = {'bosh_service': bosh_service}
+    while user_created == False:
+        try:
+            with transaction.manager:
+                user = User()
+                DBSession.add(user)
+                params['login'] = user.login + '@' + jabber_server
+                params['password'] = user.password
+                params['nickname'] = user.login
+            user_created = True
+        except IntegrityError:
+            # user already exists, will retry
+            user_created = False
+
                   
     return params
 
