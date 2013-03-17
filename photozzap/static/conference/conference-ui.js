@@ -125,4 +125,22 @@ $(document).bind('connection_complete', function(ev, status) {
 $(document).bind('connection_error', function(ev, status) {
     $("#connection-status-text").html(status);
     $('#connection-status-modal').modal('show');
+    $("#progress-bar").show();
+    $("#choose-nickname-form").hide();
+});
+
+$(document).bind('enter_nickname', function(ev, status) {
+    // $("#connection-status-text").html(status);
+    $("#choose-nickname-form").show();
+    $("#connection-status-text").html(status);
+    $("#progress-bar").hide();
+    
+    $("#join-conference").click(function() {
+        var nickname = $("#chosen-nickname").val();
+        if (nickname.match(/[^a-zA-Z0-9]/g)) {
+            $(document).trigger('enter_nickname', "Only lowercase, uppercase characters and numbers are allowed. No spaces.");
+        } else {        
+            Conference.join_chatroom(nickname);
+        };
+    });    
 });

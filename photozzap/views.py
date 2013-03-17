@@ -14,6 +14,7 @@ from sqlalchemy.exc import DBAPIError, IntegrityError
 from .models import (
     DBSession,
     User,
+    Conference,
     )
 
 log = logging.getLogger(__name__)    
@@ -91,17 +92,41 @@ After you fix the problem, please restart the Pyramid application to
 try it again.
 """
 
+
+@view_config(route_name='new_conference',renderer='json')
+def new_conference(request):
+    conf_created = False
+    
+    params = {}
+    while conf_created == False:
+        try:
+            with transaction.manager:
+                conf = Conference()
+                DBSession.add(conf)
+                params['conf_key'] = conf.secret
+            conf_created = True
+        except IntegrityError:
+            # user already exists, will retry
+            conf_created = False
+
+    return params
+
 @view_config(route_name='conference', renderer='templates/conference.pt')
 def conference(request):
 
     settings = request.registry.settings
     jabber_server = settings['jabber_server']
+    jabber_conf_server = settings['jabber_conf_server']
     bosh_service = settings['bosh_service']
+    
+    conf_key = request.matchdict['conf_key']
+    conf = DBSession.query(Conference).filter_by(secret=conf_key).one()
 
     # create new user
     user_created = False
     
-    params = {'bosh_service': bosh_service}
+    params = {'bosh_service': bosh_service,
+              'conference': conf.name + '@' + jabber_conf_server}
     while user_created == False:
         try:
             with transaction.manager:
@@ -109,7 +134,6 @@ def conference(request):
                 DBSession.add(user)
                 params['login'] = user.login + '@' + jabber_server
                 params['password'] = user.password
-                params['nickname'] = user.login
             user_created = True
         except IntegrityError:
             # user already exists, will retry

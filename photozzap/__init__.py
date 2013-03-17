@@ -17,6 +17,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('upload_photo', '/upload_photo')
-    config.add_route('conference', '/conference')    
+    config.add_route('new_conference', '/new_conference')
+    config.add_route('conference', '/conference/{conf_key}')    
     config.scan()
     return config.make_wsgi_app()

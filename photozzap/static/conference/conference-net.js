@@ -1,7 +1,5 @@
 
 var NS_MUC = "http://jabber.org/protocol/muc";
-// var CONF_ROOM = "conf10@conference.photozzap.p1.im";
-var CONF_ROOM = "conf2@conference.desktop.dev.jabber.photozzap.com";
 
 
 var Conference = {
@@ -11,6 +9,8 @@ var Conference = {
     following_user_jid: null,
     
     connected_to_chatroom: false,
+    
+    jid_to_id_mapping: {},
     
     users: {},  // indexed by jid
     images: {}, // indexed by image id
@@ -30,11 +30,12 @@ var Conference = {
         return true;
     },
     
-    send_presence_to_chatroom: function() {
+    join_chatroom: function(nickname) {
         // connect to group chat
+        Conference.nickname = nickname;
         Conference.connection.send(
         $pres({
-            to: CONF_ROOM + "/" + Conference.nickname
+            to: Conference.room + "/" + Conference.nickname
         }).c('x', {xmlns: NS_MUC}));    
     },
     
@@ -44,7 +45,15 @@ var Conference = {
         var type = $(presence).attr('type');
         var nick = Strophe.getResourceFromJid(from);
         
-        if (type == "unavailable") {
+        if (type == "error") {
+            var error = $(presence).children('error');
+            var code = $(error).attr('code');
+            if( code == 409 ) {
+                // nickname in use
+                $(document).trigger('enter_nickname', "Nickname '" + Conference.nickname + "' is already in use, choose another one");
+            };
+            
+        } else if (type == "unavailable") {
             // user disconnected
             // do we have him in the user list ?
             user = Conference.users[from];
@@ -71,8 +80,6 @@ var Conference = {
             
         };
         
-        //log(presence);
-        //log("presence from: " + from + " type: " + type);
         return true;
     },
     
@@ -97,6 +104,8 @@ var Conference = {
     },
     
     on_public_message: function (message) {
+        log("on_public_message");
+    
         var from = $(message).attr('from');
         var room = Strophe.getBareJidFromJid(from);
         var nick = Strophe.getResourceFromJid(from);
@@ -207,7 +216,7 @@ var Conference = {
     
     send_group_message: function (msg) {
         message = $msg({
-        to: CONF_ROOM,
+        to: Conference.room,
         type: "groupchat"}).c('body').t(msg);
         Conference.connection.send(message);
     },
@@ -223,7 +232,7 @@ var Conference = {
         Conference.following_user_jid = user.jid;
         
         message = $msg({
-        to: CONF_ROOM,
+        to: Conference.room,
         type: "groupchat"});
         message.c('body').t("following").up();
         message.c('following').t(user.jid);
@@ -239,7 +248,7 @@ var Conference = {
             Conference.following_user_jid = null;
             
             message = $msg({
-            to: CONF_ROOM,
+            to: Conference.room,
             type: "groupchat"});
             message.c('body').t("unfollowing");
            
@@ -250,7 +259,7 @@ var Conference = {
     send_img_url: function (image) {
         log("send_img_url: " + image.url);
         message = $msg({
-        to: CONF_ROOM,
+        to: Conference.room,
         type: "groupchat"});
         //.c('body').t("image").up().c('image').c('id').t(image.id).up().c('url').t(image.url);
         message.c('body').t("image").up();
@@ -264,7 +273,7 @@ var Conference = {
         
         log("viewing_image: " + image.id);
         message = $msg({
-        to: CONF_ROOM,
+        to: Conference.room,
         type: "groupchat"});
         message.c('body').t("viewing").up();
         message.c('image').c('id').t(image.id);
@@ -286,7 +295,8 @@ function connection_callback(status) {
     if (status == Strophe.Status.CONNECTED) {
         log("CONNECTED");
         $(document).trigger('connection_status', "Connected, joining conference");
-        Conference.send_presence_to_chatroom();
+        $(document).trigger('enter_nickname', "Enter your nickname to continue");
+        //Conference.send_presence_to_chatroom();
     } else if (status == Strophe.Status.DISCONNECTED) {
         log("DISCONNECTED");
         $(document).trigger('connection_error', "Disconnected");
@@ -313,11 +323,11 @@ function disconnect() {
     Conference.connection.disconnect();
 };
 
-function connection_initialize(username, password, nickname, bosh_service) {
+function connection_initialize(username, password, bosh_service, conference_room) {
    log("initialize");
    var conn = new Strophe.Connection(bosh_service);
    Conference.connection = conn;
-   Conference.nickname = nickname;
+   Conference.room = conference_room;
    Conference.connection.addHandler(Conference.on_presence, null, "presence");   
    Conference.connection.addHandler(Conference.on_public_message, null, "message", "groupchat");   
    Conference.connection.addHandler(Conference.on_private_message, null, "message", "chat");
@@ -326,12 +336,25 @@ function connection_initialize(username, password, nickname, bosh_service) {
 }
 
 function dom_id_from_user(user) {
-    var result = user.jid.replace(/\@/g, "_");
-    result = result.replace(/\//g, "_");
-    result = result.replace(/\./g, "_");
+    if ( Conference.jid_to_id_mapping[ user.jid ] == undefined ) {
+        // create a mapping
+        var result = user.jid.replace(/[^a-zA-Z0-9]/g, "_");
+        result = result + "_" + randomString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        Conference.jid_to_id_mapping[ user.jid ] = result;
+    }
+
+    result = Conference.jid_to_id_mapping[ user.jid ];
+
     log("replaced jid with: " + result);
     return result;
 };
+
+function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+}
+// var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
 // events
 
