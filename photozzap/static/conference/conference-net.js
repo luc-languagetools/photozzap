@@ -33,10 +33,13 @@ var Conference = {
     join_chatroom: function(nickname) {
         // connect to group chat
         Conference.nickname = nickname;
-        Conference.connection.send(
-        $pres({
+        // request all history
+        var presence_message = $pres({
             to: Conference.room + "/" + Conference.nickname
-        }).c('x', {xmlns: NS_MUC}));    
+        }).c('x', {xmlns: NS_MUC}).c('history', {since: "1970-01-01T00:00:00Z"});
+        log("sending presence message:");
+        log(presence_message);
+        Conference.connection.send(presence_message);    
     },
     
     on_presence: function (presence) {
@@ -72,7 +75,7 @@ var Conference = {
             var user = {
                 jid: from,
                 nick: nick,
-                following: null,
+                following: null
             };        
             $(document).trigger('user_joined', user);
             log(user);
@@ -97,9 +100,9 @@ var Conference = {
         var queued_events = Conference.queued_events[image_id];
         delete Conference.queued_events[image_id];
         for (var i = 0; i < queued_events.length; i++) {
-            event = queued_events[i];
-            log("processing event: " + event.name);
-            $(document).trigger(event.name, event.data);
+            qevent = queued_events[i];
+            log("processing event: " + qevent.name);
+            $(document).trigger(qevent.name, qevent.data);
         }
     },
     
@@ -163,23 +166,26 @@ var Conference = {
             var user = Conference.users[from];
             // only do this if we've got all the data
             
-            if (Conference.images_loading[image_id] != undefined) {
-                // image loading - add queued event
-                image = Conference.images_loading[image_id];
-                user.viewing = image;
-                Conference.add_queued_event(image_id, 'user_update', user);
-                Conference.add_queued_event(image_id, 'display_image', image);
-            } else if (image != undefined && user != undefined) {
-                // mark that the user is viewing the data
-                user.viewing = image;
-                $(document).trigger('user_update', user);
-                
-                if (Conference.following_user_jid != null &&
-                    user.jid == Conference.following_user_jid) {
-                    // we are following this user
-                    $(document).trigger('display_image', image);
-                }
-            };
+            if( user != undefined ) {
+            
+                if (Conference.images_loading[image_id] != undefined) {
+                    // image loading - add queued event
+                    image = Conference.images_loading[image_id];
+                    user.viewing = image;
+                    Conference.add_queued_event(image_id, 'user_update', user);
+                    Conference.add_queued_event(image_id, 'display_image', image);
+                } else if (image != undefined && user != undefined) {
+                    // mark that the user is viewing the data
+                    user.viewing = image;
+                    $(document).trigger('user_update', user);
+                    
+                    if (Conference.following_user_jid != null &&
+                        user.jid == Conference.following_user_jid) {
+                        // we are following this user
+                        $(document).trigger('display_image', image);
+                    }
+                };
+            }
         
         } else if (body == "following" ) {
         
@@ -280,7 +286,7 @@ var Conference = {
         log("sending message: " + message);
         Conference.connection.send(message);
         
-    },
+    }
     
 };
 

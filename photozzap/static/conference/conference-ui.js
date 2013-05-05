@@ -48,26 +48,29 @@ $(document).bind('new_image', function(ev, image) {
     $(selector_string).fadeIn('slow', function() {
         // Animation complete
         // open popover
-        $(selector_string).popover({title: "<b>" + image.added_by.nick + " added a photo</b>", 
-                                                       content: "click to view",
-                                                       placement: "top",
-                                                       trigger: "manual",
-                                                       html: "true"});
-        $(selector_string).popover('show');
-        
-        // hide popover after one second
-        setTimeout(function() {
-            $(selector_string).popover('destroy');
-            
-            // insert regular popover
-            $(selector_string).popover({title: "<b>Added by " + image.added_by.nick + "</b>", 
+        if (image.added_by != undefined) {
+            $(selector_string).popover({title: "<b>" + image.added_by.nick + " added a photo</b>", 
                                                            content: "click to view",
                                                            placement: "top",
-                                                           trigger: "hover",
+                                                           trigger: "manual",
                                                            html: "true"});
-            //$(selector_string).popover('show');                                                           
-            
-        }, 1000);
+            $(selector_string).popover('show');
+        
+        
+            // hide popover after one second
+            setTimeout(function() {
+                $(selector_string).popover('destroy');
+                
+                // insert regular popover
+                $(selector_string).popover({title: "<b>Added by " + image.added_by.nick + "</b>", 
+                                                               content: "click to view",
+                                                               placement: "top",
+                                                               trigger: "hover",
+                                                               html: "true"});
+                //$(selector_string).popover('show');                                                           
+                
+            }, 1000);
+        }
     });
     
 });
