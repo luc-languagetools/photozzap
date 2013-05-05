@@ -39,6 +39,7 @@ $(document).bind('new_image', function(ev, image) {
         // thumbnail clicked
         log("image thumbnail clicked");
         $(document).trigger('not_following_user');
+        $(document).trigger('show_current_image', false);
         $(document).trigger('display_image', image);
         
     });
@@ -123,12 +124,13 @@ $(document).bind('connection_status', function(ev, status) {
 
 $(document).bind('connection_complete', function(ev, status) {
     $('#connection-status-modal').modal('hide');
+    $('#current_nick').html("<b>" + Conference.nickname + "</b>");
 });
 
 $(document).bind('connection_error', function(ev, status) {
     $("#connection-status-text").html(status);
     $('#connection-status-modal').modal('show');
-    $("#progress-bar").show();
+    $("#progress-bar-connection").show();
     $("#choose-nickname-form").hide();
 });
 
@@ -136,7 +138,7 @@ $(document).bind('enter_nickname', function(ev, status) {
     // $("#connection-status-text").html(status);
     $("#choose-nickname-form").show();
     $("#connection-status-text").html(status);
-    $("#progress-bar").hide();
+    $("#progress-bar-connection").hide();
     
     $("#join-conference").click(function() {
         var nickname = $("#chosen-nickname").val();
@@ -146,4 +148,42 @@ $(document).bind('enter_nickname', function(ev, status) {
             Conference.join_chatroom(nickname);
         };
     });    
+});
+
+$(document).bind('show_current_image', function(ev, fade) {
+    log("show_current_image");
+    
+    $("#now_viewing_button").addClass("active");
+    $("#all_images_button").removeClass("active");
+
+    $("#all_images").hide();
+    if(fade == true) {
+        $("#main_image").fadeIn('slow');
+    } else {
+       $("#main_image").show();
+    }
+});
+
+$(document).bind('show_all_images', function(ev, status) {
+    log("show_all_images");
+
+    $("#now_viewing_button").removeClass("active");
+    $("#all_images_button").addClass("active");
+
+    $("#main_image").hide();
+    $("#all_images").fadeIn('slow');
+});
+
+
+$(document).bind('upload_in_progress', function(ev, status) {
+    log("upload_in_progress");
+    $("#progress-bar").fadeIn('slow');
+    $("#progress-bar-label").html(status);
+});
+
+
+$(document).bind('upload_done', function(ev, image) {
+    log("upload_done");
+    $('#progress-bar').fadeOut('slow');
+    $("#progress-bar-label").html("");
 });
