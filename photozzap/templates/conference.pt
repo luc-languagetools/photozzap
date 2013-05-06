@@ -106,7 +106,7 @@ $(document).ready(function() {
     <ul class="nav">
         <li id="now_viewing_button" class="active"><a href="#" onclick="$(document).trigger('show_current_image', true);">Now Viewing</a></li>
         <li id="all_images_button" ><a href="#" onclick="$(document).trigger('show_all_images');">All Photos</a></li>    
-        <li class="dropdown">
+        <li id="users-dropdown" class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             Users<b class="caret"></b></a>
             <ul class="dropdown-menu">

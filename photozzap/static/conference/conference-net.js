@@ -53,36 +53,7 @@ var Conference = {
         var type = $(presence).attr('type');
         var nick = Strophe.getResourceFromJid(from);
         
-        if ($(presence).children('viewing').length > 0) {
-            log("user viewing");
-            var image_id = $(presence).children('viewing').text();
-            var image = Conference.images[image_id];
-            var user = Conference.users[from];
-            // only do this if we've got all the data
-            
-            if( user != undefined ) {
-            
-                if (Conference.images_loading[image_id] != undefined) {
-                    // image loading - add queued event
-                    image = Conference.images_loading[image_id];
-                    user.viewing = image;
-                    Conference.add_queued_event(image_id, 'user_update', user);
-                    Conference.add_queued_event(image_id, 'display_image', image);
-                } else if (image != undefined && user != undefined) {
-                    // mark that the user is viewing the data
-                    user.viewing = image;
-                    $(document).trigger('user_update', user);
-                    
-                    if (Conference.following_user_jid != null &&
-                        user.jid == Conference.following_user_jid) {
-                        // we are following this user
-                        $(document).trigger('display_image', image);
-                    }
-                };
-            }           
-            
-            
-        } else if (type == "error") {
+        if (type == "error") {
             var error = $(presence).children('error');
             var code = $(error).attr('code');
             if( code == 409 ) {
@@ -99,6 +70,7 @@ var Conference = {
                 $(document).trigger('user_left', user);
             };
         } else if( type != "error") {
+            // signifies a user is available for communication - can also carry data
         
             if( Conference.connected_to_chatroom == false ) {
                 // fully connected
@@ -106,28 +78,82 @@ var Conference = {
                 $(document).trigger('connection_complete', "joined chatroom");
             }
         
-            var user = {
-                jid: from,
-                nick: nick,
-                following: null
-            };        
-            $(document).trigger('user_joined', user);
-            log(user);
-            Conference.users[user.jid] = user;
+            // is this a new user to us ?
+            if ( Conference.users[from] == undefined ) {
+                var user = {
+                    jid: from,
+                    nick: nick,
+                    following: null
+                };
+                $(document).trigger('user_joined', user);
+                log("user joined: " + from);
+                Conference.users[user.jid] = user;            
+            }
             
+            // there might be additional payload in the presence
+            Conference.parse_presence_data(presence);
+           
         };
         
         return true;
     },
     
+    
+    parse_presence_data: function(presence) {
+        var from = $(presence).attr('from');
+    
+        if ($(presence).children('viewing').length > 0) {
+            var image_id = $(presence).children('viewing').text();
+            var image = Conference.images[image_id];
+            var user = Conference.users[from];
+            
+            log("user " + from + " viewing " + image_id);
+            
+            // only do this if we've got all the data
+           
+            if (image != undefined && user != undefined) {
+                log("effecting user update now");
+                // mark that the user is viewing the data
+                user.viewing = image;
+                $(document).trigger('user_update', user);
+            } else {
+                // image not loaded yet, we must defer the event
+                Conference.add_user_viewing_queued_event(image_id, user);
+            }
+        }
+    },
+    
+    display_image_if_following: function(user) {
+        // a user is watching a certain image. find out whether we have to follow them
+        if (Conference.following_user_jid != null &&
+            user.jid == Conference.following_user_jid) {
+            // we are following this user
+            $(document).trigger('display_image', user.viewing);
+        }
+    },
+    
+    add_user_viewing_queued_event: function(image_id, user) {
+        log("adding deferred_user_viewing event for " + user.jid + ", " + image_id);
+        var queued_event = {name: "user_update",
+                            special_type: "deferred_user_viewing",
+                            user: user,
+                            image_id: image_id};
+        Conference.add_queued_event_internal(image_id,  queued_event);
+    },
+    
     add_queued_event: function(image_id, event_name, data) {
-        var event = {name: event_name,
-                     data: data};
+        var queued_event = {name: event_name,
+                            data: data,
+                            special_type: ""};
+        Conference.add_queued_event_internal(image_id, queued_event);
+    },
+    
+    add_queued_event_internal: function(image_id, queued_event) {
         if (Conference.queued_events[image_id] == undefined) {
             // create array
             Conference.queued_events[image_id] = new Array();
         }
-        Conference.queued_events[image_id].push(event);
+        Conference.queued_events[image_id].push(queued_event);    
     },
     
     process_queued_events: function(image_id) {
@@ -135,6 +161,16 @@ var Conference = {
         delete Conference.queued_events[image_id];
         for (var i = 0; i < queued_events.length; i++) {
             qevent = queued_events[i];
+            
+            if (qevent.special_type == "deferred_user_viewing" ) {
+                log("constructing deferred_user_viewing");
+                // image is loaded by now - lookup image, mark that user is viewing and raise event
+                var image = Conference.images[image_id];
+                var user = qevent.user;
+                user.viewing = image;
+                qevent.data = user;
+            }
+            
             log("processing event: " + qevent.name);
             $(document).trigger(qevent.name, qevent.data);
         }
@@ -155,12 +191,17 @@ var Conference = {
             var image_url = $(message).children('image').children('url').text();
             var thumbnail = $(message).children('image').children('thumbnail').text();
             var image_id = $(message).children('image').children('id').text();
+            var delayed = false;
+            if( $(message).children('delay').length > 0 ) {
+                delayed = true;
+            }
             var user = Conference.users[from];
             var image = {id: image_id,
                          url: image_url,
                          thumbnail: thumbnail,
                          added_by: user,
-                         thumbnail_id: "thumbnail_" + image_id};
+                         thumbnail_id: "thumbnail_" + image_id,
+                         delayed: delayed};
                        
             log("received image id " + image_id + ", processing");
 
@@ -254,6 +295,8 @@ var Conference = {
         log("following user " + user.jid);
         Conference.following_user_jid = user.jid;
         
+        // don't send the message - clutters the protocol
+        /*
         message = $msg({
         to: Conference.room,
         type: "groupchat"});
@@ -261,6 +304,7 @@ var Conference = {
         message.c('following').t(user.jid);
         
         Conference.connection.send(message);
+        */
     },
     
     unfollow_user: function() {
@@ -269,13 +313,16 @@ var Conference = {
         if ( Conference.following_user_jid != null ) {
         
             Conference.following_user_jid = null;
-            
+        
+            // don't send the message - clutters the protocol
+            /*
             message = $msg({
             to: Conference.room,
             type: "groupchat"});
             message.c('body').t("unfollowing");
            
             Conference.connection.send(message);        
+            */
         }
     },
     
@@ -373,8 +420,6 @@ function dom_id_from_user(user) {
     }
 
     result = Conference.jid_to_id_mapping[ user.jid ];
-
-    log("replaced jid with: " + result);
     return result;
 };
 
@@ -398,4 +443,9 @@ $(document).bind('following_user', function(ev, user) {
 
 $(document).bind('not_following_user', function(ev) {
     Conference.unfollow_user();
+});
+
+$(document).bind('user_update', function(ev, user) {
+    log("conference-net user_update");
+    Conference.display_image_if_following(user);
 });

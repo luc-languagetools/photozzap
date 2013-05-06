@@ -1,4 +1,45 @@
 
+
+var ConferenceUi = {
+
+    notify_new_image: function(image) {
+        log("notify_new_image: " + image.id);
+    
+        // insert pop-over under "all photos"
+        image_element = $("#image-template").jqote(image);
+        
+        $("#all_images_button").popover({title: "<b>" + image.added_by.nick + " added a photo</b>", 
+                                         content: image_element,
+                                         placement: "bottom",
+                                         trigger: "manual",
+                                         html: "true"});
+        $("#all_images_button").popover('show');
+                                         
+        setTimeout(function() {
+            $("#all_images_button").popover('destroy');
+        }, 2500);                                         
+                                         
+    },
+    
+    notify_viewing_image: function(user) {
+        // insert pop-over under "Users"
+        var image = user.viewing;
+        image_element = $("#image-template").jqote(image);
+        
+        $("#users-dropdown").popover({title: "<b>" + user.nick + " is looking at:</b>", 
+                                         content: image_element,
+                                         placement: "bottom",
+                                         trigger: "manual",
+                                         html: "true"});
+        $("#users-dropdown").popover('show');
+                                         
+        setTimeout(function() {
+            $("#users-dropdown").popover('destroy');
+        }, 2500);        
+    },
+};
+
+
 function remove_user_element_if_present(user) {
     $("#users-list #" + dom_id_from_user(user)).remove();
 };
@@ -44,6 +85,13 @@ $(document).bind('new_image', function(ev, image) {
         
     });
     
+    log("image.delayed: " + image.delayed);
+    if (! image.delayed ) {
+        // only notify if this is not a message replay (uploaded in the past)
+        ConferenceUi.notify_new_image(image);
+    }
+   
+   /*
     var selector_string = "#image-list #"+image.thumbnail_id;
     
     $(selector_string).fadeIn('slow', function() {
@@ -65,7 +113,7 @@ $(document).bind('new_image', function(ev, image) {
                 // insert regular popover
                 $(selector_string).popover({title: "<b>Added by " + image.added_by.nick + "</b>", 
                                                                content: "click to view",
-                                                               placement: "top",
+                                                               placement: "bottom",
                                                                trigger: "hover",
                                                                html: "true"});
                 //$(selector_string).popover('show');                                                           
@@ -73,6 +121,7 @@ $(document).bind('new_image', function(ev, image) {
             }, 1000);
         }
     });
+    */
     
 });
 
@@ -105,12 +154,16 @@ $(document).bind('user_update', function(ev, user) {
         $(document).trigger('following_user', user);
     });
     
+    ConferenceUi.notify_viewing_image(user);
+    
     // insert regular popover
+    /*
     $("#users-list #" + dom_id_from_user(user)).popover({title: "<b>Click to follow " + user.nick + "</b>", 
                                                    content: "You will see the photos that he is viewing",
                                                    placement: "left",
                                                    trigger: "hover",
                                                    html: "true"});    
+    */
     
     // fade in
     $("#users-list #" + dom_id_from_user(user) + " img").fadeIn('slow', function() {
