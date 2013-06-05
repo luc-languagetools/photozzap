@@ -1,1 +1,19 @@
 photozzap README
+
+hostnames:
+desktop.dev.jabber.photozzap.com
+
+ejabberd config:
+----------------
+
+make sure mod_muc is configured this way:
+          {history_size, 100000},
+          {default_room_options,
+          [
+               {persistent, true},
+               {logging, true}
+          ]}     
+          
+on cygwin, configure auth access this way:
+{auth_method, external}.
+{extauth_program, "d:/storage/dev/photozzap/env/bin/python3.2m.exe -m photozzap.scripts.jabber_auth_sqlalchemy /cygdrive/d/storage/dev/photozzap/env/photozzap/development.ini"}.

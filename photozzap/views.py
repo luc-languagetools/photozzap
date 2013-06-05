@@ -1,3 +1,4 @@
+from pyramid.response import Response
 from pyramid.view import view_config
 import logging
 import os
@@ -5,7 +6,18 @@ import shutil
 import datetime
 import tempfile
 import subprocess
-log = logging.getLogger(__name__)
+import transaction
+
+
+from sqlalchemy.exc import DBAPIError, IntegrityError
+
+from .models import (
+    DBSession,
+    User,
+    Conference,
+    )
+
+log = logging.getLogger(__name__)    
 
 def photo_storage_path_relative(request):
     settings = request.registry.settings
@@ -55,28 +67,78 @@ def upload_photo(request):
     return {'url':full_image_url, 'thumbnail':thumbnail_url, 'id': photo_id}
     
 
+
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
 def my_view(request):
-    return {'project': 'photozzap'}
+    try:
+        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
+    except DBAPIError:
+        return Response(conn_err_msg, content_type='text/plain', status_int=500)
+    return {'one': one, 'project': 'photozzap'}
 
+conn_err_msg = """\
+Pyramid is having a problem using your SQL database.  The problem
+might be caused by one of the following things:
+
+1.  You may need to run the "initialize_photozzap_db" script
+    to initialize your database tables.  Check your virtual 
+    environment's "bin" directory for this script and try to run it.
+
+2.  Your database server may not be running.  Check that the
+    database server referred to by the "sqlalchemy.url" setting in
+    your "development.ini" file is running.
+
+After you fix the problem, please restart the Pyramid application to
+try it again.
+"""
+
+
+@view_config(route_name='new_conference',renderer='json')
+def new_conference(request):
+    conf_created = False
     
+    params = {}
+    while conf_created == False:
+        try:
+            with transaction.manager:
+                conf = Conference()
+                DBSession.add(conf)
+                params['conf_key'] = conf.secret
+            conf_created = True
+        except IntegrityError:
+            # user already exists, will retry
+            conf_created = False
+
+    return params
+
 @view_config(route_name='conference', renderer='templates/conference.pt')
 def conference(request):
-    if request.matchdict["user"] == 'luc':
-        params = {'login': 'luc@photozzap.p1.im', 
-                  'password': 'luc', 
-                  'nickname': 'luc'}
-    elif request.matchdict["user"] == 'guy':
-        params = {'login': 'guy@photozzap.p1.im', 
-                  'password': 'guy', 
-                  'nickname': 'guy'}
-    elif request.matchdict["user"] == 'carola':
-        params = {'login': 'carola@photozzap.p1.im', 
-                  'password': 'carola', 
-                  'nickname': 'carola'}                  
-    elif request.matchdict["user"] == 'armelle':
-        params = {'login': 'armelle@photozzap.p1.im', 
-                  'password': 'armelle', 
-                  'nickname': 'armelle'}       
+
+    settings = request.registry.settings
+    jabber_server = settings['jabber_server']
+    jabber_conf_server = settings['jabber_conf_server']
+    bosh_service = settings['bosh_service']
+    
+    conf_key = request.matchdict['conf_key']
+    conf = DBSession.query(Conference).filter_by(secret=conf_key).one()
+
+    # create new user
+    user_created = False
+    
+    params = {'bosh_service': bosh_service,
+              'conference': conf.name + '@' + jabber_conf_server}
+    while user_created == False:
+        try:
+            with transaction.manager:
+                user = User()
+                DBSession.add(user)
+                params['login'] = user.login + '@' + jabber_server
+                params['password'] = user.password
+            user_created = True
+        except IntegrityError:
+            # user already exists, will retry
+            user_created = False
+
                   
     return params
+

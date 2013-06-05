@@ -34,9 +34,8 @@ function setup_uploader() {
  
         up.refresh(); // Reposition Flash/Silverlight
         log("FilesAdded, start upload");
-        $("#upload-controls").hide();
-        $('#upload-in-progress').fadeIn('slow', function() {
-        });
+        $(document).trigger('upload_in_progress', "Uploading photo");
+        $('#upload-modal').modal('hide');
         uploader.start();
     });
  
@@ -60,11 +59,8 @@ function setup_uploader() {
         // console.log(response.response);
         json_response = jQuery.parseJSON(response.response);
         Conference.send_img_url(json_response);
-        
-        $('#upload-in-progress').fadeOut('slow', function() {
-            $("#upload-controls").show();
-        });        
-        
+        $(document).trigger('upload_in_progress', "Sending photo to conference");
+      
     });
     
 };    
