@@ -6,6 +6,8 @@ var Conference = {
     connection: null,
     nickname: null,
     
+    currently_viewing: null,
+    
     following_user_jid: null,
     
     connected_to_chatroom: false,
@@ -241,28 +243,7 @@ var Conference = {
                 });
             });
             
-        } else if (body == "viewing") {
-        
-
-        
-        } else if (body == "following" ) {
-        
-            var user = Conference.users[from];
-            var following_jid = $(message).children('following').text();
-            
-            if (user != undefined && Conference.users[following_jid] != undefined) {
-                user.following = Conference.users[following_jid];
-                $(document).trigger('user_update', user);
-            }
-            
-        } else if (body == "unfollowing" ) {
-            var user = Conference.users[from];
-            
-            if (user != undefined) {
-                user.following = null;
-                $(document).trigger('user_update', user);            
-            }
-        }
+        } 
         
         return true;
     },
@@ -286,43 +267,19 @@ var Conference = {
     },
     
     follow_user: function (user) {
-    
         if( user.nick == Conference.nickname){
             // cannot follow self
             return;
         }
-    
         log("following user " + user.jid);
         Conference.following_user_jid = user.jid;
-        
-        // don't send the message - clutters the protocol
-        /*
-        message = $msg({
-        to: Conference.room,
-        type: "groupchat"});
-        message.c('body').t("following").up();
-        message.c('following').t(user.jid);
-        
-        Conference.connection.send(message);
-        */
     },
     
     unfollow_user: function() {
         log("not following any users");
         
         if ( Conference.following_user_jid != null ) {
-        
             Conference.following_user_jid = null;
-        
-            // don't send the message - clutters the protocol
-            /*
-            message = $msg({
-            to: Conference.room,
-            type: "groupchat"});
-            message.c('body').t("unfollowing");
-           
-            Conference.connection.send(message);        
-            */
         }
     },
     
@@ -341,12 +298,12 @@ var Conference = {
     viewing_image: function (image) {
         // notify other users we're viewing this image
         
+        if (Conference.currently_viewing == image.id) {
+            // don't notify twice
+            return;
+        }
+        
         log("viewing_image: " + image.id);
-        //message = $msg({
-        //to: Conference.room,
-        //type: "groupchat"});
-        //message.c('body').t("viewing").up();
-        //message.c('image').c('id').t(image.id);
         
         // send viewing as presence
         var message = $pres({
@@ -356,6 +313,7 @@ var Conference = {
         log("sending message: " + message);
         Conference.connection.send(message);
         
+        Conference.currently_viewing = image.id;
     }
     
 };
@@ -410,18 +368,6 @@ function connection_initialize(username, password, bosh_service, conference_room
    Conference.connection.addHandler(Conference.on_ping, "urn:xmpp:ping", "iq");
    conn.connect(username, password, connection_callback);
 }
-
-function dom_id_from_user(user) {
-    if ( Conference.jid_to_id_mapping[ user.jid ] == undefined ) {
-        // create a mapping
-        var result = user.jid.replace(/[^a-zA-Z0-9]/g, "_");
-        result = result + "_" + randomString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        Conference.jid_to_id_mapping[ user.jid ] = result;
-    }
-
-    result = Conference.jid_to_id_mapping[ user.jid ];
-    return result;
-};
 
 function randomString(length, chars) {
     var result = '';

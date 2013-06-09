@@ -56,6 +56,40 @@ $(document).ready(function() {
 ]]>
 </script>
 
+<script type="text/html" id="user-template">
+<![CDATA[
+    <li id="<%= this.element_id %>">
+        <% if (this.user.viewing != undefined ) { %>
+            <a href="#" class="thumbnail">
+                <h4><%= this.user.nick %></h4>
+                <img src="<%= this.user.viewing.thumbnail %>"/>
+            </a>
+        <% } else { %>
+            <h4><%= this.user.nick %></h4>
+            not viewing an image
+        <% }; %>
+    </li>
+]]>
+</script>
+
+<script type="text/html" id="new-image-popover">
+<![CDATA[
+    <div>
+        <ul id="new-image-popover-list" class="thumbnails">
+        </ul>
+    </div>
+]]>
+</script>
+
+<script type="text/html" id="user-viewing-popover">
+<![CDATA[
+    <div>
+        <ul id="user-viewing-popover-list" class="thumbnails">
+        </ul>
+    </div>
+]]>
+</script>
+
 <script type="text/html" id="image-template">
 <![CDATA[
     <li id="<%= this.thumbnail_id %>" style="display: table;">
@@ -66,6 +100,16 @@ $(document).ready(function() {
 ]]>
 </script>
 
+<script type="text/html" id="new-image-template">
+<![CDATA[
+    <li id="<%= this.thumbnail_id %>" style="display: table;">
+        <a href="#" class="thumbnail" style="display: table-cell; vertical-align: middle;">
+            <img src="<%= this.thumbnail %>"/>
+            <p>Added by <%= this.added_by.nick %></p>
+        </a>    
+    </li>
+]]>
+</script>
 
 <div id="connection-status-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -138,12 +182,6 @@ $(document).ready(function() {
         <div id="all_images" class="span12" style="display: none;">
             <ul id="image-list" class="thumbnails">
             </ul>
-        </div>
-        <div class="span2">
-            <!--Sidebar content-->
-            <h3>Upload</h3>
-
-          
         </div>
     </div>
     <div id="image-cache" style="display:none;">

@@ -2,40 +2,121 @@
 
 var ConferenceUi = {
 
+    new_image_popover_open: false,
+    user_viewing_popover_open: false,
+
+    user_viewing_timeouts: {},
+    
     notify_new_image: function(image) {
         log("notify_new_image: " + image.id);
     
-        // insert pop-over under "all photos"
-        image_element = $("#image-template").jqote(image);
+        if (! ConferenceUi.new_image_popover_open ) {
+            // open the popover first
+            log("creating new_image_popover element");
+            
+            new_image_list_element = $("#new-image-popover").jqote();
+
+            $("#all_images_button").popover({title: "<b>New Photos Added</b>", 
+                                             content: new_image_list_element,
+                                             placement: "bottom",
+                                             trigger: "manual",
+                                             html: "true"});
+            $("#all_images_button").popover('show');
+            
+            ConferenceUi.new_image_popover_open = true;
+        }
+    
+        // now add the actual images
+        image_element = $("#new-image-template").jqote(image);
         
-        $("#all_images_button").popover({title: "<b>" + image.added_by.nick + " added a photo</b>", 
-                                         content: image_element,
-                                         placement: "bottom",
-                                         trigger: "manual",
-                                         html: "true"});
-        $("#all_images_button").popover('show');
-                                         
+        // add the element to the popover element
+        $('#new-image-popover-list').prepend(image_element);
+
+        selector = '#new-image-popover-list #' + image.thumbnail_id;
+        a_selector = selector + " a";
+        
+        // add click event
+        add_click_event_to_new_image(a_selector, image);
+        
+        // add removal timer
         setTimeout(function() {
-            $("#all_images_button").popover('destroy');
-        }, 2500);                                         
-                                         
+            // locate the element and remove it
+            $(selector).remove();
+            
+            // how many are left ?
+            if ($('#new-image-popover-list').children().length == 0 ) {
+                // close the popover
+                ConferenceUi.new_image_popover_open = false;
+                $("#all_images_button").popover('destroy');                
+            }
+        
+        }, 2500);        
+        
     },
     
     notify_viewing_image: function(user) {
         // insert pop-over under "Users"
-        var image = user.viewing;
-        image_element = $("#image-template").jqote(image);
+        log("notify_viewing_image for " + user.nick);
+    
+        if (! ConferenceUi.user_viewing_popover_open ) {
+            // open the popover first
+            log("creating user-viewing-popover element");
+            
+            user_viewing_list_element = $("#user-viewing-popover").jqote();
+
+            $("#users-dropdown").popover({title: "<b>People are looking at</b>", 
+                                             content: user_viewing_list_element,
+                                             placement: "bottom",
+                                             trigger: "manual",
+                                             html: "true"});
+            $("#users-dropdown").popover('show');
+            
+            ConferenceUi.user_viewing_popover_open = true;
+        }
+
+        selector = user_viewing_popover_selector(user);
         
-        $("#users-dropdown").popover({title: "<b>" + user.nick + " is looking at:</b>", 
-                                         content: image_element,
-                                         placement: "bottom",
-                                         trigger: "manual",
-                                         html: "true"});
-        $("#users-dropdown").popover('show');
-                                         
-        setTimeout(function() {
-            $("#users-dropdown").popover('destroy');
-        }, 2500);        
+        // is there already an image displayed ? 
+        if ($(selector).length > 0) {
+            // remove this image and remove the timeout        
+            clearTimeout(ConferenceUi.user_viewing_timeouts[dom_id_from_user_popover(user)]);
+            delete ConferenceUi.user_viewing_timeouts[dom_id_from_user_popover(user)];
+            $(selector).remove();            
+        }
+        
+        // now add the actual image
+        image_element = $("#user-template").jqote({element_id: dom_id_from_user_popover(user), 
+                                                   user: user});
+        
+        // add the element to the popover element
+        $('#user-viewing-popover-list').prepend(image_element);
+
+        a_selector = selector + " a";
+        
+        // add click event
+        add_click_event_to_user_viewing(a_selector, user);
+        
+        // add removal timer
+        ConferenceUi.user_viewing_timeouts[dom_id_from_user_popover(user)] = setTimeout(function() {
+        
+            // remove timeout variable
+            delete ConferenceUi.user_viewing_timeouts[dom_id_from_user_popover(user)];
+        
+            selector = user_viewing_popover_selector(user);
+        
+            // locate the element and remove it
+            $(selector).remove();
+            
+            // how many are left ?
+            if ($('#user-viewing-popover-list').children().length == 0 ) {
+                // close the popover
+                ConferenceUi.user_viewing_popover_open = false;
+                $("#users-dropdown").popover('destroy');                
+            }
+        
+        }, 2500);              
+        
+        
     },
 };
 
@@ -69,59 +150,37 @@ $(document).bind('user_left', function (ev, user) {
 });
 
 
-$(document).bind('new_image', function(ev, image) {
-    // create element from template
-    image_element = $("#image-template").jqote(image);
-   
-    //$(image_element).popover({title: "my title", content: "my content"});
-    $('#image-list').prepend(image_element);
-
-    $("#image-list #"+image.thumbnail_id + " a").click(function() {
+function add_click_event_to_new_image(selector, image) {
+    $(selector).click(function() {
         // thumbnail clicked
         log("image thumbnail clicked");
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image', image);
-        
     });
+};
+
+function add_click_event_to_user_viewing(selector, user) {
+    $(selector).click(function() {
+        // thumbnail clicked
+        log("image thumbnail clicked");
+        $(document).trigger('show_current_image', false);
+        $(document).trigger('display_image', user.viewing);
+        $(document).trigger('following_user', user);
+    });
+};
+
+$(document).bind('new_image', function(ev, image) {
+    // create element from template
+    image_element = $("#image-template").jqote(image);
+    $('#image-list').prepend(image_element);
+    add_click_event_to_new_image("#image-list #"+image.thumbnail_id + " a", image);
     
     log("image.delayed: " + image.delayed);
     if (! image.delayed ) {
         // only notify if this is not a message replay (uploaded in the past)
         ConferenceUi.notify_new_image(image);
     }
-   
-   /*
-    var selector_string = "#image-list #"+image.thumbnail_id;
-    
-    $(selector_string).fadeIn('slow', function() {
-        // Animation complete
-        // open popover
-        if (image.added_by != undefined) {
-            $(selector_string).popover({title: "<b>" + image.added_by.nick + " added a photo</b>", 
-                                                           content: "click to view",
-                                                           placement: "top",
-                                                           trigger: "manual",
-                                                           html: "true"});
-            $(selector_string).popover('show');
-        
-        
-            // hide popover after one second
-            setTimeout(function() {
-                $(selector_string).popover('destroy');
-                
-                // insert regular popover
-                $(selector_string).popover({title: "<b>Added by " + image.added_by.nick + "</b>", 
-                                                               content: "click to view",
-                                                               placement: "bottom",
-                                                               trigger: "hover",
-                                                               html: "true"});
-                //$(selector_string).popover('show');                                                           
-                
-            }, 1000);
-        }
-    });
-    */
     
 });
 
@@ -142,29 +201,16 @@ $(document).bind('user_update', function(ev, user) {
     // create inner element from template
     user_element = $('#user-inner-template').jqote(user);
 
-         
     // replace it in the DOM
     $("#users-list #" + dom_id_from_user(user)).html(user_element);
+    add_click_event_to_user_viewing("#users-list #" + dom_id_from_user(user) + " a", user);
     
-    // add event
-    $("#users-list #" + dom_id_from_user(user) + " a").click(function() {
-        // thumbnail clicked
-        log("image thumbnail clicked");
-        $(document).trigger('display_image', user.viewing);
-        $(document).trigger('following_user', user);
-    });
     
-    ConferenceUi.notify_viewing_image(user);
-    
-    // insert regular popover
-    /*
-    $("#users-list #" + dom_id_from_user(user)).popover({title: "<b>Click to follow " + user.nick + "</b>", 
-                                                   content: "You will see the photos that he is viewing",
-                                                   placement: "left",
-                                                   trigger: "hover",
-                                                   html: "true"});    
-    */
-    
+    // don't notify if this is ourself.
+    if (Conference.nickname != user.nick ) {
+        ConferenceUi.notify_viewing_image(user);
+    }
+   
     // fade in
     $("#users-list #" + dom_id_from_user(user) + " img").fadeIn('slow', function() {
         // Animation complete
@@ -240,3 +286,24 @@ $(document).bind('upload_done', function(ev, image) {
     $('#progress-bar').fadeOut('slow');
     $("#progress-bar-label").html("");
 });
+
+function dom_id_from_user(user) {
+    if ( Conference.jid_to_id_mapping[ user.jid ] == undefined ) {
+        // create a mapping
+        var result = user.jid.replace(/[^a-zA-Z0-9]/g, "_");
+        result = result + "_" + randomString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        Conference.jid_to_id_mapping[ user.jid ] = result;
+    }
+
+    result = Conference.jid_to_id_mapping[ user.jid ];
+    return result;
+};
+
+function dom_id_from_user_popover(user) {
+    return dom_id_from_user(user) + "_popover";
+};
+
+function user_viewing_popover_selector(user) {
+    return selector = '#user-viewing-popover-list #' + dom_id_from_user_popover(user);
+};
+
