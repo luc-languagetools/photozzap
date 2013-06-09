@@ -40,6 +40,8 @@ var ConferenceUi = {
         
         // add removal timer
         setTimeout(function() {
+            selector = '#new-image-popover-list #' + image.thumbnail_id;
+        
             // locate the element and remove it
             $(selector).remove();
             
