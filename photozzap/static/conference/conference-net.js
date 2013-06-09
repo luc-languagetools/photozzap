@@ -428,7 +428,6 @@ function randomString(length, chars) {
     for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
     return result;
 }
-// var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
 // events
 
@@ -449,3 +448,4 @@ $(document).bind('user_update', function(ev, user) {
     log("conference-net user_update");
     Conference.display_image_if_following(user);
 });
+
