@@ -7,9 +7,11 @@ import sleekxmpp
 from sleekxmpp.stanza.message import Message
 from sleekxmpp.stanza.presence import Presence
 from sleekxmpp.xmlstream.stanzabase import ElementBase
-from sleekxmpp.xmlstream import register_stanza_plugin
+from sleekxmpp.xmlstream import register_stanza_plugin, ET
 from sleekxmpp.xmlstream.handler.callback import Callback
 from sleekxmpp.xmlstream.matcher.xpath import MatchXPath
+from sleekxmpp.xmlstream.matcher.xmlmask import MatchXMLMask
+from sleekxmpp.plugins.xep_0045 import MUCPresence
 
 from pyramid.paster import (
     get_appsettings,
@@ -35,30 +37,25 @@ class Image(ElementBase):
     interfaces = set(('id', 'url', 'thumbnail'))
     sub_interfaces = interfaces
     
-class Viewing(ElementBase):
-    name = 'viewing'
-    plugin_attrib = 'viewing'
-    interfaces = set()
-    sub_interfaces = interfaces
-    
 class PhotoZzapMucBot(sleekxmpp.ClientXMPP):
 
     def __init__(self, jid, password, conf_room, nick):
         sleekxmpp.ClientXMPP.__init__(self, jid, password)
         self.room = conf_room
         self.nick = nick
+        self.viewing_image = None
+        self.follow_user = "Luc08"
         
         print("starting connection with " + jid)
         
         self.add_event_handler("session_start", self.start)
-        # self.add_event_handler("groupchat_message", self.muc_message)
         self.add_event_handler("groupchat_presence", self.muc_presence)
         
         self.registerHandler(
             Callback('Image Handler',
                 MatchXPath('{%s}message/{%s}image' % (self.default_ns, Image.namespace)),
                 self.handle_image))
-        
+
         print("initialized, added event handlers")
         
     def start(self, event):
@@ -70,20 +67,38 @@ class PhotoZzapMucBot(sleekxmpp.ClientXMPP):
                                         wait=True)  
         print("joined conference " + self.room)
 
-    def muc_message(self, msg):
-        print("received muc_message: " + str(msg))
-        print("keys: " + str(msg.keys()))
-        
-        # is this a new image ?
-        
     def muc_presence(self, presence):
         print("received muc_presence: " + str(presence))
         
+        from_nick = presence['from'].resource
+        if from_nick == self.follow_user:
+            viewing_tag = presence.xml.find('{jabber:client}viewing')
+            if viewing_tag != None:
+                image_id = viewing_tag.text
+                print("viewing: " + image_id)
+                self.send_viewing(image_id)
+        
     def handle_image(self, message):
         print("received image: " + str(message))
-        #print("image id: " + str(image['id']))
-        print(message['image']['id'])
-
+        image_id = message['image']['id']
+        self.send_viewing(image_id)
+        
+    def send_viewing(self, image_id):
+        if self.viewing_image != image_id:
+            stanza = self.makePresence(pto="%s/%s" % (self.room, self.nick))
+            
+            builder = ET.TreeBuilder()
+            builder.start("viewing", {})
+            builder.data(image_id)
+            builder.end("viewing")
+            viewing_elt = builder.close()
+            
+            stanza.append(viewing_elt)
+            print("sending presence: " + str(stanza))
+            stanza.send()
+            
+            self.viewing_image = image_id
+        
 if __name__ == "__main__":
     argv = sys.argv
     if len(argv) != 4:
@@ -127,7 +142,6 @@ if __name__ == "__main__":
     xmpp.register_plugin('xep_0199') # XMPP Ping   
     xmpp['feature_mechanisms'].unencrypted_plain = True
     register_stanza_plugin(Message, Image)
-    register_stanza_plugin(Presence, Viewing)
     
     if xmpp.connect((jabber_server, 5222), use_tls=False):
         xmpp.process(block=True)

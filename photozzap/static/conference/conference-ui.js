@@ -2,37 +2,55 @@
 
 var ConferenceUi = {
 
-    new_image_popover_open: false,
-    user_viewing_popover_open: false,
-
+	notification_popover_open: false,
     user_viewing_timeouts: {},
     
-    notify_new_image: function(image) {
-        log("notify_new_image: " + image.id);
-    
-        if (! ConferenceUi.new_image_popover_open ) {
+	open_new_popover_if_needed: function() {
+        if (! ConferenceUi.notification_popover_open ) {
             // open the popover first
-            log("creating new_image_popover element");
-            
-            new_image_list_element = $("#new-image-popover").jqote();
+            notification_popover_element = $("#notification-popover").jqote();
 
-            $("#all_images_button").popover({title: "<b>New Photos Added</b>", 
-                                             content: new_image_list_element,
+            $("#all_images_button").popover({title: "<b>Notifications</b>", 
+                                             content: notification_popover_element,
                                              placement: "bottom",
                                              trigger: "manual",
                                              html: "true"});
             $("#all_images_button").popover('show');
             
-            ConferenceUi.new_image_popover_open = true;
+            $('.popover').css({'max-width': '1000px',
+                               'width':'800px'});
+                               
+            log( $('.popover') );
+          
+            ConferenceUi.notification_popover_open = true;
         }
+	
+	},
+	
+	remove_notification_and_close_popover_if_needed: function(selector) {
+		// locate the element and remove it
+		$(selector).remove();
+		
+		// how many are left ?
+		if ($('#notification-popover-list').children().length == 0 ) {
+			// close the popover
+            
+			ConferenceUi.notification_popover_open = false;
+			$("#all_images_button").popover('destroy');                
+		}
+	},
+	
+    notify_new_image: function(image) {
+        log("notify_new_image: " + image.id);
+		ConferenceUi.open_new_popover_if_needed();
     
         // now add the actual images
         image_element = $("#new-image-template").jqote(image);
         
         // add the element to the popover element
-        $('#new-image-popover-list').prepend(image_element);
+        $('#notification-popover-list').prepend(image_element);
 
-        selector = '#new-image-popover-list #' + image.thumbnail_id;
+        selector = '#notification-popover-list #' + image.thumbnail_id;
         a_selector = selector + " a";
         
         // add click event
@@ -40,18 +58,8 @@ var ConferenceUi = {
         
         // add removal timer
         setTimeout(function() {
-            selector = '#new-image-popover-list #' + image.thumbnail_id;
-        
-            // locate the element and remove it
-            $(selector).remove();
-            
-            // how many are left ?
-            if ($('#new-image-popover-list').children().length == 0 ) {
-                // close the popover
-                ConferenceUi.new_image_popover_open = false;
-                $("#all_images_button").popover('destroy');                
-            }
-        
+            selector = '#notification-popover-list #' + image.thumbnail_id;
+			ConferenceUi.remove_notification_and_close_popover_if_needed(selector);
         }, 2500);        
         
     },
@@ -59,22 +67,7 @@ var ConferenceUi = {
     notify_viewing_image: function(user) {
         // insert pop-over under "Users"
         log("notify_viewing_image for " + user.nick);
-    
-        if (! ConferenceUi.user_viewing_popover_open ) {
-            // open the popover first
-            log("creating user-viewing-popover element");
-            
-            user_viewing_list_element = $("#user-viewing-popover").jqote();
-
-            $("#users-dropdown").popover({title: "<b>People are looking at</b>", 
-                                             content: user_viewing_list_element,
-                                             placement: "bottom",
-                                             trigger: "manual",
-                                             html: "true"});
-            $("#users-dropdown").popover('show');
-            
-            ConferenceUi.user_viewing_popover_open = true;
-        }
+		ConferenceUi.open_new_popover_if_needed();
 
         selector = user_viewing_popover_selector(user);
         
@@ -91,7 +84,7 @@ var ConferenceUi = {
                                                    user: user});
         
         // add the element to the popover element
-        $('#user-viewing-popover-list').prepend(image_element);
+        $('#notification-popover-list').prepend(image_element);
 
         a_selector = selector + " a";
         
@@ -100,22 +93,14 @@ var ConferenceUi = {
         
         // add removal timer
         ConferenceUi.user_viewing_timeouts[dom_id_from_user_popover(user)] = setTimeout(function() {
-        
+			log("remove user_viewing notification for " + user.nick);
+		
             // remove timeout variable
             delete ConferenceUi.user_viewing_timeouts[dom_id_from_user_popover(user)];
-        
             selector = user_viewing_popover_selector(user);
-        
-            // locate the element and remove it
-            $(selector).remove();
-            
-            // how many are left ?
-            if ($('#user-viewing-popover-list').children().length == 0 ) {
-                // close the popover
-                ConferenceUi.user_viewing_popover_open = false;
-                $("#users-dropdown").popover('destroy');                
-            }
-        
+			log("selector is: [" + selector + "]");
+			ConferenceUi.remove_notification_and_close_popover_if_needed(selector);
+		       
         }, 2500);              
         
         
@@ -306,6 +291,6 @@ function dom_id_from_user_popover(user) {
 };
 
 function user_viewing_popover_selector(user) {
-    return selector = '#user-viewing-popover-list #' + dom_id_from_user_popover(user);
+    return selector = '#notification-popover-list #' + dom_id_from_user_popover(user);
 };
 

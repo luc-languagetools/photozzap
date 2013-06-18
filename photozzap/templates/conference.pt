@@ -61,7 +61,7 @@ $(document).ready(function() {
     <li id="<%= this.element_id %>">
         <% if (this.user.viewing != undefined ) { %>
             <a href="#" class="thumbnail">
-                <h4><%= this.user.nick %></h4>
+                <span style="text-size: 20px; font-weight: bold;"><%= this.user.nick %></span> is looking at:
                 <img src="<%= this.user.viewing.thumbnail %>"/>
             </a>
         <% } else { %>
@@ -72,19 +72,10 @@ $(document).ready(function() {
 ]]>
 </script>
 
-<script type="text/html" id="new-image-popover">
+<script type="text/html" id="notification-popover">
 <![CDATA[
     <div>
-        <ul id="new-image-popover-list" class="thumbnails">
-        </ul>
-    </div>
-]]>
-</script>
-
-<script type="text/html" id="user-viewing-popover">
-<![CDATA[
-    <div>
-        <ul id="user-viewing-popover-list" class="thumbnails">
+        <ul id="notification-popover-list" class="thumbnails">
         </ul>
     </div>
 ]]>
