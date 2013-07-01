@@ -56,6 +56,7 @@ $(document).ready(function() {
 ]]>
 </script>
 
+
 <script type="text/html" id="user-template">
 <![CDATA[
     <li id="<%= this.element_id %>">
@@ -71,6 +72,36 @@ $(document).ready(function() {
     </li>
 ]]>
 </script>
+
+<script type="text/html" id="new-image-template">
+<![CDATA[
+    <li id="<%= this.thumbnail_id %>">
+        <a href="#" class="thumbnail">
+            <span style="text-size: 20px; font-weight: bold;"><%= this.added_by.nick %></span> Added a photo:
+            <img src="<%= this.thumbnail %>"/>
+        </a>    
+    </li>
+]]>
+</script>
+
+<script type="text/html" id="combined-notification-template">
+<![CDATA[
+    <li id="<%= this.id %>">
+        <a href="#" class="thumbnail">
+            <span style="text-size: 20px; font-weight: bold;"><%= this.user_list %></span> 
+            <% if (this.use_plural) { %>
+              are 
+            <% } else { %>
+              is
+            <% } %>
+            looking at:
+            <img src="<%= this.thumbnail %>"/>
+        </a>    
+    </li>
+]]>
+</script>
+
+
 
 <script type="text/html" id="notification-popover">
 <![CDATA[
@@ -91,16 +122,7 @@ $(document).ready(function() {
 ]]>
 </script>
 
-<script type="text/html" id="new-image-template">
-<![CDATA[
-    <li id="<%= this.thumbnail_id %>" style="display: table;">
-        <a href="#" class="thumbnail" style="display: table-cell; vertical-align: middle;">
-            <img src="<%= this.thumbnail %>"/>
-            <p>Added by <%= this.added_by.nick %></p>
-        </a>    
-    </li>
-]]>
-</script>
+
 
 <div id="connection-status-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -139,8 +161,8 @@ $(document).ready(function() {
   <div class="navbar-inner">
     <a class="brand" href="#">Photozzap</a>
     <ul class="nav">
-        <li id="now_viewing_button" class="active"><a href="#" onclick="$(document).trigger('show_current_image', true);">Now Viewing</a></li>
-        <li id="all_images_button" ><a href="#" onclick="$(document).trigger('show_all_images');">All Photos</a></li>    
+        <li id="all_images_button" class="active"><a href="#" onclick="$(document).trigger('show_all_images');">All Photos</a></li>    
+        <li id="now_viewing_button"><a href="#" onclick="$(document).trigger('show_current_image', true);">Now Viewing</a></li>
         <li id="users-dropdown" class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             Users<b class="caret"></b></a>
@@ -159,6 +181,7 @@ $(document).ready(function() {
     </ul>
     <ul class="nav pull-right">
         <li><a id="current_nick">{User}</a></li>
+        <li><a id="following_nick" style="font-style:italic;"></a></li>
         <li><a id="disconnect" href="#">Disconnect</a></li>
     </ul>
   </div>
@@ -166,11 +189,11 @@ $(document).ready(function() {
 
 <div class="container-fluid" style="margin-top: 50px;">
     <div class="row-fluid">
-        <div id="main_image" class="span12">
+        <div id="main_image" class="span12" style="display: none;">
             <div id="image" style="text-align: center; margin-bottom: 20px;">
             </div>
         </div>
-        <div id="all_images" class="span12" style="display: none;">
+        <div id="all_images" class="span12">
             <ul id="image-list" class="thumbnails">
             </ul>
         </div>

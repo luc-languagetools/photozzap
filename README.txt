@@ -22,3 +22,11 @@ make sure mod_muc is configured this way:
           
 
 		  
+       
+bot configuration       
+-----------------
+dnspython needed
+
+how to run:
+../bin/python -m photozzap.scripts.jabber_muc_bot development.ini hjw32y84 bot01 Luc
+

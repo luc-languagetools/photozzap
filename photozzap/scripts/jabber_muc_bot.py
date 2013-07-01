@@ -27,8 +27,8 @@ from ..models import (
     
 def usage(argv):
     cmd = os.path.basename(argv[0])
-    print('usage: %s <config_uri> <conference> <nick>\n'
-          '(example: "%s development.ini abcdefg1 bot01")' % (cmd, cmd))
+    print('usage: %s <config_uri> <conference> <nick> <follow_nick>\n'
+          '(example: "%s development.ini abcdefg1 bot01 Luc08")' % (cmd, cmd))
     sys.exit(1)
     
 class Image(ElementBase):
@@ -39,12 +39,12 @@ class Image(ElementBase):
     
 class PhotoZzapMucBot(sleekxmpp.ClientXMPP):
 
-    def __init__(self, jid, password, conf_room, nick):
+    def __init__(self, jid, password, conf_room, nick, follow_user):
         sleekxmpp.ClientXMPP.__init__(self, jid, password)
         self.room = conf_room
         self.nick = nick
         self.viewing_image = None
-        self.follow_user = "Luc08"
+        self.follow_user = follow_user
         
         print("starting connection with " + jid)
         
@@ -101,11 +101,12 @@ class PhotoZzapMucBot(sleekxmpp.ClientXMPP):
         
 if __name__ == "__main__":
     argv = sys.argv
-    if len(argv) != 4:
+    if len(argv) != 5:
         usage(argv)
     config_uri = argv[1]
     conf_key = argv[2]
     nick = argv[3]
+    follow_user = argv[4]
     settings = get_appsettings(config_uri)
 
     jabber_server = settings['jabber_server']
@@ -136,7 +137,7 @@ if __name__ == "__main__":
     logging.info("test luc")
     
     conf_room = conf.name + '@' + jabber_conf_server
-    xmpp = PhotoZzapMucBot(jid, password, conf_room, nick)
+    xmpp = PhotoZzapMucBot(jid, password, conf_room, nick, follow_user)
     xmpp.register_plugin('xep_0030') # Service Discovery
     xmpp.register_plugin('xep_0045') # Multi-User Chat
     xmpp.register_plugin('xep_0199') # XMPP Ping   
