@@ -15,6 +15,7 @@
 <script src="${request.static_url('photozzap:static/conference/uploader.js')}"></script>
 <script src="${request.static_url('photozzap:static/plupload/plupload.full.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
+<script src="${request.static_url('photozzap:static/jslibs/holder.js')}"></script>
 <script type="text/javascript">
 // Custom example logic
 $(function() {
@@ -148,18 +149,18 @@ $(document).ready(function() {
         <h3 id="upload-modal-label">Upload Photo</h3>
     </div>
     <div class="modal-body">
-        <div id="upload-controls">
-            <div id="dragdrop_area" style="height: 100px; background-color: #CCCCCC;">
-                Drag drop here
+        <div id="upload-controls" style="text-align: center;">
+            <div id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
+                <h3 style="margin-top: 50px;">Drag And Drop photos into this area</h3>
             </div>
-            <a id="pickfiles" href="#">[Browse]</a>
+            Or click: <a id="pickfiles" href="#">[Browse]</a>
         </div>
     </div>
 </div>
 
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
-    <a class="brand" href="#">Photozzap</a>
+    <a class="brand" href="#" style="margin-left: 5px;">Photozzap</a>
     <ul class="nav">
         <li id="all_images_button" class="active"><a href="#" onclick="$(document).trigger('show_all_images');">All Photos</a></li>    
         <li id="now_viewing_button"><a href="#" onclick="$(document).trigger('show_current_image', true);">Now Viewing</a></li>
@@ -195,6 +196,11 @@ $(document).ready(function() {
         </div>
         <div id="all_images" class="span12">
             <ul id="image-list" class="thumbnails">
+                <li id="image-placeholder" style="display: table;">
+                    <a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
+                        <img data-src="holder.js/200x150/text:Upload Photo"/>
+                    </a>
+                </li>            
             </ul>
         </div>
     </div>

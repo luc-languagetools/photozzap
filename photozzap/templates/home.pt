@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Photozzap - Realtime Photo Sharing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
+
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 800px;
+      }
+      .container-narrow > hr {
+        margin: 30px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 60px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 56px;
+        line-height: 1;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+    </style>
+    
+    <script>
+    $(document).ready(function() {
+    
+        $("#new-conf-button").click(function() {
+            $.getJSON('${new_conf_url}', function(data) {
+                window.location.href = data.conf_url;
+            });  
+        });
+    
+    });
+    </script>    
+    
+  </head>
+
+  <body>
+
+    <div class="container-narrow">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Contact us</a></li>
+        </ul>
+        <h3 class="muted">Photozzap</h3>
+      </div>
+
+      <hr>
+
+      <div class="jumbotron">
+        <h1>Real-time Photo Sharing</h1>
+        <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
+        <a id='new-conf-button' class="btn btn-large btn-success" href="#">Start Conference</a>
+      </div>
+
+      <hr>
+
+      <div class="row-fluid marketing">
+        <div class="span6">
+          <h4>What's special about Photozzap ?</h4>
+          <p>The number one feature is that you can <i>see</i> what photo your friends are looking at and <i>follow</i> them (or they can follow you). This makes it easier to discuss photos together over the Internet.</p>
+          <h4>How do I use Photozzap ?</h4>
+          <p><b>1.</b> Click the <b>Start Conference</b> button above. <b>2.</b> Upload photos. <b>3.</b> Copy/paste the URL and send it to your friends</p>
+          <h4>Who can view my photos ?</h4>
+          <p>Once you start the conference, you can share the URL with your friends. Only people who have this URL can 
+          view your photos.</p>                  
+        </div>
+        <div class="span6">
+          <h4>Why should I use Photozzap instead of Picasa, Facebook, etc ?</h4>
+          <p>Picasa, Facebook, Google+ are more suitable for complete albums with many photos. If you want to show 2 or 3 photos to friends or family right away, and view them together, maybe while having a Skype conference, Photozzap is more convenient.</p>
+          <h4>Why did you make this?</h4>
+          <p>There used to be a similar service called <a href="http://googlesystem.blogspot.hk/2008/05/picasas-hello-discontinued.html" target="_new">Picasa Hello</a>, which is
+          now discontinued. For several years, there were no alternatives available.</p>
+          <h4>I have a problem / suggestion</h4>
+          <p><a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Contact us</a></p>
+        </div>
+        
+
+      </div>
+
+      <hr>
+
+      <div class="footer">
+        <p>&copy; Photozzap 2013</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+</body>
+</html>

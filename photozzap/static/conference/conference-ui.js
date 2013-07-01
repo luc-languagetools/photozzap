@@ -221,7 +221,7 @@ var ConferenceUi = {
         }
         ConferenceUi.update_image_notification(user.viewing);
         
-    },
+    }
 };
 
 
