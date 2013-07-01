@@ -2,6 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 import logging
 import os
+import stat
 import shutil
 import datetime
 import tempfile
@@ -51,7 +52,9 @@ def upload_photo(request):
     
     # save photo
     shutil.copyfileobj(input_file, output_file_handle)
-    output_file_handle.close()    
+    output_file_handle.close()   
+    st = os.stat(output_file_abs_path)
+    os.chmod(output_file_abs_path, st.st_mode | stat.S_IROTH)
     
     # create thumbnail
     thumbnail_filename = photo_id + "_small.JPG"
