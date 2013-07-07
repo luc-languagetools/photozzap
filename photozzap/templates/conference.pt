@@ -192,7 +192,6 @@ $(document).ready(function() {
                 </ul>            
             </ul>
         </li>
-        <li id="pnotify_test"><a href="#" onclick="    $.pnotify({   title: 'Regular Notice', text: 'Check me out! I\'m a notice.'});">Pnotify</a></li>
         <li><a href="#" onclick="$('#upload-modal').modal('show');">Upload</a></li>
         <li id='progress-bar' style="display:none;">
             <div class="progress progress-striped active" style="width: 110px; margin-top: 10px; margin-bottom: 0px;">
