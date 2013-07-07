@@ -274,7 +274,9 @@ $(document).ready(function() {
                             $(document).ready(function() {
                                 $("#comment-input").keyup(function (e) {
                                     if (e.keyCode == 13) {
+                                        e.preventDefault();
                                         $(document).trigger('send_comment');
+                                        return false;
                                     }
                                 });
                                 $("#comment-submit").click(function() {

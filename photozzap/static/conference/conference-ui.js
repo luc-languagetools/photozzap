@@ -379,7 +379,9 @@ $(document).bind('enter_nickname', function(ev, status) {
     
     $("#chosen-nickname").keyup(function (e) {
         if (e.keyCode == 13) {
+            e.preventDefault();
             click_join();
+            return false;
         }
     });    
 });
