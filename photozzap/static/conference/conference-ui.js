@@ -58,7 +58,7 @@ var ConferenceUi = {
         //  - added
         //  - comment
         // notification.user is the subject
-        // notification.comment is text comment, or undefined
+        // notification.text is text comment, or undefined
     
         // merge with existing combined notifications
         ConferenceUi.merge_notification( notification );
@@ -107,7 +107,7 @@ var ConferenceUi = {
             ConferenceUi.combined_notifications[ notification.image.id ].user_added = notification.user;
         } else if ( notification.type == "comment" ) {
             ConferenceUi.combined_notifications[ notification.image.id ].comments.push({user: notification.user,
-                                                                                        text: notification.comment});
+                                                                                        text: notification.text});
         } else if ( notification.type == "viewing" ) {
             // check if the user was viewing any other images before
             
@@ -227,6 +227,11 @@ var ConferenceUi = {
                             type: "viewing",
                             user: user};
         ConferenceUi.add_notification(notification);
+    },
+    
+    notify_comment: function(comment) {
+        comment['type'] = 'comment';
+        ConferenceUi.add_notification(comment);
     }
     
 };
@@ -292,17 +297,33 @@ $(document).bind('new_image', function(ev, image) {
         ConferenceUi.notify_new_image(image);
     }
     
+    // add comment holder
+    var comment_list_obj = {element_id: image_comment_list_dom_id(image)};
+    var comment_list_element = $("#comment-list-template").jqote(comment_list_obj);
+    $("#comment_list_area").append(comment_list_element);
+    
 });
 
 $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
+    
+    // hide main image container
+    $("#main_image").hide()
+    
+    // hide all comments
+    $("#comment_list_area .media-list").hide();
+    // show the relevant comment area
+    $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
+    
+    
     image_element = document.createElement('img');
     $(image_element).attr('src', image.url);
     $(image_element).attr('id', 'displayed-image');
-    $(image_element).css('display', 'none');
+    //$(image_element).css('display', 'none');
     $("#image").html(image_element);
-    $('#displayed-image').fadeIn('slow', function() {
+    $('#main_image').fadeIn('slow', function() {
         // Animation complete
+
     });
 });
 
@@ -353,14 +374,24 @@ $(document).bind('enter_nickname', function(ev, status) {
     $("#progress-bar-connection").hide();
     
     $("#join-conference").click(function() {
-        var nickname = $("#chosen-nickname").val();
-        if (nickname.match(/[^a-zA-Z0-9]/g)) {
-            $(document).trigger('enter_nickname', "Only lowercase, uppercase characters and numbers are allowed. No spaces.");
-        } else {        
-            Conference.join_chatroom(nickname);
-        };
+        click_join();
+    });
+    
+    $("#chosen-nickname").keyup(function (e) {
+        if (e.keyCode == 13) {
+            click_join();
+        }
     });    
 });
+
+function click_join() {
+    var nickname = $("#chosen-nickname").val();
+    if (nickname.match(/[^a-zA-Z0-9]/g)) {
+        $(document).trigger('enter_nickname', "Only lowercase, uppercase characters and numbers are allowed. No spaces.");
+    } else {        
+        Conference.join_chatroom(nickname);
+    };
+};
 
 $(document).bind('show_current_image', function(ev, fade) {
     log("show_current_image");
@@ -424,6 +455,9 @@ function image_notification_dom_id(image) {
     return "image_notification_" + image.id;
 };
 
+function image_comment_list_dom_id(image) {
+    return "comment_list_" + image.id;
+};
 
 $(document).bind('following_user', function(ev, user) {
     // indicate we are following user on the task bar
@@ -433,4 +467,19 @@ $(document).bind('following_user', function(ev, user) {
 $(document).bind('not_following_user', function(ev) {
     // indicate we are NOT following user on the task bar
     $("#following_nick").html("");
+});
+
+
+$(document).bind('new_comment', function(ev, comment) {
+    log("received new comment: " + comment.text);
+    
+    var comment_element = $("#comment-template").jqote(comment);
+    // $("#" + image_comment_list_dom_id(comment.image)).prepend(comment_element).fadeIn();
+    $(comment_element).prependTo($("#" + image_comment_list_dom_id(comment.image))).hide().fadeIn();
+    
+    $("#"+comment.image.thumbnail_id + " .comments-available").css('visibility', '');
+    
+    if( comment.delayed != true ) {
+        ConferenceUi.notify_comment(comment);
+    }
 });

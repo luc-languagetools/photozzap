@@ -134,6 +134,14 @@ var Conference = {
         }
     },
     
+    add_comment_queued_event: function(image_id, comment_event) {
+        var queued_event = {name: "new_comment",
+                            special_type: "deferred_comment",
+                            data: comment_event,
+                            image_id: image_id};
+        Conference.add_queued_event_internal(image_id,  queued_event);    
+    },
+    
     add_user_viewing_queued_event: function(image_id, user) {
         log("adding deferred_user_viewing event for " + user.jid + ", " + image_id);
         var queued_event = {name: "user_update",
@@ -171,6 +179,9 @@ var Conference = {
                 var user = qevent.user;
                 user.viewing = image;
                 qevent.data = user;
+            } else if (qevent.special_type == "deferred_comment" ) {
+                var image = Conference.images[image_id];
+                qevent.data.image = image;
             }
             
             log("processing event: " + qevent.name);
@@ -243,7 +254,38 @@ var Conference = {
                 });
             });
             
-        } 
+        } else if (body == "comment") {
+            // comment on an image
+            var image_id = $(message).children('image').children('id').text();
+            var comment_text = $(message).children('image').children('text').text();
+            var delayed = false;
+            if( $(message).children('delay').length > 0 ) {
+                delayed = true;
+            }
+            var user = Conference.users[from];
+            
+            // TODO: add support for queued events, and suppress delayed
+            var image = Conference.images[image_id];
+            if( image != undefined && user != undefined) {
+                var comment_event = {
+                    image: image,
+                    user: user,
+                    text: comment_text,
+                    delayed: delayed
+                };
+                $(document).trigger('new_comment', comment_event);
+            } else if( user != undefined ) {
+                // we don't have the image loaded yet, add a delayed event
+                var comment_event = {
+                    image_id: image_id,
+                    user: user,
+                    text: comment_text,
+                    delayed: delayed
+                };
+                Conference.add_comment_queued_event(image_id, comment_event);
+            }
+                        
+        }        
         
         return true;
     },
@@ -281,6 +323,18 @@ var Conference = {
         if ( Conference.following_user_jid != null ) {
             Conference.following_user_jid = null;
         }
+    },
+    
+    send_comment: function (text) {
+        log("sending comment on " + Conference.currently_viewing + ": [" + text + "]");
+        
+        message = $msg({
+        to: Conference.room,
+        type: "groupchat"});
+        message.c('body').t("comment").up();
+        message.c('image').c('id').t(Conference.currently_viewing).up().c('text').t(text);
+        log("sending comment: " + message);
+        Conference.connection.send(message);        
     },
     
     send_img_url: function (image) {
@@ -395,3 +449,11 @@ $(document).bind('user_update', function(ev, user) {
     Conference.display_image_if_following(user);
 });
 
+$(document).bind('send_comment', function(ev) {
+    var comment_text = $("#comment-input").val();
+        if( comment_text.length > 0 ) {
+        log("send_comment");
+        Conference.send_comment(comment_text);
+        $("#comment-input").val('');
+    }
+});
