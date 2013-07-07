@@ -1,229 +1,235 @@
 
+// pnotify-specific
+var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25};
 
 var ConferenceUi = {
 
-	notification_popover_open: false,
-    user_viewing_timeouts: {},
-    
     // indexed by image id
-    image_removal_timeouts: {},
+    //  each notification should have the following format:
+    //   notification.image: the image concerned
+    //   notification.user_added: undefined, or user who uploaded
+    //   notification.users_viewing: array of users viewing (can be empty)
+    //   notification.comments: array of comments:
+    //     comment.user: author
+    //     comment.text: comment text
+    //   notification.modified: false if the notification hasn't changed, true if it needs to be refreshed
+    //   pnotice: pnotify handle
+
+    combined_notifications: {},
     
-    // indexed by image id
-    open_notifications: {},
-    
-    
-    open_notifications_to_string: function() {
+    combined_notifications_summary: function() {
         result = "";
+        for( var image_id in ConferenceUi.combined_notifications ) {
+            result += image_id + ", ";
+        }
+        return result;
+    },
     
-        for (var image_id in ConferenceUi.open_notifications) {
-            result = result + " { image_id: " + image_id + ": ";
-            var notification_list = ConferenceUi.open_notifications[image_id];
-            for( var i in notification_list ) {
-                notification = notification_list[i];
-                log("notification type: " + notification.type);
-                if (notification.type == "viewing") {
-                    result = result + " viewing: " + notification.user.nick + " ";
+    combined_notification_to_string: function( combined_notification ) {
+        var result = "";
+        result += "combined_notification:\n";
+        result += " image_id: " + combined_notification.image.id + "\n";
+        if (combined_notification.user_added != null) {
+            result += " user_added: " + combined_notification.user_added.nick + "\n";
+        }
+        result += " users_viewing: [";
+        for( var user_index in combined_notification.users_viewing ) {
+            var user = combined_notification.users_viewing[user_index];
+            result += user.nick + ", ";
+        }
+        result += "]\n";
+        result += " comments: [";
+        for( var comment_index in combined_notification.comments ) {
+            var comment = combined_notification.comment[ comment_index ];
+            result += comment.user.nick + ": " + comment.text + ", ";
+        }
+        result += "]\n";
+        result += " modified: " + combined_notification.modified + "\n";
+        result += " element_id: " + combined_notification.element_id + "\n";
+        
+        return result;
+    },
+    
+    add_notification: function( notification ) {
+    
+        // notification.image is the image object
+        // notification.type can be:
+        //  - viewing
+        //  - added
+        //  - comment
+        // notification.user is the subject
+        // notification.comment is text comment, or undefined
+    
+        // merge with existing combined notifications
+        ConferenceUi.merge_notification( notification );
+        
+        // perform maintenance on the existing combined notifications
+        
+        // 1. remove existing open notifications if they were modified
+        log("add_notification.1 removing modified combined notifications");
+        for( var image_id in ConferenceUi.combined_notifications ) {
+            var combined_notification = ConferenceUi.combined_notifications[ image_id ];
+            if (combined_notification.modified == true ) {
+                ConferenceUi.close_combined_notification( combined_notification );
+            }
+        }
+        
+        // 2. cleanup any that need to be cleaned up
+        log("add_notification.2 cleanup");
+        ConferenceUi.cleanup_combined_notifications();
+        
+        // 3. re-open any that need to be re-opened
+        log("add_notification.3 refresh");
+        for( var image_id in ConferenceUi.combined_notifications ) {
+            var combined_notification = ConferenceUi.combined_notifications[ image_id ];
+            if (combined_notification.modified == true ) {
+                ConferenceUi.refresh_combined_notification( combined_notification );
+            }
+        }        
+    },
+    
+    merge_notification: function( notification ) {
+    
+        // does a combined notification exist ?
+        // if not, create one
+        if( ConferenceUi.combined_notifications[ notification.image.id ] == undefined ) {
+            ConferenceUi.combined_notifications[ notification.image.id ] = {image: notification.image,
+                                                                            user_added: undefined,
+                                                                            users_viewing: new Array(),
+                                                                            comments: new Array(),
+                                                                            modified: true,
+                                                                            pnotice: undefined,
+                                                                            element_id: undefined,
+                                                                            element_id_increment: 0};
+        }
+        
+        if( notification.type == "added" ) {
+            ConferenceUi.combined_notifications[ notification.image.id ].user_added = notification.user;
+        } else if ( notification.type == "comment" ) {
+            ConferenceUi.combined_notifications[ notification.image.id ].comments.push({user: notification.user,
+                                                                                        text: notification.comment});
+        } else if ( notification.type == "viewing" ) {
+            // check if the user was viewing any other images before
+            
+            for (var image_id in ConferenceUi.combined_notifications) {
+                var user_viewing_index_of = ConferenceUi.combined_notifications[ image_id ].users_viewing.indexOf(notification.user);
+                if (user_viewing_index_of != -1) {
+                    // user is already viewing an image
+                    // remove that entry
+                    ConferenceUi.combined_notifications[ image_id ].users_viewing.splice(user_viewing_index_of, 1);
+                    // indicate that the combined notification has changed
+                    ConferenceUi.combined_notifications[ image_id ].modified = true;
                 }
             }
-            result = result + "}";
+            
+            // add the user in the new image
+            ConferenceUi.combined_notifications[ notification.image.id ].users_viewing.push(notification.user);
         }
-        return( result );
+        
+        // mark combined notification as modified
+        ConferenceUi.combined_notifications[ notification.image.id ].modified = true;
     },
     
-    users_viewing: function( image_id ) {
-        var user_list = new Array();
-        var notification_list = ConferenceUi.open_notifications[image_id];
-        for( var i in notification_list ) {
-            notification = notification_list[i];
-            log("notification type: " + notification.type);
-            if (notification.type == "viewing") {
-                // result = result + " viewing: " + notification.user.nick + " ";
-                user_list.push(notification.user.nick);
-            }
-        }
-        return user_list.join(", ");
-    },
-    
-	open_new_popover_if_needed: function() {
-        if (! ConferenceUi.notification_popover_open ) {
-            // open the popover first
-            notification_popover_element = $("#notification-popover").jqote();
+    close_combined_notification: function( combined_notification ) {
+        // remove notification
+        log("closing combined notification: for: " + combined_notification.image.id);
 
-            $("#all_images_button").popover({title: "<b>Notifications</b>", 
-                                             content: notification_popover_element,
-                                             placement: "bottom",
-                                             trigger: "manual",
-                                             html: "true"});
-            $("#all_images_button").popover('show');
-            
-            ConferenceUi.notification_popover_open = true;
+        // remove pnotice
+        if ( combined_notification.pnotice != undefined ) {
+            combined_notification.pnotice.pnotify_remove();
         }
-	
-	},
-	
-    adjust_popover_size: function() {
-        num_children = $('#notification-popover-list').children().length;
-        target_width = num_children * 240;
-        size_px = target_width.toString() + "px";
-        log("setting size to " + size_px);
-        $('.popover').css({'max-width': '1000px',
-                               'width':size_px});        
+
     },
     
-    remove_notification_and_close_popover_if_needed: function(selector) {
-		// locate the element and remove it
-        if ( selector != undefined ) {
-            $(selector).remove();
+    cleanup_combined_notifications: function() {
+        // remove combined notifications that have no data in them
+        
+        var image_ids_to_cleanup = new Array();
+        for (var image_id in ConferenceUi.combined_notifications) {
+            var combined_notification = ConferenceUi.combined_notifications[ image_id ];
+            if (combined_notification.modified &&
+                combined_notification.user_added == undefined &&
+                combined_notification.users_viewing.length == 0 &&
+                combined_notification.comments.length == 0) {
+                    log("scheduling for cleanup: " + image_id);
+                    image_ids_to_cleanup.push(image_id);
+                }
         }
-		
-		// how many are left ?
-		if ($('#notification-popover-list').children().length == 0 ) {
-			// close the popover
-            
-			ConferenceUi.notification_popover_open = false;
-			$("#all_images_button").popover('destroy');                
-		} else {
-            ConferenceUi.adjust_popover_size();
-        }
+        
+        for( var i in image_ids_to_cleanup ) {
+            delete ConferenceUi.combined_notifications[ image_ids_to_cleanup[i] ];
+        }          
     },
-	
+    
+    pnotify_before_close: function(pnotify) {
+        var combined_notification = ConferenceUi.combined_notifications[ pnotify.opts.photozzap_image_id ];
+        if ( combined_notification == undefined ) {
+            log("ERROR undefined combined_notification for " + pnotify.opts.photozzap_image_id);
+        }
+        
+        if( combined_notification != undefined) {
+    
+            if( combined_notification.modified == false ) { // only remove if we reached the end of the timeout
+                log("deleting combined_notification for " + combined_notification.image.id);
+                delete ConferenceUi.combined_notifications[ combined_notification.image.id ];
+            }
+    
+        }    
+    },
+    
+    refresh_combined_notification: function( combined_notification ) {
+        // re-display the notification
+        log("refreshing combined notification: for: " + combined_notification.image.id);
+        // log(ConferenceUi.combined_notification_to_string(combined_notification));
+        
+        // obtain element id
+        combined_notification.element_id = image_notification_dom_id( combined_notification.image ) + "_" + combined_notification.element_id_increment;
+        combined_notification.element_id_increment += 1;
+        
+        // create element and insert
+        notification_element = $("#combined-notification-template2").jqote(combined_notification);
+        
+        // add pnotify notification
+        combined_notification.pnotice = $.pnotify({
+            title: false,
+            text: $(notification_element).html(),
+            icon: false,
+            type: 'info',
+            width: '210px',
+            delay: 4000,
+            min_height: '160px',
+            addclass: "stack-bottomright",
+            stack: stack_bottomright,
+            before_close: ConferenceUi.pnotify_before_close,
+            photozzap_image_id: combined_notification.image.id,
+            closer: false,
+            sticker: false,
+            after_open: function(pnotify) {
+                add_click_event_to_new_image("#" + combined_notification.element_id, combined_notification.image);
+            }
+        });
+        
+        combined_notification.modified = false;
+    },
+    
+    
     notify_new_image: function(image) {
-        log("notify_new_image: " + image.id);
-		ConferenceUi.open_new_popover_if_needed();
     
-        // now add the actual images
-        image_element = $("#new-image-template").jqote(image);
-        
-        // add the element to the popover element
-        $('#notification-popover-list').prepend(image_element);
-        
-        ConferenceUi.adjust_popover_size();
-
-        selector = '#notification-popover-list #' + image.thumbnail_id;
-        a_selector = selector + " a";
-        
-        // add click event
-        add_click_event_to_new_image(a_selector, image);
-        
-        // add removal timer
-        setTimeout(function() {
-            selector = '#notification-popover-list #' + image.thumbnail_id;
-			ConferenceUi.remove_notification_and_close_popover_if_needed(selector);
-        }, 2500);        
-        
-    },
+        var notification = {image: image,
+                            type: "added",
+                            user: image.added_by};
+        ConferenceUi.add_notification(notification);
     
-    
-    update_image_notification: function(image) {
-    
-        ConferenceUi.open_new_popover_if_needed();
-    
-        // remove the existing element
-        var template_id = viewing_image_notification_dom_id(image);
-        image_notification_selector = "#notification-popover-list #" + template_id;
-        $(image_notification_selector).remove();
-        
-        // cancel and remove an existing timeout if any were active
-        if( ConferenceUi.image_removal_timeouts[ image.id ] != undefined ) {
-            clearTimeout(ConferenceUi.image_removal_timeouts[ image.id ]);
-            delete ConferenceUi.image_removal_timeouts[ image.id ];
-        }
-
-        // check the number of open notifications
-        if ( ConferenceUi.open_notifications[image.id] != undefined &&
-             ConferenceUi.open_notifications[image.id].length > 0 ) {
-
-            // create new element
-            var use_plural = false;
-            if (ConferenceUi.open_notifications[image.id].length > 1) {
-                use_plural = true;
-            }
-            var notification_data = {id: template_id,
-                                     user_list: ConferenceUi.users_viewing(image.id),
-                                     use_plural: use_plural,
-                                     thumbnail: image.thumbnail};
-            
-            image_element = $("#combined-notification-template").jqote(notification_data);
-            
-            // add the element to the popover element
-            $('#notification-popover-list').prepend(image_element);
-            
-            var a_selector = image_notification_selector + " a";
-            add_click_event_to_new_image(a_selector, image);
-            
-            // update click event
-            
-            ConferenceUi.adjust_popover_size();
-            
-            // add timeout for removal
-            ConferenceUi.image_removal_timeouts[ image.id ] = setTimeout(function() {
-                log("remove image_notification for  " + image.id);
-            
-                // remove timeout variable
-                delete ConferenceUi.image_removal_timeouts[ image.id ];
-                var template_id = viewing_image_notification_dom_id(image);
-                image_notification_selector = "#notification-popover-list #" + template_id;            
-                ConferenceUi.remove_notification_and_close_popover_if_needed(image_notification_selector);
-                
-                delete ConferenceUi.open_notifications[ image.id ];
-                   
-            }, 2500);
-
-        } else {
-            ConferenceUi.remove_notification_and_close_popover_if_needed(undefined);
-        }
-        
     },
     
     notify_viewing_image: function(user) {
-        // insert pop-over under "Users"
-        log("notify_viewing_image for " + user.nick + " image id: " + user.viewing.id);
-        
-        // is the user viewing any other images ?
-        var update_image = undefined;
-        for (var image_id in ConferenceUi.open_notifications) {
-            var notification_list = ConferenceUi.open_notifications[image_id];
-            var new_notification_list = new Array();
-            for( var j in notification_list ) {
-                var notification = notification_list[j];
-                if (notification.type == "viewing" && 
-                    notification.user.jid == user.jid) {
-                    // indicate that this user is not viewing this image anymore
-                    // this will get updated later
-                    update_image = notification.image;
-                } else {
-                    // copy array element
-                    new_notification_list.push(notification);
-                }
-            }
-            if (new_notification_list.length == 0 ) {
-                delete ConferenceUi.open_notifications[image_id];
-            } else {
-                ConferenceUi.open_notifications[image_id] = new_notification_list;
-            }
-        }
-
-        // open new entry for this image if needed
-        if ( ConferenceUi.open_notifications[ user.viewing.id ] == undefined ) {
-            ConferenceUi.open_notifications[ user.viewing.id ] = new Array();
-        }
-       
-        // indicate that the user is viewing this image
-        var user_viewing_notification = {type: "viewing",
-                                         user: user,
-                                         image: user.viewing};
-        ConferenceUi.open_notifications[ user.viewing.id ].push( user_viewing_notification );
-        
-        log("open_notifications:" + ConferenceUi.open_notifications_to_string());
-        
-        if (update_image != undefined ) {
-            ConferenceUi.update_image_notification(update_image);
-        }
-        ConferenceUi.update_image_notification(user.viewing);
-        
+        var notification = {image: user.viewing,
+                            type: "viewing",
+                            user: user};
+        ConferenceUi.add_notification(notification);
     }
+    
 };
-
 
 function remove_user_element_if_present(user) {
     $("#users-list #" + dom_id_from_user(user)).remove();
@@ -253,8 +259,8 @@ $(document).bind('user_left', function (ev, user) {
     remove_user_element_if_present(user);
 });
 
-
 function add_click_event_to_new_image(selector, image) {
+    log("add_click_event_to_new_image, selector: [" + selector + "]");
     $(selector).click(function() {
         // thumbnail clicked
         log("image thumbnail clicked");
@@ -414,7 +420,7 @@ function user_viewing_popover_selector(user) {
     return selector = '#notification-popover-list #' + dom_id_from_user_popover(user);
 };
 
-function viewing_image_notification_dom_id(image) {
+function image_notification_dom_id(image) {
     return "image_notification_" + image.id;
 };
 

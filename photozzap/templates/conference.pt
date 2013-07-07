@@ -5,6 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
+<link href="${request.static_url('photozzap:static/pnotify/jquery.pnotify.default.css')}" rel="stylesheet" media="screen">
+<style type="text/css">
+.push-notification-holder {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+.push-notification {
+    margin: 10px;
+    border-color: #dddddd;
+    border-width: 1px;
+    border-style: solid;
+    // background-color: #ffffff;
+    color: #fff;
+    padding: 15px 15px 15px 30px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    vertical-align: middle;
+    
+    //box-shadow: 4px 4px 4px #000;
+    //-webkit-box-shadow: 4px 4px 4px #000;
+    //-moz-box-shadow: 4px 4px 4px #000;
+    
+background: #c3d9ff; /* Old browsers */
+background: -moz-linear-gradient(top, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c3d9ff), color-stop(41%,#b1c8ef), color-stop(100%,#98b0d9)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* IE10+ */
+background: linear-gradient(to bottom, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', endColorstr='#98b0d9',GradientType=0 ); /* IE6-9 */
+    
+}   
+
+.ui-pnotify.stack-bottomright {
+    /* These are just CSS default values to reset the pnotify CSS. */
+    right: auto;
+    top: auto;
+} 
+
+.action-icon {
+    margin-right: 4px;
+}
+
+</style>
 </head>
 <body style="padding-top: 40px;">
 <script src="http://code.jquery.com/jquery.js"></script>
@@ -16,6 +62,7 @@
 <script src="${request.static_url('photozzap:static/plupload/plupload.full.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/holder.js')}"></script>
+<script src="${request.static_url('photozzap:static/pnotify/jquery.pnotify.js')}"></script>
 <script type="text/javascript">
 // Custom example logic
 $(function() {
@@ -57,61 +104,34 @@ $(document).ready(function() {
 ]]>
 </script>
 
-
-<script type="text/html" id="user-template">
-<![CDATA[
-    <li id="<%= this.element_id %>">
-        <% if (this.user.viewing != undefined ) { %>
-            <a href="#" class="thumbnail">
-                <span style="text-size: 20px; font-weight: bold;"><%= this.user.nick %></span> is looking at:
-                <img src="<%= this.user.viewing.thumbnail %>"/>
-            </a>
-        <% } else { %>
-            <h4><%= this.user.nick %></h4>
-            not viewing an image
-        <% }; %>
-    </li>
-]]>
-</script>
-
-<script type="text/html" id="new-image-template">
-<![CDATA[
-    <li id="<%= this.thumbnail_id %>">
-        <a href="#" class="thumbnail">
-            <span style="text-size: 20px; font-weight: bold;"><%= this.added_by.nick %></span> Added a photo:
-            <img src="<%= this.thumbnail %>"/>
-        </a>    
-    </li>
-]]>
-</script>
-
-<script type="text/html" id="combined-notification-template">
-<![CDATA[
-    <li id="<%= this.id %>">
-        <a href="#" class="thumbnail">
-            <span style="text-size: 20px; font-weight: bold;"><%= this.user_list %></span> 
-            <% if (this.use_plural) { %>
-              are 
-            <% } else { %>
-              is
-            <% } %>
-            looking at:
-            <img src="<%= this.thumbnail %>"/>
-        </a>    
-    </li>
-]]>
-</script>
-
-
-
-<script type="text/html" id="notification-popover">
+<script type="text/html" id="combined-notification-template2">
 <![CDATA[
     <div>
-        <ul id="notification-popover-list" class="thumbnails">
-        </ul>
+        <a href="#" id="<%= this.element_id %>">
+            <% if( this.user_added != undefined ) { %>
+                <div>
+                    <img src="${request.static_url('photozzap:static/icons/upload.png')}" class="action-icon"/><b><%= this.user_added.nick %></b>
+                </div>
+            <% } %>            
+            <div style="text-align: center;">
+                <img src="<%= this.image.thumbnail %>"/>
+            </div>
+            <div>
+                <% if( this.users_viewing.length >= 1 ) { 
+                    var nick_array = new Array();
+                    for( i in this.users_viewing ) {
+                        nick_array.push(this.users_viewing[i].nick);
+                    }
+                    var nick_string = nick_array.join(", ");
+                    %>
+                    <img src="${request.static_url('photozzap:static/icons/eye.png')}" class="action-icon"/><b><%= nick_string %></b>
+                <% } %>
+            </div>
+        </a>
     </div>
 ]]>
 </script>
+
 
 <script type="text/html" id="image-template">
 <![CDATA[
@@ -172,6 +192,7 @@ $(document).ready(function() {
                 </ul>            
             </ul>
         </li>
+        <li id="pnotify_test"><a href="#" onclick="    $.pnotify({   title: 'Regular Notice', text: 'Check me out! I\'m a notice.'});">Pnotify</a></li>
         <li><a href="#" onclick="$('#upload-modal').modal('show');">Upload</a></li>
         <li id='progress-bar' style="display:none;">
             <div class="progress progress-striped active" style="width: 110px; margin-top: 10px; margin-bottom: 0px;">
