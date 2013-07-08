@@ -147,7 +147,10 @@ $(document).ready(function() {
                 <% for( i in this.comments) { 
                    comment = this.comments[i];
                 %>
-                    <img src="${request.static_url('photozzap:static/icons/comment_small.png')}" class="action-icon"/><b><%= comment.user.nick %>:</b> <%= comment.text %><br/>
+                    <img src="${request.static_url('photozzap:static/icons/comment_small.png')}" class="action-icon"/>
+                    <b>
+                       <%= comment.nick %>:
+                    </b> <%= comment.text %><br/>
                 <% } %>
             <% } %>            
             </div>            
@@ -187,7 +190,7 @@ $(document).ready(function() {
             <img class="media-object" src="${request.static_url('photozzap:static/icons/comment_medium_grey.png')}">
         </a>
         <div class="media-body">
-        <h5 class="media-heading"><%= this.user.nick %></h5>
+        <h5 class="media-heading"><%= this.nick %></h5>
         <%= this.text %>
         </div>
     </li>
@@ -272,11 +275,15 @@ $(document).ready(function() {
                             <button id="comment-submit" class="btn">Send</button>
                             <script>
                             $(document).ready(function() {
+                            
+                                // prevent form submission from happening on all forms
+                                $('form').submit(function() {
+                                  return false;
+                                });                            
+                            
                                 $("#comment-input").keyup(function (e) {
                                     if (e.keyCode == 13) {
-                                        e.preventDefault();
                                         $(document).trigger('send_comment');
-                                        return false;
                                     }
                                 });
                                 $("#comment-submit").click(function() {

@@ -266,19 +266,21 @@ var Conference = {
             
             // TODO: add support for queued events, and suppress delayed
             var image = Conference.images[image_id];
-            if( image != undefined && user != undefined) {
+            if( image != undefined ) {
                 var comment_event = {
                     image: image,
                     user: user,
+                    nick: nick,
                     text: comment_text,
                     delayed: delayed
                 };
                 $(document).trigger('new_comment', comment_event);
-            } else if( user != undefined ) {
+            } else {
                 // we don't have the image loaded yet, add a delayed event
                 var comment_event = {
                     image_id: image_id,
                     user: user,
+                    nick: nick,
                     text: comment_text,
                     delayed: delayed
                 };

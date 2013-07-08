@@ -107,6 +107,7 @@ var ConferenceUi = {
             ConferenceUi.combined_notifications[ notification.image.id ].user_added = notification.user;
         } else if ( notification.type == "comment" ) {
             ConferenceUi.combined_notifications[ notification.image.id ].comments.push({user: notification.user,
+                                                                                        nick: notification.nick,
                                                                                         text: notification.text});
         } else if ( notification.type == "viewing" ) {
             // check if the user was viewing any other images before
@@ -373,16 +374,19 @@ $(document).bind('enter_nickname', function(ev, status) {
     $("#connection-status-text").html(status);
     $("#progress-bar-connection").hide();
     
+    $("#chosen-nickname").focus();
+    
     $("#join-conference").click(function() {
         click_join();
     });
     
     $("#chosen-nickname").keyup(function (e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
+        log("chosen-nickname keyup");
+        var key = e.keyCode || e.which;
+        if (key == 13) {
             click_join();
-            return false;
         }
+        
     });    
 });
 
