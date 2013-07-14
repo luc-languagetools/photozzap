@@ -1,5 +1,11 @@
 #!/bin/bash
 
+while [ ! -f /etc/photozzap-name ];
+do
+    echo "photozzap-name not present, sleeping"
+    sleep 5
+done
+
 SHORT_NAME=`cat /etc/photozzap-name`
 echo "short name: " $SHORT_NAME
 
