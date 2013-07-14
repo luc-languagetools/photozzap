@@ -5,11 +5,6 @@ echo "short name: " $SHORT_NAME
 
 REPLACE_CMD="sed -i s/master-/$SHORT_NAME-/g"
 
-# stop nginx and ejabberd
-/etc/init.d/ejabberd stop
-/etc/init.d/nginx stop
-
-
 NGINX_CONFIG=/etc/nginx/sites-enabled/photozzap
 $REPLACE_CMD $NGINX_CONFIG
 
