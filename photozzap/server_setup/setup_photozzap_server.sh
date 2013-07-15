@@ -6,6 +6,9 @@ do
     sleep 5
 done
 
+# incorporate git command-line
+# sudo -u prod bash -c "cd /home/prod/env/photozzap; git pull; git checkout server-setup-1"
+
 SHORT_NAME=`cat /etc/photozzap-name`
 echo "short name: " $SHORT_NAME
 
