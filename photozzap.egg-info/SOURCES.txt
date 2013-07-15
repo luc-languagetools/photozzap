@@ -19,11 +19,11 @@ photozzap.egg-info/not-zip-safe
 photozzap.egg-info/requires.txt
 photozzap.egg-info/top_level.txt
 photozzap/scripts/__init__.py
-photozzap/scripts/auth.py
 photozzap/scripts/create_users.py
 photozzap/scripts/initializedb.py
 photozzap/scripts/jabber_auth_open.py.txt
 photozzap/scripts/jabber_auth_sqlalchemy.py
+photozzap/scripts/jabber_muc_bot.py
 photozzap/static/favicon.ico
 photozzap/static/footerbg.png
 photozzap/static/headerbg.png
@@ -44,6 +44,7 @@ photozzap/static/bootstrap/js/bootstrap.min.js
 photozzap/static/conference/conference-net.js
 photozzap/static/conference/conference-ui.js
 photozzap/static/conference/uploader.js
+photozzap/static/jslibs/holder.js
 photozzap/static/jslibs/jquery.jqote2.js
 photozzap/static/plupload/plupload.browserplus.js
 photozzap/static/plupload/plupload.flash.js
@@ -92,4 +93,5 @@ photozzap/static/plupload/jquery.ui.plupload/img/plupload-bw.png
 photozzap/static/plupload/jquery.ui.plupload/img/plupload.png
 photozzap/static/strophe/strophe.min.js
 photozzap/templates/conference.pt
+photozzap/templates/home.pt
 photozzap/templates/mytemplate.pt
