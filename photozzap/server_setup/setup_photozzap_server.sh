@@ -36,4 +36,4 @@ cp $PHOTOZZAP_CONFIG $PHOTOZZAP_CONFIG.bak
 $REPLACE_CMD $PHOTOZZAP_CONFIG
 # initialize DB
 sudo -u prod /home/prod/env/bin/initialize_photozzap_db /home/prod/env/photozzap/production.ini
-sudo -u prod bash /home/prod/env/photozzap/photozzap/scripts/start_pserve.sh
+sudo -u prod bash /home/prod/env/photozzap/photozzap/server_setup/start_pserve.sh
