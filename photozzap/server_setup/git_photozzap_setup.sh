@@ -8,4 +8,4 @@ done
 GIT_CMD=`cat $GIT_CMD_FILE`
 # do the checkout
 echo "running command $GIT_CMD"
-sudo -u prod bash -c "cd /home/prod/env/photozzap; git fetch --all; $GIT_CMD"
+sudo -u prod bash -c "cd /home/prod/env/photozzap; $GIT_CMD"

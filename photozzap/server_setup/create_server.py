@@ -24,7 +24,7 @@ print flavor_512
 
 meta = {"photozzap_name": short_name}
 files = {"/etc/photozzap-name": short_name + "\n",
-         "/etc/photozzap-git-cmd": "git checkout server-setup-1" + "\n"} # WARNING: special branch
+         "/etc/photozzap-git-cmd": "git pull origin master; git checkout master" + "\n"} # WARNING: special branch
 
 print("creating server")
 server = cs.servers.create(server_name, master_image.id, flavor_512.id, meta=meta, files=files)
