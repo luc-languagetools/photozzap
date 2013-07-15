@@ -8,6 +8,7 @@ done
 
 # incorporate git command-line
 # sudo -u prod bash -c "cd /home/prod/env/photozzap; git pull; git checkout server-setup-1"
+# part of the command is now in /etc/photozzap-git-cmd
 
 SHORT_NAME=`cat /etc/photozzap-name`
 echo "short name: " $SHORT_NAME

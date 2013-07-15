@@ -10,11 +10,11 @@ pyrax.set_credential_file(creds_file)
 cs = pyrax.cloudservers
 
 # set server name
-short_name = "s7"
+short_name = "s13"
 server_name = "photozzap-" + short_name
 
 # pick image
-image_name = "photozzap-master"
+image_name = "photozzap-master-0715-3"
 master_image = [img for img in cs.images.list() if img.name == image_name ][0]
 print master_image
 
@@ -23,7 +23,8 @@ flavor_512 = [flavor for flavor in cs.flavors.list() if flavor.ram == 512][0]
 print flavor_512
 
 meta = {"photozzap_name": short_name}
-files = {"/etc/photozzap-name": short_name + "\n"}
+files = {"/etc/photozzap-name": short_name + "\n",
+         "/etc/photozzap-git-cmd": "git checkout server-setup-1" + "\n"} # WARNING: special branch
 
 print("creating server")
 server = cs.servers.create(server_name, master_image.id, flavor_512.id, meta=meta, files=files)
