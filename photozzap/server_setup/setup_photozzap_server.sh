@@ -32,8 +32,8 @@ rm /home/prod/env/photozzap/photozzap.sqlite
 rm -rf /home/prod/env/photozzap/photozzap/static/photo_uploads/*
 rm -f /home/prod/env/photozzap/log/*
 # configure
-cp $PHOTOZZAP_CONFIG $PHOTOZZAP_CONFIG.bak
-$REPLACE_CMD $PHOTOZZAP_CONFIG
+sudo -u prod cp $PHOTOZZAP_CONFIG $PHOTOZZAP_CONFIG.bak
+sudo -u prod $REPLACE_CMD $PHOTOZZAP_CONFIG
 # initialize DB
 sudo -u prod /home/prod/env/bin/initialize_photozzap_db /home/prod/env/photozzap/production.ini
 sudo -u prod bash /home/prod/env/photozzap/photozzap/server_setup/start_pserve.sh
