@@ -74,6 +74,9 @@ def upload_photo(request):
 def new_conference(request):
     conf_created = False
     
+    settings = request.registry.settings
+    www_server = settings['www_server']
+    
     params = {}
     while conf_created == False:
         try:
@@ -81,7 +84,7 @@ def new_conference(request):
                 conf = Conference()
                 DBSession.add(conf)
                 params['conf_key'] = conf.secret
-                params['conf_url'] = request.route_url('conference', conf_key=conf.secret)
+                params['conf_url'] = request.route_url('conference', conf_key=conf.secret, _host=www_server)
             conf_created = True
         except IntegrityError:
             # user already exists, will retry
