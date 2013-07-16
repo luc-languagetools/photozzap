@@ -1,0 +1,19 @@
+
+improvements
+============
+
+- server maintenance
+ - make conferences unavailable after 7 days
+ - give users option to delete conference
+ - delete uploaded photos
+ - make sure all uploaded photos for a conference are in the same directory
+- history view
+ 
+
+
+bugs
+====
+
+- when following a user, if a new user_viewing event comes while displaying all photos, something weird will happen
+- sometimes when hitting enter in the comment box, a form submission will happen, particularly on chrome
+- comments that were posted by offline users are not processed properly
