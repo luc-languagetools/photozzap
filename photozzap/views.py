@@ -76,6 +76,7 @@ def new_conference(request):
     
     settings = request.registry.settings
     www_server = settings['www_server']
+    www_port = settings['www_port']
     
     params = {}
     while conf_created == False:
@@ -84,7 +85,7 @@ def new_conference(request):
                 conf = Conference()
                 DBSession.add(conf)
                 params['conf_key'] = conf.secret
-                params['conf_url'] = request.route_url('conference', conf_key=conf.secret, _host=www_server)
+                params['conf_url'] = request.route_url('conference', conf_key=conf.secret, _host=www_server, _port=www_port)
             conf_created = True
         except IntegrityError:
             # user already exists, will retry
