@@ -6,6 +6,7 @@
 <!-- Bootstrap -->
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
 <link href="${request.static_url('photozzap:static/pnotify/jquery.pnotify.default.css')}" rel="stylesheet" media="screen">
+<link href="${request.static_url('photozzap:static/nanoscroller/nanoscroller.css')}" rel="stylesheet" media="screen">
 <style type="text/css">
 .push-notification-holder {
     position: fixed;
@@ -76,6 +77,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 <script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/holder.js')}"></script>
 <script src="${request.static_url('photozzap:static/pnotify/jquery.pnotify.js')}"></script>
+<script src="${request.static_url('photozzap:static/nanoscroller/jquery.nanoscroller.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/timeago/jquery.timeago.js')}"></script>
 <script type="text/javascript">
 // Custom example logic
 $(function() {
@@ -89,6 +92,15 @@ $(document).ready(function() {
         disconnect();
     });
     $('#connection-status-modal').modal('show');
+    
+    $(".nano").nanoScroller();
+    
+    $(window).resize(function() {
+        log("window resize: ");
+        $("#sidebar-container").height($(window).height() - 100);
+    });
+    
+    $(window).trigger('resize');
 });
 </script>
 
@@ -119,8 +131,9 @@ $(document).ready(function() {
 
 <script type="text/html" id="combined-notification-template2">
 <![CDATA[
-    <div>
-        <a href="#" id="<%= this.element_id %>">
+    <div id="<%= this.element_id %>">
+        <li class="nav-header timestamp" title="<%= this.timestamp.toISOString() %>"><%= this.timestamp %></li>
+        <a href="#">
             <% if( this.user_added != undefined ) { %>
                 <div>
                     <img src="${request.static_url('photozzap:static/icons/upload.png')}" class="action-icon"/><b><%= this.user_added.nick %></b>
@@ -262,53 +275,67 @@ $(document).ready(function() {
 
 <div class="container-fluid" style="margin-top: 50px;">
     
-    <div class="row-fluid" id="main_image" style="display: none;">
-        <div class="span12">
-            <div id="image" style="text-align: center; margin-bottom: 20px;" class="span12">
-            </div>
-            <div id="comment_area" class="row-fluid">
-                <div id="comment_input_area" class="row-fluid">
-                    <div class="span8 offset2">
-                        <form class="form-inline">
-                            <img src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" />
-                            <input id="comment-input" type="text" class="input-xxlarge" placeholder="Type your comment here">
-                            <button id="comment-submit" class="btn">Send</button>
-                            <script>
-                            $(document).ready(function() {
-                            
-                                // prevent form submission from happening on all forms
-                                $('form').submit(function() {
-                                  return false;
-                                });                            
-                            
-                                $("#comment-input").keyup(function (e) {
-                                    if (e.keyCode == 13) {
-                                        $(document).trigger('send_comment');
-                                    }
-                                });
-                                $("#comment-submit").click(function() {
-                                    $(document).trigger('send_comment');
-                                });
-                            });
-                            </script>
-                        </form>
+    <div class="row-fluid">
+        <div class="span9">
+    
+            <div class="row-fluid" id="main_image" style="display: none;">
+                <div class="span12">
+                    <div id="image" style="text-align: center; margin-bottom: 20px;" class="span12">
+                    </div>
+                    <div id="comment_area" class="row-fluid">
+                        <div id="comment_input_area" class="row-fluid">
+                            <div class="span8 offset2">
+                                <form class="form-inline">
+                                    <img src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" />
+                                    <input id="comment-input" type="text" class="input-xxlarge" placeholder="Type your comment here">
+                                    <button id="comment-submit" class="btn">Send</button>
+                                    <script>
+                                    $(document).ready(function() {
+                                    
+                                        // prevent form submission from happening on all forms
+                                        $('form').submit(function() {
+                                          return false;
+                                        });                            
+                                    
+                                        $("#comment-input").keyup(function (e) {
+                                            if (e.keyCode == 13) {
+                                                $(document).trigger('send_comment');
+                                            }
+                                        });
+                                        $("#comment-submit").click(function() {
+                                            $(document).trigger('send_comment');
+                                        });
+                                    });
+                                    </script>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="comment_list_area" class="row-fluid comment-list">
+                        </div>
                     </div>
                 </div>
-                <div id="comment_list_area" class="row-fluid comment-list">
-                </div>
             </div>
-        </div>
-    </div>
-    <div class="row-fluid" id="all_images">
-        <ul id="image-list" class="thumbnails">
-            <li id="image-placeholder" style="display: table;">
-                <a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
-                    <img data-src="holder.js/200x150/text:Upload Photo"/>
-                </a>
-            </li>            
-        </ul>
-    </div>
+            <div class="row-fluid" id="all_images">
+                <ul id="image-list" class="thumbnails">
+                    <li id="image-placeholder" style="display: table;">
+                        <a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
+                            <img data-src="holder.js/200x150/text:Upload Photo"/>
+                        </a>
+                    </li>            
+                </ul>
+            </div>
 
+        </div> <!-- /span9 -->
+        <div class="span3 nano" id="sidebar-container">
+           <div class="well sidebar-nav sidebar-nav-fixed content">
+             <ul class="nav nav-list" id="sidebar-notifications-area" >
+               <li class="nav-header">Sidebar</li>
+             </ul>
+           </div><!--/.well -->            
+        </div> <!-- /span3 -->
+        
+    </div>
+        
     <div id="image-cache" style="display:none;">
     </div>
 </div>

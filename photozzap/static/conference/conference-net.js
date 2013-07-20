@@ -112,6 +112,7 @@ var Conference = {
             log("user " + from + " viewing " + image_id);
             
             // only do this if we've got all the data
+            user.timestamp = new Date()
            
             if (image != undefined && user != undefined) {
                 log("effecting user update now");
@@ -204,9 +205,9 @@ var Conference = {
             var image_url = $(message).children('image').children('url').text();
             var thumbnail = $(message).children('image').children('thumbnail').text();
             var image_id = $(message).children('image').children('id').text();
-            var delayed = false;
+            var timestamp = new Date(); // assume right now
             if( $(message).children('delay').length > 0 ) {
-                delayed = true;
+                timestamp = new Date($(message).children('delay').attr('stamp'));
             }
             var user = Conference.users[from];
             var image = {id: image_id,
@@ -214,7 +215,7 @@ var Conference = {
                          thumbnail: thumbnail,
                          added_by: user,
                          thumbnail_id: "thumbnail_" + image_id,
-                         delayed: delayed};
+                         timestamp: timestamp};
                        
             log("received image id " + image_id + ", processing");
 
@@ -258,13 +259,14 @@ var Conference = {
             // comment on an image
             var image_id = $(message).children('image').children('id').text();
             var comment_text = $(message).children('image').children('text').text();
-            var delayed = false;
+            
+            var timestamp = new Date(); // assume right now
             if( $(message).children('delay').length > 0 ) {
-                delayed = true;
-            }
+                timestamp = new Date($(message).children('delay').attr('stamp'));
+            }            
+            
             var user = Conference.users[from];
             
-            // TODO: add support for queued events, and suppress delayed
             var image = Conference.images[image_id];
             if( image != undefined ) {
                 var comment_event = {
@@ -272,17 +274,17 @@ var Conference = {
                     user: user,
                     nick: nick,
                     text: comment_text,
-                    delayed: delayed
+                    timestamp: timestamp
                 };
                 $(document).trigger('new_comment', comment_event);
             } else {
-                // we don't have the image loaded yet, add a delayed event
+                // we don't have the image loaded yet, add a queued event
                 var comment_event = {
                     image_id: image_id,
                     user: user,
                     nick: nick,
                     text: comment_text,
-                    delayed: delayed
+                    timestamp: timestamp
                 };
                 Conference.add_comment_queued_event(image_id, comment_event);
             }
