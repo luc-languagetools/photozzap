@@ -38,9 +38,56 @@ background: -o-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* Ope
 background: -ms-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* IE10+ */
 background: linear-gradient(to bottom, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', endColorstr='#98b0d9',GradientType=0 ); /* IE6-9 */
-    
+
+   
 }   
 
+#footer-container {
+    position: fixed;
+    bottom: 0px;
+    text-align: center;
+
+}
+
+#footer {
+
+    margin-left: 50px;
+    margin-right: 50px;
+
+    border-radius:10px;
+   
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+
+    background: #f6f8f9; /* Old browsers */
+    background: -moz-linear-gradient(top,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8f9), color-stop(50%,#e5ebee), color-stop(51%,#d7dee3), color-stop(100%,#f5f7f9)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 ); /* IE6-9 */
+
+
+    border-style: solid;
+    border-color: #CCCCCC;
+    border-width: 1px;
+    border-bottom-width:0 px;    
+  
+}
+
+#comment_area {
+    height: 150px;
+}
+
+#footer form {
+   margin-bottom: 0px;
+}
+
+.chat-input {
+  
+}
+ 
 .ui-pnotify.stack-bottomright {
     /* These are just CSS default values to reset the pnotify CSS. */
     right: auto;
@@ -96,11 +143,25 @@ $(document).ready(function() {
     $(".nano").nanoScroller();
     
     $(window).resize(function() {
-        log("window resize: ");
-        $("#sidebar-container").height($(window).height() - 100);
+        resizeHandler();
     });
     
-    $(window).trigger('resize');
+    function resizeHandler() {
+        var docHeight = $(window).height();
+        var targetWidth = $("#content-main").width();
+        var footerHeight = $('#footer-container').height();
+        var footerTop = $('#footer-container').position().top + footerHeight;
+        
+        $("#sidebar-container").height(docHeight - 200);
+        
+        if (footerTop < docHeight) {
+         $('#footer-container').css('margin-top', 10 + (docHeight - footerTop) + 'px');
+        }    
+        $('#footer-container').css('width', targetWidth + 'px');
+    };
+    
+    
+    resizeHandler();
 });
 </script>
 
@@ -131,7 +192,7 @@ $(document).ready(function() {
 
 <script type="text/html" id="combined-notification-template2">
 <![CDATA[
-    <div id="<%= this.element_id %>">
+    <div id="<%= this.element_id %>" style="opacity:0;">
         <li class="nav-header timestamp" title="<%= this.timestamp.toISOString() %>"><%= this.timestamp %></li>
         <a href="#">
             <% if( this.user_added != undefined ) { %>
@@ -273,45 +334,14 @@ $(document).ready(function() {
   </div>
 </div>
 
-<div class="container-fluid" style="margin-top: 50px;">
+<div id="main-container" class="container-fluid" style="margin-top: 50px;">
     
     <div class="row-fluid">
-        <div class="span9">
+        <div id="content-main" class="span9">
     
             <div class="row-fluid" id="main_image" style="display: none;">
                 <div class="span12">
                     <div id="image" style="text-align: center; margin-bottom: 20px;" class="span12">
-                    </div>
-                    <div id="comment_area" class="row-fluid">
-                        <div id="comment_input_area" class="row-fluid">
-                            <div class="span8 offset2">
-                                <form class="form-inline">
-                                    <img src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" />
-                                    <input id="comment-input" type="text" class="input-xxlarge" placeholder="Type your comment here">
-                                    <button id="comment-submit" class="btn">Send</button>
-                                    <script>
-                                    $(document).ready(function() {
-                                    
-                                        // prevent form submission from happening on all forms
-                                        $('form').submit(function() {
-                                          return false;
-                                        });                            
-                                    
-                                        $("#comment-input").keyup(function (e) {
-                                            if (e.keyCode == 13) {
-                                                $(document).trigger('send_comment');
-                                            }
-                                        });
-                                        $("#comment-submit").click(function() {
-                                            $(document).trigger('send_comment');
-                                        });
-                                    });
-                                    </script>
-                                </form>
-                            </div>
-                        </div>
-                        <div id="comment_list_area" class="row-fluid comment-list">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -340,6 +370,41 @@ $(document).ready(function() {
     </div>
 </div>
 
+<div id="footer-container">
+    <div id="footer" class="container-fluid">
+        <div id="comment_area" class="row-fluid nano">
+            <div id="comment_list_area" class="row-fluid comment-list content">
+            </div>
+        </div>    
+        <div class="row-fluid chat-input">
+            <div class="span12">
+                <form class="form-inline">
+                    <img src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" />
+                    <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
+                    <button id="comment-submit" class="btn">Send</button>
+                    <script>
+                    $(document).ready(function() {
+                    
+                        // prevent form submission from happening on all forms
+                        $('form').submit(function() {
+                          return false;
+                        });                            
+                    
+                        $("#comment-input").keyup(function (e) {
+                            if (e.keyCode == 13) {
+                                $(document).trigger('send_comment');
+                            }
+                        });
+                        $("#comment-submit").click(function() {
+                            $(document).trigger('send_comment');
+                        });
+                    });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

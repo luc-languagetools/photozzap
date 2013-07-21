@@ -112,7 +112,7 @@ var Conference = {
             log("user " + from + " viewing " + image_id);
             
             // only do this if we've got all the data
-            user.timestamp = new Date()
+            user.timestamp = new Date();
            
             if (image != undefined && user != undefined) {
                 log("effecting user update now");

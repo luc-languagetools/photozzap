@@ -84,7 +84,8 @@ var ConferenceUi = {
         var merged = false;
     
         if ( ConferenceUi.current_combined_notification != undefined &&
-             ConferenceUi.current_combined_notification.image.id == notification.image.id ) {
+             ConferenceUi.current_combined_notification.image.id == notification.image.id &&
+             notification.timestamp.getTime() < ConferenceUi.current_combined_notification.timestamp.getTime() + 1000*30) { // less than 30s old
              
              // re-use previous notification
              
@@ -142,13 +143,21 @@ var ConferenceUi = {
 
         // create notification element for the sidebar
         sidebar_notification_element = $("#combined-notification-template2").jqote(combined_notification);
-        $("#sidebar-notifications-area").append(sidebar_notification_element);
+        $("#sidebar-notifications-area").prepend(sidebar_notification_element);
         
         // add timeago
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
         
-        // add click event back in
-        // add_click_event_to_new_image("#" + combined_notification.element_id + " a", combined_notification.image);
+        // scroll to top
+        $(".nano").nanoScroller({ scroll: 'top' });
+        
+        // fadein
+        // $("#" + combined_notification.element_id).fadeIn();
+        // $("#" + combined_notification.element_id).animate({opacity:1})
+        $("#" + combined_notification.element_id).fadeTo('slow', 1);
+        
+        // add click event handler
+        add_click_event_to_new_image("#" + combined_notification.element_id + " a", combined_notification.image);
         
   
         combined_notification.modified = false;
