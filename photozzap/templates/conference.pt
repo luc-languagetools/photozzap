@@ -59,15 +59,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 
-    background: #f6f8f9; /* Old browsers */
-    background: -moz-linear-gradient(top,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8f9), color-stop(50%,#e5ebee), color-stop(51%,#d7dee3), color-stop(100%,#f5f7f9)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 ); /* IE6-9 */
-
+	
+    // background: #f6f8f9; /* Old browsers */
+    // background: -moz-linear-gradient(top,  #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); /* FF3.6+ */
+    // background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8f9), color-stop(50%,#e5ebee), color-stop(51%,#d7dee3), color-stop(100%,#f5f7f9)); /* Chrome,Safari4+ */
+    // background: -webkit-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Chrome10+,Safari5.1+ */
+    // background: -o-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Opera 11.10+ */
+    // background: -ms-linear-gradient(top,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* IE10+ */
+    // background: linear-gradient(to bottom,  #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* W3C */
+    // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 ); /* IE6-9 */
+	
+	background: #DDDDDD;
 
     border-style: solid;
     border-color: #CCCCCC;
@@ -77,7 +79,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 }
 
 #comment_area {
-    height: 150px;
+    // height: 150px;
 }
 
 #footer form {
@@ -111,10 +113,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
     margin-left: 30px;
 }
 
+img.main-image {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}
+
 </style>
 </head>
 <body style="padding-top: 40px;">
-<script src="http://code.jquery.com/jquery.js"></script>
+<script src="${request.static_url('photozzap:static/jquery/jquery-1.10.2.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/jquery-ui/jquery-ui.js')}"></script>
+<script src="${request.static_url('photozzap:static/slimscroll/jquery.slimscroll.js')}"></script>
 <script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/strophe/strophe.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/conference-net.js')}"></script>
@@ -124,7 +134,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 <script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/holder.js')}"></script>
 <script src="${request.static_url('photozzap:static/pnotify/jquery.pnotify.js')}"></script>
-<script src="${request.static_url('photozzap:static/nanoscroller/jquery.nanoscroller.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/timeago/jquery.timeago.js')}"></script>
 <script type="text/javascript">
 // Custom example logic
@@ -140,19 +149,38 @@ $(document).ready(function() {
     });
     $('#connection-status-modal').modal('show');
     
-    $(".nano").nanoScroller();
-    
     $(window).resize(function() {
         resizeHandler();
     });
     
+	$(function(){
+		$('#comment_list_area').slimScroll({
+			height: '150px'
+		});
+	});	
+	
+	$("#footer-container").mouseover(function() {
+		$("#comment_area").show();
+	});
+	
+	$("#footer-container").mouseout(function() {
+		$("#comment_area").hide();
+	});
+	
     function resizeHandler() {
         var docHeight = $(window).height();
         var targetWidth = $("#content-main").width();
         var footerHeight = $('#footer-container').height();
         var footerTop = $('#footer-container').position().top + footerHeight;
         
-        $("#sidebar-container").height(docHeight - 200);
+		var visibleHeight = docHeight - 100;
+		
+        // $("#sidebar-container").height(docHeight - 200);
+		// update slimscroll height
+		$('#sidebar-container').slimScroll({
+			height: visibleHeight + 'px'
+		});		
+		
         
         if (footerTop < docHeight) {
          $('#footer-container').css('margin-top', 10 + (docHeight - footerTop) + 'px');
@@ -337,7 +365,7 @@ $(document).ready(function() {
 <div id="main-container" class="container-fluid" style="margin-top: 50px;">
     
     <div class="row-fluid">
-        <div id="content-main" class="span9">
+        <div id="content-main" class="span12">
     
             <div class="row-fluid" id="main_image" style="display: none;">
                 <div class="span12">
@@ -356,13 +384,16 @@ $(document).ready(function() {
             </div>
 
         </div> <!-- /span9 -->
-        <div class="span3 nano" id="sidebar-container">
+		
+		<!--
+        <div class="span3" id="sidebar-container">
            <div class="well sidebar-nav sidebar-nav-fixed content">
              <ul class="nav nav-list" id="sidebar-notifications-area" >
                <li class="nav-header">Sidebar</li>
              </ul>
-           </div><!--/.well -->            
-        </div> <!-- /span3 -->
+           </div>
+        </div> -->
+		<!-- /span3 -->
         
     </div>
         
@@ -372,7 +403,7 @@ $(document).ready(function() {
 
 <div id="footer-container">
     <div id="footer" class="container-fluid">
-        <div id="comment_area" class="row-fluid nano">
+        <div id="comment_area" class="row-fluid" >
             <div id="comment_list_area" class="row-fluid comment-list content">
             </div>
         </div>    

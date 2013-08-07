@@ -8,8 +8,10 @@ improvements
  - delete uploaded photos
  - make sure all uploaded photos for a conference are in the same directory
 - history view
- 
-
+ - show all events in fixed sidebar
+- add carousel to move from one photo to another 
+- email notifications
+ - 
 
 bugs
 ====

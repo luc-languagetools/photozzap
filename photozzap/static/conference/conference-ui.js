@@ -149,7 +149,8 @@ var ConferenceUi = {
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
         
         // scroll to top
-        $(".nano").nanoScroller({ scroll: 'top' });
+		// TODO: substitute with slimscroll
+        // $(".nano").nanoScroller({ scroll: 'top' });
         
         // fadein
         // $("#" + combined_notification.element_id).fadeIn();
@@ -263,11 +264,16 @@ $(document).bind('display_image', function(ev, image) {
     $("#comment_list_area .media-list").hide();
     // show the relevant comment area
     $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
+	// update slimscroll
+	$('#comment_list_area').slimScroll({
+		height: '150px'
+	});	
     
     
     image_element = document.createElement('img');
     $(image_element).attr('src', image.url);
     $(image_element).attr('id', 'displayed-image');
+	$(image_element).attr('class', 'main-image');
     //$(image_element).css('display', 'none');
     $("#image").html(image_element);
     $('#main_image').fadeIn('slow', function() {
