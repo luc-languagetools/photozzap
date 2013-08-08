@@ -268,14 +268,12 @@ $(document).bind('display_image', function(ev, image) {
 	$('#comment_list_area').slimScroll({
 		height: '150px'
 	});	
-    
-    
+        
     image_element = document.createElement('img');
     $(image_element).attr('src', image.url);
     $(image_element).attr('id', 'displayed-image');
-	$(image_element).attr('class', 'main-image');
-    //$(image_element).css('display', 'none');
-    $("#image").html(image_element);
+    $("#main_image").html(image_element);
+	$(document).trigger('resize_image');
     $('#main_image').fadeIn('slow', function() {
         // Animation complete
 
@@ -441,6 +439,38 @@ $(document).bind('new_comment', function(ev, comment) {
     
     ConferenceUi.notify_comment(comment);
 
+});
+
+$(document).bind('resize_image', function(ev) {
+	// ensure image is fullscreen
+	
+    var image = $("#main_image img").first();
+    var imageWidth = image.width();
+    var imageHeight = image.height();
+    var imageRatio = 4.0 / 3.0; // hardcode for now
+	
+	var win = $(window);
+	var winWidth = win.width();
+    var winHeight = win.height();
+    var winRatio = winWidth / winHeight;
+  
+	var newImageWidth = 0;
+	var newImageHeight = 0;
+  
+    if(winRatio > imageRatio) {
+		newImageWidth = Math.round(winHeight * imageRatio);
+		newImageHeight = winHeight;	
+	} else {
+		newImageWidth = winWidth;
+		newImageHeight = Math.round(winWidth / imageRatio);
+    }	
+	log("newImageWidth: " + newImageWidth + " newImageHeight: " + newImageHeight + " ratio: " + newImageWidth / newImageHeight);
+	image.css({
+		width: newImageWidth,
+        height: newImageHeight
+    })
+	
+	
 });
 
 var clone = (function(){ 
