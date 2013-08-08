@@ -143,7 +143,7 @@ var ConferenceUi = {
 
         // create notification element for the sidebar
         sidebar_notification_element = $("#combined-notification-template2").jqote(combined_notification);
-        $("#sidebar-notifications-area").prepend(sidebar_notification_element);
+        $("#history-sidebar-content").prepend(sidebar_notification_element);
         
         // add timeago
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
@@ -153,8 +153,7 @@ var ConferenceUi = {
         // $(".nano").nanoScroller({ scroll: 'top' });
         
         // fadein
-        // $("#" + combined_notification.element_id).fadeIn();
-        // $("#" + combined_notification.element_id).animate({opacity:1})
+		displayHistorySidebarForNotification();
         $("#" + combined_notification.element_id).fadeTo('slow', 1);
         
         // add click event handler

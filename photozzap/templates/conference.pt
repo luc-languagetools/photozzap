@@ -113,20 +113,40 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 
 .action-sidebar {
     border-radius:10px;
-	background: #DDDDDD;
+	// background: #DDDDDD;
     border-style: solid;
     border-color: #CCCCCC;
     border-width: 1px;
 	z-index:2;
 	display: none;	
+	
+	// background-color: rgba(255, 255, 255, 0.5);
+	background: #FFFFFF;
+	// opacity: 0.6;
 }
 
 #history-sidebar {
 	position: fixed;
-	top: 50%;
+	top: 42%;
 	right: 10%;
-	width: 10%;
-	height: 10%;
+	width: 15%;
+	height: 15%;
+}
+
+#users-sidebar {
+	position: fixed;
+	top: 42%;
+	left: 10%;
+	width: 15%;
+	height: 15%;
+}
+
+#chat-sidebar {
+	position: fixed;
+	bottom: 10%;
+	left: 42%;
+	width: 15%;
+	height: 15%;
 }
 
 body {
@@ -143,6 +163,7 @@ body {
 <script src="${request.static_url('photozzap:static/strophe/strophe.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/conference-net.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/conference-ui.js')}"></script>
+<script src="${request.static_url('photozzap:static/conference/conference-controls.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/uploader.js')}"></script>
 <script src="${request.static_url('photozzap:static/plupload/plupload.full.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
@@ -174,83 +195,9 @@ $(document).ready(function() {
 		});
 	});	
 	
-	$("#footer-container").mouseover(function() {
-		$("#comment_area").show();
-	});
-	
-	$("#footer-container").mouseout(function() {
-		$("#comment_area").hide();
-	});
-	
-	var toolbarShown = false;
-	var disableToolbarTimeout = null;
-	
-	$("#main_image").mousemove(function() {
-	
-		// if toolbar is not shown, show it and start timeout
-		// if toolbar is shown, update timeout 
-	
-		if ( ! toolbarShown ) {
-			$("#main_image").transition({ opacity: 0.5 });
-			$("#top-navbar").fadeIn();
-			$(".action-sidebar").fadeIn();
-			// set timeout to restore
-			toolbarShown = true;
-		}
-		
-		if( disableToolbarTimeout != null ) {
-			// disable previous timeout
-			clearTimeout(disableToolbarTimeout);
-		}			
-		
-		disableToolbarTimeout = setTimeout(function() {
-				$("#main_image").transition({ opacity: 1.0 });
-				$("#top-navbar").fadeOut();
-				$(".action-sidebar").fadeOut();
-				toolbarShown = false;
-				disableToolbarTimeout = null;
-		}, 1500);
-		
-
-	});
-	
-	$("#history-sidebar").mouseover(function() {
-		$("#history-sidebar").transition({top: "10%",
-		                                  height: "80%", 
-		                                  width: "20%"});
-	});
-	
-	$("#history-sidebar").mouseout(function() {
-		$("#history-sidebar").transition({top: "50%",
-		                                  height: "10%", 
-		                                  width: "10%"});
-	});
-	
-	
-    function resizeHandler() {
-        var docHeight = $(window).height();
-        var targetWidth = $("#content-main").width();
-        var footerHeight = $('#footer-container').height();
-        var footerTop = $('#footer-container').position().top + footerHeight;
-        
-		var visibleHeight = docHeight - 100;
-		
-        // $("#sidebar-container").height(docHeight - 200);
-		// update slimscroll height
-		$('#sidebar-container').slimScroll({
-			height: visibleHeight + 'px'
-		});		
-        
-        if (footerTop < docHeight) {
-         $('#footer-container').css('margin-top', 10 + (docHeight - footerTop) + 'px');
-        }    
-        $('#footer-container').css('width', targetWidth + 'px');
-		
-		$(document).trigger('resize_image');
-    };
-    
-    
+	setupControlHandlers();    
     resizeHandler();
+	
 });
 </script>
 
@@ -399,14 +346,6 @@ $(document).ready(function() {
     <ul class="nav">
         <li id="all_images_button" class="active"><a href="#" onclick="$(document).trigger('show_all_images');">All Photos</a></li>    
         <li id="now_viewing_button"><a href="#" onclick="$(document).trigger('show_current_image', true);">Now Viewing</a></li>
-        <li id="users-dropdown" class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Users<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <ul id="users-list" class="thumbnails">
-                </ul>            
-            </ul>
-        </li>
         <li><a href="#" onclick="$('#upload-modal').modal('show');">Upload</a></li>
         <li id='progress-bar' style="display:none;">
             <div class="progress progress-striped active" style="width: 110px; margin-top: 10px; margin-bottom: 0px;">
@@ -427,31 +366,22 @@ $(document).ready(function() {
 </div>
 
 <div id="history-sidebar" class="action-sidebar">
-<h5>History</h5>
+	<h5>History</h5>
+	<div id="history-sidebar-content" style="display: none;">
+	</div>
 </div>
 
-<div id="main_image">
-</div>
-
-
-<div id="image-list-container" class="container-fluid">
-	<div class="row-fluid" id="all_images">
-		<ul id="image-list" class="thumbnails">
-			<li id="image-placeholder" style="display: table;">
-				<a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
-					<img data-src="holder.js/200x150/text:Upload Photo"/>
-				</a>
-			</li>            
+<div id="users-sidebar" class="action-sidebar">
+	<h5>Users</h5>
+	<div id="users-sidebar-content" style="display: none;">
+		<ul id="users-list" class="thumbnails">
 		</ul>
 	</div>
 </div>
 
-<!-- contains all loaded images so that they remain in the browser cache -->
-<div id="image-cache" style="display:none;">
-</div>
-
-<div id="footer-container" style="display: none;">
-    <div id="footer" class="container-fluid">
+<div id="chat-sidebar" class="action-sidebar">
+	<h5>Chat</h5>
+    <div id="chat-sidebar-content" class="container-fluid" style="display: none;">
         <div id="comment_area" class="row-fluid" >
             <div id="comment_list_area" class="row-fluid comment-list content">
             </div>
@@ -483,7 +413,26 @@ $(document).ready(function() {
                 </form>
             </div>
         </div>
-    </div>
+    </div>	
+</div>
+
+<div id="main_image">
+</div>
+
+<div id="image-list-container" class="container-fluid">
+	<div class="row-fluid" id="all_images">
+		<ul id="image-list" class="thumbnails">
+			<li id="image-placeholder" style="display: table;">
+				<a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
+					<img data-src="holder.js/200x150/text:Upload Photo"/>
+				</a>
+			</li>            
+		</ul>
+	</div>
+</div>
+
+<!-- contains all loaded images so that they remain in the browser cache -->
+<div id="image-cache" style="display:none;">
 </div>
 
 </body>
