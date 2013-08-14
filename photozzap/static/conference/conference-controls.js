@@ -3,8 +3,23 @@ var disableToolbarTimeout = null;
 
 var disableToolbarForNotificationTimeout = null;
 
+var ConferenceControls = {
+
+	
+
+};
+
 function setupControlHandlers() {
 	setupMouseMoveCallback();
+	
+    $(window).resize(function() {
+        resizeHandler();
+    });
+    
+	$('#image-list').slimScroll({
+		height: "auto"
+	});	
+	
 	
 	$("#users-sidebar").mouseenter(function() {
 		$("#users-sidebar").transition({top: "15%",
@@ -166,5 +181,12 @@ function destroySlimscroll(objectId) {
 }	
 
 function resizeHandler() {
+	log("resizeHandler");
 	$(document).trigger('resize_image');
+	
+	// resize the slimscroll on #all_images
+	$('#image-list').slimScroll({
+		height: "auto"
+	});		
+	
 };

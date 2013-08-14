@@ -113,15 +113,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 
 .action-sidebar {
     border-radius:10px;
-	// background: #DDDDDD;
+	background: #DDDDDD;
     border-style: solid;
-    border-color: #CCCCCC;
-    border-width: 1px;
+    border-color: #FFFFFF;
+    border-width: 3px;
 	z-index:2;
 	display: none;	
 	
 	// background-color: rgba(255, 255, 255, 0.5);
-	background: #FFFFFF;
+	// background: #FFFFFF;
 	// opacity: 0.6;
 }
 
@@ -147,6 +147,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 	left: 42%;
 	width: 15%;
 	height: 15%;
+}
+
+#all_images {
+	position: fixed;
+	top: 15%;
+	left: 10%;
+	height: 80%;
+	width: 80%;
+	
+	background: #FFFFFF;
 }
 
 body {
@@ -185,15 +195,6 @@ $(document).ready(function() {
     });
     $('#connection-status-modal').modal('show');
     
-    $(window).resize(function() {
-        resizeHandler();
-    });
-    
-	$(function(){
-		$('#comment_list_area').slimScroll({
-			height: '150px'
-		});
-	});	
 	
 	setupControlHandlers();    
     resizeHandler();
@@ -379,6 +380,17 @@ $(document).ready(function() {
 	</div>
 </div>
 
+<div class="row-fluid" id="all_images">
+	<ul id="image-list" class="thumbnails">
+		<li id="image-placeholder" style="display: table;">
+			<a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
+				<img data-src="holder.js/200x150/text:Upload Photo"/>
+			</a>
+		</li>            
+	</ul>
+</div>
+
+
 <div id="chat-sidebar" class="action-sidebar">
 	<h5>Chat</h5>
     <div id="chat-sidebar-content" class="container-fluid" style="display: none;">
@@ -419,17 +431,6 @@ $(document).ready(function() {
 <div id="main_image">
 </div>
 
-<div id="image-list-container" class="container-fluid">
-	<div class="row-fluid" id="all_images">
-		<ul id="image-list" class="thumbnails">
-			<li id="image-placeholder" style="display: table;">
-				<a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
-					<img data-src="holder.js/200x150/text:Upload Photo"/>
-				</a>
-			</li>            
-		</ul>
-	</div>
-</div>
 
 <!-- contains all loaded images so that they remain in the browser cache -->
 <div id="image-cache" style="display:none;">
