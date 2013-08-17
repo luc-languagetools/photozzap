@@ -5,8 +5,6 @@ var disableToolbarForNotificationTimeout = null;
 
 var ConferenceControls = {
 
-	
-
 };
 
 function setupControlHandlers() {
@@ -28,7 +26,9 @@ function setupControlHandlers() {
 										  width: "30%"}, function() {
 											var targetHeight = $("#users-sidebar").first().height() - 40;
 											$('#users-sidebar-content').slimScroll({
-												height: targetHeight + 'px'
+												height: targetHeight + 'px',
+                                                alwaysVisible: true,
+                                                color: '#FFFFFF'
 											});											
 											$("#users-sidebar-content").show();
 											
@@ -44,11 +44,12 @@ function setupControlHandlers() {
 	});		
 	
 	$("#history-sidebar").mouseenter(function() {
+        $("#history-sidebar").data("mouseon", true);
 		enlargeHistorySidebar();
 	});	
 	
 	$("#history-sidebar").mouseleave(function() {
-		// destroySlimscroll("history-sidebar-content");
+        $("#history-sidebar").data("mouseon", false);
 		reduceHistorySidebar();
 	});
 	
@@ -130,29 +131,75 @@ function removeMouseMoveCallback() {
 
 
 function enlargeHistorySidebar() {
+    log("enlargeHistorySidebar");
 	$("#history-sidebar").transition({top: "15%",
 									  right: "5%",
 									  height: "80%", 
 									  width: "30%"}, function() {
-										var targetHeight = $("#history-sidebar").first().height() - 40;
-										$('#history-sidebar-content').slimScroll({
-											height: targetHeight + 'px',
-											start: 'top'
-										});											
-										$("#history-sidebar-content").show();
+                                      
+                                        if ($("#history-sidebar").data("mouseon") == true ) {
+                                            // if the mouse is still on the history sidebar,
+                                            // expand contents inside
+                                      
+                                            if ($("#history-sidebar").data("expanded") == true) {
+                                                // already expanded ? we must destroy the slimscroll before creating a new one
+                                                $('#history-sidebar-content').slimScroll({
+                                                                                destroy: true
+                                                                            }); 
+                                            }
+                                      
+                                            log("enlargeHistorySidebar finished transition");
+                                            var targetHeight = $("#history-sidebar").first().height() -
+                                                               $("#history-sidebar-header").first().height() - 20;
+                                            log("enlargeHistorySidebar targetHeight: " + targetHeight);
+                                            $('#history-sidebar-content').slimScroll({
+                                                height: targetHeight + 'px',
+                                                start: 'top',
+                                                alwaysVisible: true,
+                                                color: '#FFFFFF',
+                                                opacity: 1,
+                                                railVisible: true,
+                                                railColor: '#FFFFFF',
+                                                railOpacity: 0.2
+                                            });											
+                                            $("#history-sidebar-content").fadeIn();
+                                            $("#history-sidebar").data("expanded", true);
+                                        }
 									  });
 }
 
 
 function reduceHistorySidebar() {
-	$("#history-sidebar-content").hide();
-	$("#history-sidebar").transition({top: "42%",
-									  right: "10%",
-									  height: "15%", 
-									  width: "15%"});
+    // remove slimscroll
+    log("reduceHistorySidebar");
+    
+    if ($("#history-sidebar").data("expanded") == true) {
+        // perform transition after fadeout
+    
+        $("#history-sidebar-content").fadeOut(250, function() {    
+            $('#history-sidebar-content').slimScroll({
+                                            destroy: true
+                                        });
+            reduceHistorySidebarTransition();
+        });
+        $("#history-sidebar").data("expanded", false);
+    } else {
+        // perform transition right away
+        reduceHistorySidebarTransition();
+    }
+    
+                                        
 }
 
 
+function reduceHistorySidebarTransition() {
+    $("#history-sidebar").transition({top: "42%",
+                                      right: "10%",
+                                      height: "15%", 
+                                      width: "15%"}, function() {
+                                        log("reduceHistorySidebar finished transition");
+                                      });
+}
 
 function displayHistorySidebarForNotification() {
 
@@ -174,11 +221,6 @@ function displayHistorySidebarForNotification() {
 		disableToolbarForNotificationTimeout = null;
 	}, 2000);
 }
-
-
-function destroySlimscroll(objectId) { 
-	$("#"+objectId).parent().replaceWith($("#"+objectId)); 
-}	
 
 function resizeHandler() {
 	log("resizeHandler");
