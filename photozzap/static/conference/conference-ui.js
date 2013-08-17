@@ -148,13 +148,9 @@ var ConferenceUi = {
         // add timeago
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
         
-        // scroll to top
-		// TODO: substitute with slimscroll
-        // $(".nano").nanoScroller({ scroll: 'top' });
-        
-        // fadein
-		displayHistorySidebarForNotification();
-        $("#" + combined_notification.element_id).fadeTo('slow', 1);
+        // expand history sidebar
+		displayHistorySidebarForNotification("#" + combined_notification.element_id);
+        // $("#" + combined_notification.element_id).fadeTo('slow', 1);
         
         // add click event handler
         add_click_event_to_new_image("#" + combined_notification.element_id + " a", combined_notification.image);

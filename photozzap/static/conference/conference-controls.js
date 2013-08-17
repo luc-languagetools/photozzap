@@ -45,7 +45,7 @@ function setupControlHandlers() {
 	
 	$("#history-sidebar").mouseenter(function() {
         $("#history-sidebar").data("mouseon", true);
-		enlargeHistorySidebar();
+		enlargeHistorySidebar(null);
 	});	
 	
 	$("#history-sidebar").mouseleave(function() {
@@ -130,7 +130,7 @@ function removeMouseMoveCallback() {
 
 
 
-function enlargeHistorySidebar() {
+function enlargeHistorySidebar(highlightSelector) {
     log("enlargeHistorySidebar");
 	$("#history-sidebar").transition({top: "15%",
 									  right: "5%",
@@ -162,7 +162,16 @@ function enlargeHistorySidebar() {
                                                 railColor: '#FFFFFF',
                                                 railOpacity: 0.2
                                             });											
-                                            $("#history-sidebar-content").fadeIn();
+                                            $("#history-sidebar-content").fadeIn(250, function() {
+                                                if (highlightSelector != null ) {
+                                                    // need to flash an element
+                                                    // $(highlightSelector).fadeIn();
+                                                    //$(highlightSelector).fadeTo('fast', 1);
+                                                    log("fading in selector: [" + highlightSelector + "]");
+                                                    //$(highlightSelector).fadeTo(600, 1);
+                                                    $(highlightSelector).slideDown();
+                                                }
+                                            });
                                             $("#history-sidebar").data("expanded", true);
                                         }
 									  });
@@ -201,14 +210,22 @@ function reduceHistorySidebarTransition() {
                                       });
 }
 
-function displayHistorySidebarForNotification() {
+function displayHistorySidebarForNotification(highlightSelector) {
+    log("displayHistorySidebarForNotification");
 
 	// bring up history sidebar if we're not already in the timeout period
-	if ( disableToolbarForNotificationTimeout == null ) {
-		$("#history-sidebar").show();
-		enlargeHistorySidebar();
-	}
+	if ( $("#history-sidebar").data("expanded") != true ) {
+        $("#history-sidebar").data("mouseon", true);
+        $("#history-sidebar").show();
+		enlargeHistorySidebar(highlightSelector);
+	} else {
+        // history sidebar already expanded - fadein the object
+        // $(highlightSelector).fadeTo(600, 1);
+        $(highlightSelector).slideDown();
+    }
 	
+    // todo: enable timeout
+    /*
 	if (disableToolbarForNotificationTimeout != null ) {
 		// disable existing timeout function, a new one will be created
 		clearTimeout(disableToolbarForNotificationTimeout);
@@ -220,6 +237,7 @@ function displayHistorySidebarForNotification() {
 		$("#history-sidebar").hide();
 		disableToolbarForNotificationTimeout = null;
 	}, 2000);
+    */
 }
 
 function resizeHandler() {
