@@ -141,38 +141,36 @@ function enlargeHistorySidebar(highlightSelector) {
                                             // if the mouse is still on the history sidebar,
                                             // expand contents inside
                                       
-                                            if ($("#history-sidebar").data("expanded") == true) {
-                                                // already expanded ? we must destroy the slimscroll before creating a new one
+                                            if ($("#history-sidebar").data("expanded") != true) {
+                                                var targetHeight = $("#history-sidebar").first().height() -
+                                                                   $("#history-sidebar-header").first().height() - 20;
+                                                log("enlargeHistorySidebar targetHeight: " + targetHeight);
                                                 $('#history-sidebar-content').slimScroll({
-                                                                                destroy: true
-                                                                            }); 
-                                            }
-                                      
-                                            log("enlargeHistorySidebar finished transition");
-                                            var targetHeight = $("#history-sidebar").first().height() -
-                                                               $("#history-sidebar-header").first().height() - 20;
-                                            log("enlargeHistorySidebar targetHeight: " + targetHeight);
-                                            $('#history-sidebar-content').slimScroll({
-                                                height: targetHeight + 'px',
-                                                start: 'top',
-                                                alwaysVisible: true,
-                                                color: '#FFFFFF',
-                                                opacity: 1,
-                                                railVisible: true,
-                                                railColor: '#FFFFFF',
-                                                railOpacity: 0.2
-                                            });											
-                                            $("#history-sidebar-content").fadeIn(250, function() {
+                                                    height: targetHeight + 'px',
+                                                    start: 'top',
+                                                    alwaysVisible: true,
+                                                    color: '#FFFFFF',
+                                                    opacity: 1,
+                                                    railVisible: true,
+                                                    railColor: '#FFFFFF',
+                                                    railOpacity: 0.2
+                                                });											
+                                                $("#history-sidebar-content").fadeIn(250, function() {
+                                                    if (highlightSelector != null ) {
+                                                        // need to flash an element
+                                                        $(highlightSelector).slideDown();
+                                                    }
+                                                });
+                                                $("#history-sidebar").data("expanded", true);
+                                            } else {
+                                                // sidebar already expanded, only need to slide down the new element
                                                 if (highlightSelector != null ) {
                                                     // need to flash an element
-                                                    // $(highlightSelector).fadeIn();
-                                                    //$(highlightSelector).fadeTo('fast', 1);
-                                                    log("fading in selector: [" + highlightSelector + "]");
-                                                    //$(highlightSelector).fadeTo(600, 1);
                                                     $(highlightSelector).slideDown();
-                                                }
-                                            });
-                                            $("#history-sidebar").data("expanded", true);
+                                                }                                                
+                                            }
+                                      
+
                                         }
 									  });
 }
@@ -250,3 +248,33 @@ function resizeHandler() {
 	});		
 	
 };
+
+(function($) {
+    $.eventReport = function(selector, root) {
+        var s = [];
+        $(selector || '*', root).addBack().each(function() {
+            // the following line is the only change
+            var e = $._data(this, 'events');
+            if(!e) return;
+            s.push(this.tagName);
+            if(this.id) s.push('#', this.id);
+            if(this.className) s.push('.', this.className.replace(/ +/g, '.'));
+            for(var p in e) {
+                var r = e[p],
+                    h = r.length - r.delegateCount;
+                if(h)
+                    s.push('\n', h, ' ', p, ' handler', h > 1 ? 's' : '');
+                if(r.delegateCount) {
+                    for(var q = 0; q < r.length; q++)
+                        if(r[q].selector) s.push('\n', p, ' for ', r[q].selector);
+                }
+            }
+            s.push('\n\n');
+        });
+        return s.join('');
+    }
+    $.fn.eventReport = function(selector) {
+        return $.eventReport(selector, this);
+    }
+})(jQuery);
+

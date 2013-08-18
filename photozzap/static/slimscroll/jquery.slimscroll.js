@@ -114,6 +114,16 @@
               }
               else if ('destroy' in options)
               {
+                // unbind events
+                me.off('mouseenter');
+                me.off('mouseleave');
+                rail.off('mouseenter');
+                rail.off('mouseleave');
+                bar.off('mouseenter');
+                bar.off('mouseleave');
+                me.off('touchstart');
+                me.off('touchmove');
+              
                 // remove slimscroll elements
                 bar.remove();
                 rail.remove();
@@ -209,31 +219,37 @@
         }
 
         // on rail over
-        rail.hover(function(){
+        rail.on('mouseenter', function(){
           showBar();
-        }, function(){
+        });
+        rail.on('mouseleave', function(){
           hideBar();
         });
-
+        
         // on bar over
-        bar.hover(function(){
+        bar.on('mouseenter', function(){
           isOverBar = true;
-        }, function(){
+        });
+        bar.on('mouseleave', function(){
           isOverBar = false;
         });
 
         // show on parent mouseover
-        me.hover(function(){
+        
+        me.on('mouseenter', function(){
+          log("slimscroll mouseenter ");
           isOverPanel = true;
           showBar();
           hideBar();
-        }, function(){
+        });
+        me.on('mouseleave', function(){
+          log("slimscroll mouseleave");
           isOverPanel = false;
           hideBar();
         });
 
         // support for mobile
-        me.bind('touchstart', function(e,b){
+        me.on('touchstart', function(e,b){
           if (e.originalEvent.touches.length)
           {
             // record where touch started
@@ -241,7 +257,7 @@
           }
         });
 
-        me.bind('touchmove', function(e){
+        me.on('touchmove', function(e){
           // prevent scrolling the page
           e.originalEvent.preventDefault();
           if (e.originalEvent.touches.length)
@@ -278,7 +294,9 @@
         function _onWheel(e)
         {
           // use mouse wheel only when mouse is over
-          if (!isOverPanel) { return; }
+          if (!isOverPanel) { 
+            return; 
+          }
 
           var e = e || window.event;
 
