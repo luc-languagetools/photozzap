@@ -186,7 +186,7 @@ var ConferenceUi = {
 };
 
 function remove_user_element_if_present(user) {
-    $("#users-list #" + dom_id_from_user(user)).remove();
+    $("#" + dom_id_from_user(user)).remove();
 };
 
 $(document).bind('user_joined', function (ev, user) {
@@ -205,7 +205,11 @@ $(document).bind('user_joined', function (ev, user) {
     log("adding the following element: ");
     log(user_wrapper);
     
-    $('#users-list').append(user_wrapper);
+    $('#users-sidebar-content').append(user_wrapper);
+    // slide down
+    var selector = "#" + dom_id_from_user(user);
+    log("sliding down: [" + selector + "]");
+    $(selector).slideDown();
 });
 
 $(document).bind('user_left', function (ev, user) {
@@ -281,9 +285,8 @@ $(document).bind('user_update', function(ev, user) {
     user_element = $('#user-inner-template').jqote(user);
 
     // replace it in the DOM
-    $("#users-list #" + dom_id_from_user(user)).html(user_element);
-    add_click_event_to_user_viewing("#users-list #" + dom_id_from_user(user) + " a", user);
-    
+    $("#" + dom_id_from_user(user)).html(user_element);
+    add_click_event_to_user_viewing("#" + dom_id_from_user(user) + " a", user);
     
     // don't notify if this is ourself.
     if (Conference.nickname != user.nick ) {
@@ -292,11 +295,7 @@ $(document).bind('user_update', function(ev, user) {
            ConferenceUi.notify_viewing_image(user);
         }
     }
-   
-    // fade in
-    $("#users-list #" + dom_id_from_user(user) + " img").fadeIn('slow', function() {
-        // Animation complete
-    });
+
 });
 
 $(document).bind('connection_status', function(ev, status) {

@@ -17,30 +17,15 @@ function setupControlHandlers() {
 	$('#image-list').slimScroll({
 		height: "auto"
 	});	
-	
-	
+
 	$("#users-sidebar").mouseenter(function() {
-		$("#users-sidebar").transition({top: "15%",
-										  left: "5%",
-										  height: "80%", 
-										  width: "30%"}, function() {
-											var targetHeight = $("#users-sidebar").first().height() - 40;
-											$('#users-sidebar-content').slimScroll({
-												height: targetHeight + 'px',
-                                                alwaysVisible: true,
-                                                color: '#FFFFFF'
-											});											
-											$("#users-sidebar-content").show();
-											
-										  });
+        $("#users-sidebar").data("mouseon", true);
+		 enlargeUsersSidebar(null);
 	});
 
 	$("#users-sidebar").mouseleave(function() {
-		$("#users-sidebar-content").hide();
-		$("#users-sidebar").transition({top: "42%",
-										  left: "10%",
-										  height: "15%", 
-										  width: "15%"});
+        $("#users-sidebar").data("mouseon", false);
+		reduceUsersSidebar();
 	});		
 	
 	$("#history-sidebar").mouseenter(function() {
@@ -128,6 +113,64 @@ function removeMouseMoveCallback() {
 	}	
 }
 
+
+function enlargeUsersSidebar() {
+		$("#users-sidebar").transition({top: "15%",
+										  left: "5%",
+										  height: "80%", 
+										  width: "30%"}, function() {
+                                      
+                                        if ($("#users-sidebar").data("mouseon") == true ) {
+                                            // if the mouse is still on the sidebar,
+                                            // expand contents inside
+                                      
+                                            if ($("#users-sidebar").data("expanded") != true) {
+                                                var targetHeight = $("#users-sidebar").first().height() -
+                                                                   $("#users-sidebar-header").first().height() - 20;
+                                                log("setting up slimScroll on users-sidebar, targetHeight: " + targetHeight);
+                                                $('#users-sidebar-content').slimScroll({
+                                                    height: targetHeight + 'px',
+                                                    start: 'top',
+                                                    alwaysVisible: true,
+                                                    color: '#FFFFFF',
+                                                    opacity: 1,
+                                                    railVisible: true,
+                                                    railColor: '#FFFFFF',
+                                                    railOpacity: 0.2
+                                                });											
+                                                $("#users-sidebar-content").fadeIn(250, function() {
+                                                        // nothing to do
+                                                    });
+                                                $("#users-sidebar").data("expanded", true);
+                                            }
+                                        } 
+									  });
+}
+
+function reduceUsersSidebar() {
+    
+    if ($("#users-sidebar").data("expanded") == true) {
+        // perform transition after fadeout
+    
+        $("#users-sidebar-content").fadeOut(250, function() {    
+            $('#users-sidebar-content').slimScroll({
+                                            destroy: true
+                                        });
+            reduceUsersSidebarTransition();
+        });
+        $("#users-sidebar").data("expanded", false);
+    } else {
+        // perform transition right away
+        reduceUsersSidebarTransition();
+    }
+}
+
+function reduceUsersSidebarTransition() {
+    $("#users-sidebar").transition({top: "42%",
+                                      left: "10%",
+                                      height: "15%", 
+                                      width: "15%"});
+}
 
 
 function enlargeHistorySidebar(highlightSelector) {
