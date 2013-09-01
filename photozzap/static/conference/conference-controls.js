@@ -20,7 +20,7 @@ function setupControlHandlers() {
 
 	$("#users-sidebar").mouseenter(function() {
         $("#users-sidebar").data("mouseon", true);
-		 enlargeUsersSidebar(null);
+		 enlargeUsersSidebar();
 	});
 
 	$("#users-sidebar").mouseleave(function() {
@@ -73,6 +73,21 @@ function setupControlHandlers() {
 	
 }
 
+function showToolbar() {
+    $("#main_image").transition({ opacity: 0.5 });
+    $("#top-navbar").fadeIn();
+    $(".action-sidebar").fadeIn();
+    // set timeout to restore
+    toolbarShown = true;
+}
+
+function hideToolbar() {
+    $("#main_image").transition({ opacity: 1.0 });
+    $("#top-navbar").fadeOut();
+    $(".action-sidebar").fadeOut();
+    toolbarShown = false;
+}
+
 function setupMouseMoveCallback() {
 	$("#main_image").mousemove(function() {
 	
@@ -80,11 +95,7 @@ function setupMouseMoveCallback() {
 		// if toolbar is shown, update timeout 
 	
 		if ( ! toolbarShown ) {
-			$("#main_image").transition({ opacity: 0.5 });
-			$("#top-navbar").fadeIn();
-			$(".action-sidebar").fadeIn();
-			// set timeout to restore
-			toolbarShown = true;
+            showToolbar();
 		}
 		
 		if( disableToolbarTimeout != null ) {
@@ -93,13 +104,15 @@ function setupMouseMoveCallback() {
 		}			
 		
 		disableToolbarTimeout = setTimeout(function() {
-				$("#main_image").transition({ opacity: 1.0 });
-				$("#top-navbar").fadeOut();
-				$(".action-sidebar").fadeOut();
-				toolbarShown = false;
-				disableToolbarTimeout = null;
+            hideToolbar();
+			disableToolbarTimeout = null;
 		}, 1000);
 	});
+}
+
+function toolbarDebugMode() {
+    removeMouseMoveCallback();
+    showToolbar();
 }
 
 

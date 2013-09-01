@@ -479,7 +479,7 @@ $(document).ready(function() {
 </div>
 
 <div id="users-sidebar" class="action-sidebar">
-    <div class="action-sidebar-header">
+    <div id="users-sidebar-header" class="action-sidebar-header">
         <img src="${request.static_url('photozzap:static/icons/users_medium.png')}" />
         Users
     </div>
