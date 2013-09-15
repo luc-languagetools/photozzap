@@ -152,7 +152,7 @@ var ConferenceUi = {
         displayHistorySidebarForNotification("#" + combined_notification.element_id);
                 
         // add click event handler
-        add_click_event_to_new_image("#" + combined_notification.element_id + " a", combined_notification.image);
+        add_click_event_to_history_image("#" + combined_notification.element_id + " a", combined_notification.image);
         
   
         combined_notification.modified = false;
@@ -216,6 +216,16 @@ $(document).bind('user_left', function (ev, user) {
     remove_user_element_if_present(user);
 });
 
+function add_click_event_to_history_image(selector, image) {
+    $(selector).click(function() {
+        // thumbnail clicked
+        log("image thumbnail clicked");
+        $(document).trigger('not_following_user');
+        $(document).trigger('show_current_image', false);
+        $(document).trigger('display_image', image);
+    });
+}
+
 function add_click_event_to_new_image(selector, image) {
     log("add_click_event_to_new_image, selector: [" + selector + "]");
     $(selector).click(function() {
@@ -224,6 +234,7 @@ function add_click_event_to_new_image(selector, image) {
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image', image);
+        $(document).trigger('hide_toolbar');
     });
 };
 
@@ -250,12 +261,18 @@ $(document).bind('new_image', function(ev, image) {
     var comment_list_element = $("#comment-list-template").jqote(comment_list_obj);
     $("#comment_list_area").append(comment_list_element);
     
+    if (Conference.currently_viewing == null) {
+        // not currently viewing an image, show this one
+        $(document).trigger('display_image', image);
+    }
+    
 });
 
 $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
     
     // hide main image container
+    var previousOpacity = $("#main_image").css('opacity');
     $("#main_image").css('opacity', 0); // make transparent
     
     // hide all comments
@@ -272,7 +289,7 @@ $(document).bind('display_image', function(ev, image) {
     $(image_element).attr('id', 'displayed-image');
     $("#main_image").html(image_element);
 	$(document).trigger('resize_image');
-    $('#main_image').fadeTo('slow', 1.0);
+    $('#main_image').fadeTo('slow', previousOpacity);
 });
 
 $(document).bind('user_update', function(ev, user) {
@@ -340,30 +357,6 @@ function click_join() {
         Conference.join_chatroom(nickname);
     };
 };
-
-$(document).bind('show_current_image', function(ev, fade) {
-    log("show_current_image");
-    
-    $("#now_viewing_button").addClass("active");
-    $("#all_images_button").removeClass("active");
-
-    $("#all_images").hide();
-    if(fade == true) {
-        $("#main_image").fadeIn('slow');
-    } else {
-       $("#main_image").show();
-    }
-});
-
-$(document).bind('show_all_images', function(ev, status) {
-    log("show_all_images");
-
-    $("#now_viewing_button").removeClass("active");
-    $("#all_images_button").addClass("active");
-
-    $("#main_image").hide();
-    $("#all_images").fadeIn('slow');
-});
 
 
 $(document).bind('upload_in_progress', function(ev, status) {

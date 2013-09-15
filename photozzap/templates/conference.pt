@@ -16,77 +16,6 @@
 	z-index:-1;
 }
 
-
-.push-notification-holder {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-}
-.push-notification {
-    margin: 10px;
-    border-color: #dddddd;
-    border-width: 1px;
-    border-style: solid;
-    // background-color: #ffffff;
-    color: #fff;
-    padding: 15px 15px 15px 30px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    vertical-align: middle;
-    
-    //box-shadow: 4px 4px 4px #000;
-    //-webkit-box-shadow: 4px 4px 4px #000;
-    //-moz-box-shadow: 4px 4px 4px #000;
-    
-background: #c3d9ff; /* Old browsers */
-background: -moz-linear-gradient(top, #c3d9ff 0%, #b1c8ef 41%, #98b0d9 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c3d9ff), color-stop(41%,#b1c8ef), color-stop(100%,#98b0d9)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* IE10+ */
-background: linear-gradient(to bottom, #c3d9ff 0%,#b1c8ef 41%,#98b0d9 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', endColorstr='#98b0d9',GradientType=0 ); /* IE6-9 */
-
-   
-}   
-
-#footer-container {
-    position: fixed;
-    bottom: 0px;
-    text-align: center;
-
-}
-
-#footer {
-
-    margin-left: 50px;
-    margin-right: 50px;
-
-    border-radius:10px;
-   
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-
-	background: #DDDDDD;
-
-    border-style: solid;
-    border-color: #CCCCCC;
-    border-width: 1px;
-    border-bottom-width:0 px;    
-  
-}
-
-#footer form {
-   margin-bottom: 0px;
-}
-
-.ui-pnotify.stack-bottomright {
-    /* These are just CSS default values to reset the pnotify CSS. */
-    right: auto;
-    top: auto;
-} 
-
 .action-icon {
     margin-right: 4px;
 }
@@ -114,16 +43,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 
 .action-sidebar {
     border-radius:10px;
-	//background: #DDDDDD;
-    //border-style: solid;
-    //border-color: #FFFFFF;
-    //border-width: 3px;
 	z-index:2;
 	display: none;	
 	
 	background-color: rgba(255, 255, 255, 0.1);
-	// background: #FFFFFF;
-	// opacity: 0.6;
 }
 
 .action-sidebar-inverse {
@@ -132,14 +55,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 
 .action-sidebar .action-sidebar-header {
     text-align: center;
+    vertical-align: middle;
     margin-top: 5px;
     margin-bottom: 5px;
     font-size: 36px;
     color: #FFFFFF;
-    // font-family: 'Maven Pro', sans-serif;
-    // font-family: 'Indie Flower', cursive;
-    // font-family: 'Squada One', cursive;
-    //font-family: 'Raleway', sans-serif;
 }
 
 
@@ -151,7 +71,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
     display: none;
 }
 
-.image-preview .notification-thumbnail {
+.notification-thumbnail {
     width: 100%;
     border-radius:10px;
     border-style: solid;
@@ -164,7 +84,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
     left:0px; 
     bottom:0px; 
     width: 100%; 
-    // background-color: rgba(255, 255, 255, 0.5);
+
     border-radius:8px;
     margin-left: 2px;
     margin-bottom: 2px;
@@ -183,13 +103,20 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
     
 }
 
+#gallery-sidebar {
+	position: fixed;
+	top: 10%;
+	left: 42%;
+	width: 15%;
+	height: 15%;
+}
+
 #history-sidebar {
 	position: fixed;
 	top: 42%;
 	right: 10%;
 	width: 15%;
 	height: 15%;
-    
 }
 
 #history-sidebar-overlay-bottom-gradient {
@@ -248,20 +175,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c3d9ff', end
 
 #chat-sidebar {
 	position: fixed;
-	bottom: 10%;
+	bottom: 5%;
 	left: 42%;
 	width: 15%;
 	height: 15%;
-}
-
-#all_images {
-	position: fixed;
-	top: 15%;
-	left: 10%;
-	height: 80%;
-	width: 80%;
-	
-	background: #FFFFFF;
 }
 
 body {
@@ -383,8 +300,8 @@ $(document).ready(function() {
 <script type="text/html" id="image-template">
 <![CDATA[
     <li id="<%= this.thumbnail_id %>" style="display: table; margin-right: -60px;">
-        <a href="#" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
-            <img src="<%= this.thumbnail %>"/>
+        <a href="#" class="thumbnailXXX" style="display: table-cell; vertical-align: middle;">
+            <img src="<%= this.thumbnail %>" style="height: 200px; width: auto;" class="notification-thumbnail"/>
         </a>
 
         <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" 
@@ -452,8 +369,6 @@ $(document).ready(function() {
   <div class="navbar-inner">
     <a class="brand" href="#" style="margin-left: 5px;">Photozzap</a>
     <ul class="nav">
-        <li id="all_images_button" class="active"><a href="#" onclick="$(document).trigger('show_all_images');">All Photos</a></li>    
-        <li id="now_viewing_button"><a href="#" onclick="$(document).trigger('show_current_image', true);">Now Viewing</a></li>
         <li><a href="#" onclick="$('#upload-modal').modal('show');">Upload</a></li>
         <li id='progress-bar' style="display:none;">
             <div class="progress progress-striped active" style="width: 110px; margin-top: 10px; margin-bottom: 0px;">
@@ -472,6 +387,22 @@ $(document).ready(function() {
 </div>
 
 <div id="toolbar-top">
+</div> 
+
+<div id="gallery-sidebar" class="action-sidebar">
+    <div id="gallery-sidebar-header" class="action-sidebar-header">
+        <img src="${request.static_url('photozzap:static/icons/gallery_medium.png')}" />
+        Photos
+    </div>
+    <div id="gallery-sidebar-content" style="display: none;">
+        <ul id="image-list" class="thumbnails">
+            <li id="image-placeholder" style="display: table;">
+                <a href="#" onclick="$('#upload-modal').modal('show');" style="display: table-cell; vertical-align: middle;">
+                    <img class="notification-thumbnail" data-src="holder.js/266x200/text:Upload Photo"/>
+                </a>
+            </li>            
+        </ul>
+    </div>
 </div>
 
 <div id="history-sidebar" class="action-sidebar">
@@ -490,16 +421,6 @@ $(document).ready(function() {
     </div>
 	<div id="users-sidebar-content" style="display: none;">
 	</div>
-</div>
-
-<div class="row-fluid" id="all_images">
-	<ul id="image-list" class="thumbnails">
-		<li id="image-placeholder" style="display: table;">
-			<a href="#" onclick="$('#upload-modal').modal('show');" class="thumbnail" style="height: 160px; width: 210px; display: table-cell; vertical-align: middle;">
-				<img data-src="holder.js/200x150/text:Upload Photo"/>
-			</a>
-		</li>            
-	</ul>
 </div>
 
 

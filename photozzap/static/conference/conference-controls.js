@@ -6,6 +6,8 @@ var ConferenceControls = {
     disableToolbarForNotificationTimeout: null,
     hideHistorySidebarAfterReduce: false,
     historySidebarShownOnce: false,
+    
+    sidebarHandlers: {},
 };
 
 function setupControlHandlers() {
@@ -14,21 +16,15 @@ function setupControlHandlers() {
     $(window).resize(function() {
         resizeHandler();
     });
+
+
+    // you can expand the sidebars from firebug using:
+    // toolbarDebugMode()
+    // ConferenceControls.sidebarHandlers.gallery.expandCallback()
     
-	$('#image-list').slimScroll({
-		height: "auto"
-	});	
+     ConferenceControls.sidebarHandlers.users = setupUsersSidebar();
+     ConferenceControls.sidebarHandlers.gallery = setupGallerySidebar();
 
-	$("#users-sidebar").mouseenter(function() {
-        $("#users-sidebar").data("mouseon", true);
-		 enlargeUsersSidebar();
-	});
-
-	$("#users-sidebar").mouseleave(function() {
-        $("#users-sidebar").data("mouseon", false);
-		reduceUsersSidebar();
-	});		
-	
 	$("#history-sidebar").mouseenter(function() {
         ConferenceControls.historySidebarShownOnce = true;
     
@@ -85,6 +81,135 @@ function setupControlHandlers() {
 	
 }
 
+function setupUsersSidebar() {
+    var options = {
+        main_selector: "#users-sidebar",
+        header_selector: "#users-sidebar-header",
+        content_selector: "#users-sidebar-content",
+        transition_large: {top: "15%",
+                           left: "5%",
+                           height: "80%", 
+                           width: "30%"},
+        transition_small: {top: "42%",
+                           left: "10%",
+                           height: "15%", 
+                           width: "15%"},
+    };
+    return setupSidebar(options);
+}
+
+function setupGallerySidebar() {
+    var options = {
+        main_selector: "#gallery-sidebar",
+        header_selector: "#gallery-sidebar-header",
+        content_selector: "#gallery-sidebar-content",
+        transition_large: {top: "10%",
+                           left: "5%",
+                           height: "80%", 
+                           width: "90%"},
+        transition_small: {top: "10%",
+                           left: "42%",
+                           height: "15%", 
+                           width: "15%"},
+        before_expand: function() {
+            // hide other sidebars
+            $("#history-sidebar").hide();
+            $("#users-sidebar").hide();
+            $("#chat-sidebar").hide();
+        },
+        before_reduce: function() {
+            // restore other sidebars
+            $("#history-sidebar").show();
+            $("#users-sidebar").show();
+            $("#chat-sidebar").show();        
+        },
+    };
+    return setupSidebar(options);
+}
+
+function setupSidebar(options) {
+    // options must have:
+    // main_selector (main sidebar div id)
+    // header_selector
+    // content_selector
+    // transition_large (css transition parameters, expanded)
+    // transition_small (css transition parameters, reduced)
+    
+    enlargeFunction = function(options) {
+        $(options.main_selector).transition(options.transition_large, function() {
+                if ($(options.main_selector).data("mouseon") == true ) {
+                    // if the mouse is still on the sidebar,
+                    // expand contents inside
+              
+                    if ($(options.main_selector).data("expanded") != true) {
+                        var targetHeight = $(options.main_selector).first().height() -
+                                           $(options.header_selector).first().height() - 20;
+                        log("setting up slimScroll on sidebar, targetHeight: " + targetHeight);
+                        $(options.content_selector).slimScroll({
+                            height: targetHeight + 'px',
+                            start: 'top',
+                            alwaysVisible: true,
+                            color: '#FFFFFF',
+                            opacity: 1,
+                            railVisible: true,
+                            railColor: '#FFFFFF',
+                            railOpacity: 0.2
+                        });
+                        $(options.content_selector).fadeIn(250, function() {
+                                // nothing to do
+                            });
+                        $(options.main_selector).data("expanded", true);
+                    }
+                } 
+            });    
+    };
+    
+    reduceFunction = function(options) {
+        if ($(options.main_selector).data("expanded") == true) {
+            // perform transition after fadeout
+        
+            $(options.content_selector).fadeOut(250, function() {    
+                $(options.content_selector).slimScroll({
+                                                destroy: true
+                                            });
+                $(options.main_selector).transition(options.transition_small);
+            });
+            $(options.main_selector).data("expanded", false);
+        } else {
+            // perform transition right away
+            $(options.main_selector).transition(options.transition_small);
+        }    
+    }
+
+    enterHandler = function() {
+        log("mouseenter [" + options.main_selector + "]");
+        if (options.before_expand != undefined) {
+            options.before_expand();
+        }
+        $(options.main_selector).data("mouseon", true);
+        enlargeFunction(options);
+    };
+    
+    leaveHandler = function() {
+        if (options.before_reduce != undefined) {
+            options.before_reduce();
+        }    
+        $(options.main_selector).data("mouseon", false);
+        reduceFunction(options);
+    };
+    
+    $(options.main_selector).mouseenter(enterHandler);
+    $(options.main_selector).mouseleave(leaveHandler);    
+
+    var result = {
+        expandCallback: enterHandler,
+        collapseCallback: leaveHandler,
+    };
+    
+    return result;
+    
+}
+
 function showToolbar() {
     $("#main_image").transition({ opacity: 0.5 });
     $("#top-navbar").fadeIn();
@@ -99,6 +224,10 @@ function hideToolbar() {
     $(".action-sidebar").fadeOut();
     toolbarShown = false;
 }
+
+$(document).bind('hide_toolbar', function(ev) {
+    hideToolbar();
+});
 
 function setupMouseMoveCallback() {
 	$("#main_image").mousemove(function() {
@@ -137,66 +266,6 @@ function removeMouseMoveCallback() {
 		disableToolbarTimeout = null;
 	}	
 }
-
-
-function enlargeUsersSidebar() {
-		$("#users-sidebar").transition({top: "15%",
-										  left: "5%",
-										  height: "80%", 
-										  width: "30%"}, function() {
-                                      
-                                        if ($("#users-sidebar").data("mouseon") == true ) {
-                                            // if the mouse is still on the sidebar,
-                                            // expand contents inside
-                                      
-                                            if ($("#users-sidebar").data("expanded") != true) {
-                                                var targetHeight = $("#users-sidebar").first().height() -
-                                                                   $("#users-sidebar-header").first().height() - 20;
-                                                log("setting up slimScroll on users-sidebar, targetHeight: " + targetHeight);
-                                                $('#users-sidebar-content').slimScroll({
-                                                    height: targetHeight + 'px',
-                                                    start: 'top',
-                                                    alwaysVisible: true,
-                                                    color: '#FFFFFF',
-                                                    opacity: 1,
-                                                    railVisible: true,
-                                                    railColor: '#FFFFFF',
-                                                    railOpacity: 0.2
-                                                });											
-                                                $("#users-sidebar-content").fadeIn(250, function() {
-                                                        // nothing to do
-                                                    });
-                                                $("#users-sidebar").data("expanded", true);
-                                            }
-                                        } 
-									  });
-}
-
-function reduceUsersSidebar() {
-    
-    if ($("#users-sidebar").data("expanded") == true) {
-        // perform transition after fadeout
-    
-        $("#users-sidebar-content").fadeOut(250, function() {    
-            $('#users-sidebar-content').slimScroll({
-                                            destroy: true
-                                        });
-            reduceUsersSidebarTransition();
-        });
-        $("#users-sidebar").data("expanded", false);
-    } else {
-        // perform transition right away
-        reduceUsersSidebarTransition();
-    }
-}
-
-function reduceUsersSidebarTransition() {
-    $("#users-sidebar").transition({top: "42%",
-                                      left: "10%",
-                                      height: "15%", 
-                                      width: "15%"});
-}
-
 
 function slideDownHistoryElement(highlightSelector) {
     // speed up animations if many elements are being shown at once
@@ -341,14 +410,8 @@ function displayHistorySidebarForNotification(highlightSelector) {
 }
 
 function resizeHandler() {
-	log("resizeHandler");
-	$(document).trigger('resize_image');
-	
-	// resize the slimscroll on #all_images
-	$('#image-list').slimScroll({
-		height: "auto"
-	});		
-	
+    log("resizeHandler");
+    $(document).trigger('resize_image');
 };
 
 (function($) {
