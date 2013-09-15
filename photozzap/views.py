@@ -60,7 +60,7 @@ def upload_photo(request):
     thumbnail_filename = photo_id + "_small.JPG"
     thumbnail_abs_path = os.path.join(dir, thumbnail_filename)
     thumbnail_rel_path = os.path.relpath(thumbnail_abs_path, path_base)
-    command = "convert -geometry 200x150 " + output_file_abs_path + " " + thumbnail_abs_path
+    command = "convert -geometry 400x300 " + output_file_abs_path + " " + thumbnail_abs_path
     subprocess.call(command, shell=True)
     
     # create urls

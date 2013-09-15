@@ -149,9 +149,8 @@ var ConferenceUi = {
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
         
         // expand history sidebar
-		displayHistorySidebarForNotification("#" + combined_notification.element_id);
-        // $("#" + combined_notification.element_id).fadeTo('slow', 1);
-        
+        displayHistorySidebarForNotification("#" + combined_notification.element_id);
+                
         // add click event handler
         add_click_event_to_new_image("#" + combined_notification.element_id + " a", combined_notification.image);
         
@@ -257,7 +256,7 @@ $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
     
     // hide main image container
-    $("#main_image").hide()
+    $("#main_image").css('opacity', 0); // make transparent
     
     // hide all comments
     $("#comment_list_area .media-list").hide();
@@ -273,10 +272,7 @@ $(document).bind('display_image', function(ev, image) {
     $(image_element).attr('id', 'displayed-image');
     $("#main_image").html(image_element);
 	$(document).trigger('resize_image');
-    $('#main_image').fadeIn('slow', function() {
-        // Animation complete
-
-    });
+    $('#main_image').fadeTo('slow', 1.0);
 });
 
 $(document).bind('user_update', function(ev, user) {
@@ -437,11 +433,12 @@ $(document).bind('new_comment', function(ev, comment) {
 
 $(document).bind('resize_image', function(ev) {
 	// ensure image is fullscreen
+    // this should work with any aspect ratio
 	
     var image = $("#main_image img").first();
     var imageWidth = image.width();
     var imageHeight = image.height();
-    var imageRatio = 4.0 / 3.0; // hardcode for now
+    var imageRatio = imageWidth / imageHeight;
 	
 	var win = $(window);
 	var winWidth = win.width();
@@ -452,19 +449,28 @@ $(document).bind('resize_image', function(ev) {
 	var newImageHeight = 0;
   
     if(winRatio > imageRatio) {
-		newImageWidth = Math.round(winHeight * imageRatio);
+        newImageWidth = "auto";
 		newImageHeight = winHeight;	
 	} else {
 		newImageWidth = winWidth;
-		newImageHeight = Math.round(winWidth / imageRatio);
+        newImageHeight = "auto";
     }	
-	log("newImageWidth: " + newImageWidth + " newImageHeight: " + newImageHeight + " ratio: " + newImageWidth / newImageHeight);
+	log("newImageWidth: " + newImageWidth + " newImageHeight: " + newImageHeight);
 	image.css({
 		width: newImageWidth,
-        height: newImageHeight
+        height: newImageHeight,
+        marginTop: "0px"
     })
 	
-	
+    var topSpacing = 0;	
+    if (winRatio < imageRatio) {
+        var imageHeight = image.height();
+        topSpacing = (winHeight - imageHeight) / 2;
+       	image.css({
+            marginTop: topSpacing + "px"
+        })
+    }
+    
 });
 
 var clone = (function(){ 

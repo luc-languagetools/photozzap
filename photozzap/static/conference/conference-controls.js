@@ -1,10 +1,11 @@
 var toolbarShown = false;
 var disableToolbarTimeout = null;
 
-var disableToolbarForNotificationTimeout = null;
 
 var ConferenceControls = {
-
+    disableToolbarForNotificationTimeout: null,
+    hideHistorySidebarAfterReduce: false,
+    historySidebarShownOnce: false,
 };
 
 function setupControlHandlers() {
@@ -29,6 +30,17 @@ function setupControlHandlers() {
 	});		
 	
 	$("#history-sidebar").mouseenter(function() {
+        ConferenceControls.historySidebarShownOnce = true;
+    
+        if (ConferenceControls.disableToolbarForNotificationTimeout != null) {
+            // disable timeout function, a new one will be created
+            clearTimeout(ConferenceControls.disableToolbarForNotificationTimeout);
+            ConferenceControls.disableToolbarForNotificationTimeout = null;
+        }    
+    
+        // remove inverse color if present
+        $("#history-sidebar").removeClass("action-sidebar-inverse");
+    
         $("#history-sidebar").data("mouseon", true);
 		enlargeHistorySidebar(null);
 	});	
@@ -186,6 +198,24 @@ function reduceUsersSidebarTransition() {
 }
 
 
+function slideDownHistoryElement(highlightSelector) {
+    // speed up animations if many elements are being shown at once
+    
+    // $(highlightSelector).show();
+    $(highlightSelector).slideDown(300);
+    /*
+    ConferenceControls.numHistoryElementsAnimated += 1;
+    log("numHistoryElementsAnimated: " + ConferenceControls.numHistoryElementsAnimated);
+    var duration = 400;
+    if (ConferenceControls.numHistoryElementsAnimated > 1) {
+        duration = 50;
+    }
+    $(highlightSelector).slideDown(duration, function(){ 
+        ConferenceControls.numHistoryElementsAnimated -= 1;
+    });    
+    */
+}
+
 function enlargeHistorySidebar(highlightSelector) {
     log("enlargeHistorySidebar");
 	$("#history-sidebar").transition({top: "15%",
@@ -210,11 +240,11 @@ function enlargeHistorySidebar(highlightSelector) {
                                                     railVisible: true,
                                                     railColor: '#FFFFFF',
                                                     railOpacity: 0.2
-                                                });											
+                                                });
                                                 $("#history-sidebar-content").fadeIn(250, function() {
                                                     if (highlightSelector != null ) {
                                                         // need to flash an element
-                                                        $(highlightSelector).slideDown();
+                                                        slideDownHistoryElement(highlightSelector);
                                                     }
                                                 });
                                                 $("#history-sidebar").data("expanded", true);
@@ -222,11 +252,16 @@ function enlargeHistorySidebar(highlightSelector) {
                                                 // sidebar already expanded, only need to slide down the new element
                                                 if (highlightSelector != null ) {
                                                     // need to flash an element
-                                                    $(highlightSelector).slideDown();
+                                                    slideDownHistoryElement(highlightSelector);
                                                 }                                                
                                             }
                                       
-
+                                        } else {
+                                            // we still need to display the new notification if present
+                                            if (highlightSelector != null ) {
+                                                // need to flash an element
+                                                slideDownHistoryElement(highlightSelector);
+                                            }
                                         }
 									  });
 }
@@ -261,6 +296,12 @@ function reduceHistorySidebarTransition() {
                                       height: "15%", 
                                       width: "15%"}, function() {
                                         log("reduceHistorySidebar finished transition");
+                                        if (ConferenceControls.hideHistorySidebarAfterReduce) {
+                                            $("#history-sidebar").hide();
+                                            ConferenceControls.hideHistorySidebarAfterReduce = false;
+                                            // remove inverse color if present
+                                            $("#history-sidebar").removeClass("action-sidebar-inverse");
+                                        }
                                       });
 }
 
@@ -268,30 +309,35 @@ function displayHistorySidebarForNotification(highlightSelector) {
     log("displayHistorySidebarForNotification");
 
 	// bring up history sidebar if we're not already in the timeout period
-	if ( $("#history-sidebar").data("expanded") != true ) {
+    if (ConferenceControls.historySidebarShownOnce == false) {
+        // show make the notification visible, don't expand the history sidebar
+        // this is to prevent many events showing up right after connecting
+        $(highlightSelector).show();
+    } else if ( $("#history-sidebar").data("expanded") != true ) {
         $("#history-sidebar").data("mouseon", true);
+        $("#history-sidebar").addClass("action-sidebar-inverse");
         $("#history-sidebar").show();
 		enlargeHistorySidebar(highlightSelector);
 	} else {
         // history sidebar already expanded - fadein the object
-        // $(highlightSelector).fadeTo(600, 1);
-        $(highlightSelector).slideDown();
+        slideDownHistoryElement(highlightSelector);
     }
 	
-    // todo: enable timeout
-    /*
-	if (disableToolbarForNotificationTimeout != null ) {
-		// disable existing timeout function, a new one will be created
-		clearTimeout(disableToolbarForNotificationTimeout);
-		disableToolbarForNotificationTimeout = null;
-	}
-	
-	disableToolbarForNotificationTimeout = setTimeout(function() {
+    // start timeout to close the history sidebar
+    
+    if (ConferenceControls.disableToolbarForNotificationTimeout != null) {
+        // disable timeout function, a new one will be created
+        clearTimeout(ConferenceControls.disableToolbarForNotificationTimeout);
+        ConferenceControls.disableToolbarForNotificationTimeout = null;
+    }
+    
+    ConferenceControls.disableToolbarForNotificationTimeout = setTimeout(function() {
+        $("#history-sidebar").data("mouseon", false);
+        ConferenceControls.hideHistorySidebarAfterReduce = true;
+        ConferenceControls.disableToolbarForNotificationTimeout = null;
 		reduceHistorySidebar();
-		$("#history-sidebar").hide();
-		disableToolbarForNotificationTimeout = null;
-	}, 2000);
-    */
+    }, 3000);
+
 }
 
 function resizeHandler() {
