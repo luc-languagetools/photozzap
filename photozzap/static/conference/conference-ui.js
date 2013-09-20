@@ -223,6 +223,7 @@ function add_click_event_to_history_image(selector, image) {
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image', image);
+        $(document).trigger('hide_toolbar');
     });
 }
 
@@ -289,7 +290,7 @@ $(document).bind('display_image', function(ev, image) {
     $(image_element).attr('id', 'displayed-image');
     $("#main_image").html(image_element);
 	$(document).trigger('resize_image');
-    $('#main_image').fadeTo('slow', previousOpacity);
+    $('#main_image').fadeTo(250, previousOpacity);
 });
 
 $(document).bind('user_update', function(ev, user) {

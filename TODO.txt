@@ -16,9 +16,17 @@ improvements
 bugs
 ====
 
-- improve all image display and selection
 - when following a user, if a new user_viewing event comes while displaying all photos, something weird will happen
 - sometimes when hitting enter in the comment box, a form submission will happen, particularly on chrome
 - comments that were posted by offline users are not processed properly
 - don't let user refresh without a warning
 - improve upload UI, right now too easy to drag a photo into the browser window
+
+- action sidebar:
+ - by default: opacity 0
+ - on mouse move: set opacity to 1.0
+   - add timer to reset opacity back to 0
+   - timer is cancelled on new mousemove
+ - when mouse enters action-sidebar, clear timer
+   - re-enable timer when mouse leaves action-sidebar
+ - when photo is selected, set opacity to 0.0 and remove timers
