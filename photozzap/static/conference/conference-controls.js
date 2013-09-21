@@ -49,6 +49,7 @@ function setupControlHandlers() {
 
 function setupChatSidebar() {
     ConferenceControls.sidebarOptions.chat = {
+        name: "chat",
         main_selector: "#chat-sidebar",
         header_selector: "#chat-sidebar-header",
         content_selector: "#chat-sidebar-content",
@@ -63,13 +64,16 @@ function setupChatSidebar() {
         transition_bottom_small: {bottom: "2%",
                                   left: "42%",
                                   height: "15%", 
-                                  width: "15%"},                           
+                                  width: "15%"},  
+        expand_queue: 0,
+        reduce_queue: 0,
     };
     return setupSidebar(ConferenceControls.sidebarOptions.chat);
 }
 
 function setupUsersSidebar() {
     ConferenceControls.sidebarOptions.users = {
+        name: "users",
         main_selector: "#users-sidebar",
         header_selector: "#users-sidebar-header",
         content_selector: "#users-sidebar-content",
@@ -85,12 +89,15 @@ function setupUsersSidebar() {
                                   left: "20%",
                                   height: "15%", 
                                   width: "15%"},
+        expand_queue: 0,
+        reduce_queue: 0,                                  
     };
     return setupSidebar(ConferenceControls.sidebarOptions.users);
 }
 
 function setupHistorySidebar() {
     ConferenceControls.sidebarOptions.history = {
+        name: "history",
         main_selector: "#history-sidebar",
         header_selector: "#history-sidebar-header",
         content_selector: "#history-sidebar-content",
@@ -105,7 +112,9 @@ function setupHistorySidebar() {
         transition_bottom_small: {top: "83%",
                                   right: "20%",
                                   height: "15%", 
-                                  width: "15%"},                           
+                                  width: "15%"},
+        expand_queue: 0,
+        reduce_queue: 0,                                  
     };
     return setupSidebar(ConferenceControls.sidebarOptions.history);
 }
@@ -113,6 +122,7 @@ function setupHistorySidebar() {
 
 function setupGallerySidebar() {
     ConferenceControls.sidebarOptions.gallery = {
+        name: "gallery",
         main_selector: "#gallery-sidebar",
         header_selector: "#gallery-sidebar-header",
         content_selector: "#gallery-sidebar-content",
@@ -136,6 +146,8 @@ function setupGallerySidebar() {
             $("#users-sidebar").transition(ConferenceControls.sidebarOptions.users.transition_small);
             $("#chat-sidebar").transition(ConferenceControls.sidebarOptions.chat.transition_small);
         },
+        expand_queue: 0,
+        reduce_queue: 0,
     };
     return setupSidebar(ConferenceControls.sidebarOptions.gallery);
 }
@@ -174,6 +186,7 @@ function setupSidebar(options) {
                         $(options.main_selector).data("expanded", true);
                     }
                 } 
+                ConferenceControls.sidebarOptions[options.name].expand_queue -= 1;
             });    
     };
     
@@ -185,17 +198,27 @@ function setupSidebar(options) {
                 $(options.content_selector).slimScroll({
                                                 destroy: true
                                             });
-                $(options.main_selector).transition(options.transition_small);
+                $(options.main_selector).transition(options.transition_small, function() {
+                    ConferenceControls.sidebarOptions[options.name].reduce_queue -= 1;
+                });
             });
             $(options.main_selector).data("expanded", false);
         } else {
             // perform transition right away
-            $(options.main_selector).transition(options.transition_small);
+            $(options.main_selector).transition(options.transition_small, function() {
+                ConferenceControls.sidebarOptions[options.name].reduce_queue -= 1;
+            });
         }    
     }
 
     enterHandler = function() {
         log("mouseenter [" + options.main_selector + "]");
+        if (ConferenceControls.sidebarOptions[options.name].expand_queue >= 1 ) {
+            // don't queue up more events
+            return;
+        }
+        ConferenceControls.sidebarOptions[options.name].expand_queue += 1;
+        log("expand_queue [" + options.name + "] " + ConferenceControls.sidebarOptions[options.name].expand_queue);
         if (options.before_expand != undefined) {
             options.before_expand();
         }
@@ -204,6 +227,13 @@ function setupSidebar(options) {
     };
     
     leaveHandler = function() {
+        log("mouseleave [" + options.main_selector + "]");
+        if (ConferenceControls.sidebarOptions[options.name].reduce_queue >= 1 ) {
+            // don't queue up more events
+            return;
+        }
+        ConferenceControls.sidebarOptions[options.name].reduce_queue += 1;
+        log("reduce_queue [" + options.name + "] " + ConferenceControls.sidebarOptions[options.name].reduce_queue);
         if (options.before_reduce != undefined) {
             options.before_reduce();
         }    
@@ -239,8 +269,15 @@ function hideToolbar() {
 }
 
 $(document).bind('hide_toolbar', function(ev) {
+    // temporarily disable mouse move handlers
+    removeMouseMoveCallback();
     hideToolbar();
+    // restore mouse move handler after a while
+    setTimeout(function() {
+        setupMouseMoveCallback();
+    }, 200);
 });
+
 
 
 function mouseMoveHandler() {
@@ -286,6 +323,11 @@ function actionSidebarMouseMoveHandler() {
 function setupMouseMoveCallback() {
     $("#main_image").mousemove(mouseMoveHandler);
     $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
+}
+
+function removeMouseMoveCallback() {
+    $("#main_image").unbind('mousemove');
+    $(".action-sidebar").unbind('mousemove');
 }
 
 function toolbarDebugMode() {

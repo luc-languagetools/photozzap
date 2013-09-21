@@ -272,10 +272,6 @@ $(document).bind('new_image', function(ev, image) {
 $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
     
-    // hide main image container
-    var previousOpacity = $("#main_image").css('opacity');
-    $("#main_image").css('opacity', 0); // make transparent
-    
     // hide all comments
     $("#comment_list_area .media-list").hide();
     // show the relevant comment area
@@ -290,7 +286,6 @@ $(document).bind('display_image', function(ev, image) {
     $(image_element).attr('id', 'displayed-image');
     $("#main_image").html(image_element);
 	$(document).trigger('resize_image');
-    $('#main_image').fadeTo(250, previousOpacity);
 });
 
 $(document).bind('user_update', function(ev, user) {
