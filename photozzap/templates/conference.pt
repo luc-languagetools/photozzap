@@ -426,7 +426,6 @@ $(document).ready(function() {
         <li><a id="current_nick">{User}</a></li>
         <li><a id="following_nick" style="font-style:italic;"></a></li>
         <li><a id="disconnect" href="#">Disconnect</a></li>
-        <li><a id="enlarge-history" onclick="enlargeHistorySidebar();removeMouseMoveCallback()" href="#">History</a></li>
     </ul>
   </div>
 </div>
