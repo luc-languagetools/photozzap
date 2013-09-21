@@ -21,8 +21,23 @@
 }
 
 .comment-list {
-    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-    font-size: 11px;
+    font-size: 20px;
+}
+
+.comment-nick-heading {
+    font-size: 22px;
+    margin: 0px;
+}
+
+.comment-timestamp {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0px;
+}
+
+.comment-entry {
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .comment-list .media-body h5 {
@@ -62,6 +77,10 @@
     color: #FFFFFF;
 }
 
+.action-sidebar-header-centered {
+    position: relative;
+    top: 25%;
+}
 
 .image-preview {
     position: relative; 
@@ -109,6 +128,10 @@
 	left: 42%;
 	width: 15%;
 	height: 15%;
+}
+
+#image-list {
+    margin: 10px;
 }
 
 #history-sidebar {
@@ -179,6 +202,22 @@
 	left: 42%;
 	width: 15%;
 	height: 15%;
+}
+
+#chat-sidebar-content, .comment-submit-area {
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: rgba(255, 255, 255, 0.50); 
+}
+.comment-submit-area {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;    
+    border-top-left-radius:0px;
+    border-top-right-radius:0px;    
 }
 
 body {
@@ -304,7 +343,7 @@ $(document).ready(function() {
             <img src="<%= this.thumbnail %>" style="height: 200px; width: auto;" class="notification-thumbnail"/>
         </a>
 
-        <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" 
+        <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_white.png')}" 
          style="position: relative; left: -45px; top: -15px; visibility:hidden;" />            
         
     </li>
@@ -313,22 +352,28 @@ $(document).ready(function() {
 
 <script type="text/html" id="comment-list-template">
 <![CDATA[
-    <ul id="<%= this.element_id %>" class="media-list span10 offset2" style="display: none;">
-    </ul>
+    <div id="<%= this.element_id %>" class="comment-holder" style="display: none;">
+    </div>
 ]]>
 </script>
 
 <script type="text/html" id="comment-template">
 <![CDATA[
-    <li class="media" style="display: none;">
-        <a class="pull-left" href="#">
-            <img class="media-object" src="${request.static_url('photozzap:static/icons/comment_medium_grey.png')}">
-        </a>
-        <div class="media-body">
-        <h5 class="media-heading"><%= this.nick %></h5>
-        <%= this.text %>
+
+    <div class="row-fluid comment-entry" style="display: none;">
+        <div class="span2" style="text-align: right;">
+            <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}">
         </div>
-    </li>
+        <div class="span3">
+            <h5 class="comment-nick-heading"><%= this.nick %></h5>
+            <span class="comment-timestamp unapplied-timestamp" title="<%= this.timestamp.toISOString() %>">
+            <%= this.timestamp %>
+            </span>                 
+        </div>
+        <div class="span7" style="margin-top: 5px;">
+            <%= this.text %>
+        </div>
+    </div>
 ]]>
 </script>                        
 
@@ -390,7 +435,7 @@ $(document).ready(function() {
 </div> 
 
 <div id="gallery-sidebar" class="action-sidebar">
-    <div id="gallery-sidebar-header" class="action-sidebar-header">
+    <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/gallery_medium.png')}" />
         Photos
     </div>
@@ -406,7 +451,7 @@ $(document).ready(function() {
 </div>
 
 <div id="history-sidebar" class="action-sidebar">
-    <div id="history-sidebar-header" class="action-sidebar-header">
+    <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/clock_medium2.png')}" />
         History
     </div>
@@ -415,7 +460,7 @@ $(document).ready(function() {
 </div>
 
 <div id="users-sidebar" class="action-sidebar">
-    <div id="users-sidebar-header" class="action-sidebar-header">
+    <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/users_medium.png')}" />
         Users
     </div>
@@ -425,7 +470,7 @@ $(document).ready(function() {
 
 
 <div id="chat-sidebar" class="action-sidebar">
-    <div class="action-sidebar-header">
+    <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/chat_medium.png')}" />
         Chat
     </div>
@@ -434,34 +479,32 @@ $(document).ready(function() {
             <div id="comment_list_area" class="row-fluid comment-list content">
             </div>
         </div>    
-        <div class="row-fluid chat-input">
-            <div class="span12">
-                <form class="form-inline">
-                    <img src="${request.static_url('photozzap:static/icons/comment_big_grey.png')}" />
-                    <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
-                    <button id="comment-submit" class="btn">Send</button>
-                    <script>
-                    $(document).ready(function() {
-                    
-                        // prevent form submission from happening on all forms
-                        $('form').submit(function() {
-                          return false;
-                        });                            
-                    
-                        $("#comment-input").keyup(function (e) {
-                            if (e.keyCode == 13) {
-                                $(document).trigger('send_comment');
-                            }
-                        });
-                        $("#comment-submit").click(function() {
-                            $(document).trigger('send_comment');
-                        });
-                    });
-                    </script>
-                </form>
-            </div>
-        </div>
     </div>	
+    <div id="chat-sidebar-input" class="row-fluid chat-input" style="display: none; text-align: center;">
+        <form class="form-inline comment-submit-area">
+            <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}" />
+            <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
+            <button id="comment-submit" class="btn">Send</button>
+            <script>
+            $(document).ready(function() {
+            
+                // prevent form submission from happening on all forms
+                $('form').submit(function() {
+                  return false;
+                });                            
+            
+                $("#comment-input").keyup(function (e) {
+                    if (e.keyCode == 13) {
+                        $(document).trigger('send_comment');
+                    }
+                });
+                $("#comment-submit").click(function() {
+                    $(document).trigger('send_comment');
+                });
+            });
+            </script>
+        </form>
+    </div>    
 </div>
 
 <div id="main_image">

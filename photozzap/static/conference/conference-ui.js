@@ -273,13 +273,9 @@ $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
     
     // hide all comments
-    $("#comment_list_area .media-list").hide();
+    $("#comment_list_area .comment-holder").hide();
     // show the relevant comment area
     $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
-	// update slimscroll
-	$('#comment_list_area').slimScroll({
-		height: '150px'
-	});	
         
     image_element = document.createElement('img');
     $(image_element).attr('src', image.url);
@@ -411,8 +407,12 @@ $(document).bind('new_comment', function(ev, comment) {
     log("received new comment: " + comment.text);
     
     var comment_element = $("#comment-template").jqote(comment);
-    // $("#" + image_comment_list_dom_id(comment.image)).prepend(comment_element).fadeIn();
-    $(comment_element).prependTo($("#" + image_comment_list_dom_id(comment.image))).hide().fadeIn();
+    $(comment_element).prependTo($("#" + image_comment_list_dom_id(comment.image))).hide().slideDown();
+    
+    // add timeago
+    $("#" + image_comment_list_dom_id(comment.image) + " .unapplied-timestamp").timeago();
+    $("#" + image_comment_list_dom_id(comment.image) + " .unapplied-timestamp").removeClass("unapplied-timestamp");
+    
     
     $("#"+comment.image.thumbnail_id + " .comments-available").css('visibility', '');
     

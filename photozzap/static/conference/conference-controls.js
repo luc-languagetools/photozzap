@@ -53,10 +53,11 @@ function setupChatSidebar() {
         main_selector: "#chat-sidebar",
         header_selector: "#chat-sidebar-header",
         content_selector: "#chat-sidebar-content",
-        transition_large: {bottom: "5%",
-                           left: "10%",
-                           height: "50%", 
-                           width: "80%"},
+        footer_selector: "#chat-sidebar-input",
+        transition_large: {bottom: "1%",
+                           left: "25%",
+                           height: "40%", 
+                           width: "55%"},
         transition_small: {bottom: "10%",
                            left: "42%",
                            height: "15%", 
@@ -65,6 +66,13 @@ function setupChatSidebar() {
                                   left: "42%",
                                   height: "15%", 
                                   width: "15%"},  
+        after_expand: function() {
+            $("#chat-sidebar-input").show();
+            $("#comment-input").focus();
+        },
+        before_reduce: function() {
+            $("#chat-sidebar-input").hide();
+        },
         expand_queue: 0,
         reduce_queue: 0,
     };
@@ -171,14 +179,22 @@ function setupSidebar(options) {
     // transition_small (css transition parameters, reduced)
     
     enlargeFunction = function(options) {
+        $(options.header_selector).removeClass("action-sidebar-header-centered");
         $(options.main_selector).transition(options.transition_large, function() {
                 if ($(options.main_selector).data("mouseon") == true ) {
                     // if the mouse is still on the sidebar,
                     // expand contents inside
               
+                    if (options.after_expand != undefined) {
+                        options.after_expand();
+                    }
+                                                
                     if ($(options.main_selector).data("expanded") != true) {
                         var targetHeight = $(options.main_selector).first().height() -
                                            $(options.header_selector).first().height() - 20;
+                        if (options.footer_selector != undefined) {
+                            targetHeight -= $(options.footer_selector).first().height();
+                        }
                         log("setting up slimScroll on sidebar, targetHeight: " + targetHeight);
                         $(options.content_selector).slimScroll({
                             height: targetHeight + 'px',
@@ -201,6 +217,7 @@ function setupSidebar(options) {
     };
     
     reduceFunction = function(options) {
+        $(options.header_selector).addClass("action-sidebar-header-centered");
         if ($(options.main_selector).data("expanded") == true) {
             // perform transition after fadeout
         
