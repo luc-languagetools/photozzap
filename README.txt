@@ -30,3 +30,14 @@ dnspython needed
 how to run:
 ../bin/python -m photozzap.scripts.jabber_muc_bot development.ini hjw32y84 bot01 Luc
 
+git help
+--------
+
+tagging:
+#list tags
+git tag
+#create annotated tag
+git tag -a v1.4 -m 'my version 1.4'
+#push tags
+git push origin --tags
+
