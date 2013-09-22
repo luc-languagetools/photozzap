@@ -407,12 +407,14 @@ $(document).bind('new_comment', function(ev, comment) {
     log("received new comment: " + comment.text);
     
     var comment_element = $("#comment-template").jqote(comment);
-    $(comment_element).prependTo($("#" + image_comment_list_dom_id(comment.image))).hide().slideDown();
+    $(comment_element).prependTo($("#" + image_comment_list_dom_id(comment.image))).hide();
     
     // add timeago
     $("#" + image_comment_list_dom_id(comment.image) + " .unapplied-timestamp").timeago();
     $("#" + image_comment_list_dom_id(comment.image) + " .unapplied-timestamp").removeClass("unapplied-timestamp");
     
+    // now slide down
+    $("#" + image_comment_list_dom_id(comment.image) + " .new-comment").slideDown();
     
     $("#"+comment.image.thumbnail_id + " .comments-available").css('visibility', '');
     
@@ -461,6 +463,11 @@ $(document).bind('resize_image', function(ev) {
     }
     
 });
+
+String.prototype.trunc = String.prototype.trunc ||
+      function(n){
+          return this.length>n ? this.substr(0,n-1)+'&hellip;' : this;
+      };
 
 var clone = (function(){ 
   return function (obj) { Clone.prototype=obj; return new Clone() };

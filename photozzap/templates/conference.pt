@@ -325,7 +325,7 @@ $(document).ready(function() {
                         <img src="${request.static_url('photozzap:static/icons/comment_small.png')}" class="action-icon"/>
                         <b>
                            <%= comment.nick %>:
-                        </b> <%= comment.text %><br/>
+                        </b> <%= comment.text.trunc(30) %><br/>
                     <% } %>
                 <% } %>            
                 </div>            
@@ -360,7 +360,7 @@ $(document).ready(function() {
 <script type="text/html" id="comment-template">
 <![CDATA[
 
-    <div class="row-fluid comment-entry" style="display: none;">
+    <div class="row-fluid comment-entry new-comment" style="display: none;">
         <div class="span2" style="text-align: right;">
             <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}">
         </div>
