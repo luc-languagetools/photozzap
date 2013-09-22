@@ -22,6 +22,8 @@ var ConferenceUi = {
 
     current_combined_notification: undefined,
     
+    notification_area_clear_timeout: null,
+    
     combined_notifications_summary: function() {
         result = "";
         for( var image_id in ConferenceUi.combined_notifications ) {
@@ -150,11 +152,45 @@ var ConferenceUi = {
         
         // expand history sidebar
         displayHistorySidebarForNotification("#" + combined_notification.element_id);
-                
-        // add click event handler
-        add_click_event_to_history_image("#" + combined_notification.element_id + " a", combined_notification.image);
         
-  
+        // add click event handler
+        add_click_event_to_history_image("#" + combined_notification.element_id + " a", combined_notification.image);        
+        
+        // clone element and place it in notification-area
+        var combined_notification_clone = clone(combined_notification);
+        combined_notification_clone.element_id = "notification_area_" + element_id_increment;
+        var notification_area_element = $("#combined-notification-template2").jqote(combined_notification_clone);
+        // cancel clear timeout if needed
+        if (ConferenceUi.notification_area_clear_timeout != null) {
+            clearTimeout(ConferenceUi.notification_area_clear_timeout);
+            ConferenceUi.notification_area_clear_timeout = null;
+        }
+        // remove previous elements
+        insertNewElement = function() {
+            // now add new elements
+            $("#notification-area").prepend(notification_area_element);
+            // add timeago
+            jQuery("#" + combined_notification_clone.element_id + " .timestamp").timeago();
+            var notification_area_element_selector = "#" + combined_notification_clone.element_id;
+            add_click_event_to_history_image("#" + combined_notification_clone.element_id + " a", combined_notification_clone.image);            
+            $(notification_area_element_selector).fadeIn();
+            ConferenceUi.notification_area_clear_timeout = setTimeout(function() {
+                $("#notification-area .image-preview").fadeOut('fast', function() {
+                    // permanently remove elements
+                    $("#notification-area .image-preview").remove();
+                }); 
+            }, 1500);
+        }
+        if ($("#notification-area .image-preview").length > 0 ) {
+            $("#notification-area .image-preview").fadeOut('fast', function() {
+                // permanently remove elements
+                $("#notification-area .image-preview").remove();
+                insertNewElement();
+            });
+        } else {
+            insertNewElement();
+        }
+ 
         combined_notification.modified = false;
     },
     

@@ -187,6 +187,14 @@
     color: #555555;    
 }
 
+#notification-area {
+    position: fixed;
+    bottom: 1%;
+    right: 1%;
+    width: 30%;
+    height: 28%;
+    z-index: 1;
+}
 
 #users-sidebar {
 	position: fixed;
@@ -318,9 +326,13 @@ $(document).ready(function() {
                 
                 <!-- comments -->
                 <div>
-                <% if( this.comments.length >= 1 ) { %>
-                    <% for( i in this.comments) { 
-                       comment = this.comments[i];
+                <% if( this.comments.length >= 1 ) { 
+                      var comments = this.comments;
+                      if (comments.length > 3) {
+                        comments = comments.slice(-3);
+                      }
+                      for( i in comments) { 
+                       comment = comments[i];
                     %>
                         <img src="${request.static_url('photozzap:static/icons/comment_small.png')}" class="action-icon"/>
                         <b>
@@ -456,6 +468,9 @@ $(document).ready(function() {
     </div>
 	<div id="history-sidebar-content" style="display: none;">
 	</div>
+</div>
+
+<div id="notification-area">
 </div>
 
 <div id="users-sidebar" class="action-sidebar">
