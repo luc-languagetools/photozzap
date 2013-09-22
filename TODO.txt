@@ -17,6 +17,7 @@ bugs
 ====
 
 - when chatting, prevent side notification from appearing
+- disable completion in comment input field
 - when following a user, if a new user_viewing event comes while displaying all photos, something weird will happen
 - sometimes when hitting enter in the comment box, a form submission will happen, particularly on chrome
 - comments that were posted by offline users are not processed properly
