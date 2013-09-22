@@ -14,7 +14,8 @@ if len(argv) != 4:
 # param 2: image, can be "photozzap-master-0716"
 # param 3: git command line, can be "git pull origin load-balancing-1; git checkout load-balancing-1"
 #                                or "git pull origin master; git checkout master"
-#                                or "git fetch; git checkout tags/v0.5" for a tag
+#                                or "git fetch --tags; git checkout tags/v0.5" for a tag
+# example: python create_server.py "dev4" "photozzap-master-0716-2" "git fetch --tags; git checkout tags/v1.04-dev"
    
     
 
