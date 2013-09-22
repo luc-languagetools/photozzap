@@ -324,10 +324,8 @@ $(document).bind('display_image', function(ev, image) {
     $("#main_image img").remove();
     
     $("#main_image").append(image_element);
-    $(document).trigger('resize_image');
 
-    $("#displayed-image").fadeIn(250);
-
+    $("#displayed-image").fadeIn(300);
 });
 
 $(document).bind('user_update', function(ev, user) {

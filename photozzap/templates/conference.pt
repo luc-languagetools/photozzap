@@ -407,7 +407,7 @@ $(document).ready(function() {
 
 <script type="text/html" id="main-image-template">
 <![CDATA[
-    <img id="displayed-image" src="<%= this.url %>" style="display: none;"/>
+    <img id="displayed-image" src="<%= this.url %>" style="display: none;" onload="$(document).trigger('resize_image');"/>
 ]]>
 </script>                        
 
