@@ -389,6 +389,19 @@ $(document).ready(function() {
 ]]>
 </script>                        
 
+<script type="text/html" id="nickname-panel-template">
+<![CDATA[
+    <div id="change-nickname-form">
+        <span><%= this.status %></span>
+        <form class="form-inline" style="text-align: center;">
+            <input id="chosen-nickname2" type="text" class="input-small" placeholder="Nickname">
+            <button id="join-conference2" type="button" class="btn">OK</button>
+        </form>
+    </div>
+]]>
+</script>                        
+
+
 <div id="connection-status-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
     <h3 id="myModalLabel">Joining Conference</h3>

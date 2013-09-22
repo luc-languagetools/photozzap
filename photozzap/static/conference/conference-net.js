@@ -5,6 +5,8 @@ var NS_MUC = "http://jabber.org/protocol/muc";
 var Conference = {
     connection: null,
     nickname: null,
+    using_default_nickname: true,
+    nickname_change_requested: false,
     
     currently_viewing: null,
     
@@ -46,6 +48,11 @@ var Conference = {
         Conference.connection.send(presence_message);    
     },
     
+    change_nickname: function(new_nickname) {
+        Conference.nickname_change_requested = true;
+        Conference.join_chatroom(new_nickname);
+    },
+    
     on_presence: function (presence) {
         log("received presence:")
         log(presence);
@@ -60,7 +67,7 @@ var Conference = {
             var code = $(error).attr('code');
             if( code == 409 ) {
                 // nickname in use
-                $(document).trigger('enter_nickname', "Nickname '" + Conference.nickname + "' is already in use, choose another one");
+                $(document).trigger('nickname_change_request', "Nickname <b>" + Conference.nickname + "</b> is already in use, choose another one");
             };
             
         } else if (type == "unavailable") {
@@ -78,6 +85,13 @@ var Conference = {
                 // fully connected
                 Conference.connected_to_chatroom = true;
                 $(document).trigger('connection_complete', "joined chatroom");
+                if( Conference.using_default_nickname ) {
+                    $(document).trigger('nickname_change_request', "You have been logged in with the default nickname <b>" + Conference.nickname + "</b>. You may enter your own nickname below");
+                }
+            } else if (Conference.nickname_change_requested == true && nick == Conference.nickname){
+                // nickname change
+                $(document).trigger('nickname_change_successful', Conference.nickname);
+                Conference.using_default_nickname = false;
             }
         
             // is this a new user to us ?
@@ -387,8 +401,7 @@ function connection_callback(status) {
     if (status == Strophe.Status.CONNECTED) {
         log("CONNECTED");
         $(document).trigger('connection_status', "Connected, joining conference");
-        $(document).trigger('enter_nickname', "Enter your nickname to continue");
-        //Conference.send_presence_to_chatroom();
+        Conference.join_chatroom("Guest" + randomString(5, '0123456789'));
     } else if (status == Strophe.Status.DISCONNECTED) {
         log("DISCONNECTED");
         $(document).trigger('connection_error', "Disconnected");

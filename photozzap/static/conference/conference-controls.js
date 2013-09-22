@@ -21,7 +21,6 @@ function setupControlHandlers() {
         resizeHandler();
     });
 
-
     // you can expand the sidebars from firebug using:
     // toolbarDebugMode()
     // ConferenceControls.sidebarHandlers.gallery.expandCallback()
@@ -30,22 +29,26 @@ function setupControlHandlers() {
     ConferenceControls.sidebarHandlers.gallery = setupGallerySidebar();
     ConferenceControls.sidebarHandlers.chat = setupChatSidebar();
     ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
-
-    $(".action-sidebar").mouseenter(function() {
-        ConferenceControls.mouseOverActionSidebar = true;
-        // is there a timer to hide toolbar ? if so, cancel it
-        if( ConferenceControls.disableToolbarTimeout != null ) {
-            // disable previous timeout
-            clearTimeout(ConferenceControls.disableToolbarTimeout);
-        }           
-    });
-
-    $(".action-sidebar").mouseleave(function() {
-        ConferenceControls.mouseOverActionSidebar = false;
-    }); 
+    
+    $(".action-sidebar").mouseenter(mouseEnterControlElement);
+    $(".action-sidebar").mouseleave(mouseLeaveControlElement);
+    $("#top-navbar").mouseenter(mouseEnterControlElement);
+    $("#top-navbar").mouseleave(mouseLeaveControlElement);
     
 }
 
+function mouseEnterControlElement() {
+    ConferenceControls.mouseOverActionSidebar = true;
+    // is there a timer to hide toolbar ? if so, cancel it
+    if( ConferenceControls.disableToolbarTimeout != null ) {
+        // disable previous timeout
+        clearTimeout(ConferenceControls.disableToolbarTimeout);
+    }
+}
+
+function mouseLeaveControlElement() {
+    ConferenceControls.mouseOverActionSidebar = false;
+}
 
 function setupChatSidebar() {
     ConferenceControls.sidebarOptions.chat = {

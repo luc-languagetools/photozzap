@@ -355,6 +355,51 @@ $(document).bind('connection_error', function(ev, status) {
     $("#choose-nickname-form").hide();
 });
 
+$(document).bind('nickname_change_successful', function(ev, new_nick) {
+    log("nickname_change_successful");
+    $('#current_nick').html("<b>" + new_nick + "</b>");
+    $("#current_nick").popover('destroy');
+});
+
+$(document).bind('nickname_change_request', function(ev, status) {
+    $("#current_nick").popover('destroy');
+
+    var request_options = {status: status};
+    var changeNicknamePanel = $("#nickname-panel-template").jqote(request_options);
+    $("#current_nick").popover({title: "Change Nickname <a id='nickname-change-popover-close' style='float: right;' href='#'>&#10006;</a>",
+                                html: true,
+                                content: $(changeNicknamePanel).html(),
+                                placement: "bottom",
+                                trigger: "manual"});
+    $("#current_nick").popover('show');
+    $("#chosen-nickname2").focus();
+    $("#nickname-change-popover-close").click(function() {
+        $("#current_nick").popover('destroy');
+    });
+
+    $("#join-conference2").click(function() {
+        change_nickname("#chosen-nickname2");
+    });
+    
+    $("#chosen-nickname2").keyup(function (e) {
+        log("chosen-nickname keyup");
+        var key = e.keyCode || e.which;
+        if (key == 13) {
+            change_nickname("#chosen-nickname2");
+        }
+        
+    });
+})
+
+function change_nickname(selector) {
+    var nickname = $(selector).val();
+    if (nickname.match(/[^a-zA-Z0-9]/g)) {
+        $(document).trigger('nickname_change_request', "Only lowercase, uppercase characters and numbers are allowed. No spaces.");
+    } else {        
+        Conference.change_nickname(nickname);
+    };
+};
+
 $(document).bind('enter_nickname', function(ev, status) {
     // $("#connection-status-text").html(status);
     $("#choose-nickname-form").show();
@@ -364,28 +409,18 @@ $(document).bind('enter_nickname', function(ev, status) {
     $("#chosen-nickname").focus();
     
     $("#join-conference").click(function() {
-        click_join();
+        click_join("#chosen-nickname");
     });
     
     $("#chosen-nickname").keyup(function (e) {
         log("chosen-nickname keyup");
         var key = e.keyCode || e.which;
         if (key == 13) {
-            click_join();
+            click_join("#chosen-nickname");
         }
         
     });    
 });
-
-function click_join() {
-    var nickname = $("#chosen-nickname").val();
-    if (nickname.match(/[^a-zA-Z0-9]/g)) {
-        $(document).trigger('enter_nickname', "Only lowercase, uppercase characters and numbers are allowed. No spaces.");
-    } else {        
-        Conference.join_chatroom(nickname);
-    };
-};
-
 
 $(document).bind('upload_in_progress', function(ev, status) {
     log("upload_in_progress");
