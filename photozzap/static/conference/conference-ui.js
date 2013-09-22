@@ -318,12 +318,16 @@ $(document).bind('display_image', function(ev, image) {
     $("#comment_list_area .comment-holder").hide();
     // show the relevant comment area
     $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
-        
-    image_element = document.createElement('img');
-    $(image_element).attr('src', image.url);
-    $(image_element).attr('id', 'displayed-image');
-    $("#main_image").html(image_element);
-	$(document).trigger('resize_image');
+
+    var image_element = $("#main-image-template").jqote(image);
+    
+    $("#main_image img").remove();
+    
+    $("#main_image").append(image_element);
+    $(document).trigger('resize_image');
+
+    $("#displayed-image").fadeIn(250);
+
 });
 
 $(document).bind('user_update', function(ev, user) {

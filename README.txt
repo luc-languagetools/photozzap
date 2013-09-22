@@ -33,6 +33,11 @@ how to run:
 git help
 --------
 
+branching
+#create new branch
+git checkout -b marys-feature master
+
+
 tagging:
 #list tags
 git tag

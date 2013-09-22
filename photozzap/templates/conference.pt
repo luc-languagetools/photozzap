@@ -405,6 +405,13 @@ $(document).ready(function() {
 ]]>
 </script>                        
 
+<script type="text/html" id="main-image-template">
+<![CDATA[
+    <img id="displayed-image" src="<%= this.url %>" style="display: none;"/>
+]]>
+</script>                        
+
+
 
 <div id="connection-status-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
