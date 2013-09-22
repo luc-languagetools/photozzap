@@ -384,9 +384,9 @@ $(document).bind('nickname_change_request', function(ev, status) {
     });
 
     // disable default action of form submission
-    $('.change-nickname-form form').submit(function() {
+    $('form').submit(function() {
       return false;
-    });    
+    }); 
 
     $("#join-conference2").click(function() {
         change_nickname("#chosen-nickname2");
