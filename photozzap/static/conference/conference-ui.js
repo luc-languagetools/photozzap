@@ -400,28 +400,6 @@ function change_nickname(selector) {
     };
 };
 
-$(document).bind('enter_nickname', function(ev, status) {
-    // $("#connection-status-text").html(status);
-    $("#choose-nickname-form").show();
-    $("#connection-status-text").html(status);
-    $("#progress-bar-connection").hide();
-    
-    $("#chosen-nickname").focus();
-    
-    $("#join-conference").click(function() {
-        click_join("#chosen-nickname");
-    });
-    
-    $("#chosen-nickname").keyup(function (e) {
-        log("chosen-nickname keyup");
-        var key = e.keyCode || e.which;
-        if (key == 13) {
-            click_join("#chosen-nickname");
-        }
-        
-    });    
-});
-
 $(document).bind('upload_in_progress', function(ev, status) {
     log("upload_in_progress");
     $("#progress-bar").fadeIn('slow');

@@ -408,12 +408,6 @@ $(document).ready(function() {
     </div>
     <div class="modal-body">
     <p><span id="connection-status-text"></span></p>
-    <div id="choose-nickname-form" style="display: none;">
-        <form class="form-inline">
-            <input id="chosen-nickname" type="text" class="input-medium" placeholder="Nickname">
-            <button id="join-conference" type="button" class="btn">Join</button>
-        </form>
-    </div>
     </div>
     <div id="progress-bar-connection" class="progress progress-striped active" style="margin-left: 30px; margin-right: 30px;">
         <div class="bar" style="width: 100%;"></div>
