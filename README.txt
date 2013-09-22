@@ -40,4 +40,6 @@ git tag
 git tag -a v1.4 -m 'my version 1.4'
 #push tags
 git push origin --tags
+#or
+git push origin v1.5
 
