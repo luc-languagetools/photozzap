@@ -45,7 +45,7 @@ var Conference = {
         }).c('x', {xmlns: NS_MUC}).c('history', {since: "1970-01-01T00:00:00Z"});
         log("sending presence message:");
         log(presence_message);
-        Conference.connection.send(presence_message);    
+        Conference.connection.send(presence_message);  
     },
     
     change_nickname: function(new_nickname) {
@@ -162,7 +162,8 @@ var Conference = {
         var queued_event = {name: "user_update",
                             special_type: "deferred_user_viewing",
                             user: user,
-                            image_id: image_id};
+                            image_id: image_id,
+                            delayed: false};
         Conference.add_queued_event_internal(image_id,  queued_event);
     },
     
@@ -220,8 +221,10 @@ var Conference = {
             var thumbnail = $(message).children('image').children('thumbnail').text();
             var image_id = $(message).children('image').children('id').text();
             var timestamp = new Date(); // assume right now
+            var delayed = false;
             if( $(message).children('delay').length > 0 ) {
                 timestamp = new Date($(message).children('delay').attr('stamp'));
+                delayed = true;
             }
             var user = Conference.users[from];
             var image = {id: image_id,
@@ -229,7 +232,8 @@ var Conference = {
                          thumbnail: thumbnail,
                          added_by: user,
                          thumbnail_id: "thumbnail_" + image_id,
-                         timestamp: timestamp};
+                         timestamp: timestamp,
+                         delayed: delayed};
                        
             log("received image id " + image_id + ", processing");
 
@@ -275,8 +279,10 @@ var Conference = {
             var comment_text = $(message).children('image').children('text').text();
             
             var timestamp = new Date(); // assume right now
+            var delayed = false;
             if( $(message).children('delay').length > 0 ) {
                 timestamp = new Date($(message).children('delay').attr('stamp'));
+                delayed = true;
             }            
             
             var user = Conference.users[from];
@@ -288,7 +294,8 @@ var Conference = {
                     user: user,
                     nick: nick,
                     text: comment_text,
-                    timestamp: timestamp
+                    timestamp: timestamp,
+                    delayed: delayed
                 };
                 $(document).trigger('new_comment', comment_event);
             } else {
@@ -298,7 +305,8 @@ var Conference = {
                     user: user,
                     nick: nick,
                     text: comment_text,
-                    timestamp: timestamp
+                    timestamp: timestamp,
+                    delayed: delayed
                 };
                 Conference.add_comment_queued_event(image_id, comment_event);
             }

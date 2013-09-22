@@ -9,6 +9,10 @@
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
 <style type="text/css">
 
+a, a:hover {
+    color: #333333;
+}
+
 #main_image {
     height: 100%;
     overflow: hidden;
@@ -53,7 +57,7 @@
 	top: 10px;
 	left: 5%;
 	width: 90%;
-	z-index:1;	
+	z-index:4;	
 }
 
 .action-sidebar {
@@ -307,7 +311,7 @@ $(document).ready(function() {
                 <!-- user uploaded -->
                 <% if( this.user_added != undefined ) { %>
                     <div>
-                        <img src="${request.static_url('photozzap:static/icons/upload.png')}" class="action-icon"/><b><%= this.user_added.nick %></b>
+                        <img src="${request.static_url('photozzap:static/icons/upload_gray.png')}" class="action-icon"/><b><%= this.user_added.nick %></b>
                     </div>
                 <% } %>            
 
@@ -320,7 +324,7 @@ $(document).ready(function() {
                     }
                     var nick_string = nick_array.join(", ");
                     %>
-                    <img src="${request.static_url('photozzap:static/icons/eye.png')}" class="action-icon"/><b><%= nick_string %></b>
+                    <img src="${request.static_url('photozzap:static/icons/eye_gray.png')}" class="action-icon"/><b><%= nick_string %></b>
                 <% } %>
                 </div>
                 
@@ -334,7 +338,7 @@ $(document).ready(function() {
                       for( i in comments) { 
                        comment = comments[i];
                     %>
-                        <img src="${request.static_url('photozzap:static/icons/comment_small.png')}" class="action-icon"/>
+                        <img src="${request.static_url('photozzap:static/icons/comment_small_gray.png')}" class="action-icon"/>
                         <b>
                            <%= comment.nick %>:
                         </b> <%= comment.text.trunc(30) %><br/>
