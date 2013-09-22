@@ -383,6 +383,11 @@ $(document).bind('nickname_change_request', function(ev, status) {
         $("#current_nick").popover('destroy');
     });
 
+    // disable default action of form submission
+    $('.change-nickname-form form').submit(function() {
+      return false;
+    });    
+
     $("#join-conference2").click(function() {
         change_nickname("#chosen-nickname2");
     });
