@@ -68,10 +68,6 @@ a, a:hover {
     background-color: rgba(255, 255, 255, 0.15); 
 }
 
-.action-sidebar-inverse {
-    background-color: rgba(0, 0, 0, 0.35);
-}
-
 .action-sidebar .action-sidebar-header {
     text-align: center;
     vertical-align: middle;
@@ -241,7 +237,7 @@ body {
 </head>
 <body>
 <script src="${request.static_url('photozzap:static/jquery/jquery-1.10.2.min.js')}"></script>
-<script src="${request.static_url('photozzap:static/jquery-ui/jquery-ui.js')}"></script>
+<script src="${request.static_url('photozzap:static/jquery-ui/jquery-ui.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/slimscroll/jquery.slimscroll.js')}"></script>
 <script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/strophe/strophe.min.js')}"></script>
@@ -292,7 +288,7 @@ $(document).ready(function() {
         <% }; %>
         <div class="notification-overlay">
             <div style="height: 10px;"/>            
-            <img src="${request.static_url('photozzap:static/icons/eye.png')}" class="action-icon"/><b><%= this.nick %></b>
+            <img src="${request.static_url('photozzap:static/icons/eye_gray.png')}" class="action-icon"/><b><%= this.nick %></b>
         </div>
     </a>
 ]]>
@@ -311,7 +307,7 @@ $(document).ready(function() {
                 <!-- user uploaded -->
                 <% if( this.user_added != undefined ) { %>
                     <div>
-                        <img src="${request.static_url('photozzap:static/icons/upload_gray.png')}" class="action-icon"/><b><%= this.user_added.nick %></b>
+                        <img src="${request.static_url('photozzap:static/icons/upload_gray.png')}" class="action-icon"/><b><%= this.user_added %></b>
                     </div>
                 <% } %>            
 
@@ -320,7 +316,7 @@ $(document).ready(function() {
                 <% if( this.users_viewing.length >= 1 ) { 
                     var nick_array = new Array();
                     for( i in this.users_viewing ) {
-                        nick_array.push(this.users_viewing[i].nick);
+                        nick_array.push(this.users_viewing[i]);
                     }
                     var nick_string = nick_array.join(", ");
                     %>
@@ -340,7 +336,7 @@ $(document).ready(function() {
                     %>
                         <img src="${request.static_url('photozzap:static/icons/comment_small_gray.png')}" class="action-icon"/>
                         <b>
-                           <%= comment.nick %>:
+                           <%= comment.user %>:
                         </b> <%= comment.text.trunc(30) %><br/>
                     <% } %>
                 <% } %>            
@@ -381,7 +377,7 @@ $(document).ready(function() {
             <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}">
         </div>
         <div class="span3">
-            <h5 class="comment-nick-heading"><%= this.nick %></h5>
+            <h5 class="comment-nick-heading"><%= this.user %></h5>
             <span class="comment-timestamp unapplied-timestamp" title="<%= this.timestamp.toISOString() %>">
             <%= this.timestamp %>
             </span>                 

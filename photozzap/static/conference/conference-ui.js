@@ -24,39 +24,6 @@ var ConferenceUi = {
     
     notification_area_clear_timeout: null,
     
-    combined_notifications_summary: function() {
-        result = "";
-        for( var image_id in ConferenceUi.combined_notifications ) {
-            result += image_id + ", ";
-        }
-        return result;
-    },
-    
-    combined_notification_to_string: function( combined_notification ) {
-        var result = "";
-        result += "combined_notification:\n";
-        result += " image_id: " + combined_notification.image.id + "\n";
-        if (combined_notification.user_added != null) {
-            result += " user_added: " + combined_notification.user_added.nick + "\n";
-        }
-        result += " users_viewing: [";
-        for( var user_index in combined_notification.users_viewing ) {
-            var user = combined_notification.users_viewing[user_index];
-            result += user.nick + ", ";
-        }
-        result += "]\n";
-        result += " comments: [";
-        for( var comment_index in combined_notification.comments ) {
-            var comment = combined_notification.comment[ comment_index ];
-            result += comment.user.nick + ": " + comment.text + ", ";
-        }
-        result += "]\n";
-        result += " modified: " + combined_notification.modified + "\n";
-        result += " element_id: " + combined_notification.element_id + "\n";
-        
-        return result;
-    },
-    
     add_notification: function( notification ) {
     
         // notification.image is the image object
@@ -110,7 +77,6 @@ var ConferenceUi = {
             ConferenceUi.current_combined_notification.user_added = notification.user;
         } else if ( notification.type == "comment" ) {
             ConferenceUi.current_combined_notification.comments.push({user: notification.user,
-                                                                      nick: notification.nick,
                                                                       text: notification.text});
         } else if ( notification.type == "viewing" ) {
             // add the user in the new image
@@ -203,7 +169,7 @@ var ConferenceUi = {
     
         var notification = {image: image,
                             type: "added",
-                            user: image.added_by,
+                            user: image.added_by_nick,
                             timestamp: image.timestamp,
                             delayed: image.delayed};
         ConferenceUi.add_notification(notification);
@@ -213,7 +179,7 @@ var ConferenceUi = {
     notify_viewing_image: function(user) {
         var notification = {image: user.viewing,
                             type: "viewing",
-                            user: user,
+                            user: user.nick,
                             timestamp: user.timestamp,
                             delayed: false};
         ConferenceUi.add_notification(notification);

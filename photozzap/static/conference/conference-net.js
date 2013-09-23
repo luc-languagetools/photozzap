@@ -231,6 +231,7 @@ var Conference = {
                          url: image_url,
                          thumbnail: thumbnail,
                          added_by: user,
+                         added_by_nick: nick,
                          thumbnail_id: "thumbnail_" + image_id,
                          timestamp: timestamp,
                          delayed: delayed};
@@ -291,8 +292,7 @@ var Conference = {
             if( image != undefined ) {
                 var comment_event = {
                     image: image,
-                    user: user,
-                    nick: nick,
+                    user: nick,
                     text: comment_text,
                     timestamp: timestamp,
                     delayed: delayed
@@ -302,8 +302,7 @@ var Conference = {
                 // we don't have the image loaded yet, add a queued event
                 var comment_event = {
                     image_id: image_id,
-                    user: user,
-                    nick: nick,
+                    user: nick,
                     text: comment_text,
                     timestamp: timestamp,
                     delayed: delayed
