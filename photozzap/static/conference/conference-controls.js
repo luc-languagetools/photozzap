@@ -181,68 +181,76 @@ function setupSidebar(options) {
     // transition_large (css transition parameters, expanded)
     // transition_small (css transition parameters, reduced)
     
+    // set the sidebar name
+    $(options.main_selector).data("sidebar-name", options.name);
+    
     enlargeFunction = function(options) {
         $(options.header_selector).removeClass("action-sidebar-header-centered");
+        $(options.main_selector).addClass("action-sidebar-expanded");
         $(options.main_selector).transition(options.transition_large, function() {
-                if ($(options.main_selector).data("mouseon") == true ) {
-                    // if the mouse is still on the sidebar,
-                    // expand contents inside
-              
-                    if (options.after_expand != undefined) {
-                        options.after_expand();
+
+                // if the mouse is still on the sidebar,
+                // expand contents inside
+          
+                if (options.after_expand != undefined) {
+                    options.after_expand();
+                }
+                                            
+                if ($(options.main_selector).data("expanded") != true) {
+                    var targetHeight = $(options.main_selector).first().height() -
+                                       $(options.header_selector).first().height() - 20;
+                    if (options.footer_selector != undefined) {
+                        targetHeight -= $(options.footer_selector).first().height();
                     }
-                                                
-                    if ($(options.main_selector).data("expanded") != true) {
-                        var targetHeight = $(options.main_selector).first().height() -
-                                           $(options.header_selector).first().height() - 20;
-                        if (options.footer_selector != undefined) {
-                            targetHeight -= $(options.footer_selector).first().height();
-                        }
-                        log("setting up slimScroll on sidebar, targetHeight: " + targetHeight);
-                        $(options.content_selector).slimScroll({
-                            height: targetHeight + 'px',
-                            start: 'top',
-                            alwaysVisible: true,
-                            color: '#FFFFFF',
-                            opacity: 1,
-                            railVisible: true,
-                            railColor: '#FFFFFF',
-                            railOpacity: 0.2
+                    log("setting up slimScroll on sidebar, targetHeight: " + targetHeight);
+                    $(options.content_selector).slimScroll({
+                        height: targetHeight + 'px',
+                        start: 'top',
+                        alwaysVisible: true,
+                        color: '#FFFFFF',
+                        opacity: 1,
+                        railVisible: true,
+                        railColor: '#FFFFFF',
+                        railOpacity: 0.2
+                    });
+                    $(options.content_selector).fadeIn(250, function() {
+                            // nothing to do
                         });
-                        $(options.content_selector).fadeIn(250, function() {
-                                // nothing to do
-                            });
-                        $(options.main_selector).data("expanded", true);
-                    }
-                } 
+                    $(options.main_selector).data("expanded", true);
+                }
+                    
                 ConferenceControls.sidebarOptions[options.name].expand_queue -= 1;
             });    
     };
     
     reduceFunction = function(options) {
         $(options.header_selector).addClass("action-sidebar-header-centered");
-        if ($(options.main_selector).data("expanded") == true) {
-            // perform transition after fadeout
-        
-            $(options.content_selector).fadeOut(250, function() {    
-                $(options.content_selector).slimScroll({
-                                                destroy: true
-                                            });
-                $(options.main_selector).transition(options.transition_resting, function() {
-                    ConferenceControls.sidebarOptions[options.name].reduce_queue -= 1;
-                });
-            });
-            $(options.main_selector).data("expanded", false);
-        } else {
-            // perform transition right away
+
+        // perform transition after fadeout
+    
+        $(options.content_selector).fadeOut(250, function() {    
+            $(options.content_selector).slimScroll({
+                                            destroy: true
+                                        });
             $(options.main_selector).transition(options.transition_resting, function() {
                 ConferenceControls.sidebarOptions[options.name].reduce_queue -= 1;
             });
-        }    
+        });
+        $(options.main_selector).data("expanded", false);
+        $(options.main_selector).removeClass("action-sidebar-expanded");
     }
 
-    enterHandler = function() {
-        log("mouseenter [" + options.main_selector + "]");
+    expandHandler = function(event) {
+        log("expandHandler [" + options.main_selector + "]");
+
+        if ($(options.main_selector).data("expanded") == true) {
+            // don't do anything
+            return;
+        }
+       
+        // close all previously open sidebars
+        closeAllSidebars();
+        
         if (ConferenceControls.sidebarOptions[options.name].expand_queue >= 1 ) {
             // don't queue up more events
             return;
@@ -252,12 +260,11 @@ function setupSidebar(options) {
         if (options.before_expand != undefined) {
             options.before_expand();
         }
-        $(options.main_selector).data("mouseon", true);
         enlargeFunction(options);
     };
     
-    leaveHandler = function() {
-        log("mouseleave [" + options.main_selector + "]");
+    collapseHandler = function() {
+        log("collapseHandler [" + options.main_selector + "]");
         if (ConferenceControls.sidebarOptions[options.name].reduce_queue >= 1 ) {
             // don't queue up more events
             return;
@@ -267,19 +274,29 @@ function setupSidebar(options) {
         if (options.before_reduce != undefined) {
             options.before_reduce();
         }    
-        $(options.main_selector).data("mouseon", false);
         reduceFunction(options);
+
     };
-    
-    $(options.main_selector).mouseenter(enterHandler);
-    $(options.main_selector).mouseleave(leaveHandler);    
+
+    $(options.main_selector).on('click', expandHandler);
 
     var result = {
-        expandCallback: enterHandler,
-        collapseCallback: leaveHandler,
+        expandCallback: expandHandler,
+        collapseCallback: collapseHandler,
     };
     
     return result;
+    
+}
+
+function closeAllSidebars() {
+    $(".action-sidebar").each(function() {
+        if( $(this).data("expanded") == true ) {
+            var name = $(this).data("sidebar-name");
+            log("sidebar " + name + " is expanded");
+            ConferenceControls.sidebarHandlers[name].collapseCallback();
+        }
+    });
     
 }
 

@@ -53,8 +53,13 @@ a, a:hover {
     border-radius:10px;
     z-index:2;
    
+    cursor: pointer;
     opacity: 0;
     background-color: rgba(255, 255, 255, 0.15); 
+}
+
+.action-sidebar-expanded {
+    cursor: auto;
 }
 
 .action-sidebar .action-sidebar-header {
