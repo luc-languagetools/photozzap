@@ -57,18 +57,7 @@ function setupChatSidebar() {
         header_selector: "#chat-sidebar-header",
         content_selector: "#chat-sidebar-content",
         footer_selector: "#chat-sidebar-input",
-        transition_large: {bottom: "1%",
-                           left: "25%",
-                           height: "40%", 
-                           width: "55%"},
-        transition_small: {bottom: "10%",
-                           left: "42%",
-                           height: "15%", 
-                           width: "15%"},
-        transition_bottom_small: {bottom: "2%",
-                                  left: "42%",
-                                  height: "15%", 
-                                  width: "15%"},  
+        expanded_class: "chat-sidebar-expanded",
         after_expand: function() {
             $("#chat-sidebar-input").show();
             $("#comment-input").focus();
@@ -76,10 +65,7 @@ function setupChatSidebar() {
         before_reduce: function() {
             $("#chat-sidebar-input").hide();
         },
-        expand_queue: 0,
-        reduce_queue: 0,
     };
-    ConferenceControls.sidebarOptions.chat.transition_resting = ConferenceControls.sidebarOptions.chat.transition_small;
     return setupSidebar(ConferenceControls.sidebarOptions.chat);
 }
 
@@ -89,22 +75,8 @@ function setupUsersSidebar() {
         main_selector: "#users-sidebar",
         header_selector: "#users-sidebar-header",
         content_selector: "#users-sidebar-content",
-        transition_large: {top: "15%",
-                           left: "5%",
-                           height: "80%", 
-                           width: "30%"},
-        transition_small: {top: "42%",
-                           left: "10%",
-                           height: "15%", 
-                           width: "15%"},
-        transition_bottom_small: {top: "83%",
-                                  left: "20%",
-                                  height: "15%", 
-                                  width: "15%"},
-        expand_queue: 0,
-        reduce_queue: 0,                                  
+        expanded_class: "users-sidebar-expanded",
     };
-    ConferenceControls.sidebarOptions.users.transition_resting = ConferenceControls.sidebarOptions.users.transition_small;
     return setupSidebar(ConferenceControls.sidebarOptions.users);
 }
 
@@ -114,22 +86,8 @@ function setupHistorySidebar() {
         main_selector: "#history-sidebar",
         header_selector: "#history-sidebar-header",
         content_selector: "#history-sidebar-content",
-        transition_large: {top: "15%",
-                          right: "5%",
-                          height: "80%", 
-                          width: "30%"},
-        transition_small: {top: "42%",
-                          right: "10%",
-                          height: "15%", 
-                          width: "15%"},
-        transition_bottom_small: {top: "83%",
-                                  right: "20%",
-                                  height: "15%", 
-                                  width: "15%"},
-        expand_queue: 0,
-        reduce_queue: 0,                                  
+        expanded_class: "history-sidebar-expanded",
     };
-    ConferenceControls.sidebarOptions.history.transition_resting = ConferenceControls.sidebarOptions.history.transition_small;
     return setupSidebar(ConferenceControls.sidebarOptions.history);
 }
 
@@ -140,36 +98,19 @@ function setupGallerySidebar() {
         main_selector: "#gallery-sidebar",
         header_selector: "#gallery-sidebar-header",
         content_selector: "#gallery-sidebar-content",
-        transition_large: {top: "10%",
-                           left: "5%",
-                           height: "70%", 
-                           width: "90%"},
-        transition_small: {top: "10%",
-                           left: "42%",
-                           height: "15%", 
-                           width: "15%"},
+        expanded_class: "gallery-sidebar-expanded",
         before_expand: function() {
-            // put other sidebars at bottom
-            ConferenceControls.sidebarOptions.history.transition_resting = ConferenceControls.sidebarOptions.history.transition_bottom_small;
-            ConferenceControls.sidebarOptions.users.transition_resting = ConferenceControls.sidebarOptions.users.transition_bottom_small;            
-            ConferenceControls.sidebarOptions.chat.transition_resting = ConferenceControls.sidebarOptions.chat.transition_bottom_small;
-            $("#history-sidebar").transition(ConferenceControls.sidebarOptions.history.transition_bottom_small);
-            $("#users-sidebar").transition(ConferenceControls.sidebarOptions.users.transition_bottom_small);
-            $("#chat-sidebar").transition(ConferenceControls.sidebarOptions.chat.transition_bottom_small);
+            $("#history-sidebar").addClass("history-sidebar-alternate");
+            $("#users-sidebar").addClass("users-sidebar-alternate");
+            $("#chat-sidebar").addClass("chat-sidebar-alternate");
         },
         before_reduce: function() {
             // restore sidebars to their original location
-            ConferenceControls.sidebarOptions.history.transition_resting = ConferenceControls.sidebarOptions.history.transition_small;
-            ConferenceControls.sidebarOptions.users.transition_resting = ConferenceControls.sidebarOptions.users.transition_small;            
-            ConferenceControls.sidebarOptions.chat.transition_resting = ConferenceControls.sidebarOptions.chat.transition_small;            
-            $("#history-sidebar").transition(ConferenceControls.sidebarOptions.history.transition_small);
-            $("#users-sidebar").transition(ConferenceControls.sidebarOptions.users.transition_small);
-            $("#chat-sidebar").transition(ConferenceControls.sidebarOptions.chat.transition_small);
+            $("#history-sidebar").removeClass("history-sidebar-alternate");
+            $("#users-sidebar").removeClass("users-sidebar-alternate");
+            $("#chat-sidebar").removeClass("chat-sidebar-alternate");
         },
-        expand_queue: 0,
-        reduce_queue: 0,
     };
-    ConferenceControls.sidebarOptions.gallery.transition_resting = ConferenceControls.sidebarOptions.gallery.transition_small;
     return setupSidebar(ConferenceControls.sidebarOptions.gallery);
 }
 
@@ -178,8 +119,7 @@ function setupSidebar(options) {
     // main_selector (main sidebar div id)
     // header_selector
     // content_selector
-    // transition_large (css transition parameters, expanded)
-    // transition_small (css transition parameters, reduced)
+    // expanded_class
     
     // set the sidebar name
     $(options.main_selector).data("sidebar-name", options.name);
@@ -187,7 +127,7 @@ function setupSidebar(options) {
     enlargeFunction = function(options) {
         $(options.header_selector).removeClass("action-sidebar-header-centered");
         $(options.main_selector).addClass("action-sidebar-expanded");
-        $(options.main_selector).transition(options.transition_large, function() {
+        $(options.main_selector).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
 
                 // if the mouse is still on the sidebar,
                 // expand contents inside
@@ -219,8 +159,9 @@ function setupSidebar(options) {
                     $(options.main_selector).data("expanded", true);
                 }
                     
-                ConferenceControls.sidebarOptions[options.name].expand_queue -= 1;
             });    
+        $(options.main_selector).addClass(options.expanded_class);
+            
     };
     
     reduceFunction = function(options) {
@@ -232,9 +173,8 @@ function setupSidebar(options) {
             $(options.content_selector).slimScroll({
                                             destroy: true
                                         });
-            $(options.main_selector).transition(options.transition_resting, function() {
-                ConferenceControls.sidebarOptions[options.name].reduce_queue -= 1;
-            });
+                                        
+            $(options.main_selector).removeClass(options.expanded_class);
         });
         $(options.main_selector).data("expanded", false);
         $(options.main_selector).removeClass("action-sidebar-expanded");
@@ -251,12 +191,6 @@ function setupSidebar(options) {
         // close all previously open sidebars
         closeAllSidebars();
         
-        if (ConferenceControls.sidebarOptions[options.name].expand_queue >= 1 ) {
-            // don't queue up more events
-            return;
-        }
-        ConferenceControls.sidebarOptions[options.name].expand_queue += 1;
-        log("expand_queue [" + options.name + "] " + ConferenceControls.sidebarOptions[options.name].expand_queue);
         if (options.before_expand != undefined) {
             options.before_expand();
         }
@@ -265,12 +199,7 @@ function setupSidebar(options) {
     
     collapseHandler = function() {
         log("collapseHandler [" + options.main_selector + "]");
-        if (ConferenceControls.sidebarOptions[options.name].reduce_queue >= 1 ) {
-            // don't queue up more events
-            return;
-        }
-        ConferenceControls.sidebarOptions[options.name].reduce_queue += 1;
-        log("reduce_queue [" + options.name + "] " + ConferenceControls.sidebarOptions[options.name].reduce_queue);
+
         if (options.before_reduce != undefined) {
             options.before_reduce();
         }    
@@ -370,6 +299,9 @@ function actionSidebarMouseMoveHandler() {
 function setupMouseMoveCallback() {
     $("#main_image").mousemove(mouseMoveHandler);
     $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
+    $("#main_image").on("click", function() {
+        closeAllSidebars();
+    });
 }
 
 function removeMouseMoveCallback() {
