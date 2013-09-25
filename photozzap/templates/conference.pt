@@ -129,7 +129,7 @@ $(document).ready(function() {
 <![CDATA[
     <li id="<%= this.thumbnail_id %>" style="display: table; margin-right: -60px;">
         <a href="#" class="thumbnailXXX" style="display: table-cell; vertical-align: middle;">
-            <img src="<%= this.thumbnail %>" style="height: 200px; width: auto;" class="notification-thumbnail"/>
+            <img src="<%= this.thumbnail %>" class="notification-thumbnail"/>
         </a>
 
         <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_white.png')}" 
@@ -238,7 +238,8 @@ $(document).ready(function() {
 
 <div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions">
     <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/gallery_medium.png')}" />
+        <img src="${request.static_url('photozzap:static/icons/gallery_medium_white.png')}" />
+        <br/>
         Photos
     </div>
     <div id="gallery-sidebar-content" style="display: none;">
@@ -254,7 +255,8 @@ $(document).ready(function() {
 
 <div id="history-sidebar" class="action-sidebar history-sidebar-default sidebar-transitions">
     <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/clock_medium2.png')}" />
+        <img src="${request.static_url('photozzap:static/icons/clock_medium_white.png')}" />
+        <br/>
         History
     </div>
 	<div id="history-sidebar-content" style="display: none;">
@@ -266,7 +268,8 @@ $(document).ready(function() {
 
 <div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions">
     <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/users_medium.png')}" />
+        <img src="${request.static_url('photozzap:static/icons/users_medium_white.png')}" />
+        <br/>
         Users
     </div>
 	<div id="users-sidebar-content" style="display: none;">
@@ -276,7 +279,8 @@ $(document).ready(function() {
 
 <div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions">
     <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/chat_medium.png')}" />
+        <img src="${request.static_url('photozzap:static/icons/chat_medium_white.png')}" />
+        <br/>
         Chat
     </div>
     <div id="chat-sidebar-content" class="container-fluid" style="display: none;">

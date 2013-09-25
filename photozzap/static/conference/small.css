@@ -2,25 +2,50 @@
     display: none;
 }
 
-#users-sidebar, #gallery-sidebar, #chat-sidebar, #history-sidebar {
-    top: 2%;
-    width: 10%;
-    height: 10%;
+.gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
+    top: 84%;
+    width: 20%;
+    height: 15%;
 }
 
-#users-sidebar {
+.users-sidebar-default {
+    left: 4%;
+}
+
+.gallery-sidebar-default {
+    left: 28%;
+}
+
+.chat-sidebar-default {
+    left: 52%;
+}
+
+.history-sidebar-default {
+    left: 76%;
+}
+
+.gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
+    top: 20%;
     left: 5%;
+    width: 90%;
+    height: 60%;
 }
 
-#gallery-sidebar {
-    left: 20%;
+.action-sidebar-header-centered {
+    position: relative;
+    top: 5%;
 }
 
-#chat-sidebar {
-    left: 40%;
+.action-sidebar-header img {
+    height: auto;
+    width: 50%;
 }
 
-#history-sidebar {
-    left: 60%;
+.action-sidebar .action-sidebar-header {
+    font-size: 26px;
 }
 
+.gallery-sidebar-expanded .notification-thumbnail {
+    height: 80px;
+    width: auto;
+}

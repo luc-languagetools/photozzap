@@ -62,6 +62,10 @@ a, a:hover {
     cursor: auto;
 }
 
+.action-sidebar-expanded .action-sidebar-header  br{
+    display: none;
+}
+
 .action-sidebar .action-sidebar-header {
     text-align: center;
     vertical-align: middle;
@@ -74,6 +78,16 @@ a, a:hover {
 .action-sidebar-header-centered {
     position: relative;
     top: 25%;
+}
+
+.action-sidebar-header img {
+    height: auto;
+    width: 30%;
+}
+
+.action-sidebar-expanded .action-sidebar-header img {
+    height: auto;
+    width: 15%;
 }
 
 .image-preview {
@@ -89,7 +103,12 @@ a, a:hover {
     border-radius:10px;
     border-style: solid;
     border-color: #FFFFFF;
-    border-width: 2px;    
+    border-width: 2px;   
+ }
+
+.gallery-sidebar-expanded .notification-thumbnail {
+    height: 200px; 
+    width: auto;
 }
 
 .image-preview .notification-overlay {
