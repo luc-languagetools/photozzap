@@ -300,7 +300,17 @@ function setupMouseMoveCallback() {
     $("#main_image").mousemove(mouseMoveHandler);
     $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
     $("#main_image").on("click", function() {
-        closeAllSidebars();
+        // any sidebars open ? If not, permanently open sidebars with no timeout
+        var open_sidebars = $(".action-sidebar-expanded");
+        if (open_sidebars.length == 0) {
+            if ( ! ConferenceControls.toolbarShown ) {
+                showToolbar();
+            } else {
+                hideToolbar();
+            }        
+        } else {
+            closeAllSidebars();
+        }
     });
 }
 

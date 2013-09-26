@@ -257,6 +257,10 @@ a, a:hover {
     border-top-right-radius:0px;    
 }
 
+.popover {
+    width: 200px;
+}
+
 body {
 	background: #000000;
     font-family: 'Pathway Gothic One', sans-serif;

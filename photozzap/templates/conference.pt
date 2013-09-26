@@ -7,6 +7,7 @@
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
 <!-- Bootstrap -->
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
+<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
 <!-- photozzap style sheets -->
 <link href="${request.static_url('photozzap:static/conference/default.css')}" rel="stylesheet" media="screen">
 <link rel="stylesheet" media="all and (max-width: 480px)"  href="${request.static_url('photozzap:static/conference/small.css')}"/>
@@ -215,21 +216,32 @@ $(document).ready(function() {
 
 <div class="navbar" id="top-navbar">
   <div class="navbar-inner">
-    <a class="brand" href="#" style="margin-left: 5px;">Photozzap</a>
-    <ul class="nav">
-        <li><a href="#" onclick="$('#upload-modal').modal('show');">Upload</a></li>
-        <li id='progress-bar' style="display:none;">
-            <div class="progress progress-striped active" style="width: 110px; margin-top: 10px; margin-bottom: 0px;">
-                <div class="bar" style="width: 100%;"></div>
-            </div>
-        </li>
-        <li><a id='progress-bar-label'></a></li>
-    </ul>
-    <ul class="nav pull-right">
-        <li><a id="current_nick">{User}</a></li>
-        <li><a id="following_nick" style="font-style:italic;"></a></li>
-        <li><a id="disconnect" href="#">Disconnect</a></li>
-    </ul>
+    <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>    
+        <a class="brand" href="#" style="margin-left: 5px;">Photozzap</a>
+        <ul class="nav">
+            <li><a id="current_nick">{User}</a></li> 
+        </ul>
+        <div class="nav-collapse collapse navbar-responsive-collapse">
+            <ul class="nav">
+                <li><a href="#" onclick="$('#upload-modal').modal('show');">Upload</a></li>
+                <li id='progress-bar' style="display:none;">
+                    <div class="progress progress-striped active" style="width: 110px; margin-top: 10px; margin-bottom: 0px;">
+                        <div class="bar" style="width: 100%;"></div>
+                    </div>
+                </li>
+                <li><a id='progress-bar-label'></a></li>
+            </ul>
+            <ul class="nav pull-right">
+                <li><a id="following_nick" style="font-style:italic;"></a></li>
+                <li><a id="disconnect" href="#">Disconnect</a></li>
+            </ul>
+        </div>
+    </div>
   </div>
 </div>
 
