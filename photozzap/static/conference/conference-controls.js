@@ -255,7 +255,7 @@ $(document).bind('hide_toolbar', function(ev) {
         // restore mouse move handler after a while
         setTimeout(function() {
             setupMouseMoveCallback();
-        }, 200);
+        }, 1000);
     }
 });
 
