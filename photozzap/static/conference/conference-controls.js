@@ -10,7 +10,8 @@ var ConferenceControls = {
     
     toolbarShown: false,
     disableToolbarTimeout: null,
-    mouseOverActionSidebar: false
+    mouseOverActionSidebar: false,
+    touchMode: true
 };
 
 
@@ -30,10 +31,12 @@ function setupControlHandlers() {
     ConferenceControls.sidebarHandlers.chat = setupChatSidebar();
     ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
     
-    $(".action-sidebar").mouseenter(mouseEnterControlElement);
-    $(".action-sidebar").mouseleave(mouseLeaveControlElement);
-    $("#top-navbar").mouseenter(mouseEnterControlElement);
-    $("#top-navbar").mouseleave(mouseLeaveControlElement);
+    if (! ConferenceControls.touchMode ) {
+        $(".action-sidebar").mouseenter(mouseEnterControlElement);
+        $(".action-sidebar").mouseleave(mouseLeaveControlElement);
+        $("#top-navbar").mouseenter(mouseEnterControlElement);
+        $("#top-navbar").mouseleave(mouseLeaveControlElement);
+    }
     
 }
 
@@ -245,13 +248,15 @@ function hideToolbar() {
 }
 
 $(document).bind('hide_toolbar', function(ev) {
-    // temporarily disable mouse move handlers
-    removeMouseMoveCallback();
     hideToolbar();
-    // restore mouse move handler after a while
-    setTimeout(function() {
-        setupMouseMoveCallback();
-    }, 200);
+    if (! ConferenceControls.touchMode ) {
+        // temporarily disable mouse move handlers
+        removeMouseMoveCallback();    
+        // restore mouse move handler after a while
+        setTimeout(function() {
+            setupMouseMoveCallback();
+        }, 200);
+    }
 });
 
 
@@ -297,26 +302,38 @@ function actionSidebarMouseMoveHandler() {
 }
 
 function setupMouseMoveCallback() {
-    $("#main_image").mousemove(mouseMoveHandler);
-    $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
-    $("#main_image").on("click", function() {
-        // any sidebars open ? If not, permanently open sidebars with no timeout
-        var open_sidebars = $(".action-sidebar-expanded");
-        if (open_sidebars.length == 0) {
-            if ( ! ConferenceControls.toolbarShown ) {
-                showToolbar();
+    if (ConferenceControls.touchMode) {
+        $("#main_image").on("click", function() {
+            // any sidebars open ? If not, permanently open sidebars with no timeout
+            var open_sidebars = $(".action-sidebar-expanded");
+            if (open_sidebars.length == 0) {
+                if ( ! ConferenceControls.toolbarShown ) {
+                    log("no sidebars open, and toolbar not shown, show toolbar");
+                    showToolbar();
+                } else {
+                    log("no sidebars open, and toolbar shown, hide toolbar");
+                    hideToolbar();
+                }        
             } else {
-                hideToolbar();
-            }        
-        } else {
+                log("one sidebar open, close all sidebars");
+                closeAllSidebars();
+            }
+        });
+    } else {
+        $("#main_image").mousemove(mouseMoveHandler);
+        $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
+        $("#main_image").on("click", function() {
+            // close sidebars
             closeAllSidebars();
-        }
-    });
+        });        
+    }
 }
 
 function removeMouseMoveCallback() {
-    $("#main_image").unbind('mousemove');
-    $(".action-sidebar").unbind('mousemove');
+    if( ! ConferenceControls.touchMode ) {
+        $("#main_image").unbind('mousemove');
+        $(".action-sidebar").unbind('mousemove');
+    }
 }
 
 function toolbarDebugMode() {
