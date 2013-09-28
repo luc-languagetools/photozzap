@@ -11,7 +11,7 @@ var ConferenceControls = {
     toolbarShown: false,
     disableToolbarTimeout: null,
     mouseOverActionSidebar: false,
-    touchMode: true
+    touchMode: false
 };
 
 
@@ -235,7 +235,7 @@ function closeAllSidebars() {
 function showToolbar() {
     $("#main_image").transition({ opacity: 0.5 });
     $("#top-navbar").fadeIn(200);
-    $(".action-sidebar").fadeTo(200, 1.0);
+    $(".action-sidebar").fadeIn(200);
     // set timeout to restore
     ConferenceControls.toolbarShown = true;
 }
@@ -243,7 +243,7 @@ function showToolbar() {
 function hideToolbar() {
     $("#main_image").transition({ opacity: 1.0 });
     $("#top-navbar").fadeOut(200);
-    $(".action-sidebar").fadeTo(200, 0);
+    $(".action-sidebar").fadeOut(200);
     ConferenceControls.toolbarShown = false;
 }
 
@@ -304,19 +304,23 @@ function actionSidebarMouseMoveHandler() {
 function setupMouseMoveCallback() {
     if (ConferenceControls.touchMode) {
         $("#main_image").on("click", function() {
-            // any sidebars open ? If not, permanently open sidebars with no timeout
-            var open_sidebars = $(".action-sidebar-expanded");
-            if (open_sidebars.length == 0) {
-                if ( ! ConferenceControls.toolbarShown ) {
-                    log("no sidebars open, and toolbar not shown, show toolbar");
-                    showToolbar();
+            // if toolbar is not shown, show toolbar
+            // if toolbar is shown,
+            //   if any sidebars expanded, close them
+            //   if no sidebars expanded, hide toolbar
+
+            if ( ! ConferenceControls.toolbarShown ) {
+                log("no sidebars open, and toolbar not shown, show toolbar");
+                showToolbar();
+            } else {
+                var open_sidebars = $(".action-sidebar-expanded");
+                if (open_sidebars.length > 0) {                
+                    log("one sidebar open, close all sidebars");
+                    closeAllSidebars();                
                 } else {
                     log("no sidebars open, and toolbar shown, hide toolbar");
                     hideToolbar();
-                }        
-            } else {
-                log("one sidebar open, close all sidebars");
-                closeAllSidebars();
+                }
             }
         });
     } else {
