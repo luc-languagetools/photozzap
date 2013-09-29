@@ -129,6 +129,7 @@ var ConferenceUi = {
             var combined_notification_clone = clone(combined_notification);
             combined_notification_clone.element_id = "notification_area_" + element_id_increment;
             var notification_area_element = $("#combined-notification-template2").jqote(combined_notification_clone);
+            notification_area_element = $(notification_area_element).addClass("notification-preview");
             // cancel clear timeout if needed
             if (ConferenceUi.notification_area_clear_timeout != null) {
                 clearTimeout(ConferenceUi.notification_area_clear_timeout);
@@ -141,14 +142,16 @@ var ConferenceUi = {
                 // add timeago
                 jQuery("#" + combined_notification_clone.element_id + " .timestamp").timeago();
                 var notification_area_element_selector = "#" + combined_notification_clone.element_id;
-                add_click_event_to_history_image("#" + combined_notification_clone.element_id + " a", combined_notification_clone.image);            
+                add_click_event_to_history_image("#" + combined_notification_clone.element_id + " a", combined_notification_clone.image);
+                // setup positionning
+                //$(notification_area_element_selector).css({
                 $(notification_area_element_selector).fadeIn();
                 ConferenceUi.notification_area_clear_timeout = setTimeout(function() {
                     $("#notification-area .image-preview").fadeOut('fast', function() {
                         // permanently remove elements
                         $("#notification-area .image-preview").remove();
                     }); 
-                }, 1500);
+                }, 1700);
             }
             if ($("#notification-area .image-preview").length > 0 ) {
                 $("#notification-area .image-preview").fadeOut('fast', function() {

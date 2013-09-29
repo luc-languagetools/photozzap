@@ -152,16 +152,16 @@ $(document).ready(function() {
 <![CDATA[
 
     <div class="row-fluid comment-entry new-comment" style="display: none;">
-        <div class="span2" style="text-align: right;">
-            <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}">
-        </div>
-        <div class="span3">
-            <h5 class="comment-nick-heading"><%= this.user %></h5>
+        <div class="span5">
+            <div class="comment-graphic-heading">
+                <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}">
+            </div>
+            <span class="comment-nick-heading"><%= this.user %></span>
             <span class="comment-timestamp unapplied-timestamp" title="<%= this.timestamp.toISOString() %>">
             <%= this.timestamp %>
             </span>                 
         </div>
-        <div class="span7" style="margin-top: 5px;">
+        <div class="span7 comment-text">
             <%= this.text %>
         </div>
     </div>
@@ -259,7 +259,7 @@ $(document).ready(function() {
         <ul id="image-list" class="thumbnails">
             <li id="image-placeholder" style="display: table;">
                 <a href="#" onclick="$('#upload-modal').modal('show');" style="display: table-cell;">
-                    <img class="notification-thumbnail" data-src="holder.js/266x200/text:Upload Photo"/>
+                    <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>
                 </a>
             </li>            
         </ul>

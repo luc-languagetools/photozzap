@@ -27,7 +27,7 @@
 .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
     top: 20%;
     left: 5%;
-    width: 90%;
+    width: 94%;
     height: 60%;
 }
 
@@ -41,6 +41,51 @@
     width: 50%;
 }
 
+.gallery-sidebar-expanded .notification-thumbnail {
+    height: 85px;
+    width: auto;
+}
+
 .action-sidebar .action-sidebar-header {
     font-size: 26px;
+}
+
+.thumbnails > li {
+  float: left;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+.image-preview .notification-overlay {
+    font-size: 14px;
+}
+
+.notification-preview { 
+    margin-bottom: 5px; 
+    margin-right: 5px; 
+    bottom: 0px;
+    right: 0px;
+    width: 60%;
+}
+
+.comment-nick-heading {
+    display: inline;
+}
+
+.comment-graphic-heading {
+    margin-left: 2px;
+}
+
+.comment-entry .comment-text {
+    margin-top: 0px;
+    margin-left: 35px;
+    width: 90%;
+}
+
+.comment-submit-area img {
+    display: none;
+}
+
+.comment-submit-area input {
+    width: 60%;
 }
