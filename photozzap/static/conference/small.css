@@ -44,8 +44,3 @@
 .action-sidebar .action-sidebar-header {
     font-size: 26px;
 }
-
-.gallery-sidebar-expanded .notification-thumbnail {
-    height: 80px;
-    width: auto;
-}

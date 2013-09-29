@@ -107,10 +107,11 @@ a, a:hover {
  }
 
 .gallery-sidebar-expanded .notification-thumbnail {
-    height: 200px; 
+    height: 200px;
     width: auto;
 }
 
+ 
 .image-preview .notification-overlay {
     position:absolute; 
     left:0px; 

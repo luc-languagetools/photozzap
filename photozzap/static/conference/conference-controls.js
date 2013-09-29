@@ -16,6 +16,10 @@ var ConferenceControls = {
 
 
 function setupControlHandlers() {
+    ConferenceControls.touchMode = Modernizr.touch;
+    // for debugging only
+    // ConferenceControls.touchMode = false;
+
     setupMouseMoveCallback();
     
     $(window).resize(function() {

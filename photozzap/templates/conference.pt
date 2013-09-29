@@ -28,6 +28,7 @@
 <script src="${request.static_url('photozzap:static/jslibs/holder.js')}"></script>
 <script src="${request.static_url('photozzap:static/timeago/jquery.timeago.js')}"></script>
 <script src="${request.static_url('photozzap:static/transit/jquery.transit.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/modernizr/modernizr.touch.min.js')}"></script>
 <script type="text/javascript">
 // Custom example logic
 $(function() {
@@ -129,7 +130,7 @@ $(document).ready(function() {
 <script type="text/html" id="image-template">
 <![CDATA[
     <li id="<%= this.thumbnail_id %>" style="display: table; margin-right: -60px;">
-        <a href="#" class="thumbnailXXX" style="display: table-cell; vertical-align: middle;">
+        <a href="#" style="display: table-cell;">
             <img src="<%= this.thumbnail %>" class="notification-thumbnail"/>
         </a>
 
@@ -257,7 +258,7 @@ $(document).ready(function() {
     <div id="gallery-sidebar-content" style="display: none;">
         <ul id="image-list" class="thumbnails">
             <li id="image-placeholder" style="display: table;">
-                <a href="#" onclick="$('#upload-modal').modal('show');" style="display: table-cell; vertical-align: middle;">
+                <a href="#" onclick="$('#upload-modal').modal('show');" style="display: table-cell;">
                     <img class="notification-thumbnail" data-src="holder.js/266x200/text:Upload Photo"/>
                 </a>
             </li>            
