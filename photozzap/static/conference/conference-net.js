@@ -85,6 +85,7 @@ var Conference = {
                 // fully connected
                 Conference.connected_to_chatroom = true;
                 $(document).trigger('connection_complete', "joined chatroom");
+                $("#user-nickname").html(Conference.nickname);
                 if( Conference.using_default_nickname ) {
                     $(document).trigger('nickname_change_request', "You have been logged in with the default nickname <b>" + Conference.nickname + "</b>. You may enter your own nickname below");
                 }

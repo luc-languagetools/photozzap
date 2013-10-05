@@ -51,14 +51,6 @@ a, a:hover {
     margin-top: 5px;
 }
 
-#top-navbar {
-	position: fixed;
-	top: 10px;
-	left: 5%;
-	width: 90%;
-	z-index:4;	
-}
-
 .action-sidebar {
     border-radius:10px;
     z-index:2;
@@ -93,6 +85,40 @@ a, a:hover {
 .action-sidebar-header img {
     height: auto;
     width: 30%;
+}
+
+.status-sidebar-content {
+    color: #FFFFFF;
+    font-size: 18px;
+    margin: 10px;
+}
+
+.upload-photo-action {
+    border-radius:5px;
+    border-color: #FFFFFF;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 24px;
+    width: 70%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.upload-photo-action img {
+    height: auto;
+    width: 15%;
+}
+
+.upload-photo-action  {
+    color: #FFFFFF;
+}
+
+.status-sidebar-content p {
+    font-weight: bold;
 }
 
 .action-sidebar-expanded .action-sidebar-header img {
@@ -153,10 +179,18 @@ a, a:hover {
 
 .gallery-sidebar-default {
 	position: fixed;
-	top: 10%;
-	left: 42%;
+	top: 5%;
+	left: 28%;
 	width: 15%;
 	height: 15%;
+}
+
+.gallery-sidebar-alternate-left {
+    left: 18%;
+}
+
+.gallery-sidebar-alternate-right {
+    left: 40%;
 }
 
 .gallery-sidebar-expanded {
@@ -186,6 +220,29 @@ a, a:hover {
     left: 42%;
     height: 15%;
     width: 15%;
+}
+
+.status-sidebar-default {
+	position: fixed;
+	top: 5%;
+	left: 46%;
+	width: 25%;
+    cursor: auto;
+    z-index:1;
+}
+
+.status-sidebar-alternate-right {
+    left: 58%;
+}
+
+.status-sidebar-alternate-left {
+    left: 36%;
+}
+
+.status-sidebar-alternate-off {
+    opacity: 0;
+    width: 0%;
+    height: 0%;
 }
 
 .users-sidebar-default {

@@ -334,25 +334,19 @@ $(document).bind('connection_error', function(ev, status) {
 
 $(document).bind('nickname_change_successful', function(ev, new_nick) {
     log("nickname_change_successful");
-    $('#current_nick').html("<b>" + new_nick + "</b>");
-    $("#current_nick").popover('destroy');
+    $("#user-nickname").html(new_nick);
+    $("#nickname-change-container div").remove();
 });
 
 $(document).bind('nickname_change_request', function(ev, status) {
-    $("#current_nick").popover('destroy');
+    $("#nickname-change-container div").remove();
 
     var request_options = {status: status};
     var changeNicknamePanel = $("#nickname-panel-template").jqote(request_options);
-    $("#current_nick").popover({title: "Change Nickname <a id='nickname-change-popover-close' style='float: right;' href='#'>&#10006;</a>",
-                                html: true,
-                                content: $(changeNicknamePanel).html(),
-                                placement: "bottom",
-                                trigger: "manual"});
-    $("#current_nick").popover('show');
+    
+    $("#nickname-change-container").append(changeNicknamePanel);
+    
     $("#chosen-nickname2").focus();
-    $("#nickname-change-popover-close").click(function() {
-        $("#current_nick").popover('destroy');
-    });
 
     // disable default action of form submission
     $('form').submit(function() {

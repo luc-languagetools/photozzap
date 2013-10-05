@@ -68,9 +68,11 @@ function setupChatSidebar() {
         after_expand: function() {
             $("#chat-sidebar-input").show();
             $("#comment-input").focus();
+            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
         },
         before_reduce: function() {
             $("#chat-sidebar-input").hide();
+            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
         },
     };
     return setupSidebar(ConferenceControls.sidebarOptions.chat);
@@ -83,6 +85,16 @@ function setupUsersSidebar() {
         header_selector: "#users-sidebar-header",
         content_selector: "#users-sidebar-content",
         expanded_class: "users-sidebar-expanded",
+        after_expand: function() {
+            $("#gallery-sidebar").addClass("gallery-sidebar-alternate-right");
+            $("#status-sidebar").addClass("status-sidebar-alternate-right");
+            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
+        },
+        before_reduce: function() {
+            $("#gallery-sidebar").removeClass("gallery-sidebar-alternate-right");
+            $("#status-sidebar").removeClass("status-sidebar-alternate-right");
+            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
+        },        
     };
     return setupSidebar(ConferenceControls.sidebarOptions.users);
 }
@@ -94,6 +106,16 @@ function setupHistorySidebar() {
         header_selector: "#history-sidebar-header",
         content_selector: "#history-sidebar-content",
         expanded_class: "history-sidebar-expanded",
+        after_expand: function() {
+            $("#gallery-sidebar").addClass("gallery-sidebar-alternate-left");
+            $("#status-sidebar").addClass("status-sidebar-alternate-left");
+            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
+        },
+        before_reduce: function() {
+            $("#gallery-sidebar").removeClass("gallery-sidebar-alternate-left");
+            $("#status-sidebar").removeClass("status-sidebar-alternate-left");
+            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
+        },                
     };
     return setupSidebar(ConferenceControls.sidebarOptions.history);
 }
@@ -110,12 +132,16 @@ function setupGallerySidebar() {
             $("#history-sidebar").addClass("history-sidebar-alternate");
             $("#users-sidebar").addClass("users-sidebar-alternate");
             $("#chat-sidebar").addClass("chat-sidebar-alternate");
+            $("#status-sidebar").addClass("status-sidebar-alternate-off");
+            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
         },
         before_reduce: function() {
             // restore sidebars to their original location
             $("#history-sidebar").removeClass("history-sidebar-alternate");
             $("#users-sidebar").removeClass("users-sidebar-alternate");
             $("#chat-sidebar").removeClass("chat-sidebar-alternate");
+            $("#status-sidebar").removeClass("status-sidebar-alternate-off");
+            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
         },
     };
     return setupSidebar(ConferenceControls.sidebarOptions.gallery);
@@ -174,6 +200,7 @@ function setupSidebar(options) {
     reduceFunction = function(options) {
         $(options.header_selector).addClass("action-sidebar-header-centered");
 
+       
         // perform transition after fadeout
     
         $(options.content_selector).fadeOut(250, function() {    

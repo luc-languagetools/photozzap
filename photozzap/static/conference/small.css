@@ -25,10 +25,10 @@
 }
 
 .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
-    top: 20%;
+    top: 2%;
     left: 5%;
     width: 94%;
-    height: 60%;
+    height: 78%;
 }
 
 .action-sidebar-header-centered {
@@ -88,4 +88,21 @@
 
 .comment-submit-area input {
     width: 60%;
+}
+
+.status-sidebar-default {
+	top: 2%;
+	left: 5%;
+	width: 90%;
+}
+
+.status-sidebar-header img {
+    height: auto;
+    width: 15%;
+}
+
+.status-sidebar-other-bars-open {
+    opacity: 0;
+    width: 0%;
+    height: 0%;
 }
