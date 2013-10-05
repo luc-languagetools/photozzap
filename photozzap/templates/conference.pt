@@ -215,7 +215,15 @@ $(document).ready(function() {
 <div id="toolbar-top">
 </div> 
 
-<div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions">
+<div id="gallery-sidebar-icon" class="action-sidebar gallery-sidebar-default action-sidebar-inactive">
+    <div class="action-sidebar-header action-sidebar-header-centered">
+        <img src="${request.static_url('photozzap:static/icons/gallery_medium_white.png')}" />
+        <br/>
+        Photos
+    </div>
+</div>
+
+<div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/gallery_medium_white.png')}" />
         <br/>
@@ -232,7 +240,15 @@ $(document).ready(function() {
     </div>
 </div>
 
-<div id="history-sidebar" class="action-sidebar history-sidebar-default sidebar-transitions">
+<div id="history-sidebar-icon" class="action-sidebar history-sidebar-default action-sidebar-inactive">
+    <div class="action-sidebar-header action-sidebar-header-centered">
+        <img src="${request.static_url('photozzap:static/icons/clock_medium_white.png')}" />
+        <br/>
+        History
+    </div>
+</div>
+
+<div id="history-sidebar" class="action-sidebar history-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/clock_medium_white.png')}" />
         <br/>
@@ -245,7 +261,7 @@ $(document).ready(function() {
 <div id="notification-area">
 </div>
 
-<div id="status-sidebar" class="action-sidebar status-sidebar-default sidebar-transitions">
+<div id="status-sidebar" class="action-sidebar status-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="status-sidebar-header" class="action-sidebar-header status-sidebar-header">
         <img src="${request.static_url('photozzap:static/icons/photozzap_header.png')}" />
         Photozzap
@@ -267,7 +283,15 @@ $(document).ready(function() {
     </div>
 </div>
 
-<div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions">
+<div id="users-sidebar-icon" class="action-sidebar users-sidebar-default action-sidebar-inactive">
+    <div class="action-sidebar-header action-sidebar-header-centered">
+        <img src="${request.static_url('photozzap:static/icons/users_medium_white.png')}" />
+        <br/>
+        Users
+    </div>
+</div>
+
+<div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/users_medium_white.png')}" />
         <br/>
@@ -278,7 +302,15 @@ $(document).ready(function() {
 </div>
 
 
-<div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions">
+<div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-default action-sidebar-inactive">
+    <div class="action-sidebar-header action-sidebar-header-centered">
+        <img src="${request.static_url('photozzap:static/icons/chat_medium_white.png')}" />
+        <br/>
+        Chat
+    </div>
+</div>
+
+<div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
         <img src="${request.static_url('photozzap:static/icons/chat_medium_white.png')}" />
         <br/>

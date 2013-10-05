@@ -38,8 +38,6 @@ function setupControlHandlers() {
     if (! ConferenceControls.touchMode ) {
         $(".action-sidebar").mouseenter(mouseEnterControlElement);
         $(".action-sidebar").mouseleave(mouseLeaveControlElement);
-        $("#top-navbar").mouseenter(mouseEnterControlElement);
-        $("#top-navbar").mouseleave(mouseLeaveControlElement);
     }
     
 }
@@ -64,6 +62,7 @@ function setupChatSidebar() {
         header_selector: "#chat-sidebar-header",
         content_selector: "#chat-sidebar-content",
         footer_selector: "#chat-sidebar-input",
+        icon_selector: "#chat-sidebar-icon",
         expanded_class: "chat-sidebar-expanded",
         after_expand: function() {
             $("#chat-sidebar-input").show();
@@ -84,6 +83,7 @@ function setupUsersSidebar() {
         main_selector: "#users-sidebar",
         header_selector: "#users-sidebar-header",
         content_selector: "#users-sidebar-content",
+        icon_selector: "#users-sidebar-icon",
         expanded_class: "users-sidebar-expanded",
         after_expand: function() {
             $("#gallery-sidebar").addClass("gallery-sidebar-alternate-right");
@@ -105,6 +105,7 @@ function setupHistorySidebar() {
         main_selector: "#history-sidebar",
         header_selector: "#history-sidebar-header",
         content_selector: "#history-sidebar-content",
+        icon_selector: "#history-sidebar-icon",
         expanded_class: "history-sidebar-expanded",
         after_expand: function() {
             $("#gallery-sidebar").addClass("gallery-sidebar-alternate-left");
@@ -127,6 +128,7 @@ function setupGallerySidebar() {
         main_selector: "#gallery-sidebar",
         header_selector: "#gallery-sidebar-header",
         content_selector: "#gallery-sidebar-content",
+        icon_selector: "#gallery-sidebar-icon",
         expanded_class: "gallery-sidebar-expanded",
         before_expand: function() {
             $("#history-sidebar").addClass("history-sidebar-alternate");
@@ -160,6 +162,10 @@ function setupSidebar(options) {
     enlargeFunction = function(options) {
         $(options.header_selector).removeClass("action-sidebar-header-centered");
         $(options.main_selector).addClass("action-sidebar-expanded");
+        $(options.icon_selector).addClass("action-siderbar-inactive-selected");
+        $(options.icon_selector).on('click', function(){ 
+            closeAllSidebars()
+        });
         $(options.main_selector).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
 
                 // if the mouse is still on the sidebar,
@@ -199,7 +205,8 @@ function setupSidebar(options) {
     
     reduceFunction = function(options) {
         $(options.header_selector).addClass("action-sidebar-header-centered");
-
+        $(options.icon_selector).removeClass("action-siderbar-inactive-selected");
+        $(options.icon_selector).unbind('click');
        
         // perform transition after fadeout
     
@@ -253,7 +260,7 @@ function setupSidebar(options) {
 }
 
 function closeAllSidebars() {
-    $(".action-sidebar").each(function() {
+    $(".action-sidebar-active").each(function() {
         if( $(this).data("expanded") == true ) {
             var name = $(this).data("sidebar-name");
             log("sidebar " + name + " is expanded");
@@ -265,7 +272,6 @@ function closeAllSidebars() {
 
 function showToolbar() {
     $("#main_image").transition({ opacity: 0.5 });
-    $("#top-navbar").fadeIn(200);
     $(".action-sidebar").fadeIn(200);
     // set timeout to restore
     ConferenceControls.toolbarShown = true;
@@ -273,7 +279,6 @@ function showToolbar() {
 
 function hideToolbar() {
     $("#main_image").transition({ opacity: 1.0 });
-    $("#top-navbar").fadeOut(200);
     $(".action-sidebar").fadeOut(200);
     ConferenceControls.toolbarShown = false;
 }
