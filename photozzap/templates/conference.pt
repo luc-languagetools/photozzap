@@ -352,6 +352,8 @@ $(document).ready(function() {
 <div id="main_image">
 </div>
 
+<div id="control_event_layer">
+</div>
 
 <!-- contains all loaded images so that they remain in the browser cache -->
 <div id="image-cache" style="display:none;">

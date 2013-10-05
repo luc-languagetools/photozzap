@@ -22,6 +22,7 @@ function setupControlHandlers() {
 
     setupMouseMoveCallback();
     
+    //resizeHandler();
     $(window).resize(function() {
         resizeHandler();
     });
@@ -339,7 +340,7 @@ function actionSidebarMouseMoveHandler() {
 
 function setupMouseMoveCallback() {
     if (ConferenceControls.touchMode) {
-        $("#main_image").on("click", function() {
+        $("#control_event_layer").on("click", function() {
             // if toolbar is not shown, show toolbar
             // if toolbar is shown,
             //   if any sidebars expanded, close them
@@ -360,9 +361,9 @@ function setupMouseMoveCallback() {
             }
         });
     } else {
-        $("#main_image").mousemove(mouseMoveHandler);
+        $("#control_event_layer").mousemove(mouseMoveHandler);
         $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
-        $("#main_image").on("click", function() {
+        $("#control_event_layer").on("click", function() {
             // close sidebars
             closeAllSidebars();
         });        
@@ -371,7 +372,7 @@ function setupMouseMoveCallback() {
 
 function removeMouseMoveCallback() {
     if( ! ConferenceControls.touchMode ) {
-        $("#main_image").unbind('mousemove');
+        $("#control_event_layer").unbind('mousemove');
         $(".action-sidebar").unbind('mousemove');
     }
 }

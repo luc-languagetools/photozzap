@@ -487,6 +487,10 @@ $(document).bind('resize_image', function(ev) {
         })
     }
     
+    
+    $("#control_event_layer").css({width: winWidth,
+                                   height: winHeight});
+    
 });
 
 String.prototype.trunc = String.prototype.trunc ||
