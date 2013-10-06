@@ -10,7 +10,8 @@
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
 <!-- photozzap style sheets -->
 <link href="${request.static_url('photozzap:static/conference/default.css')}" rel="stylesheet" media="screen">
-<link rel="stylesheet" media="all and (max-width: 480px)"  href="${request.static_url('photozzap:static/conference/small.css')}"/>
+<link rel="stylesheet" media="all and (max-width: 640px)"  href="${request.static_url('photozzap:static/conference/small.css')}"/>
+<link rel="stylesheet" media="all and (max-width: 640px) and (orientation : landscape)" href="${request.static_url('photozzap:static/conference/small-landscape.css')}"/>
 
 </head>
 <body>
