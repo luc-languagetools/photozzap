@@ -80,8 +80,8 @@ a, a:hover {
 .action-sidebar .action-sidebar-header {
     text-align: center;
     vertical-align: middle;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     font-size: 36px;
     color: #FFFFFF;
 }
@@ -191,7 +191,6 @@ a, a:hover {
 	top: 5%;
 	left: 28%;
 	width: 15%;
-	height: 15%;
 }
 
 .gallery-sidebar-alternate-left {
@@ -203,17 +202,20 @@ a, a:hover {
 }
 
 .gallery-sidebar-expanded {
-    top: 10%;
+    top: 3%;
     left: 5%;
-    height: 70%;
+    height: 75%;
     width: 90%;
+}
+
+.gallery-sidebar-expanded .action-sidebar-header img {
+    width: 8%;
 }
 
 .chat-sidebar-default {
     position: fixed;
     bottom: 10%;
     left: 42%;
-    height: 15%;
     width: 15%;
 }
 
@@ -225,10 +227,13 @@ a, a:hover {
 }
 
 .chat-sidebar-alternate {
-    bottom: 2%;
+    bottom: 4%;
     left: 42%;
-    height: 15%;
     width: 15%;
+}
+
+.chat-sidebar-expanded .action-sidebar-header img {
+    width: 8%;
 }
 
 .status-sidebar-default {
@@ -258,21 +263,19 @@ a, a:hover {
     position: fixed;
     top: 42%;
     left: 10%;
-    height: 15%;
     width: 15%;
 }
 
 .users-sidebar-expanded {
-    top: 15%;
+    top: 5%;
     left: 5%;
-    height: 80%;
+    height: 90%;
     width: 30%;
 }
 
 .users-sidebar-alternate {
     top: 83%;
     left: 20%;
-    height: 15%;
     width: 15%;
 }
 
@@ -280,21 +283,19 @@ a, a:hover {
     position: fixed;
     top: 42%;
     right: 10%;
-    height: 15%;
     width: 15%;
 }
 
 .history-sidebar-expanded {
-    top: 15%;
+    top: 5%;
     right: 5%;
-    height: 80%;
+    height: 90%;
     width: 30%;
 }
 
 .history-sidebar-alternate {
     top: 83%;
     right: 20%;
-    height: 15%;
     width: 15%;
 }
 
@@ -312,7 +313,7 @@ a, a:hover {
 #notification-area {
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 5;
 }
 
 .notification-preview { 
@@ -321,6 +322,7 @@ a, a:hover {
     right: 10px;
     width: 30%;
     height: auto;
+    z-index: 5;
 }
 
 #chat-sidebar-content, .comment-submit-area {

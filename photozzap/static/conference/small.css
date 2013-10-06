@@ -44,6 +44,8 @@
 
 .action-sidebar .action-sidebar-header {
     font-size: 26px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .thumbnails > li {
