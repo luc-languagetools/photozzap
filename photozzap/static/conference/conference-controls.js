@@ -11,7 +11,8 @@ var ConferenceControls = {
     toolbarShown: false,
     disableToolbarTimeout: null,
     mouseOverActionSidebar: false,
-    touchMode: false
+    touchMode: false,
+    resizeToolbarsOnDisplay: false
 };
 
 
@@ -177,22 +178,9 @@ function setupSidebar(options) {
                 }
                                             
                 if ($(options.main_selector).data("expanded") != true) {
-                    var targetHeight = $(options.main_selector).first().height() -
-                                       $(options.header_selector).first().height() - 20;
-                    if (options.footer_selector != undefined) {
-                        targetHeight -= $(options.footer_selector).first().height();
-                    }
-                    log("setting up slimScroll on sidebar, targetHeight: " + targetHeight);
-                    $(options.content_selector).slimScroll({
-                        height: targetHeight + 'px',
-                        start: 'top',
-                        alwaysVisible: true,
-                        color: '#FFFFFF',
-                        opacity: 1,
-                        railVisible: true,
-                        railColor: '#FFFFFF',
-                        railOpacity: 0.2
-                    });
+
+                    setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
+                    
                     $(options.content_selector).fadeIn(250, function() {
                             // nothing to do
                         });
@@ -204,6 +192,17 @@ function setupSidebar(options) {
             
     };
     
+    $(options.main_selector).on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {    
+        if (ConferenceControls.resizeToolbarsOnDisplay == true &&
+            $(options.main_selector).data("expanded") == true) {
+            log("resizing " + options.name + " after CSS transition");
+            // saw a CSS transition while sidebar was expanded - adjust slimscroll
+            removeSidebarContentSlimscroll(options.content_selector);
+            setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);            
+            ConferenceControls.resizeToolbarsOnDisplay = false;
+        }
+    });    
+   
     reduceFunction = function(options) {
         $(options.header_selector).addClass("action-sidebar-header-centered");
         $(options.icon_selector).removeClass("action-siderbar-inactive-selected");
@@ -212,9 +211,7 @@ function setupSidebar(options) {
         // perform transition after fadeout
     
         $(options.content_selector).fadeOut(250, function() {    
-            $(options.content_selector).slimScroll({
-                                            destroy: true
-                                        });
+            removeSidebarContentSlimscroll(options.content_selector);
                                         
             $(options.main_selector).removeClass(options.expanded_class);
         });
@@ -222,6 +219,12 @@ function setupSidebar(options) {
         $(options.main_selector).removeClass("action-sidebar-expanded");
     }
 
+    resizeContentFunction = function() {
+        log("resizing content for " + options.name);
+        removeSidebarContentSlimscroll(options.content_selector);
+        setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
+    }
+    
     expandHandler = function(event) {
         log("expandHandler [" + options.main_selector + "]");
 
@@ -254,10 +257,42 @@ function setupSidebar(options) {
     var result = {
         expandCallback: expandHandler,
         collapseCallback: collapseHandler,
+        resizeCallback: resizeContentFunction,
     };
     
     return result;
     
+}
+
+function setupSidebarContentSlimscroll(main_selector, header_selector, footer_selector, content_selector) {
+    var total_height = $(main_selector).first().height();
+    var header_height = $(header_selector).first().height();
+    var footer_height = 0;
+    var targetHeight = total_height - header_height - 20;
+    if (footer_selector != undefined) {
+        var footer_height = $(footer_selector).first().height();
+        targetHeight -= footer_height;
+    }
+    log("setting up slimScroll on sidebar , targetHeight: " + targetHeight +
+        " total_height: " + total_height +
+        " header_height: " + header_height +
+        " footer_height: " + footer_height);
+    $(content_selector).slimScroll({
+        height: targetHeight + 'px',
+        start: 'top',
+        alwaysVisible: true,
+        color: '#FFFFFF',
+        opacity: 1,
+        railVisible: true,
+        railColor: '#FFFFFF',
+        railOpacity: 0.2
+    });
+}
+
+function removeSidebarContentSlimscroll(content_selector) {
+        $(content_selector).slimScroll({
+                            destroy: true
+                        });
 }
 
 function closeAllSidebars() {
@@ -271,9 +306,34 @@ function closeAllSidebars() {
     
 }
 
+function controlsResize() {
+    // either resize right now, or queue the resize
+    // the resize only makes sense if elements are displayed, otherwise the browser does not know what
+    // then new sizes are
+    
+    // resize right now, but also schedule a resize for later
+    resizeAllOpenSidebars();
+    ConferenceControls.resizeToolbarsOnDisplay = true;
+}
+
+function resizeAllOpenSidebars() {
+    $(".action-sidebar-active").each(function() {
+        if( $(this).data("expanded") == true ) {
+            var name = $(this).data("sidebar-name");
+            log("sidebar " + name + " is expanded");
+            ConferenceControls.sidebarHandlers[name].resizeCallback();
+        }
+    });
+}
+
 function showToolbar() {
     $("#main_image").transition({ opacity: 0.5 });
-    $(".action-sidebar").fadeIn(200);
+    $(".action-sidebar").fadeIn(200, function() {
+        if( ConferenceControls.resizeToolbarsOnDisplay ) {
+            resizeAllOpenSidebars();
+            ConferenceControls.resizeToolbarsOnDisplay = false;
+        }
+    });
     // set timeout to restore
     ConferenceControls.toolbarShown = true;
 }
@@ -396,6 +456,7 @@ function displayHistorySidebarForNotification(highlightSelector) {
 function resizeHandler() {
     log("resizeHandler");
     $(document).trigger('resize_image');
+    controlsResize();
 };
 
 (function($) {

@@ -461,6 +461,8 @@ $(document).bind('resize_image', function(ev) {
     var winHeight = win.height();
     var winRatio = winWidth / winHeight;
   
+    log("winWidth: " + winWidth + " winHeight: " + winHeight);
+  
 	var newImageWidth = 0;
 	var newImageHeight = 0;
   
@@ -491,6 +493,7 @@ $(document).bind('resize_image', function(ev) {
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});
     
+   
 });
 
 String.prototype.trunc = String.prototype.trunc ||
