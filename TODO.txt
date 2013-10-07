@@ -27,6 +27,9 @@ improvements
   - other ajax queries time
 - show when user is away using Page Visibility API
  - find a way to do notifications when page not visible
+- mobile layouts
+ - make sure that after showing / hiding the virtual keyboard on iOS, we are never stuck with a bad layout
+ - fix iPad layouts (especially around keyboard)
 
 bugs
 ====
