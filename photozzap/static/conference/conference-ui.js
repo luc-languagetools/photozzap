@@ -113,6 +113,7 @@ var ConferenceUi = {
         // create notification element for the sidebar
         sidebar_notification_element = $("#combined-notification-template2").jqote(combined_notification);
         $("#history-sidebar-content").prepend(sidebar_notification_element);
+		relayout_even_odd_image_previews("#history-sidebar-content");
         
         // add timeago
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
@@ -121,7 +122,7 @@ var ConferenceUi = {
         displayHistorySidebarForNotification("#" + combined_notification.element_id);
         
         // add click event handler
-        add_click_event_to_history_image("#" + combined_notification.element_id + " a", combined_notification.image);        
+        add_click_event_to_history_image("#" + combined_notification.element_id, combined_notification.image);        
         
         
         if( ! combined_notification.delayed) {
@@ -142,7 +143,7 @@ var ConferenceUi = {
                 // add timeago
                 jQuery("#" + combined_notification_clone.element_id + " .timestamp").timeago();
                 var notification_area_element_selector = "#" + combined_notification_clone.element_id;
-                add_click_event_to_history_image("#" + combined_notification_clone.element_id + " a", combined_notification_clone.image);
+                add_click_event_to_history_image("#" + combined_notification_clone.element_id, combined_notification_clone.image);
                 // setup positionning
                 //$(notification_area_element_selector).css({
                 $(notification_area_element_selector).fadeIn();
@@ -216,6 +217,8 @@ $(document).bind('user_joined', function (ev, user) {
     log(user_wrapper);
     
     $('#users-sidebar-content').append(user_wrapper);
+	relayout_even_odd_image_previews('#users-sidebar-content');
+	
     // slide down
     var selector = "#" + dom_id_from_user(user);
     log("sliding down: [" + selector + "]");
@@ -260,11 +263,18 @@ function add_click_event_to_user_viewing(selector, user) {
     });
 };
 
+function relayout_even_odd_image_previews(container_selector) {
+	$(container_selector + " .image-preview").removeClass("image-preview-left");
+	$(container_selector + " .image-preview").removeClass("image-preview-right");
+	$(container_selector + " .image-preview:even").addClass("image-preview-left")
+	$(container_selector + " .image-preview:odd").addClass("image-preview-right")
+}
+
 $(document).bind('new_image', function(ev, image) {
     // create element from template
     image_element = $("#image-template").jqote(image);
     $('#image-list').prepend(image_element);
-    add_click_event_to_new_image("#image-list #"+image.thumbnail_id + " a", image);
+    add_click_event_to_new_image("#image-list #"+image.thumbnail_id, image);
     
     ConferenceUi.notify_new_image(image);
     
@@ -304,7 +314,7 @@ $(document).bind('user_update', function(ev, user) {
 
     // replace it in the DOM
     $("#" + dom_id_from_user(user)).html(user_element);
-    add_click_event_to_user_viewing("#" + dom_id_from_user(user) + " a", user);
+    add_click_event_to_user_viewing("#" + dom_id_from_user(user), user);
     
     // don't notify if this is ourself.
     if (Conference.nickname != user.nick ) {

@@ -10,8 +10,8 @@
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
 <!-- photozzap style sheets -->
 <link href="${request.static_url('photozzap:static/conference/default.css')}" rel="stylesheet" media="screen">
-<link rel="stylesheet" media="all and (max-width: 640px)"  href="${request.static_url('photozzap:static/conference/small.css')}"/>
-<link rel="stylesheet" media="all and (max-width: 640px) and (orientation : landscape)" href="${request.static_url('photozzap:static/conference/small-landscape.css')}"/>
+<link rel="stylesheet" media="all and (max-width: 640px), all and (max-height: 400px)"  href="${request.static_url('photozzap:static/conference/small.css')}"/>
+<link rel="stylesheet" media="all and (max-width: 640px) and (orientation : landscape), all and (max-height: 400px) and (orientation : landscape)" href="${request.static_url('photozzap:static/conference/small-landscape.css')}"/>
 
 </head>
 <body>
@@ -74,52 +74,50 @@ $(document).ready(function() {
 <script type="text/html" id="combined-notification-template2">
 <![CDATA[
     <div id="<%= this.element_id %>" class="image-preview">
-        <a href="#">
-            <img src="<%= this.image.thumbnail %>" class="notification-thumbnail" />
-            <div class="notification-overlay">
-                <div style="height: 10px;"/>
-            
-                <span class="timestamp" title="<%= this.timestamp.toISOString() %>"><%= this.timestamp %></span>
+		<img src="<%= this.image.thumbnail %>" class="notification-thumbnail" />
+		<div class="notification-overlay">
+			<div style="height: 10px;"/>
+		
+			<span class="timestamp" title="<%= this.timestamp.toISOString() %>"><%= this.timestamp %></span>
 
-                <!-- user uploaded -->
-                <% if( this.user_added != undefined ) { %>
-                    <div>
-                        <img src="${request.static_url('photozzap:static/icons/upload_gray.png')}" class="action-icon"/><b><%= this.user_added %></b>
-                    </div>
-                <% } %>            
+			<!-- user uploaded -->
+			<% if( this.user_added != undefined ) { %>
+				<div>
+					<img src="${request.static_url('photozzap:static/icons/upload_gray.png')}" class="action-icon"/><b><%= this.user_added %></b>
+				</div>
+			<% } %>            
 
-                <!-- viewing -->
-                <div>            
-                <% if( this.users_viewing.length >= 1 ) { 
-                    var nick_array = new Array();
-                    for( i in this.users_viewing ) {
-                        nick_array.push(this.users_viewing[i]);
-                    }
-                    var nick_string = nick_array.join(", ");
-                    %>
-                    <img src="${request.static_url('photozzap:static/icons/eye_gray.png')}" class="action-icon"/><b><%= nick_string %></b>
-                <% } %>
-                </div>
-                
-                <!-- comments -->
-                <div>
-                <% if( this.comments.length >= 1 ) { 
-                      var comments = this.comments;
-                      if (comments.length > 3) {
-                        comments = comments.slice(-3);
-                      }
-                      for( i in comments) { 
-                       comment = comments[i];
-                    %>
-                        <img src="${request.static_url('photozzap:static/icons/comment_small_gray.png')}" class="action-icon"/>
-                        <b>
-                           <%= comment.user %>:
-                        </b> <%= comment.text.trunc(30) %><br/>
-                    <% } %>
-                <% } %>            
-                </div>            
-            </div>
-        </a>
+			<!-- viewing -->
+			<div>            
+			<% if( this.users_viewing.length >= 1 ) { 
+				var nick_array = new Array();
+				for( i in this.users_viewing ) {
+					nick_array.push(this.users_viewing[i]);
+				}
+				var nick_string = nick_array.join(", ");
+				%>
+				<img src="${request.static_url('photozzap:static/icons/eye_gray.png')}" class="action-icon"/><b><%= nick_string %></b>
+			<% } %>
+			</div>
+			
+			<!-- comments -->
+			<div>
+			<% if( this.comments.length >= 1 ) { 
+				  var comments = this.comments;
+				  if (comments.length > 3) {
+					comments = comments.slice(-3);
+				  }
+				  for( i in comments) { 
+				   comment = comments[i];
+				%>
+					<img src="${request.static_url('photozzap:static/icons/comment_small_gray.png')}" class="action-icon"/>
+					<b>
+					   <%= comment.user %>:
+					</b> <%= comment.text.trunc(30) %><br/>
+				<% } %>
+			<% } %>            
+			</div>            
+		</div>
     </div>
 ]]>
 </script>
