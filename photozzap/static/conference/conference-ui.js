@@ -101,6 +101,30 @@ var ConferenceUi = {
 
     },
     
+	// determine whether we must flash a notification, in some cases
+	// we don't want that.
+	must_flash_notification: function( combined_notification ) {
+		var must_flash = true;
+		
+		// delayed notification ?
+		if( combined_notification.delayed == true ) {
+			must_flash = false;
+		}
+		
+		// is this a comment only, and 
+		//  - is user viewing the image
+		//  - does user have chat window expanded
+		if ( combined_notification.user_added == undefined &&
+		     combined_notification.users_viewing.length == 0  &&
+			 combined_notification.comments.length >= 1 &&
+			 combined_notification.image.id == Conference.currently_viewing &&
+			 $("#chat-sidebar").data("expanded") == true ) {
+			 
+			must_flash = false;			 
+		}
+		
+		return must_flash;
+	},
     
     display_combined_notification: function( combined_notification ) {
         // re-display the notification
@@ -125,7 +149,7 @@ var ConferenceUi = {
         add_click_event_to_history_image("#" + combined_notification.element_id, combined_notification.image);        
         
         
-        if( ! combined_notification.delayed) {
+        if( ConferenceUi.must_flash_notification(combined_notification) ) {
             // clone element and place it in notification-area
             var combined_notification_clone = clone(combined_notification);
             combined_notification_clone.element_id = "notification_area_" + element_id_increment;
