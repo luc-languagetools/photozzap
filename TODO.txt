@@ -30,6 +30,8 @@ improvements
 - mobile layouts
  - make sure that after showing / hiding the virtual keyboard on iOS, we are never stuck with a bad layout
  - fix iPad layouts (especially around keyboard)
+- handle disconnection better
+ - reconnect and request missing history
 
 bugs
 ====
