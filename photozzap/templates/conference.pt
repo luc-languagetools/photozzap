@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="conferenceModule">
 <head>
 <title>Conference</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,9 +20,11 @@
 <script src="${request.static_url('photozzap:static/slimscroll/jquery.slimscroll.js')}"></script>
 <script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/strophe/strophe.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/angular/angular.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/conference-net.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/conference-ui.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/conference-controls.js')}"></script>
+<script src="${request.static_url('photozzap:static/conference/conference-controller.js')}"></script>
 <script src="${request.static_url('photozzap:static/conference/uploader.js')}"></script>
 <script src="${request.static_url('photozzap:static/plupload/plupload.full.js')}"></script>
 <script src="${request.static_url('photozzap:static/jslibs/jquery.jqote2.js')}"></script>
@@ -348,7 +350,8 @@ $(document).ready(function() {
     </div>    
 </div>
 
-<div id="main_image">
+<div id="main_image" ng-controller="ImageCtrl">
+    <img ng-if="showing_image()" id="displayed-image" ng-src="{{image_src()}}" onload="$(document).trigger('resize_image');"/>
 </div>
 
 <div id="control_event_layer">

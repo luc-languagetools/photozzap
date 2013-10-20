@@ -322,13 +322,6 @@ $(document).bind('display_image', function(ev, image) {
     // show the relevant comment area
     $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
 
-    var image_element = $("#main-image-template").jqote(image);
-    
-    $("#main_image img").remove();
-    
-    $("#main_image").append(image_element);
-
-    $("#displayed-image").fadeIn(300);
 });
 
 $(document).bind('user_update', function(ev, user) {
@@ -495,7 +488,8 @@ $(document).bind('resize_image', function(ev) {
     var winHeight = win.height();
     var winRatio = winWidth / winHeight;
   
-    log("winWidth: " + winWidth + " winHeight: " + winHeight);
+    // log("imageWidth: " + imageWidth + " imageHeight: " + imageHeight + " imageRatio " + imageRatio);
+    // log("winWidth: " + winWidth + " winHeight: " + winHeight + " winRatio: " + winRatio);
   
 	var newImageWidth = 0;
 	var newImageHeight = 0;
@@ -507,22 +501,35 @@ $(document).bind('resize_image', function(ev) {
 		newImageWidth = winWidth;
         newImageHeight = "auto";
     }	
-	log("newImageWidth: " + newImageWidth + " newImageHeight: " + newImageHeight);
+    
+    /*
+	log("newImageWidth: " + newImageWidth + 
+        " newImageHeight: " + newImageHeight +
+        " winRatio: " + winRatio +
+        " imageRatio: " + imageRatio);
+    */
+    
 	image.css({
 		width: newImageWidth,
         height: newImageHeight,
         marginTop: "0px"
     })
 	
+    // recalculate image dimensions
+    image = $("#main_image img").first();
+    imageWidth = image.width();
+    imageHeight = image.height();
+    imageRatio = imageWidth / imageHeight;    
+    
     var topSpacing = 0;	
     if (winRatio < imageRatio) {
         var imageHeight = image.height();
         topSpacing = (winHeight - imageHeight) / 2;
+        log("topSpacing: " + topSpacing);
        	image.css({
             marginTop: topSpacing + "px"
         })
     }
-    
     
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});
