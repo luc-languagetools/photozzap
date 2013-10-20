@@ -1,6 +1,6 @@
 
 var NS_MUC = "http://jabber.org/protocol/muc";
-
+var HIGHRES_IMAGES_QUEUE = "highres_images_queue";
 
 var Conference = {
     connection: null,
@@ -218,9 +218,18 @@ var Conference = {
         
         if (body == "image") {
             // get image url
-            var image_url = $(message).children('image').children('url').text();
+            var image_urls = [];
+            var url_elements = $(message).children('image').children('urls').children('url');
+            for (var i = 0; i < url_elements.length; i++ ) {
+                var url = url_elements[i].textContent;
+                image_urls.push(url);
+            }
+            
+            // var image_url = $(message).children('image').children('url').text();
             var thumbnail = $(message).children('image').children('thumbnail').text();
             var image_id = $(message).children('image').children('id').text();
+            var image_width = parseInt($(message).children('image').children('width').text());
+            var image_height = parseInt($(message).children('image').children('height').text());
             var timestamp = new Date(); // assume right now
             var delayed = false;
             if( $(message).children('delay').length > 0 ) {
@@ -229,22 +238,27 @@ var Conference = {
             }
             var user = Conference.users[from];
             var image = {id: image_id,
-                         url: image_url,
+                         urls: image_urls,
+                         url_loaded: -1,
                          thumbnail: thumbnail,
+                         width: image_width,
+                         height: image_height,
                          added_by: user,
                          added_by_nick: nick,
                          thumbnail_id: "thumbnail_" + image_id,
                          timestamp: timestamp,
                          delayed: delayed};
-                       
+                         
             log("received image id " + image_id + ", processing");
+            log(image.urls);
 
             Conference.images_loading[image.id] = image;
             Conference.add_queued_event(image.id, 'new_image', image);
                        
             // setup ajax queries to load the image
-            $.get(image.url, function(data) {
+            $.get(image.urls[0], function(data) {
                 log("image " + image.url + " loaded");
+                image.url_loaded = 0;
                 image_element = document.createElement('img');
                 $(image_element).attr('src', image.url);
                 $("#image-cache").append(image_element);
@@ -364,12 +378,22 @@ var Conference = {
     },
     
     send_img_url: function (image) {
-        log("send_img_url: " + image.url);
         message = $msg({
         to: Conference.room,
         type: "groupchat"});
         message.c('body').t("image").up();
-        message.c('image').c('id').t(image.id).up().c('url').t(image.url).up().c('thumbnail').t(image.thumbnail);
+        message.c('image').c('id').t(image.id).up();
+        // currently at <image> level
+        message.c('urls');
+        for( i in image.urls ) {
+            message.c('url').t(image.urls[i]).up();
+        }
+        // currently at <urls> level
+        message.up();
+        // currently at <image> level
+        message.c('width').t(image.width).up();
+        message.c('height').t(image.height).up();
+        message.c('thumbnail').t(image.thumbnail);
         log("sending message: " + message);
         Conference.self_images_in_progress[image.id] = true;
         Conference.connection.send(message);
@@ -394,6 +418,32 @@ var Conference = {
         Conference.connection.send(message);
         
         Conference.currently_viewing = image.id;
+        
+        Conference.download_higher_resolution(image);
+    },
+    
+    get_load_high_resolution_callback: function (image, url_id ) {
+        return function(data) {
+            image.url_loaded = url_id;
+            log("loaded URL [" + url_id + "] " + image.urls[url_id]);
+            $(document).trigger('loaded_highres');
+        };
+    },
+    
+    download_higher_resolution: function (image) {
+    
+        // stop any downloads on this queue and clear it
+        $.ajaxq(HIGHRES_IMAGES_QUEUE);
+    
+        for( var i = image.url_loaded + 1; i < image.urls.length; i++ ) {
+            var url_to_load = image.urls[i];
+            log("preparing to load " + url_to_load);
+            $.ajaxq (HIGHRES_IMAGES_QUEUE, {
+                url: url_to_load,
+                cache: true,
+                success: Conference.get_load_high_resolution_callback(image, i)
+            });
+        }
     }
     
 };

@@ -11,6 +11,12 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('image_change');
     };
     
+    service.loaded_highres_event = function(ev) {
+        $rootScope.$broadcast('image_change');
+    };
+    
+    $(document).bind('loaded_highres', service.loaded_highres_event);
+    
     $(document).bind('display_image', service.display_image_event);
     
     return service;
@@ -39,7 +45,7 @@ function ImageCtrl($scope, conferenceService) {
     $scope.image_src = function() {
         result = "";
         if( $scope.showing_image() ) {
-            result = $scope.image.url;
+            result = $scope.image.urls[$scope.image.url_loaded];
         }
         return result;
     };
@@ -48,6 +54,7 @@ function ImageCtrl($scope, conferenceService) {
         log("controller on image_change");
         $scope.image = conferenceService.displayed_image;
         log("$scope.image.id is: " + $scope.image.id);
+        log("$scope.image.url_loaded: " + $scope.image.url_loaded);
         $scope.$apply();
     });
 }

@@ -13,6 +13,13 @@ a, a:hover {
 	z-index:-2;
 }
 
+#main_image img {
+    -webkit-transition:all linear 0.3s;
+    -moz-transition:all linear 0.3s;
+    -o-transition:all linear 0.3s;
+    transition:all linear 0.3s;
+}
+
 .action-icon {
     margin-right: 4px;
 }

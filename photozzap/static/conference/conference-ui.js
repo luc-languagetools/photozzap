@@ -474,67 +474,63 @@ $(document).bind('new_comment', function(ev, comment) {
 
 });
 
-$(document).bind('resize_image', function(ev) {
-	// ensure image is fullscreen
+function resize_image_area() {
+    // ensure image is fullscreen
     // this should work with any aspect ratio
-	
-    var image = $("#main_image img").first();
-    var imageWidth = image.width();
-    var imageHeight = image.height();
-    var imageRatio = imageWidth / imageHeight;
-	
-	var win = $(window);
-	var winWidth = win.width();
+    
+    if (Conference.currently_viewing == undefined ) {
+        return;
+    }
+    
+    var image = Conference.images[Conference.currently_viewing];
+    var imageMaxWidth = image.width;
+    var imageMaxHeight = image.height;
+    var imageRatio = imageMaxWidth / imageMaxHeight;
+
+    var win = $(window);
+    var winWidth = win.width();
     var winHeight = win.height();
     var winRatio = winWidth / winHeight;
   
-    // log("imageWidth: " + imageWidth + " imageHeight: " + imageHeight + " imageRatio " + imageRatio);
-    // log("winWidth: " + winWidth + " winHeight: " + winHeight + " winRatio: " + winRatio);
+    log("winWidth: " + winWidth + " winHeight: " + winHeight + " winRatio: " + winRatio);
   
 	var newImageWidth = 0;
 	var newImageHeight = 0;
   
     if(winRatio > imageRatio) {
         newImageWidth = "auto";
-		newImageHeight = winHeight;	
-	} else {
-		newImageWidth = winWidth;
+        newImageHeight = "100%";
+    } else {
+        newImageWidth = "100%";
         newImageHeight = "auto";
-    }	
+    }
     
-    /*
-	log("newImageWidth: " + newImageWidth + 
-        " newImageHeight: " + newImageHeight +
-        " winRatio: " + winRatio +
-        " imageRatio: " + imageRatio);
-    */
-    
-	image.css({
-		width: newImageWidth,
-        height: newImageHeight,
-        marginTop: "0px"
-    })
-	
-    // recalculate image dimensions
-    image = $("#main_image img").first();
-    imageWidth = image.width();
-    imageHeight = image.height();
-    imageRatio = imageWidth / imageHeight;    
-    
+   
     var topSpacing = 0;	
     if (winRatio < imageRatio) {
-        var imageHeight = image.height();
+        var imageHeight = winWidth / imageRatio;
         topSpacing = (winHeight - imageHeight) / 2;
         log("topSpacing: " + topSpacing);
-       	image.css({
+        
+        $("#main_image img").css({
+            width: newImageWidth,
+            height: newImageHeight,
             marginTop: topSpacing + "px"
-        })
+        })        
+    } else {
+        $("#main_image img").css({
+            width: newImageWidth,
+            height: newImageHeight,
+            marginTop: "0px"
+        }) 
     }
     
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});
-    
-   
+}
+
+$(document).bind('resize_image', function(ev) {
+    resize_image_area();
 });
 
 String.prototype.trunc = String.prototype.trunc ||
