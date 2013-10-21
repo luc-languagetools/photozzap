@@ -31,17 +31,35 @@ def photo_storage_path_base(request):
     photo_static_path_base = settings['photo_static_path_base']
     return photo_static_path_base
 
-def resize_image(request, path_base, dir, photo_id, original_path, geometry, quality):
+def obtain_image_dimensions(abs_path):
+    # obtain image dimensions
+    size_command = "identify -format \"%[fx:w]x%[fx:h]\" " + abs_path
+    size_info = subprocess.check_output(size_command, shell=True).decode("utf-8").strip()
+    size_components = size_info.split("x")
+    width = size_components[0]
+    height = size_components[1]    
+    
+    return {'width': width, 'height': height}
+    
+    
+def resize_image(request, path_base, dir, photo_id, original_path, large_dimension):
 
-    resized_filename = photo_id + "_" + geometry + ".JPG"
+    resized_filename = photo_id + "_" + large_dimension + ".JPG"
     resized_abs_path = os.path.join(dir, resized_filename)
     resized_rel_path = os.path.relpath(resized_abs_path, path_base)
     
+    quality = "75"
+    geometry = large_dimension + "x" + large_dimension
     command = "convert -quality " + quality + " -geometry " + geometry + " " + original_path + " " + resized_abs_path
     subprocess.call(command, shell=True)
     
+    # obtain resized image dimensions
+    dimensions = obtain_image_dimensions(resized_abs_path)
+
+    # build full URL
     full_image_url = request.static_url('photozzap:' + resized_rel_path)
-    return full_image_url
+    
+    return {'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]}
     
 @view_config(route_name='upload_photo',renderer='json')
 def upload_photo(request):
@@ -69,33 +87,38 @@ def upload_photo(request):
     os.chmod(output_file_abs_path, st.st_mode | stat.S_IROTH)
     
     # obtain image dimensions
-    size_command = "identify -format \"%[fx:w]x%[fx:h]\" " + output_file_abs_path
-    size_info = subprocess.check_output(size_command, shell=True).decode("utf-8").strip()
-    log.debug("size_info: " + size_info);
-    size_components = size_info.split("x")
-    width = size_components[0]
-    height = size_components[1]    
+    dimensions = obtain_image_dimensions(output_file_abs_path)
+
+    width_px = int(dimensions["width"])
+    height_px = int(dimensions["height"])
+    large_dimension = width_px
+    if height_px > large_dimension:
+        large_dimension = height_px
     
+    resize_dimensions = [480, 640, 720, 800, 960, 1024, 1280, 1536, 2048]
+    
+    images_list = []
+    for dimension in resize_dimensions:
+        if dimension < large_dimension:
+            images_list.append(resize_image(request, path_base, dir, photo_id, output_file_abs_path, str(dimension)))
+
     # create thumbnail
     thumbnail_filename = photo_id + "_small.JPG"
     thumbnail_abs_path = os.path.join(dir, thumbnail_filename)
     thumbnail_rel_path = os.path.relpath(thumbnail_abs_path, path_base)
 
     # convert thumbnails to square
-    command = "convert -quality 88 " + output_file_abs_path + " -thumbnail 400x300^ -gravity center -extent 400x300 " + thumbnail_abs_path
+    command = "convert -quality 75 " + output_file_abs_path + " -thumbnail 400x300^ -gravity center -extent 400x300 " + thumbnail_abs_path
     subprocess.call(command, shell=True)
-    
-    # resize others
-    resized_512x512_url = resize_image(request, path_base, dir, photo_id, output_file_abs_path, "512x512", "35")
-    resized_800x800_url = resize_image(request, path_base, dir, photo_id, output_file_abs_path, "900x900", "85")
-    
+
     # create urls
     full_image_url = request.static_url('photozzap:' + output_file_rel_path)
     thumbnail_url = request.static_url('photozzap:' + thumbnail_rel_path)
+            
+    # add the final image
+    images_list.append({'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]})
     
-    return {'urls': [resized_512x512_url,
-                     resized_800x800_url,
-                     full_image_url], 'thumbnail':thumbnail_url, 'id': photo_id, 'width': width, 'height': height}
+    return {'urls': images_list, 'thumbnail':thumbnail_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"]}
     
 
 @view_config(route_name='new_conference',renderer='json')

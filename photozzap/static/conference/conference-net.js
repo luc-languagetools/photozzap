@@ -219,9 +219,13 @@ var Conference = {
         if (body == "image") {
             // get image url
             var image_urls = [];
+            var image_dimensions = [];
             var url_elements = $(message).children('image').children('urls').children('url');
             for (var i = 0; i < url_elements.length; i++ ) {
                 var url = url_elements[i].textContent;
+                var resized_width = url_elements[i].getAttribute('width');
+                var resized_height = url_elements[i].getAttribute('height');
+                image_dimensions.push({width: resized_width, height: resized_height});
                 image_urls.push(url);
             }
             
@@ -239,6 +243,7 @@ var Conference = {
             var user = Conference.users[from];
             var image = {id: image_id,
                          urls: image_urls,
+                         dimensions: image_dimensions,
                          url_loaded: -1,
                          thumbnail: thumbnail,
                          width: image_width,
@@ -386,7 +391,9 @@ var Conference = {
         // currently at <image> level
         message.c('urls');
         for( i in image.urls ) {
-            message.c('url').t(image.urls[i]).up();
+            var url_entry = image.urls[i];
+            var attrs = {width: url_entry.width, height: url_entry.height};
+            message.c('url', attrs).t(url_entry.url).up();
         }
         // currently at <urls> level
         message.up();
@@ -419,7 +426,7 @@ var Conference = {
         
         Conference.currently_viewing = image.id;
         
-        Conference.download_higher_resolution(image);
+        // Conference.download_higher_resolution(image);
     },
     
     get_load_high_resolution_callback: function (image, url_id ) {
@@ -430,20 +437,19 @@ var Conference = {
         };
     },
     
-    download_higher_resolution: function (image) {
+    download_higher_resolution: function (image, url_index) {
     
         // stop any downloads on this queue and clear it
         $.ajaxq(HIGHRES_IMAGES_QUEUE);
-    
-        for( var i = image.url_loaded + 1; i < image.urls.length; i++ ) {
-            var url_to_load = image.urls[i];
-            log("preparing to load " + url_to_load);
-            $.ajaxq (HIGHRES_IMAGES_QUEUE, {
-                url: url_to_load,
-                cache: true,
-                success: Conference.get_load_high_resolution_callback(image, i)
-            });
-        }
+
+        var url_to_load = image.urls[url_index];
+        log("preparing to load " + url_to_load);
+        $.ajaxq (HIGHRES_IMAGES_QUEUE, {
+            url: url_to_load,
+            cache: true,
+            success: Conference.get_load_high_resolution_callback(image, url_index)
+        });
+
     }
     
 };
