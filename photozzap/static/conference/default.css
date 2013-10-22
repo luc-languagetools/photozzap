@@ -2,15 +2,33 @@ a, a:hover {
     color: #333333;
 }
 
+
 #main_image {
     position: fixed;
     left: 0%;
     top: 0%;
     height: 100%;
-    width: 100%;
+    width: 100%;    
     overflow: hidden;
-	text-align: center;
-	z-index:-2;
+    text-align: center;
+    z-index:-4;
+}
+
+#displayed_image {
+    z-index:-3;
+}
+
+#blur_image {
+    z-index:-2;
+    opacity: 0;
+}
+
+.image-container {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    height: 100%;
+    width: 100%;
 }
 
 #main_image img {
@@ -311,6 +329,11 @@ a, a:hover {
     margin: 10px;
 }
 
+.comments-available {
+    position: relative; 
+    left: -52px;
+    top: -88px;
+}
 
 #history-sidebar-overlay-gradient div {
     margin-top: 30px;

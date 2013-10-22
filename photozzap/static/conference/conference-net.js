@@ -233,9 +233,15 @@ var Conference = {
             var thumbnail = $(message).children('image').children('thumbnail').text();
             var thumbnail_hires = $(message).children('image').children('thumbnailhires').text();
             
+            var blur = $(message).children('image').children('blur').text();
+            var blur_hires = $(message).children('image').children('blurhires').text();
+            
             if (download_highres_thumbnails()) {
                 thumbnail = thumbnail_hires;
+                blur = blur_hires;
             }
+            
+            log("blur: " + blur);
             
             var image_id = $(message).children('image').children('id').text();
             var image_width = parseInt($(message).children('image').children('width').text());
@@ -252,6 +258,7 @@ var Conference = {
                          dimensions: image_dimensions,
                          url_loaded: -1,
                          thumbnail: thumbnail,
+                         blur: blur,
                          width: image_width,
                          height: image_height,
                          added_by: user,
@@ -408,6 +415,8 @@ var Conference = {
         message.c('height').t(image.height).up();
         message.c('thumbnail').t(image.thumbnail).up();
         message.c('thumbnailhires').t(image.thumbnailhires).up();
+        message.c('blur').t(image.blur).up();
+        message.c('blurhires').t(image.blurhires).up();
         log("sending message: " + message);
         Conference.self_images_in_progress[image.id] = true;
         Conference.connection.send(message);
@@ -433,7 +442,6 @@ var Conference = {
         
         Conference.currently_viewing = image.id;
         
-        // Conference.download_higher_resolution(image);
     },
     
     get_load_high_resolution_callback: function (image, url_id ) {

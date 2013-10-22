@@ -63,7 +63,7 @@ def resize_image(request, path_base, dir, photo_id, original_path, large_dimensi
     
 def create_thumbnail(request, path_base, dir, photo_id, original_path, geometry):
     # create thumbnail
-    thumbnail_filename = photo_id + "_th" + geometry + ".JPG"
+    thumbnail_filename = photo_id + "_th_" + geometry + ".JPG"
     thumbnail_abs_path = os.path.join(dir, thumbnail_filename)
     thumbnail_rel_path = os.path.relpath(thumbnail_abs_path, path_base)
 
@@ -75,7 +75,21 @@ def create_thumbnail(request, path_base, dir, photo_id, original_path, geometry)
     
     return thumbnail_url
 
+def create_blurred_image(request, path_base, dir, photo_id, original_path, geometry):
+    # create blurred image
+    blur_filename = photo_id + "_blur_" + geometry + ".JPG"
+    blur_abs_path = os.path.join(dir, blur_filename)
+    blur_rel_path = os.path.relpath(blur_abs_path, path_base)
+
+    # create blurred image
+    command = "convert -quality 70 -geometry " + geometry + " -blur 0x5 -brightness-contrast -20x0 -alpha set -virtual-pixel transparent -channel A -level 50%,100% +channel " + original_path + " " + blur_abs_path
+    subprocess.call(command, shell=True)
     
+    blur_url = request.static_url('photozzap:' + blur_rel_path)
+    
+    return blur_url
+
+
 @view_config(route_name='upload_photo',renderer='json')
 def upload_photo(request):
     log.debug(request.POST)
@@ -121,11 +135,15 @@ def upload_photo(request):
     thumbnail_url = create_thumbnail(request, path_base, dir, photo_id, output_file_abs_path, "240x180")
     thumbnail_highres_url = create_thumbnail(request, path_base, dir, photo_id, output_file_abs_path, "480x360")
 
+    # create blurred images
+    blur_url = create_blurred_image(request, path_base, dir, photo_id, output_file_abs_path, "480x480")
+    blur_highres_url = create_blurred_image(request, path_base, dir, photo_id, output_file_abs_path, "960x960")
+    
     # add the final image
     full_image_url = request.static_url('photozzap:' + output_file_rel_path)    
     images_list.append({'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]})
     
-    return {'urls': images_list, 'thumbnail':thumbnail_url, 'thumbnailhires': thumbnail_highres_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"]}
+    return {'urls': images_list, 'thumbnail':thumbnail_url, 'thumbnailhires': thumbnail_highres_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"], 'blur':blur_url, 'blurhires': blur_highres_url}
     
 
 @view_config(route_name='new_conference',renderer='json')

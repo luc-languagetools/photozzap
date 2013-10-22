@@ -133,8 +133,7 @@ $(document).ready(function() {
             <img src="<%= this.thumbnail %>" class="notification-thumbnail"/>
         </a>
 
-        <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_white.png')}" 
-         style="position: relative; left: -45px; top: -15px; visibility:hidden;" />            
+        <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_white.png')}" style="visibility: hidden;"/>
         
     </li>
 ]]>
@@ -352,8 +351,14 @@ $(document).ready(function() {
 </div>
 
 <div id="main_image" ng-controller="ImageCtrl">
-    <img ng-if="showing_image()" id="displayed-image" ng-src="{{image_src()}}"
-         onload="$(document).trigger('resize_image');" />
+    <div id="displayed_image" class="image-container">
+        <img ng-if="showing_image()" id="displayed-image" ng-src="{{image_src()}}"
+            onload="$(document).trigger('resize_image');" />
+    </div>
+    <div id="blur_image" class="image-container">
+        <img ng-if="showing_image()" id="blurred-image" ng-src="{{blur_src()}}"
+            onload="$(document).trigger('resize_image');" />
+    </div>
 </div>
 
 <div id="control_event_layer">

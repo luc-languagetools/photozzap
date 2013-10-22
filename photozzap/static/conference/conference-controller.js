@@ -49,6 +49,14 @@ function ImageCtrl($scope, conferenceService) {
         }
         return result;
     };
+
+    $scope.blur_src = function() {
+        result = "";
+        if( $scope.showing_image() ) {
+            result = $scope.image.blur;
+        }
+        return result;
+    };
     
     $scope.$on('image_change', function() {
         log("controller on image_change");
