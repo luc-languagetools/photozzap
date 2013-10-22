@@ -231,6 +231,12 @@ var Conference = {
             
             // var image_url = $(message).children('image').children('url').text();
             var thumbnail = $(message).children('image').children('thumbnail').text();
+            var thumbnail_hires = $(message).children('image').children('thumbnailhires').text();
+            
+            if (download_highres_thumbnails()) {
+                thumbnail = thumbnail_hires;
+            }
+            
             var image_id = $(message).children('image').children('id').text();
             var image_width = parseInt($(message).children('image').children('width').text());
             var image_height = parseInt($(message).children('image').children('height').text());
@@ -400,7 +406,8 @@ var Conference = {
         // currently at <image> level
         message.c('width').t(image.width).up();
         message.c('height').t(image.height).up();
-        message.c('thumbnail').t(image.thumbnail);
+        message.c('thumbnail').t(image.thumbnail).up();
+        message.c('thumbnailhires').t(image.thumbnailhires).up();
         log("sending message: " + message);
         Conference.self_images_in_progress[image.id] = true;
         Conference.connection.send(message);

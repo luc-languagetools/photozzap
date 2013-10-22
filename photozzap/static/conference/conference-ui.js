@@ -512,6 +512,15 @@ function ensure_optimal_image_resolution(image) {
     }
 }
 
+function download_highres_thumbnails() {
+    result = false;
+    if ($(window).width() > 640 ||
+        $(window).height() > 640) {
+        result = true;
+    }
+    return result;
+}
+
 function resize_image_area() {
     // ensure image is fullscreen
     // this should work with any aspect ratio

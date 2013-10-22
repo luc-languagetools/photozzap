@@ -61,6 +61,21 @@ def resize_image(request, path_base, dir, photo_id, original_path, large_dimensi
     
     return {'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]}
     
+def create_thumbnail(request, path_base, dir, photo_id, original_path, geometry):
+    # create thumbnail
+    thumbnail_filename = photo_id + "_th" + geometry + ".JPG"
+    thumbnail_abs_path = os.path.join(dir, thumbnail_filename)
+    thumbnail_rel_path = os.path.relpath(thumbnail_abs_path, path_base)
+
+    # convert thumbnails to square
+    command = "convert -quality 75 " + original_path + " -thumbnail " + geometry + "^ -gravity center -extent " + geometry + " " + thumbnail_abs_path
+    subprocess.call(command, shell=True)
+    
+    thumbnail_url = request.static_url('photozzap:' + thumbnail_rel_path)
+    
+    return thumbnail_url
+
+    
 @view_config(route_name='upload_photo',renderer='json')
 def upload_photo(request):
     log.debug(request.POST)
@@ -102,23 +117,15 @@ def upload_photo(request):
         if dimension < large_dimension:
             images_list.append(resize_image(request, path_base, dir, photo_id, output_file_abs_path, str(dimension)))
 
-    # create thumbnail
-    thumbnail_filename = photo_id + "_small.JPG"
-    thumbnail_abs_path = os.path.join(dir, thumbnail_filename)
-    thumbnail_rel_path = os.path.relpath(thumbnail_abs_path, path_base)
+    # create thumbnails
+    thumbnail_url = create_thumbnail(request, path_base, dir, photo_id, output_file_abs_path, "240x180")
+    thumbnail_highres_url = create_thumbnail(request, path_base, dir, photo_id, output_file_abs_path, "480x360")
 
-    # convert thumbnails to square
-    command = "convert -quality 75 " + output_file_abs_path + " -thumbnail 400x300^ -gravity center -extent 400x300 " + thumbnail_abs_path
-    subprocess.call(command, shell=True)
-
-    # create urls
-    full_image_url = request.static_url('photozzap:' + output_file_rel_path)
-    thumbnail_url = request.static_url('photozzap:' + thumbnail_rel_path)
-            
     # add the final image
+    full_image_url = request.static_url('photozzap:' + output_file_rel_path)    
     images_list.append({'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]})
     
-    return {'urls': images_list, 'thumbnail':thumbnail_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"]}
+    return {'urls': images_list, 'thumbnail':thumbnail_url, 'thumbnailhires': thumbnail_highres_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"]}
     
 
 @view_config(route_name='new_conference',renderer='json')
