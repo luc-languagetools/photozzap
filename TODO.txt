@@ -13,6 +13,7 @@ improvements
  - swipe action on mobile
 - improve client performance on mobile
 - improve client performance on desktop, don't use connection modal
+- when using angular and ng-src, we see a new get request when display new images
 - show loading indicator when processing messages
 - pushover.net notifications (will require a custom xmpp bot)
 - use jquery ajax queue to queue events one after the other (will solve image order issue)
