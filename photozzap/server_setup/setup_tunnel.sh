@@ -1,0 +1,1 @@
+ ssh -nNt -gv -R 0.0.0.0:9000:localhost:9000 -R 0.0.0.0:6280:localhost:5280 dev@dev.photozzap.com
