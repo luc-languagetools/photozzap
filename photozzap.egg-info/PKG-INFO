@@ -38,6 +38,24 @@ Description: photozzap README
         how to run:
         ../bin/python -m photozzap.scripts.jabber_muc_bot development.ini hjw32y84 bot01 Luc
         
+        git help
+        --------
+        
+        branching
+        #create new branch
+        git checkout -b marys-feature master
+        
+        
+        tagging:
+        #list tags
+        git tag
+        #create annotated tag
+        git tag -a v1.4 -m 'my version 1.4'
+        #push tags
+        git push origin --tags
+        #or
+        git push origin v1.5
+        
         
         
         0.0

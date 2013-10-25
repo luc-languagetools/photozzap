@@ -9,6 +9,7 @@ import tempfile
 import subprocess
 import transaction
 
+import photozzap.staticresources
 
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
@@ -187,8 +188,13 @@ def conference(request):
     # create new user
     user_created = False
     
+    javascript_files = photozzap.staticresources.javascript_files
+    if True:
+        javascript_files = [photozzap.staticresources.combined_javascript_file]
+    
     params = {'bosh_service': bosh_service,
-              'conference': conf.name + '@' + jabber_conf_server}
+              'conference': conf.name + '@' + jabber_conf_server,
+              'javascript_files': javascript_files}
     while user_created == False:
         try:
             with transaction.manager:
