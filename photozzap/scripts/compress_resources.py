@@ -1,6 +1,5 @@
 
 from pyramid.path import AssetResolver
-from slimit import minify
 import photozzap.staticresources
 
 def minify_javascripts():
