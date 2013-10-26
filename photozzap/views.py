@@ -174,6 +174,22 @@ def new_conference(request):
 def home(request):
     return {'new_conf_url': request.route_url('new_conference')}
     
+    
+    
+    
+def get_file_list_abs(request, files):
+    # build absolute paths for static resource files
+    files_abs = [request.static_url('photozzap:' + file) for file in files]
+    
+    return files_abs
+
+def get_icon_file_list_abs(request):
+    icon_files_abs = {}
+    for key, file in photozzap.staticresources.icon_files.items():
+        icon_files_abs[key] = request.static_url('photozzap:' + file)
+        
+    return icon_files_abs
+    
 @view_config(route_name='conference', renderer='templates/conference.pt')
 def conference(request):
 
@@ -188,20 +204,19 @@ def conference(request):
     # create new user
     user_created = False
     
-    javascript_files = photozzap.staticresources.javascript_files
-    if False:
-        javascript_files = [photozzap.staticresources.combined_javascript_file]
-    
-    # build absolute paths for javascript files
-    javascript_files_abs = [request.static_url('photozzap:' + file) for file in javascript_files]
-    
-    # put quotes around files
-    javascript_files_array_list = ["\"" + file + "\"" for file in javascript_files_abs]
-    javascript_files_array_string = ", ".join(javascript_files_array_list)
+    javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.javascript_files)
+    css_files_abs = get_file_list_abs(request, photozzap.staticresources.css_files)
+
+    if True:
+        javascript_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_javascript_file])
+        css_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_css_file])
+
     
     params = {'bosh_service': bosh_service,
               'conference': conf.name + '@' + jabber_conf_server,
-              'javascript_files': javascript_files_abs}
+              'javascript_files': javascript_files_abs,
+              'css_files': css_files_abs,
+              'icon_files': get_icon_file_list_abs(request)}
     while user_created == False:
         try:
             with transaction.manager:

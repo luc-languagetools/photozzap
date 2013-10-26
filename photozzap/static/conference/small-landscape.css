@@ -1,52 +1,55 @@
+@media all and (max-width: 640px) and (orientation : landscape), all and (max-height: 400px) and (orientation : landscape) {
 
-.gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
-    left: 2%;
-    width: 15%;
-    height: 20%;
-}
+    .gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
+        left: 2%;
+        width: 15%;
+        height: 20%;
+    }
 
-.users-sidebar-default {
-    top: 4%;
-}
+    .users-sidebar-default {
+        top: 4%;
+    }
 
-.gallery-sidebar-default {
-    top: 28%;
-}
+    .gallery-sidebar-default {
+        top: 28%;
+    }
 
-.chat-sidebar-default {
-    top: 52%;
-}
+    .chat-sidebar-default {
+        top: 52%;
+    }
 
-.history-sidebar-default {
-    top: 76%;
-} 
+    .history-sidebar-default {
+        top: 76%;
+    } 
 
-.gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded, .status-sidebar-default {
-    top: 2%;
-    left: 20%;
-    width: 78%;
-}
+    .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded, .status-sidebar-default {
+        top: 2%;
+        left: 20%;
+        width: 78%;
+    }
 
-.gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
-    height: 96%;
-}
+    .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
+        height: 96%;
+    }
 
-.action-sidebar-header img {
-    width: 30%;
-}
+    .action-sidebar-header img {
+        width: 30%;
+    }
 
-.status-sidebar-header img {
-    width: 10%;
-}
+    .status-sidebar-header img {
+        width: 10%;
+    }
 
-.action-sidebar-expanded .action-sidebar-header img {
-    width: 7%;
-}
+    .action-sidebar-expanded .action-sidebar-header img {
+        width: 7%;
+    }
 
-.action-sidebar .action-sidebar-header {
-    font-size: 18px;
-}
+    .action-sidebar .action-sidebar-header {
+        font-size: 18px;
+    }
 
-.notification-preview { 
-    width: 40%;
+    .notification-preview { 
+        width: 40%;
+    }
+    
 }

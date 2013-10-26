@@ -2,27 +2,27 @@
 from pyramid.path import AssetResolver
 import photozzap.staticresources
 
-def minify_javascripts():
+def concatenate(file_list, output_file):
     a = AssetResolver('photozzap')
-    javascript_codes = []
-    for javascript_resource in photozzap.staticresources.javascript_files:
-        resolver = a.resolve(javascript_resource)
+    texts = []
+    for file in file_list:
+        resolver = a.resolve(file)
         full_path = resolver.abspath()
         print("opening %s" % full_path)
-        javascript_code = open(full_path, 'r').read()
-        javascript_codes.append(javascript_code)
+        resource_text = open(full_path, 'r').read()
+        texts.append(resource_text)
 
-    # minify
     # open output file
-    resolver = a.resolve(photozzap.staticresources.combined_javascript_file)
+    resolver = a.resolve(output_file)
     output_path = resolver.abspath()
   
     output_file = open(output_path, "w")
-    output_file.write("\n".join(javascript_codes))
+    output_file.write("\n".join(texts))
     output_file.close()    
     
-    print("wrote combined js code to %s" % output_path)
+    print("wrote combined code to %s" % output_path)
+
 
 if __name__ == "__main__":
-    #print(photozzap.staticresources.javascript_files)
-    minify_javascripts()
+    concatenate(photozzap.staticresources.javascript_files, photozzap.staticresources.combined_javascript_file)
+    concatenate(photozzap.staticresources.css_files, photozzap.staticresources.combined_css_file)

@@ -1,136 +1,140 @@
-.gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
-    top: 84%;
-    width: 20%;
-    height: 15%;i
-}
+@media all and (max-width: 640px), all and (max-height: 400px) {
 
-.users-sidebar-default {
-    left: 4%;
-}
+    .gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
+        top: 84%;
+        width: 20%;
+        height: 15%;i
+    }
 
-.gallery-sidebar-default {
-    left: 28%;
-}
+    .users-sidebar-default {
+        left: 4%;
+    }
 
-.chat-sidebar-default {
-    left: 52%;
-}
+    .gallery-sidebar-default {
+        left: 28%;
+    }
 
-.history-sidebar-default {
-    left: 76%;
-}
+    .chat-sidebar-default {
+        left: 52%;
+    }
 
-.gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
-    top: 2%;
-    left: 5%;
-    width: 94%;
-    height: 78%;
-}
+    .history-sidebar-default {
+        left: 76%;
+    }
 
-.action-sidebar-header-centered {
-    position: relative;
-    top: 5%;
-}
+    .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
+        top: 2%;
+        left: 5%;
+        width: 94%;
+        height: 78%;
+    }
 
-.action-sidebar-header img {
-    height: auto;
-    width: 50%;
-}
+    .action-sidebar-header-centered {
+        position: relative;
+        top: 5%;
+    }
 
-.gallery-sidebar-expanded .notification-thumbnail {
-    height: 85px;
-    width: auto;
-}
+    .action-sidebar-header img {
+        height: auto;
+        width: 50%;
+    }
 
-.action-sidebar .action-sidebar-header {
-    font-size: 26px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
+    .gallery-sidebar-expanded .notification-thumbnail {
+        height: 85px;
+        width: auto;
+    }
 
-.thumbnails > li {
-  float: left;
-  margin-bottom: 5px;
-  margin-left: 5px;
-}
+    .action-sidebar .action-sidebar-header {
+        font-size: 26px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
 
-.image-preview {
-	width: 45%;
-}
+    .thumbnails > li {
+      float: left;
+      margin-bottom: 5px;
+      margin-left: 5px;
+    }
 
-.image-preview-left {
-	float: left;
-	margin-left: 3px;
-	margin-right: 1px;
-}
+    .image-preview {
+        width: 45%;
+    }
 
-.image-preview-right {
-	float: right;
-	margin-left: 1px;
-	margin-right: 15px;
-	
-}
+    .image-preview-left {
+        float: left;
+        margin-left: 3px;
+        margin-right: 1px;
+    }
 
-.image-preview .notification-overlay {
-    font-size: 14px;
-}
+    .image-preview-right {
+        float: right;
+        margin-left: 1px;
+        margin-right: 15px;
+        
+    }
+
+    .image-preview .notification-overlay {
+        font-size: 14px;
+    }
 
 
 
-.notification-preview { 
-    margin-bottom: 5px; 
-    margin-right: 5px; 
-    bottom: 0px;
-    right: 0px;
-    width: 60%;
-}
+    .notification-preview { 
+        margin-bottom: 5px; 
+        margin-right: 5px; 
+        bottom: 0px;
+        right: 0px;
+        width: 60%;
+    }
 
-.comment-nick-heading {
-    display: inline;
-}
+    .comment-nick-heading {
+        display: inline;
+    }
 
-.comment-graphic-heading {
-    margin-left: 2px;
-}
+    .comment-graphic-heading {
+        margin-left: 2px;
+    }
 
-.comment-entry .comment-text {
-    margin-top: 0px;
-    margin-left: 35px;
-    width: 90%;
-}
+    .comment-entry .comment-text {
+        margin-top: 0px;
+        margin-left: 35px;
+        width: 90%;
+    }
 
-.comment-submit-area img {
-    display: none;
-}
+    .comment-submit-area img {
+        display: none;
+    }
 
-.comment-submit-area input {
-    width: 60%;
-}
+    .comment-submit-area input {
+        width: 60%;
+    }
 
-.status-sidebar-default {
-	top: 2%;
-	left: 5%;
-	width: 90%;
-}
+    .status-sidebar-default {
+        top: 2%;
+        left: 5%;
+        width: 90%;
+    }
 
-.status-sidebar-header img {
-    height: auto;
-    width: 15%;
-}
+    .status-sidebar-header img {
+        height: auto;
+        width: 15%;
+    }
 
-.status-sidebar-other-bars-open {
-    opacity: 0;
-    top: -100%;
-}
+    .status-sidebar-other-bars-open {
+        opacity: 0;
+        top: -100%;
+    }
 
-.action-sidebar {
-    background-color: rgba(255, 255, 255, 0.20); 
-}
+    .action-sidebar {
+        background-color: rgba(255, 255, 255, 0.20); 
+    }
 
-.action-siderbar-inactive-selected {
-    opacity: 0.4;
-}
+    .action-siderbar-inactive-selected {
+        opacity: 0.4;
+    }
 
-.comments-available {
-    top: -28px;
+    .comments-available {
+        top: -28px;
+    }
+
 }

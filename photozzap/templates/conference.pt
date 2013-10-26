@@ -5,13 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
-<!-- Bootstrap -->
-<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
-<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
-<!-- photozzap style sheets -->
-<link href="${request.static_url('photozzap:static/conference/default.css')}" rel="stylesheet" media="screen">
-<link rel="stylesheet" media="all and (max-width: 640px), all and (max-height: 400px)"  href="${request.static_url('photozzap:static/conference/small.css')}"/>
-<link rel="stylesheet" media="all and (max-width: 640px) and (orientation : landscape), all and (max-height: 400px) and (orientation : landscape)" href="${request.static_url('photozzap:static/conference/small-landscape.css')}"/>
+<!-- css files -->
+<link tal:repeat="file css_files" tal:attributes="href file" rel="stylesheet" media="screen">
 
 <style type="text/css">
 #loading-screen {
@@ -63,7 +58,7 @@ function ready_for_connection() {
         <% }; %>
         <div class="notification-overlay">
             <div style="height: 10px;"/>            
-            <img src="${request.static_url('photozzap:static/icons/eye_gray.png')}" class="action-icon"/><b><%= this.nick %></b>
+            <img src="${icon_files['eye_gray']}" class="action-icon"/><b><%= this.nick %></b>
         </div>
     </a>
 ]]>
@@ -81,7 +76,7 @@ function ready_for_connection() {
 			<!-- user uploaded -->
 			<% if( this.user_added != undefined ) { %>
 				<div>
-					<img src="${request.static_url('photozzap:static/icons/upload_gray.png')}" class="action-icon"/><b><%= this.user_added %></b>
+					<img src="${icon_files['upload_gray']}" class="action-icon"/><b><%= this.user_added %></b>
 				</div>
 			<% } %>            
 
@@ -94,7 +89,7 @@ function ready_for_connection() {
 				}
 				var nick_string = nick_array.join(", ");
 				%>
-				<img src="${request.static_url('photozzap:static/icons/eye_gray.png')}" class="action-icon"/><b><%= nick_string %></b>
+				<img src="${icon_files['eye_gray']}" class="action-icon"/><b><%= nick_string %></b>
 			<% } %>
 			</div>
 			
@@ -108,7 +103,7 @@ function ready_for_connection() {
 				  for( i in comments) { 
 				   comment = comments[i];
 				%>
-					<img src="${request.static_url('photozzap:static/icons/comment_small_gray.png')}" class="action-icon"/>
+					<img src="${icon_files['comment_small_gray']}" class="action-icon"/>
 					<b>
 					   <%= comment.user %>:
 					</b> <%= comment.text.trunc(30) %><br/>
@@ -128,7 +123,7 @@ function ready_for_connection() {
             <img src="<%= this.thumbnail %>" class="notification-thumbnail"/>
         </a>
 
-        <img class="comments-available" src="${request.static_url('photozzap:static/icons/comment_big_white.png')}" style="visibility: hidden;"/>
+        <img class="comments-available" src="${icon_files['comment_big_white']}" style="visibility: hidden;"/>
         
     </li>
 ]]>
@@ -147,7 +142,7 @@ function ready_for_connection() {
     <div class="row-fluid comment-entry new-comment" style="display: none;">
         <div class="span5">
             <div class="comment-graphic-heading">
-                <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}">
+                <img src="${icon_files['comment_medium_darkgray']}">
             </div>
             <span class="comment-nick-heading"><%= this.user %></span>
             <span class="comment-timestamp unapplied-timestamp" title="<%= this.timestamp.toISOString() %>">
@@ -199,7 +194,7 @@ function ready_for_connection() {
 
 <div id="gallery-sidebar-icon" class="action-sidebar gallery-sidebar-default action-sidebar-inactive">
     <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/gallery_medium_white.png')}" />
+        <img src="${icon_files['gallery_medium_white']}" />
         <br/>
         Photos
     </div>
@@ -207,7 +202,7 @@ function ready_for_connection() {
 
 <div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/gallery_medium_white.png')}" />
+        <img src="${icon_files['gallery_medium_white']}" />
         <br/>
         Photos
     </div>
@@ -224,7 +219,7 @@ function ready_for_connection() {
 
 <div id="history-sidebar-icon" class="action-sidebar history-sidebar-default action-sidebar-inactive">
     <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/clock_medium_white.png')}" />
+        <img src="${icon_files['clock_medium_white']}" />
         <br/>
         History
     </div>
@@ -232,7 +227,7 @@ function ready_for_connection() {
 
 <div id="history-sidebar" class="action-sidebar history-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/clock_medium_white.png')}" />
+        <img src="${icon_files['clock_medium_white']}" />
         <br/>
         History
     </div>
@@ -245,14 +240,14 @@ function ready_for_connection() {
 
 <div id="status-sidebar" class="action-sidebar status-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="status-sidebar-header" class="action-sidebar-header status-sidebar-header">
-        <img src="${request.static_url('photozzap:static/icons/photozzap_header.png')}" />
+        <img src="${icon_files['photozzap_header']}" />
         Photozzap
     </div>
     <div class="status-sidebar-content">
         <p style="text-align: center;">Welcome <span id="user-nickname"></span></p>
         <span id="following_nick" style="font-style:italic;"></span>
         <div onclick="$('#upload-modal').modal('show');" id="upload-photo-button" class="upload-photo-action">
-                <img src="${request.static_url('photozzap:static/icons/upload_photo_white.png')}" /> Upload photo
+                <img src="${icon_files['upload_photo_white']}" /> Upload photo
         </div>
         <div id='progress-bar' style="display:none;">
             <div class="progress progress-striped active">
@@ -267,7 +262,7 @@ function ready_for_connection() {
 
 <div id="users-sidebar-icon" class="action-sidebar users-sidebar-default action-sidebar-inactive">
     <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/users_medium_white.png')}" />
+        <img src="${icon_files['users_medium_white']}" />
         <br/>
         Users
     </div>
@@ -275,7 +270,7 @@ function ready_for_connection() {
 
 <div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/users_medium_white.png')}" />
+        <img src="${icon_files['users_medium_white']}" />
         <br/>
         Users
     </div>
@@ -286,7 +281,7 @@ function ready_for_connection() {
 
 <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-default action-sidebar-inactive">
     <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/chat_medium_white.png')}" />
+        <img src="${icon_files['chat_medium_white']}" />
         <br/>
         Chat
     </div>
@@ -294,7 +289,7 @@ function ready_for_connection() {
 
 <div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions action-sidebar-active">
     <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${request.static_url('photozzap:static/icons/chat_medium_white.png')}" />
+        <img src="${icon_files['chat_medium_white']}" />
         <br/>
         Chat
     </div>
@@ -306,7 +301,7 @@ function ready_for_connection() {
     </div>	
     <div id="chat-sidebar-input" class="row-fluid chat-input" style="display: none; text-align: center;">
         <form class="form-inline comment-submit-area">
-            <img src="${request.static_url('photozzap:static/icons/comment_medium_darkgray.png')}" />
+            <img src="${icon_files['comment_medium_darkgray']}" />
             <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
             <button id="comment-submit" class="btn">Send</button>
         </form>
