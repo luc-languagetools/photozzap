@@ -4,6 +4,7 @@ import os
 import sys
 import pyrax
 import time
+import configure_cdn
 
 argv = sys.argv
 if len(argv) != 4:
@@ -91,5 +92,9 @@ rec3 = {"type": "A",
         
 recs = dom.add_records([rec1, rec2, rec3])
 print recs
+
+# CDN setup
+print "starting CDN setup"
+create_cdn_container(short_name + "-cdn")
 
 print "done"

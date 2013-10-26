@@ -189,6 +189,9 @@ def get_icon_file_list_abs(request):
         icon_files_abs[key] = request.static_url('photozzap:' + file)
         
     return icon_files_abs
+
+def get_cdn_path(cdn_server, file_path):
+    return "http://" + cdn_server + "/" + file_path.split('/')[-1]
     
 @view_config(route_name='conference', renderer='templates/conference.pt')
 def conference(request):
@@ -197,6 +200,9 @@ def conference(request):
     jabber_server = settings['jabber_server']
     jabber_conf_server = settings['jabber_conf_server']
     bosh_service = settings['bosh_service']
+    use_cdn = settings['use_cdn']
+    cdn_server = settings['cdn_server']
+        
     
     conf_key = request.matchdict['conf_key']
     conf = DBSession.query(Conference).filter_by(secret=conf_key).one()
@@ -207,16 +213,25 @@ def conference(request):
     javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.javascript_files)
     css_files_abs = get_file_list_abs(request, photozzap.staticresources.css_files)
 
+    icon_files_abs = get_icon_file_list_abs(request)
+    
     if True:
         javascript_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_javascript_file])
         css_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_css_file])
-
     
+    # build CDN paths
+    if use_cdn == "true":
+        javascript_files_abs = [get_cdn_path(cdn_server, photozzap.staticresources.combined_javascript_file)]
+        css_files_abs = [get_cdn_path(cdn_server, photozzap.staticresources.combined_css_file)]
+        icon_files_abs = {}
+        for key, file in photozzap.staticresources.icon_files.items():
+            icon_files_abs[key] = get_cdn_path(cdn_server, file)
+        
     params = {'bosh_service': bosh_service,
               'conference': conf.name + '@' + jabber_conf_server,
               'javascript_files': javascript_files_abs,
               'css_files': css_files_abs,
-              'icon_files': get_icon_file_list_abs(request)}
+              'icon_files': icon_files_abs}
     while user_created == False:
         try:
             with transaction.manager:

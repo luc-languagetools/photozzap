@@ -47,3 +47,9 @@ icon_files = {
 'users_medium_white': "static/icons/users_medium_white.png",
 'chat_medium_white': "static/icons/chat_medium_white.png",
 }
+
+cdn_asset_list = []
+cdn_asset_list.append(combined_javascript_file)
+cdn_asset_list.append(combined_css_file)
+cdn_asset_list.extend(icon_files.values())
+
