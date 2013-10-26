@@ -6,11 +6,6 @@ javascript_files = [
 "static/bootstrap/js/bootstrap.min.js",
 "static/strophe/strophe.min.js",
 "static/angular/angular.min.js",
-"static/conference/conference-net.js",
-"static/conference/conference-ui.js",
-"static/conference/conference-controls.js",
-"static/conference/conference-controller.js",
-"static/conference/uploader.js",
 "static/plupload/plupload.full.js",
 "static/jslibs/jquery.jqote2.js",
 "static/jslibs/holder.js",
@@ -18,6 +13,12 @@ javascript_files = [
 "static/transit/jquery.transit.min.js",
 "static/modernizr/modernizr.touch.min.js",
 "static/ajaxq/jquery.ajaxq-0.0.1.js",
+"static/conference/conference-net.js",
+"static/conference/conference-ui.js",
+"static/conference/conference-controls.js",
+"static/conference/conference-controller.js",
+"static/conference/uploader.js",
+"static/conference/conference-initialize.js",
 ]
 
 combined_javascript_file = "static/combined/all.min.js"

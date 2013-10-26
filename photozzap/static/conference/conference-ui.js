@@ -348,15 +348,13 @@ $(document).bind('connection_status', function(ev, status) {
 });
 
 $(document).bind('connection_complete', function(ev, status) {
-    $('#connection-status-modal').modal('hide');
+    $("#loading-screen").hide();
     $('#current_nick').html("<b>" + Conference.nickname + "</b>");
 });
 
 $(document).bind('connection_error', function(ev, status) {
     $("#connection-status-text").html(status);
-    $('#connection-status-modal').modal('show');
-    $("#progress-bar-connection").show();
-    $("#choose-nickname-form").hide();
+    $("#loading-screen").show();
 });
 
 $(document).bind('nickname_change_successful', function(ev, new_nick) {

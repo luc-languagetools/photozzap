@@ -189,12 +189,19 @@ def conference(request):
     user_created = False
     
     javascript_files = photozzap.staticresources.javascript_files
-    if True:
+    if False:
         javascript_files = [photozzap.staticresources.combined_javascript_file]
+    
+    # build absolute paths for javascript files
+    javascript_files_abs = [request.static_url('photozzap:' + file) for file in javascript_files]
+    
+    # put quotes around files
+    javascript_files_array_list = ["\"" + file + "\"" for file in javascript_files_abs]
+    javascript_files_array_string = ", ".join(javascript_files_array_list)
     
     params = {'bosh_service': bosh_service,
               'conference': conf.name + '@' + jabber_conf_server,
-              'javascript_files': javascript_files}
+              'javascript_files': javascript_files_abs}
     while user_created == False:
         try:
             with transaction.manager:
