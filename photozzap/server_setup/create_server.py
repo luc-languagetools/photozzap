@@ -95,6 +95,6 @@ print recs
 
 # CDN setup
 print "starting CDN setup"
-create_cdn_container(short_name + "-cdn")
+configure_cdn.create_cdn_container(short_name + "-cdn")
 
 print "done"
