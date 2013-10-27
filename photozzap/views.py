@@ -5,9 +5,13 @@ import os
 import stat
 import shutil
 import datetime
+import time
 import tempfile
 import subprocess
 import transaction
+
+from hashlib import sha1
+from random import random
 
 import photozzap.staticresources
 
@@ -57,40 +61,93 @@ def resize_image(request, path_base, dir, photo_id, original_path, large_dimensi
     # obtain resized image dimensions
     dimensions = obtain_image_dimensions(resized_abs_path)
 
-    # build full URL
-    full_image_url = request.static_url('photozzap:' + resized_rel_path)
-    
-    return {'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]}
+    return {'url': resized_abs_path, 'width': dimensions["width"], 'height': dimensions["height"]}
     
 def create_thumbnail(request, path_base, dir, photo_id, original_path, geometry):
     # create thumbnail
     thumbnail_filename = photo_id + "_th_" + geometry + ".JPG"
     thumbnail_abs_path = os.path.join(dir, thumbnail_filename)
-    thumbnail_rel_path = os.path.relpath(thumbnail_abs_path, path_base)
 
     # convert thumbnails to square
     command = "convert -quality 75 " + original_path + " -thumbnail " + geometry + "^ -gravity center -extent " + geometry + " " + thumbnail_abs_path
     subprocess.call(command, shell=True)
-    
-    thumbnail_url = request.static_url('photozzap:' + thumbnail_rel_path)
-    
-    return thumbnail_url
+   
+    return thumbnail_abs_path
 
 def create_blurred_image(request, path_base, dir, photo_id, original_path, geometry):
     # create blurred image
     blur_filename = photo_id + "_blur_" + geometry + ".JPG"
     blur_abs_path = os.path.join(dir, blur_filename)
-    blur_rel_path = os.path.relpath(blur_abs_path, path_base)
 
     # create blurred image
     command = "convert -quality 70 -geometry " + geometry + " -blur 0x5 -brightness-contrast -20x0 -alpha set -virtual-pixel transparent -channel A -level 50%,100% +channel " + original_path + " " + blur_abs_path
     subprocess.call(command, shell=True)
-    
-    blur_url = request.static_url('photozzap:' + blur_rel_path)
-    
-    return blur_url
 
+    return blur_abs_path
 
+def absolute_path_to_url(request, abs_path, path_base, use_cdn_urls):
+    settings = request.registry.settings
+    cdn_server = settings['cdn_server']
+
+    if use_cdn_urls:
+        filename = os.path.basename(abs_path)
+        url = "http://" + cdn_server + "/" + filename
+    else:
+        rel_path = os.path.relpath(abs_path, path_base)
+        url = request.static_url('photozzap:' + rel_path)
+        
+    return url
+    
+def compute_urls(request, image_urls, path_base):
+    # all URLs at this point will be absolute paths on the filesystem
+    # convert them to real URLs, either on the local server, or on the CDN
+    #{'urls': images_list, 'thumbnail':thumbnail_url, 'thumbnailhires': thumbnail_highres_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"], 'blur':blur_url, 'blurhires': blur_highres_url})
+    
+    settings = request.registry.settings
+    use_cdn = settings['use_cdn']
+    cdn_server = settings['cdn_server']
+    cdn_container = settings['cdn_container']
+    upload_to_cdn_command = settings['upload_to_cdn_command']
+    
+    use_cdn_urls = False
+    
+    # build full list of images to upload to CDN
+    if use_cdn == "true":
+        full_file_list = []
+        for image in image_urls['urls']:
+            full_file_list.append(image['url'])
+        full_file_list.append(image_urls['thumbnail'])
+        full_file_list.append(image_urls['thumbnailhires'])
+        full_file_list.append(image_urls['blur'])
+        full_file_list.append(image_urls['blurhires'])
+        command = upload_to_cdn_command + " " + cdn_container + " " + " ".join(full_file_list)
+        log.debug("starting CDN upload to container " + cdn_container)
+        retval = subprocess.call(command, shell=True)
+        if retval == 0:
+            log.debug("CDN upload to container " + cdn_container + " successful")
+            use_cdn_urls = True
+    
+    result = {}
+    images_list = []
+    for image in image_urls['urls']:
+        # {'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]}        
+        image['url'] = absolute_path_to_url(request, image['url'], path_base, use_cdn_urls)
+        images_list.append(image)
+    result['urls'] = images_list
+    result['thumbnail'] = absolute_path_to_url(request, image_urls['thumbnail'], path_base, use_cdn_urls)
+    result['thumbnailhires'] = absolute_path_to_url(request, image_urls['thumbnailhires'], path_base, use_cdn_urls)
+    result['id'] = image_urls['id']
+    result['width'] = image_urls['width']
+    result['height'] = image_urls['height']
+    result['blur'] = absolute_path_to_url(request, image_urls['blur'], path_base, use_cdn_urls)
+    result['blurhires'] = absolute_path_to_url(request, image_urls['blurhires'], path_base, use_cdn_urls)
+    
+    return result
+    
+
+def generate_image_id():
+    return str(int(time.mktime(time.gmtime()))) + "_" + sha1(str(random()).encode('utf-8')).hexdigest()
+    
 @view_config(route_name='upload_photo',renderer='json')
 def upload_photo(request):
     log.debug(request.POST)
@@ -103,14 +160,14 @@ def upload_photo(request):
     dir = os.path.join(path_base, path_relative)
     os.makedirs(dir,exist_ok=True)
 
-    output_file_handle = tempfile.NamedTemporaryFile(suffix='.JPG',dir=dir,delete=False)
-    output_file_abs_path = output_file_handle.name
-    output_file_rel_path = os.path.relpath(output_file_abs_path, path_base)
-    photo_id = os.path.basename(output_file_abs_path).split(".")[0]
+    photo_id = generate_image_id()
+    output_file_name = photo_id + ".JPG"
+    output_file_abs_path = os.path.join(dir, output_file_name)
     
     log.debug("output_file_abs_path: " + output_file_abs_path)
     
     # save photo
+    output_file_handle = open(output_file_abs_path, "wb")
     shutil.copyfileobj(input_file, output_file_handle)
     output_file_handle.close()   
     st = os.stat(output_file_abs_path)
@@ -141,10 +198,9 @@ def upload_photo(request):
     blur_highres_url = create_blurred_image(request, path_base, dir, photo_id, output_file_abs_path, "960x960")
     
     # add the final image
-    full_image_url = request.static_url('photozzap:' + output_file_rel_path)    
-    images_list.append({'url': full_image_url, 'width': dimensions["width"], 'height': dimensions["height"]})
+    images_list.append({'url': output_file_abs_path, 'width': dimensions["width"], 'height': dimensions["height"]})
     
-    return {'urls': images_list, 'thumbnail':thumbnail_url, 'thumbnailhires': thumbnail_highres_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"], 'blur':blur_url, 'blurhires': blur_highres_url}
+    return compute_urls(request, {'urls': images_list, 'thumbnail':thumbnail_url, 'thumbnailhires': thumbnail_highres_url, 'id': photo_id, 'width': dimensions["width"], 'height': dimensions["height"], 'blur':blur_url, 'blurhires': blur_highres_url}, path_base)
     
 
 @view_config(route_name='new_conference',renderer='json')
@@ -215,7 +271,7 @@ def conference(request):
 
     icon_files_abs = get_icon_file_list_abs(request)
     
-    if True:
+    if False:
         javascript_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_javascript_file])
         css_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_css_file])
     
