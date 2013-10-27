@@ -23,7 +23,8 @@ def upload_files():
     for file in files:
         cf.object_meta_prefix = ""
         obj = cf.upload_file(cont, file, content_type="image/jpg")
-        cf.set_object_metadata(cont, obj, {'Access-Control-Allow-Origin': "*", 'X-Delete-After': 86400 * 14}, clear=True)
+        cf.set_object_metadata(cont, obj, {'Access-Control-Allow-Origin': "*", 'X-Delete-After': 
+str(86400 * 14)}, clear=True)
     
 
 
