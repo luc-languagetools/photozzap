@@ -21,8 +21,9 @@ def upload_files():
     epoch = int(time.mktime(time.gmtime()))
     
     for file in files:
+        cf.object_meta_prefix = ""
         obj = cf.upload_file(cont, file, content_type="image/jpg")
-        obj.delete_in_seconds(86400 * 14) # delete after 14 days
+        cf.set_object_metadata(cont, obj, {'Access-Control-Allow-Origin': "*", 'X-Delete-After': 86400 * 14}, clear=True)
     
 
 
