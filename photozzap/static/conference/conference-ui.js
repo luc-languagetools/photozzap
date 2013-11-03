@@ -269,7 +269,7 @@ function add_click_event_to_new_image(selector, image) {
     log("add_click_event_to_new_image, selector: [" + selector + "]");
     $(selector).click(function() {
         // thumbnail clicked
-        log("image thumbnail clicked");
+        log("image thumbnail clicked for id: " + image.id);
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image', image);
@@ -472,7 +472,7 @@ $(document).bind('new_comment', function(ev, comment) {
 
 });
 
-function ensure_optimal_image_resolution(image) {
+function ensure_optimal_image_resolution(image, winRatio, imageRatio) {
     var pixelRatio = 1;
     if( window.devicePixelRatio != undefined ) {
         pixelRatio = window.devicePixelRatio;
@@ -482,31 +482,18 @@ function ensure_optimal_image_resolution(image) {
     var winWidthPx = Math.floor(win.width() * pixelRatio);
     var winHeightPx = Math.floor(win.height() * pixelRatio);
     
-    var max_suitable_url_width = image.url_loaded;
-    var max_suitable_url_height = image.url_loaded;
-    
-    for( var i = image.url_loaded + 1; i < image.dimensions.length; i++ ) {
-        if (image.dimensions[i].width < winWidthPx) {
-            max_suitable_url_width = i;
-        } else {
-            break;
-        }
+    // get the maximum dimension, align it to 100 pixels (so we don't end up calculating every possible res on cloudinary)
+    if (winRatio < imageRatio) {
+        // width is the scaled dimension
+        var maxDimension = Math.ceil(winWidthPx / 100) * 100;
+    } else {
+        // height is the scaled dimension
+        var maxDimension = Math.ceil(winHeightPx / 100) * 100;
     }
     
-    for( var i = image.url_loaded + 1; i < image.dimensions.length; i++ ) {
-        if (image.dimensions[i].height < winHeightPx) {
-            max_suitable_url_height = i;
-        } else {
-            break;
-        }
-    }    
-        
-    // take the min of these two
-    var url_index_to_load = Math.min(max_suitable_url_width, max_suitable_url_height);
-    
-    if (url_index_to_load > image.url_loaded) {
-        log("should load url: " + image.urls[url_index_to_load]);
-        Conference.download_higher_resolution(image, url_index_to_load);
+    // only download if this dimension is higher than what we have downloaded right now
+    if (maxDimension > image.loaded_dimension) {
+        Conference.download_higher_resolution(image, maxDimension);
     }
 }
 
@@ -573,12 +560,21 @@ function resize_image_area() {
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});
                                    
-    ensure_optimal_image_resolution(image);
+    ensure_optimal_image_resolution(image, winRatio, imageRatio);
 }
 
 $(document).bind('resize_image', function(ev) {
     resize_image_area();
 });
+
+function show_upload_modal() {
+    $.get('/upload_data', function(upload_data) {
+        log("received upload data: " + upload_data);
+        $("input.cloudinary-fileupload[type=file]").fileupload({formData: upload_data,
+                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload'});
+        $('#upload-modal').modal('show');
+    });
+}
 
 String.prototype.trunc = String.prototype.trunc ||
       function(n){

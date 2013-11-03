@@ -6,18 +6,22 @@ javascript_files = [
 "static/bootstrap/js/bootstrap.min.js",
 "static/strophe/strophe.min.js",
 "static/angular/angular.min.js",
-"static/plupload/plupload.full.js",
 "static/jslibs/jquery.jqote2.js",
 "static/jslibs/holder.js",
 "static/timeago/jquery.timeago.js",
 "static/transit/jquery.transit.min.js",
 "static/modernizr/modernizr.touch.min.js",
 "static/ajaxq/jquery.ajaxq-0.0.1.js",
+# cloudinary files
+"static/cloudinary/jquery.ui.widget.js",
+"static/cloudinary/jquery.iframe-transport.js",
+"static/cloudinary/jquery.fileupload.js",
+"static/cloudinary/jquery.cloudinary.js",
+
 "static/conference/conference-net.js",
 "static/conference/conference-ui.js",
 "static/conference/conference-controls.js",
 "static/conference/conference-controller.js",
-"static/conference/uploader.js",
 "static/conference/conference-initialize.js",
 ]
 

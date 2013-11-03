@@ -45,7 +45,7 @@ function ImageCtrl($scope, conferenceService) {
     $scope.image_src = function() {
         result = "";
         if( $scope.showing_image() ) {
-            result = $scope.image.urls[$scope.image.url_loaded];
+            result = $scope.image.image_url();
         }
         return result;
     };
@@ -53,7 +53,7 @@ function ImageCtrl($scope, conferenceService) {
     $scope.blur_src = function() {
         result = "";
         if( $scope.showing_image() ) {
-            result = $scope.image.blur;
+            result = $scope.image.blur_url();
         }
         return result;
     };
@@ -62,7 +62,6 @@ function ImageCtrl($scope, conferenceService) {
         log("controller on image_change");
         $scope.image = conferenceService.displayed_image;
         log("$scope.image.id is: " + $scope.image.id);
-        log("$scope.image.url_loaded: " + $scope.image.url_loaded);
         $scope.$apply();
     });
 }

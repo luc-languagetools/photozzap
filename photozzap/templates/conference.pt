@@ -52,7 +52,7 @@ function ready_for_connection() {
 <![CDATA[
     <a href="#">
         <% if (this.viewing != undefined ) { %>        
-            <img src="<%= this.viewing.thumbnail %>" class="notification-thumbnail" />
+            <img src="<%= this.viewing.thumbnail_url() %>" class="notification-thumbnail" />
         <% } else { %>
             <img data-src="holder.js/200x150/text:Not Viewing Any Photos"/>
         <% }; %>
@@ -67,7 +67,7 @@ function ready_for_connection() {
 <script type="text/html" id="combined-notification-template2">
 <![CDATA[
     <div id="<%= this.element_id %>" class="image-preview">
-		<img src="<%= this.image.thumbnail %>" class="notification-thumbnail" />
+		<img src="<%= this.image.thumbnail_url() %>" class="notification-thumbnail" />
 		<div class="notification-overlay">
 			<div style="height: 10px;"/>
 		
@@ -120,7 +120,7 @@ function ready_for_connection() {
 <![CDATA[
     <li id="<%= this.thumbnail_id %>" style="display: table; margin-right: -60px;">
         <a href="#" style="display: table-cell;">
-            <img src="<%= this.thumbnail %>" class="notification-thumbnail"/>
+            <img src="<%= this.thumbnail_url() %>" class="notification-thumbnail"/>
         </a>
 
         <img class="comments-available" src="${icon_files['comment_big_white']}" style="visibility: hidden;"/>
@@ -181,10 +181,14 @@ function ready_for_connection() {
     </div>
     <div class="modal-body">
         <div id="upload-controls" style="text-align: center;">
+            <!--
             <div id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
                 <h3 style="margin-top: 50px;">Drag And Drop photos into this area</h3>
             </div>
+            -->
             Or click: <a id="pickfiles" href="#">[Browse]</a>
+            <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
+            
         </div>
     </div>
 </div>
@@ -209,7 +213,7 @@ function ready_for_connection() {
     <div id="gallery-sidebar-content" style="display: none;">
         <ul id="image-list" class="thumbnails">
             <li id="image-placeholder" style="display: table;">
-                <a href="#" onclick="$('#upload-modal').modal('show');" style="display: table-cell;">
+                <a href="#" onclick="show_upload_modal();" style="display: table-cell;">
                     <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>
                 </a>
             </li>            
@@ -246,7 +250,7 @@ function ready_for_connection() {
     <div class="status-sidebar-content">
         <p style="text-align: center;">Welcome <span id="user-nickname"></span></p>
         <span id="following_nick" style="font-style:italic;"></span>
-        <div onclick="$('#upload-modal').modal('show');" id="upload-photo-button" class="upload-photo-action">
+        <div onclick="show_upload_modal();" id="upload-photo-button" class="upload-photo-action">
                 <img src="${icon_files['upload_photo_white']}" /> Upload photo
         </div>
         <div id='progress-bar' style="display:none;">

@@ -1,5 +1,6 @@
 
 var NS_MUC = "http://jabber.org/protocol/muc";
+var STANDARD_IMAGES_QUEUE = "standard_images_queue";
 var HIGHRES_IMAGES_QUEUE = "highres_images_queue";
 
 var Conference = {
@@ -217,32 +218,6 @@ var Conference = {
         log("message from: " + from + ": " + body);
         
         if (body == "image") {
-            // get image url
-            var image_urls = [];
-            var image_dimensions = [];
-            var url_elements = $(message).children('image').children('urls').children('url');
-            for (var i = 0; i < url_elements.length; i++ ) {
-                var url = url_elements[i].textContent;
-                var resized_width = url_elements[i].getAttribute('width');
-                var resized_height = url_elements[i].getAttribute('height');
-                image_dimensions.push({width: resized_width, height: resized_height});
-                image_urls.push(url);
-            }
-            
-            // var image_url = $(message).children('image').children('url').text();
-            var thumbnail = $(message).children('image').children('thumbnail').text();
-            var thumbnail_hires = $(message).children('image').children('thumbnailhires').text();
-            
-            var blur = $(message).children('image').children('blur').text();
-            var blur_hires = $(message).children('image').children('blurhires').text();
-            
-            if (download_highres_thumbnails()) {
-                thumbnail = thumbnail_hires;
-                blur = blur_hires;
-            }
-            
-            log("blur: " + blur);
-            
             var image_id = $(message).children('image').children('id').text();
             var image_width = parseInt($(message).children('image').children('width').text());
             var image_height = parseInt($(message).children('image').children('height').text());
@@ -253,59 +228,81 @@ var Conference = {
                 delayed = true;
             }
             var user = Conference.users[from];
+            var defaultDimension = 400;           
+            
             var image = {id: image_id,
-                         urls: image_urls,
-                         dimensions: image_dimensions,
-                         url_loaded: -1,
-                         thumbnail: thumbnail,
-                         blur: blur,
+                         thumbnail_id: image_id + "_th",
                          width: image_width,
                          height: image_height,
                          added_by: user,
                          added_by_nick: nick,
-                         thumbnail_id: "thumbnail_" + image_id,
                          timestamp: timestamp,
-                         delayed: delayed};
+                         delayed: delayed,
+                         loaded_dimension: 0,
+                         image_url: function() {
+                            if (this.loaded_dimension == 0 ) {
+                                throw "loaded_dimension is 0 for image " + this.id;
+                            }
+                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: this.loaded_dimension, height: this.loaded_dimension});
+                         },
+                         thumbnail_url: function() {
+                            if( download_highres_thumbnails() ) {
+                                return $.cloudinary.url(this.id + ".jpg", {crop: 'fill', width: 480, height: 360});
+                            } else {
+                                return $.cloudinary.url(this.id + ".jpg", {crop: 'fill', width: 240, height: 180});
+                            }
+                         },
+                         blur_url: function() {
+                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: defaultDimension, height: defaultDimension, effect: 'blur:300', opacity: "40", background: "black"});
+                         },
+                         image_url_for_dimension: function(maxDimension) {
+                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: maxDimension, height: maxDimension});
+                         }};
                          
             log("received image id " + image_id + ", processing");
-            log(image.urls);
 
             Conference.images_loading[image.id] = image;
             Conference.add_queued_event(image.id, 'new_image', image);
                        
-            // setup ajax queries to load the image
-            $.get(image.urls[0], function(data) {
-                log("image " + image.url + " loaded");
-                image.url_loaded = 0;
-                image_element = document.createElement('img');
-                $(image_element).attr('src', image.url);
-                $("#image-cache").append(image_element);
-                $.get(image.thumbnail, function(data) {
-                    log("thumbnail " + image.thumbnail + " loaded");
-                    
-                    image_element = document.createElement('img');
-                    $(image_element).attr('src', image.thumbnail);
-                    $("#image-cache").append(image_element);                    
-                    
-                    // add to images
-                    Conference.images[image.id] = image;
-                    
-                    // remove from images_loading
-                    delete Conference.images_loading[image.id];
-                    
-                    // was it an image we uploaded ourselves ?
-                    if (Conference.self_images_in_progress[image.id] != undefined) {
-                        $(document).trigger('upload_done', image);
-                        delete Conference.self_images_in_progress[image.id];
-                    }
-                    
-                    
-                    log(Conference.queued_events[image.id]);
-                    
-                    // any queued events ?
-                    Conference.process_queued_events(image.id);
-                });
-            });
+            $.ajaxq( STANDARD_IMAGES_QUEUE, {
+                     url: image.image_url_for_dimension(defaultDimension),
+                     cache: true,
+                     success: function(data) {
+                        image.loaded_dimension = defaultDimension;
+                        log("image " + image.image_url_for_dimension(defaultDimension) + " loaded");
+                        image_element = document.createElement('img');
+                        $(image_element).attr('src', image.image_url());
+                        $("#image-cache").append(image_element);
+                    }});
+
+            $.ajaxq( STANDARD_IMAGES_QUEUE, {
+                     url: image.thumbnail_url(),
+                     cache: true,
+                     success: function(data) {
+                        log("thumbnail " + image.thumbnail_url() + " loaded");
+                        
+                        image_element = document.createElement('img');
+                        $(image_element).attr('src', image.thumbnail_url());
+                        $("#image-cache").append(image_element);                    
+                        
+                        // add to images
+                        Conference.images[image.id] = image;
+                        Conference.images[image.id].loaded_dimension = defaultDimension;
+                        
+                        // remove from images_loading
+                        delete Conference.images_loading[image.id];
+                        
+                        // was it an image we uploaded ourselves ?
+                        if (Conference.self_images_in_progress[image.id] != undefined) {
+                            $(document).trigger('upload_done', image);
+                            delete Conference.self_images_in_progress[image.id];
+                        }
+                        
+                        log(Conference.queued_events[image.id]);
+                        
+                        // any queued events ?
+                        Conference.process_queued_events(image.id);
+                    }});
             
         } else if (body == "comment") {
             // comment on an image
@@ -399,24 +396,12 @@ var Conference = {
         message = $msg({
         to: Conference.room,
         type: "groupchat"});
+        
         message.c('body').t("image").up();
         message.c('image').c('id').t(image.id).up();
-        // currently at <image> level
-        message.c('urls');
-        for( i in image.urls ) {
-            var url_entry = image.urls[i];
-            var attrs = {width: url_entry.width, height: url_entry.height};
-            message.c('url', attrs).t(url_entry.url).up();
-        }
-        // currently at <urls> level
-        message.up();
-        // currently at <image> level
-        message.c('width').t(image.width).up();
-        message.c('height').t(image.height).up();
-        message.c('thumbnail').t(image.thumbnail).up();
-        message.c('thumbnailhires').t(image.thumbnailhires).up();
-        message.c('blur').t(image.blur).up();
-        message.c('blurhires').t(image.blurhires).up();
+        message.c('width').t(image.width.toString()).up();
+        message.c('height').t(image.height.toString()).up();
+        
         log("sending message: " + message);
         Conference.self_images_in_progress[image.id] = true;
         Conference.connection.send(message);
@@ -444,25 +429,22 @@ var Conference = {
         
     },
     
-    get_load_high_resolution_callback: function (image, url_id ) {
+    get_load_high_resolution_callback: function (image, maxDimension ) {
         return function(data) {
-            image.url_loaded = url_id;
-            log("loaded URL [" + url_id + "] " + image.urls[url_id]);
+            image.loaded_dimension = maxDimension;
             $(document).trigger('loaded_highres');
         };
     },
     
-    download_higher_resolution: function (image, url_index) {
+    download_higher_resolution: function (image, maxDimension) {
     
         // stop any downloads on this queue and clear it
         $.ajaxq(HIGHRES_IMAGES_QUEUE);
 
-        var url_to_load = image.urls[url_index];
-        log("preparing to load " + url_to_load);
         $.ajaxq (HIGHRES_IMAGES_QUEUE, {
-            url: url_to_load,
+            url: image.image_url_for_dimension(maxDimension),
             cache: true,
-            success: Conference.get_load_high_resolution_callback(image, url_index)
+            success: Conference.get_load_high_resolution_callback(image, maxDimension)
         });
 
     }
