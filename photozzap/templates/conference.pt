@@ -181,14 +181,11 @@ function ready_for_connection() {
     </div>
     <div class="modal-body">
         <div id="upload-controls" style="text-align: center;">
-            <!--
             <div id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
                 <h3 style="margin-top: 50px;">Drag And Drop photos into this area</h3>
+                Or
+                <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
             </div>
-            -->
-            Or click: <a id="pickfiles" href="#">[Browse]</a>
-            <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
-            
         </div>
     </div>
 </div>
@@ -253,12 +250,14 @@ function ready_for_connection() {
         <div onclick="show_upload_modal();" id="upload-photo-button" class="upload-photo-action">
                 <img src="${icon_files['upload_photo_white']}" /> Upload photo
         </div>
-        <div id='progress-bar' style="display:none;">
-            <div class="progress progress-striped active">
-                <div class="bar" style="width: 100%;"></div>
+        <div id="progress-container" style="display:none;">
+            <div id='progress-bar'>
+                <div class="progress" style="margin-bottom: 3px;">
+                    <div class="bar" style="width: 100%;"></div>
+                </div>
             </div>
+            <div id='progress-bar-label'></div>
         </div>
-        <div id='progress-bar-label'></div>
         <div id="nickname-change-container">
         </div>
     </div>

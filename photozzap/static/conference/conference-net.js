@@ -294,7 +294,6 @@ var Conference = {
                         
                         // was it an image we uploaded ourselves ?
                         if (Conference.self_images_in_progress[image.id] != undefined) {
-                            $(document).trigger('upload_done', image);
                             delete Conference.self_images_in_progress[image.id];
                         }
                         

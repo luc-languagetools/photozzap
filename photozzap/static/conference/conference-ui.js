@@ -401,18 +401,6 @@ function change_nickname(selector) {
     };
 };
 
-$(document).bind('upload_in_progress', function(ev, status) {
-    log("upload_in_progress");
-    $("#progress-bar").fadeIn('slow');
-    $("#progress-bar-label").html(status);
-});
-
-
-$(document).bind('upload_done', function(ev, image) {
-    log("upload_done");
-    $('#progress-bar').fadeOut('slow');
-    $("#progress-bar-label").html("");
-});
 
 function dom_id_from_user(user) {
     if ( Conference.jid_to_id_mapping[ user.jid ] == undefined ) {
@@ -574,6 +562,25 @@ function show_upload_modal() {
                                                                 url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload'});
         $('#upload-modal').modal('show');
     });
+}
+
+function hide_upload_modal() {
+    $('#upload-modal').modal('hide');
+}
+
+function show_progress_bar() {
+    $("#progress-bar .bar").css("width", "0%");
+    $("#progress-bar-label").html("Uploading image(s)"); 
+    $("#progress-container").fadeIn();
+}
+
+function hide_progress_bar() {
+    $("#progress-container").fadeOut();
+    $("#progress-bar-label").html("");
+}
+
+function update_progress_bar(e, data) { 
+    $("#progress-bar .bar").css('width', Math.round((data.loaded * 100.0) / data.total) + '%'); 
 }
 
 String.prototype.trunc = String.prototype.trunc ||

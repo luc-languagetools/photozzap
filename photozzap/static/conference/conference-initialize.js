@@ -37,7 +37,15 @@ $(document).ready(function() {
     
     $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
        log("fileuploadstart");
+       hide_upload_modal();
+       show_progress_bar();
      });    
+    
+    $(".cloudinary-fileupload").bind('fileuploadprogressall', update_progress_bar);
+    
+    $(".cloudinary-fileupload").bind('cloudinarydone', function(e){ 
+        hide_progress_bar();
+    });
     
     $("#upload-cloudinary").on('click', function(){
         log("starting cloudinary file upload");
