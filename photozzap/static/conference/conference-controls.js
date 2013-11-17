@@ -35,7 +35,7 @@ function setupControlHandlers() {
     ConferenceControls.sidebarHandlers.users = setupUsersSidebar();
     ConferenceControls.sidebarHandlers.gallery = setupGallerySidebar();
     ConferenceControls.sidebarHandlers.chat = setupChatSidebar();
-    ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
+    // ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
     
     if (! ConferenceControls.touchMode ) {
         $(".action-sidebar").mouseenter(mouseEnterControlElement);

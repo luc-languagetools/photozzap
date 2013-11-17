@@ -33,7 +33,7 @@
 </style>
 
 </head>
-<body>
+<body ng-controller="AppCtrl">
 <script tal:repeat="file javascript_files" tal:attributes="src file"  defer></script>
 <script type="text/javascript">
 function ready_for_connection() {
@@ -193,122 +193,129 @@ function ready_for_connection() {
 <div id="toolbar-top">
 </div> 
 
-<div id="gallery-sidebar-icon" class="action-sidebar gallery-sidebar-default action-sidebar-inactive">
-    <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['gallery_medium_white']}" />
-        <br/>
-        Photos
-    </div>
-</div>
+<div id="control_event_layer">
 
-<div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions action-sidebar-active">
-    <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['gallery_medium_white']}" />
-        <br/>
-        Photos
-    </div>
-    <div id="gallery-sidebar-content" style="display: none;">
-        <ul id="image-list" class="thumbnails">
-            <li id="image-placeholder" style="display: table;">
-                <a href="#" onclick="show_upload_modal();" style="display: table-cell;">
-                    <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>
-                </a>
-            </li>            
-        </ul>
-    </div>
-</div>
-
-<div id="history-sidebar-icon" class="action-sidebar history-sidebar-default action-sidebar-inactive">
-    <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['clock_medium_white']}" />
-        <br/>
-        History
-    </div>
-</div>
-
-<div id="history-sidebar" class="action-sidebar history-sidebar-default sidebar-transitions action-sidebar-active">
-    <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['clock_medium_white']}" />
-        <br/>
-        History
-    </div>
-	<div id="history-sidebar-content" style="display: none;">
-	</div>
-</div>
-
-<div id="notification-area">
-</div>
-
-<div id="status-sidebar" class="action-sidebar status-sidebar-default sidebar-transitions action-sidebar-active">
-    <div id="status-sidebar-header" class="action-sidebar-header status-sidebar-header">
-        <img src="${icon_files['photozzap_header']}" />
-        Photozzap
-    </div>
-    <div class="status-sidebar-content">
-        <p style="text-align: center;">Welcome <span id="user-nickname"></span></p>
-        <span id="following_nick" style="font-style:italic;"></span>
-        <div onclick="show_upload_modal();" id="upload-photo-button" class="upload-photo-action">
-                <img src="${icon_files['upload_photo_white']}" /> Upload photo
+    <div id="gallery-sidebar-icon" class="action-sidebar gallery-sidebar-default action-sidebar-inactive">
+        <div class="action-sidebar-header action-sidebar-header-centered">
+            <img src="${icon_files['gallery_medium_white']}" />
+            <br/>
+            Photos
         </div>
-        <div id="progress-container" style="display:none;">
-            <div id='progress-bar'>
-                <div class="progress" style="margin-bottom: 3px;">
-                    <div class="bar" style="width: 100%;"></div>
+    </div>
+
+    <div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions action-sidebar-active">
+        <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
+            <img src="${icon_files['gallery_medium_white']}" />
+            <br/>
+            Photos
+        </div>
+        <div id="gallery-sidebar-content" style="display: none;">
+            <ul id="image-list" class="thumbnails">
+                <li id="image-placeholder" style="display: table;">
+                    <a href="#" onclick="show_upload_modal();" style="display: table-cell;">
+                        <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>
+                    </a>
+                </li>            
+            </ul>
+        </div>
+    </div>
+
+    <div ng-controller="SidebarCtrl">
+        <div id="history-sidebar-icon" class="action-sidebar history-sidebar-icon" ng-click="expand()" ng-hide="expanded">
+            <div class="action-sidebar-header action-sidebar-header-centered">
+                <img src="${icon_files['clock_medium_white']}" />
+                <br/>
+                History
+            </div>
+        </div>
+
+        <div id="history-sidebar" class="action-sidebar history-sidebar history-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active">
+            <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
+                <img src="${icon_files['clock_medium_white']}" />
+                <br/>
+                History
+                <span ng-click="collapse()">[close]</span>
+            </div>
+            <div id="history-sidebar-content" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <div id="status-sidebar" class="action-sidebar status-sidebar-default sidebar-transitions action-sidebar-active">
+        <div id="status-sidebar-header" class="action-sidebar-header status-sidebar-header">
+            <img src="${icon_files['photozzap_header']}" />
+            Photozzap
+        </div>
+        <div class="status-sidebar-content">
+            <p style="text-align: center;">Welcome <span id="user-nickname"></span></p>
+            <span id="following_nick" style="font-style:italic;"></span>
+            <div onclick="show_upload_modal();" id="upload-photo-button" class="upload-photo-action">
+                    <img src="${icon_files['upload_photo_white']}" /> Upload photo
+            </div>
+            <div id="progress-container" style="display:none;">
+                <div id='progress-bar'>
+                    <div class="progress" style="margin-bottom: 3px;">
+                        <div class="bar" style="width: 100%;"></div>
+                    </div>
                 </div>
+                <div id='progress-bar-label'></div>
             </div>
-            <div id='progress-bar-label'></div>
-        </div>
-        <div id="nickname-change-container">
-        </div>
-    </div>
-</div>
-
-<div id="users-sidebar-icon" class="action-sidebar users-sidebar-default action-sidebar-inactive">
-    <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['users_medium_white']}" />
-        <br/>
-        Users
-    </div>
-</div>
-
-<div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions action-sidebar-active">
-    <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['users_medium_white']}" />
-        <br/>
-        Users
-    </div>
-	<div id="users-sidebar-content" style="display: none;">
-	</div>
-</div>
-
-
-<div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-default action-sidebar-inactive">
-    <div class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['chat_medium_white']}" />
-        <br/>
-        Chat
-    </div>
-</div>
-
-<div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions action-sidebar-active">
-    <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-        <img src="${icon_files['chat_medium_white']}" />
-        <br/>
-        Chat
-    </div>
-    <div id="chat-sidebar-content" class="container-fluid" style="display: none;">
-        <div id="comment_area" class="row-fluid" >
-            <div id="comment_list_area" class="row-fluid comment-list content">
+            <div id="nickname-change-container">
             </div>
+        </div>
+    </div>
+
+    <div id="users-sidebar-icon" class="action-sidebar users-sidebar-default action-sidebar-inactive">
+        <div class="action-sidebar-header action-sidebar-header-centered">
+            <img src="${icon_files['users_medium_white']}" />
+            <br/>
+            Users
+        </div>
+    </div>
+
+    <div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions action-sidebar-active">
+        <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
+            <img src="${icon_files['users_medium_white']}" />
+            <br/>
+            Users
+        </div>
+        <div id="users-sidebar-content" style="display: none;">
+        </div>
+    </div>
+
+
+    <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-default action-sidebar-inactive">
+        <div class="action-sidebar-header action-sidebar-header-centered">
+            <img src="${icon_files['chat_medium_white']}" />
+            <br/>
+            Chat
+        </div>
+    </div>
+
+    <div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions action-sidebar-active">
+        <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
+            <img src="${icon_files['chat_medium_white']}" />
+            <br/>
+            Chat
+        </div>
+        <div id="chat-sidebar-content" class="container-fluid" style="display: none;">
+            <div id="comment_area" class="row-fluid" >
+                <div id="comment_list_area" class="row-fluid comment-list content">
+                </div>
+            </div>    
+        </div>	
+        <div id="chat-sidebar-input" class="row-fluid chat-input" style="display: none; text-align: center;">
+            <form class="form-inline comment-submit-area">
+                <img src="${icon_files['comment_medium_darkgray']}" />
+                <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
+                <button id="comment-submit" class="btn">Send</button>
+            </form>
         </div>    
-    </div>	
-    <div id="chat-sidebar-input" class="row-fluid chat-input" style="display: none; text-align: center;">
-        <form class="form-inline comment-submit-area">
-            <img src="${icon_files['comment_medium_darkgray']}" />
-            <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
-            <button id="comment-submit" class="btn">Send</button>
-        </form>
-    </div>    
+    </div>
+
+</div>    
+    
+<div id="notification-area">
 </div>
 
 <div id="main_image" ng-controller="ImageCtrl">
@@ -320,9 +327,6 @@ function ready_for_connection() {
         <img ng-if="showing_image()" id="blurred-image" ng-src="{{blur_src()}}"
             onload="$(document).trigger('resize_image');" />
     </div>
-</div>
-
-<div id="control_event_layer">
 </div>
 
 <div id="loading-screen">

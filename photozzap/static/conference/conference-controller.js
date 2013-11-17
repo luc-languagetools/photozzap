@@ -22,6 +22,29 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
+function AppCtrl($scope, conferenceService) {
+}
+
+function SidebarCtrl($scope, conferenceService) {
+    $scope.expanded = false;
+    
+    $scope.expand = function() {
+        $scope.expanded = true;
+    };
+    
+    $scope.collapse = function() {
+        $scope.expanded = false;
+    };
+    
+    $scope.class_state = function() {
+        if ( $scope.expanded == true) {
+            return "expanded";
+        }
+        return "collapsed";
+    };
+    
+}
+
 function ImageCtrl($scope, conferenceService) {
     $scope.image = undefined;
 
@@ -67,3 +90,5 @@ function ImageCtrl($scope, conferenceService) {
 }
 
 ImageCtrl.$inject = ['$scope', 'conferenceService'];
+AppCtrl.$inject = ['$scope', 'conferenceService'];
+SidebarCtrl.$inject = ['$scope', 'conferenceService'];
