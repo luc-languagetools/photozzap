@@ -15,12 +15,11 @@ a, a:hover {
 }
 
 #displayed_image {
-    z-index:-3;
+    z-index:-2;
 }
 
 #blur_image {
-    z-index:-2;
-    opacity: 0;
+    z-index:-3;
 }
 
 .image-container {
@@ -36,6 +35,7 @@ a, a:hover {
     -moz-transition:all linear 0.3s;
     -o-transition:all linear 0.3s;
     transition:all linear 0.3s;
+    box-shadow: 0px 0px 10px 6px #222222;
 }
 
 .action-icon {
@@ -86,7 +86,7 @@ a, a:hover {
    
     cursor: pointer;
     display: none;
-    background-color: rgba(255, 255, 255, 0.15); 
+    background-color: rgba(40, 40, 40, 0.40); 
 }
 
 .action-sidebar-expanded {
