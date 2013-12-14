@@ -101,24 +101,11 @@ a, a:hover {
 .action-sidebar {
     border-radius:10px;
     z-index:3;
-    
-    cursor: pointer;
-    display: none;
     box-shadow: 0px 0px 8px 4px #222222;    
-
 }
 
-.action-sidebar-expanded {
-    cursor: auto;
-}
-
-.action-sidebar-inactive {
-    z-index:2;
-    opacity: 0;
-}
-
-.action-sidebar-expanded .action-sidebar-header  br{
-    display: none;
+.actionable {
+    cursor: pointer;
 }
 
 .action-sidebar .action-sidebar-header {
@@ -176,7 +163,7 @@ a, a:hover {
     font-weight: bold;
 }
 
-.action-sidebar-expanded .action-sidebar-header img {
+.action-sidebar-active .action-sidebar-header img {
     height: auto;
     width: 15%;
 }

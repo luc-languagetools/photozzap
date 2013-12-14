@@ -207,14 +207,14 @@ function ready_for_connection() {
                 <table>
                     <tr>
                         <td>
-                            <div ng-click="expand()">
+                            <div class="actionable" ng-click="expand()">
                                 <img src="${icon_files['gallery_medium_white']}" />
                                 <br/>
                                 Photos
                             </div>
                         </td>
                         <td>
-                            <div onclick="show_upload_modal();">
+                            <div class="actionable" onclick="show_upload_modal();">
                                 <img src="${icon_files['upload_photo_white']}" />
                                 <br/>
                                 Upload
@@ -240,11 +240,10 @@ function ready_for_connection() {
             </div>
         </div>
 
-        <div id="gallery-sidebar" class="action-sidebar action-sidebar-expanded gallery-sidebar gallery-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active"  ng-style="element_style()">
+        <div id="gallery-sidebar" class="action-sidebar gallery-sidebar gallery-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active"  ng-style="element_style()">
             <div id="gallery-sidebar-header" class="action-sidebar-header">
-                <img ng-click="collapse()" src="${icon_files['slide_up_white']}" />
+                <img class="actionable" ng-click="collapse()" src="${icon_files['slide_up_white']}" />
                 <img src="${icon_files['gallery_medium_white']}" />
-                <br/>
                 Photos
             </div>
             <div id="gallery-sidebar-content">
@@ -260,7 +259,7 @@ function ready_for_connection() {
     </div>
 
     <div ng-controller="SidebarCtrl">
-        <div id="history-sidebar-icon" class="action-sidebar history-sidebar-icon" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
+        <div id="history-sidebar-icon" class="action-sidebar history-sidebar-icon actionable" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['clock_medium_white']}" />
                 <br/>
@@ -268,11 +267,10 @@ function ready_for_connection() {
             </div>
         </div>
 
-        <div id="history-sidebar" class="action-sidebar action-sidebar-expanded history-sidebar history-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active" ng-style="element_style()">
+        <div id="history-sidebar" class="action-sidebar history-sidebar history-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active" ng-style="element_style()">
             <div id="history-sidebar-header" class="action-sidebar-header">
-                <img ng-click="collapse()" src="${icon_files['slide_right_white']}" />
+                <img class="actionable" ng-click="collapse()" src="${icon_files['slide_right_white']}" />
                 <img src="${icon_files['clock_medium_white']}" />
-                <br/>
                 History
             </div>
             <div id="history-sidebar-content">
@@ -281,7 +279,7 @@ function ready_for_connection() {
     </div>
 
     <div ng-controller="SidebarCtrl">
-        <div id="users-sidebar-icon" class="action-sidebar users-sidebar-icon" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
+        <div id="users-sidebar-icon" class="action-sidebar users-sidebar-icon actionable" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['users_medium_white']}" />
                 <br/>
@@ -289,12 +287,11 @@ function ready_for_connection() {
             </div>
         </div>
 
-        <div id="users-sidebar" class="action-sidebar users-sidebar users-sidebar-{{class_state()}} sidebar-transitions action-sidebar-expanded action-sidebar-active" ng-style="element_style()">
+        <div id="users-sidebar" class="action-sidebar users-sidebar users-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active" ng-style="element_style()">
             <div id="users-sidebar-header" class="action-sidebar-header">
                 <img src="${icon_files['users_medium_white']}" />
-                <br/>
                 Users
-                <img ng-click="collapse()" src="${icon_files['slide_left_white']}" />
+                <img class="actionable" ng-click="collapse()" src="${icon_files['slide_left_white']}" />
             </div>
             <div id="users-sidebar-content">
             </div>
@@ -302,7 +299,7 @@ function ready_for_connection() {
     </div>
 
     <div ng-controller="SidebarCtrl">
-        <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-icon" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
+        <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-icon actionable" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['chat_medium_white']}" />
                 <br/>
@@ -310,11 +307,10 @@ function ready_for_connection() {
             </div>
         </div>
 
-        <div id="chat-sidebar" class="action-sidebar action-sidebar-expanded chat-sidebar chat-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active" ng-style="element_style()">
+        <div id="chat-sidebar" class="action-sidebar chat-sidebar chat-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active" ng-style="element_style()">
             <div id="chat-sidebar-header" class="action-sidebar-header">
-                <img ng-click="collapse()" src="${icon_files['slide_down_white']}" />
+                <img class="actionable" ng-click="collapse()" src="${icon_files['slide_down_white']}" />
                 <img src="${icon_files['chat_medium_white']}" />
-                <br/>
                 Chat
             </div>
             <div id="chat-sidebar-content" class="container-fluid">
