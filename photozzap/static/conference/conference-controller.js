@@ -47,6 +47,7 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.expanded = false;
     
     $scope.expand = function() {
+        $(document).trigger('close_all_sidebars');
         $scope.expanded = true;
     };
     
