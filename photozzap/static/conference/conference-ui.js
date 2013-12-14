@@ -532,18 +532,22 @@ function resize_image_area() {
         topSpacing = (winHeight - imageHeight) / 2;
         log("topSpacing: " + topSpacing);
         
-        $("#main_image img").css({
+        $("#displayed_image img").css({
             width: newImageWidth,
             height: newImageHeight,
             marginTop: topSpacing + "px"
         })        
     } else {
-        $("#main_image img").css({
+        $("#displayed_image img").css({
             width: newImageWidth,
             height: newImageHeight,
             marginTop: "0px"
         }) 
     }
+    
+    // resize blur image to take up all available space, don't respect aspect ratio
+    $("#blur_image img").css({width: winWidth,
+                              height: winHeight});    
     
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});

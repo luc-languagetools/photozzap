@@ -327,8 +327,6 @@ function resizeAllOpenSidebars() {
 }
 
 function showToolbar() {
-    $("#blur_image").transition({ opacity: 1.0 });
-    
     $(".action-sidebar").fadeIn(200, function() {
         if( ConferenceControls.resizeToolbarsOnDisplay ) {
             resizeAllOpenSidebars();
@@ -340,7 +338,6 @@ function showToolbar() {
 }
 
 function hideToolbar() {
-    $("#blur_image").transition({ opacity: 0.0 });
     $(".action-sidebar").fadeOut(200);
     ConferenceControls.toolbarShown = false;
 }
