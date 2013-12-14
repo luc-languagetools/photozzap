@@ -257,7 +257,7 @@ var Conference = {
                             }
                          },
                          blur_url: function() {
-                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: 200, height: 200, effect: 'blur:600'});
+                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: 200, height: 200, effect: 'blur:300'});
                          },
                          image_url_for_dimension: function(maxDimension) {
                             return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: maxDimension, height: maxDimension});
