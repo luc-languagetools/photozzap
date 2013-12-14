@@ -159,8 +159,8 @@ function ready_for_connection() {
 <script type="text/html" id="nickname-panel-template">
 <![CDATA[
     <div id="change-nickname-form">
-        <span><%= this.status %></span>
         <form class="form-inline" style="text-align: center;">
+            <span><%= this.status %></span>
             <input id="chosen-nickname2" type="text" class="input-small" placeholder="Nickname">
             <button id="join-conference2" type="button" class="btn">OK</button>
         </form>
@@ -194,29 +194,65 @@ function ready_for_connection() {
 </div> 
 
 <div id="control_event_layer">
+    
+    <div ng-controller="TopSidebarCtrl">
+        <div id="top-sidebar-icon" class="action-sidebar top-sidebar-icon"  ng-style="element_style()">
+            <div class="action-sidebar-header action-sidebar-header-centered">
+                <div class="status-sidebar-content">
 
-    <div id="gallery-sidebar-icon" class="action-sidebar gallery-sidebar-default action-sidebar-inactive">
-        <div class="action-sidebar-header action-sidebar-header-centered">
-            <img src="${icon_files['gallery_medium_white']}" />
-            <br/>
-            Photos
+                </div>
+                <table>
+                    <tr>
+                        <td>
+                            <div ng-click="expand()">
+                                <img src="${icon_files['gallery_medium_white']}" />
+                                <br/>
+                                Photos
+                            </div>
+                        </td>
+                        <td>
+                            <div onclick="show_upload_modal();">
+                                <img src="${icon_files['upload_photo_white']}" />
+                                <br/>
+                                Upload
+                            </div>                        
+                        </td>
+                        <td>
+                            <p style="font-size: 26px; font-weight: bold; margin-top: 5px; margin-right: 5px;">Welcome <span id="user-nickname"></span> <span id="following_nick" style="font-style:italic; font-size: 14px;"></span></p>                                        
+                        </td>                        
+                    </tr>
+               </table>
+               <div class="status-sidebar-content">
+                   <div id="nickname-change-container">
+                   </div>        
+                    <div id="progress-container" style="display:none;">
+                        <div id='progress-bar'>
+                            <div class="progress" style="margin-bottom: 3px;">
+                                <div class="bar" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div id='progress-bar-label'></div>
+                    </div>                   
+               </div>
+            </div>
         </div>
-    </div>
 
-    <div id="gallery-sidebar" class="action-sidebar gallery-sidebar-default sidebar-transitions action-sidebar-active">
-        <div id="gallery-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-            <img src="${icon_files['gallery_medium_white']}" />
-            <br/>
-            Photos
-        </div>
-        <div id="gallery-sidebar-content" style="display: none;">
-            <ul id="image-list" class="thumbnails">
-                <li id="image-placeholder" style="display: table;">
-                    <a href="#" onclick="show_upload_modal();" style="display: table-cell;">
-                        <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>
-                    </a>
-                </li>            
-            </ul>
+        <div id="gallery-sidebar" class="action-sidebar action-sidebar-expanded gallery-sidebar gallery-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active"  ng-style="element_style()">
+            <div id="gallery-sidebar-header" class="action-sidebar-header">
+                <img ng-click="collapse()" src="${icon_files['slide_up_white']}" />
+                <img src="${icon_files['gallery_medium_white']}" />
+                <br/>
+                Photos
+            </div>
+            <div id="gallery-sidebar-content">
+                <ul id="image-list" class="thumbnails">
+                    <li id="image-placeholder" style="display: table;">
+                        <a href="#" onclick="show_upload_modal();" style="display: table-cell;">
+                            <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>
+                        </a>
+                    </li>            
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -237,30 +273,6 @@ function ready_for_connection() {
                 History
             </div>
             <div id="history-sidebar-content">
-            </div>
-        </div>
-    </div>
-
-    <div id="status-sidebar" class="action-sidebar status-sidebar-default sidebar-transitions action-sidebar-active">
-        <div id="status-sidebar-header" class="action-sidebar-header status-sidebar-header">
-            <img src="${icon_files['photozzap_header']}" />
-            Photozzap
-        </div>
-        <div class="status-sidebar-content">
-            <p style="text-align: center;">Welcome <span id="user-nickname"></span></p>
-            <span id="following_nick" style="font-style:italic;"></span>
-            <div onclick="show_upload_modal();" id="upload-photo-button" class="upload-photo-action">
-                    <img src="${icon_files['upload_photo_white']}" /> Upload photo
-            </div>
-            <div id="progress-container" style="display:none;">
-                <div id='progress-bar'>
-                    <div class="progress" style="margin-bottom: 3px;">
-                        <div class="bar" style="width: 100%;"></div>
-                    </div>
-                </div>
-                <div id='progress-bar-label'></div>
-            </div>
-            <div id="nickname-change-container">
             </div>
         </div>
     </div>

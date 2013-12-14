@@ -133,9 +133,11 @@ a, a:hover {
 }
 
 .status-sidebar-content {
+    margin-top: 15px;
     color: #FFFFFF;
     font-size: 18px;
-    margin: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .upload-photo-action {
@@ -223,26 +225,19 @@ a, a:hover {
     transition: top 0.3s ease-in-out, bottom 0.3s ease-in-out, left 0.3s ease-in-out, right 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 
-.gallery-sidebar-default {
-	position: fixed;
-	top: 5%;
-	left: 28%;
-	width: 15%;
+.gallery-sidebar {
+    position: fixed;
+    height: 75%;
+    width: 90%;
+    left: 5%;    
 }
 
-.gallery-sidebar-alternate-left {
-    left: 18%;
-}
-
-.gallery-sidebar-alternate-right {
-    left: 40%;
+.gallery-sidebar-collapsed {
+    top: -78%;
 }
 
 .gallery-sidebar-expanded {
     top: 3%;
-    left: 5%;
-    height: 75%;
-    width: 90%;
 }
 
 .gallery-sidebar-expanded .action-sidebar-header img {
@@ -279,28 +274,15 @@ a, a:hover {
     width: 8%;
 }
 
-.status-sidebar-default {
-	position: fixed;
-	top: 5%;
-	left: 46%;
-	width: 25%;
-    cursor: auto;
-    z-index:1;
+.top-sidebar-icon {
+    position: fixed;
+    top: 0%;
+    left: 35%;
+    width: 30%;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;            
 }
 
-.status-sidebar-alternate-right {
-    left: 58%;
-}
-
-.status-sidebar-alternate-left {
-    left: 36%;
-}
-
-.status-sidebar-alternate-off {
-    opacity: 0;
-    width: 0%;
-    height: 0%;
-}
 
 .users-sidebar-icon {
     position: fixed;

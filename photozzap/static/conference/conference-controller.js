@@ -31,6 +31,10 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
 function AppCtrl($scope, conferenceService) {
 }
 
+function TopSidebarCtrl($scope, $controller, conferenceService) {
+    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
+}
+
 function SidebarCtrl($scope, conferenceService) {
     $scope.image = undefined;
     $scope.size = undefined;
@@ -53,7 +57,6 @@ function SidebarCtrl($scope, conferenceService) {
     };
     
     $scope.element_style = function() {
-        // return {backgroundColor: "#FF0000",};
 
         if ($scope.image == undefined || $scope.size == undefined) {
             return {'background-color': "#CCCCCC"};
@@ -131,3 +134,4 @@ function ImageCtrl($scope, conferenceService) {
 ImageCtrl.$inject = ['$scope', 'conferenceService'];
 AppCtrl.$inject = ['$scope', 'conferenceService'];
 SidebarCtrl.$inject = ['$scope', 'conferenceService'];
+TopSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];

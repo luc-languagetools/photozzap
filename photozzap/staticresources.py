@@ -53,6 +53,7 @@ icon_files = {
 'slide_left_white': "static/icons/slide_left_white.png",
 'slide_right_white': "static/icons/slide_right_white.png",
 'slide_down_white': "static/icons/slide_down_white.png",
+'slide_up_white': "static/icons/slide_up_white.png",
 }
 
 cdn_asset_list = []

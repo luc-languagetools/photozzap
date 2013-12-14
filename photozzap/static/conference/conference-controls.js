@@ -95,19 +95,8 @@ function setupGallerySidebar() {
         main_selector: "#gallery-sidebar",
         header_selector: "#gallery-sidebar-header",
         content_selector: "#gallery-sidebar-content",
-        icon_selector: "#gallery-sidebar-icon",
-        expanded_class: "gallery-sidebar-expanded",
-        before_expand: function() {
-            $("#status-sidebar").addClass("status-sidebar-alternate-off");
-            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
-        },
-        before_reduce: function() {
-            // restore sidebars to their original location
-            $("#status-sidebar").removeClass("status-sidebar-alternate-off");
-            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
-        },
     };
-    return setupSidebar(ConferenceControls.sidebarOptions.gallery);
+    return setupSlidingSidebar(ConferenceControls.sidebarOptions.gallery);
 }
 
 
