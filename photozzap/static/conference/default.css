@@ -96,10 +96,7 @@ a, a:hover {
     
     cursor: pointer;
     display: none;
-    box-shadow: 0px 0px 8px 4px #CCCCCC;    
-       
-    background: url(http://res.cloudinary.com/photozzap/image/upload/b_rgb:aaaaaa,c_fit,e_blur:200,h_200,o_85,q_80,w_200/v1386994354/tijrk1tmmtymauxxznko.jpg) no-repeat fixed;
-    background-size: 1157px 746px;    
+    box-shadow: 0px 0px 8px 4px #222222;    
 
 }
 

@@ -15,9 +15,15 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('image_change');
     };
     
+    service.resize_image_event = function(ev) {
+        $rootScope.$broadcast('image_resize');
+    }
+    
     $(document).bind('loaded_highres', service.loaded_highres_event);
     
     $(document).bind('display_image', service.display_image_event);
+    
+    $(document).bind('resize_image', service.resize_image_event);
     
     return service;
 });
@@ -26,6 +32,8 @@ function AppCtrl($scope, conferenceService) {
 }
 
 function SidebarCtrl($scope, conferenceService) {
+    $scope.image = undefined;
+    $scope.size = undefined;
     $scope.expanded = false;
     
     $scope.expand = function() {
@@ -43,6 +51,36 @@ function SidebarCtrl($scope, conferenceService) {
         }
         return "collapsed";
     };
+    
+    $scope.element_style = function() {
+        // return {backgroundColor: "#FF0000",};
+
+        if ($scope.image == undefined || $scope.size == undefined) {
+            return {'background-color': "#CCCCCC"};
+        }
+        
+        var backgroundUrl = "url(" + $scope.image.blur_url() + ")";
+        var sizeString = $scope.size.width + "px " + $scope.size.height + "px";
+        
+        return {'background-image': backgroundUrl,
+                'background-size': sizeString,
+                'background-repeat': 'no-repeat',
+                'background-attachment': 'fixed',
+                };        
+    }
+    
+    $scope.$on('image_change', function() {
+        $scope.image = conferenceService.displayed_image;
+        $scope.$apply();
+    });    
+    
+    $scope.$on('image_resize', function() {
+        var win = $(window);
+        var winWidth = win.width();
+        var winHeight = win.height();
+        $scope.size = {width: winWidth, height: winHeight};
+        $scope.$apply();
+    });        
     
 }
 
