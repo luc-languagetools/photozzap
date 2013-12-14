@@ -286,34 +286,36 @@ function ready_for_connection() {
         </div>
     </div>
 
-
-    <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-default action-sidebar-inactive">
-        <div class="action-sidebar-header action-sidebar-header-centered">
-            <img src="${icon_files['chat_medium_white']}" />
-            <br/>
-            Chat
+    <div ng-controller="SidebarCtrl">
+        <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-icon" ng-click="expand()" ng-hide="expanded">
+            <div class="action-sidebar-header action-sidebar-header-centered">
+                <img src="${icon_files['chat_medium_white']}" />
+                <br/>
+                Chat
+            </div>
         </div>
-    </div>
 
-    <div id="chat-sidebar" class="action-sidebar chat-sidebar-default sidebar-transitions action-sidebar-active">
-        <div id="chat-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-            <img src="${icon_files['chat_medium_white']}" />
-            <br/>
-            Chat
-        </div>
-        <div id="chat-sidebar-content" class="container-fluid" style="display: none;">
-            <div id="comment_area" class="row-fluid" >
-                <div id="comment_list_area" class="row-fluid comment-list content">
-                </div>
+        <div id="chat-sidebar" class="action-sidebar action-sidebar-expanded chat-sidebar chat-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active">
+            <div id="chat-sidebar-header" class="action-sidebar-header">
+                <img ng-click="collapse()" src="${icon_files['slide_down_white']}" />
+                <img src="${icon_files['chat_medium_white']}" />
+                <br/>
+                Chat
+            </div>
+            <div id="chat-sidebar-content" class="container-fluid">
+                <div id="comment_area" class="row-fluid" >
+                    <div id="comment_list_area" class="row-fluid comment-list content">
+                    </div>
+                </div>    
+            </div>	
+            <div id="chat-sidebar-input" class="row-fluid chat-input" style="text-align: center;">
+                <form class="form-inline comment-submit-area">
+                    <img src="${icon_files['comment_medium_darkgray']}" />
+                    <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
+                    <button id="comment-submit" class="btn">Send</button>
+                </form>
             </div>    
-        </div>	
-        <div id="chat-sidebar-input" class="row-fluid chat-input" style="display: none; text-align: center;">
-            <form class="form-inline comment-submit-area">
-                <img src="${icon_files['comment_medium_darkgray']}" />
-                <input id="comment-input" type="text" class="input-xlarge" placeholder="Type your comment here">
-                <button id="comment-submit" class="btn">Send</button>
-            </form>
-        </div>    
+        </div>
     </div>
 
 </div>    

@@ -64,19 +64,8 @@ function setupChatSidebar() {
         header_selector: "#chat-sidebar-header",
         content_selector: "#chat-sidebar-content",
         footer_selector: "#chat-sidebar-input",
-        icon_selector: "#chat-sidebar-icon",
-        expanded_class: "chat-sidebar-expanded",
-        after_expand: function() {
-            $("#chat-sidebar-input").show();
-            $("#comment-input").focus();
-            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
-        },
-        before_reduce: function() {
-            $("#chat-sidebar-input").hide();
-            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
-        },
     };
-    return setupSidebar(ConferenceControls.sidebarOptions.chat);
+    return setupSlidingSidebar(ConferenceControls.sidebarOptions.chat);
 }
 
 function setupUsersSidebar() {
@@ -109,13 +98,11 @@ function setupGallerySidebar() {
         icon_selector: "#gallery-sidebar-icon",
         expanded_class: "gallery-sidebar-expanded",
         before_expand: function() {
-            $("#chat-sidebar").addClass("chat-sidebar-alternate");
             $("#status-sidebar").addClass("status-sidebar-alternate-off");
             $("#status-sidebar").addClass("status-sidebar-other-bars-open");
         },
         before_reduce: function() {
             // restore sidebars to their original location
-            $("#chat-sidebar").removeClass("chat-sidebar-alternate");
             $("#status-sidebar").removeClass("status-sidebar-alternate-off");
             $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
         },
@@ -278,7 +265,7 @@ function setupSidebarContentSlimscroll(main_selector, header_selector, footer_se
         var footer_height = $(footer_selector).first().height();
         targetHeight -= footer_height;
     }
-    log("setting up slimScroll on sidebar , targetHeight: " + targetHeight +
+    log("setting up slimScroll on sidebar [" + main_selector + "] , targetHeight: " + targetHeight +
         " total_height: " + total_height +
         " header_height: " + header_height +
         " footer_height: " + footer_height);

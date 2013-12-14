@@ -52,6 +52,7 @@ icon_files = {
 'chat_medium_white': "static/icons/chat_medium_white.png",
 'slide_left_white': "static/icons/slide_left_white.png",
 'slide_right_white': "static/icons/slide_right_white.png",
+'slide_down_white': "static/icons/slide_down_white.png",
 }
 
 cdn_asset_list = []
