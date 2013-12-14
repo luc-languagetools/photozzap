@@ -19,11 +19,17 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('image_resize');
     }
     
+    service.close_all_sidebars_event = function(ev) {
+        $rootScope.$broadcast('close_sidebar');
+    }
+    
     $(document).bind('loaded_highres', service.loaded_highres_event);
     
     $(document).bind('display_image', service.display_image_event);
     
     $(document).bind('resize_image', service.resize_image_event);
+    
+    $(document).bind('close_all_sidebars', service.close_all_sidebars_event);
     
     return service;
 });
@@ -72,6 +78,11 @@ function SidebarCtrl($scope, conferenceService) {
                 };        
     }
     
+    $scope.$on('close_sidebar',  function() {
+        $scope.expanded = false;
+        $scope.$apply();
+    });
+        
     $scope.$on('image_change', function() {
         $scope.image = conferenceService.displayed_image;
         $scope.$apply();

@@ -193,8 +193,11 @@ function ready_for_connection() {
 <div id="toolbar-top">
 </div> 
 
+
 <div id="control_event_layer">
-    
+    <div id="mouse_event_layer">
+    </div>
+
     <div ng-controller="TopSidebarCtrl">
         <div id="top-sidebar-icon" class="action-sidebar top-sidebar-icon"  ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">

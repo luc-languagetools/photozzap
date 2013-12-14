@@ -30,7 +30,6 @@ function setupControlHandlers() {
 
     // you can expand the sidebars from firebug using:
     // toolbarDebugMode()
-    // ConferenceControls.sidebarHandlers.gallery.expandCallback()
     
     ConferenceControls.sidebarHandlers.users = setupUsersSidebar();
     ConferenceControls.sidebarHandlers.gallery = setupGallerySidebar();
@@ -131,120 +130,6 @@ function setupSlidingSidebar(options) {
     
 }
 
-// deprecated
-function setupSidebar(options) {
-    // options must have:
-    // main_selector (main sidebar div id)
-    // header_selector
-    // content_selector
-    // expanded_class
-    
-    // set the sidebar name
-    $(options.main_selector).data("sidebar-name", options.name);
-    
-    enlargeFunction = function(options) {
-        $(options.header_selector).removeClass("action-sidebar-header-centered");
-        $(options.main_selector).addClass("action-sidebar-expanded");
-        $(options.icon_selector).addClass("action-siderbar-inactive-selected");
-        $(options.icon_selector).on('click', function(){ 
-            closeAllSidebars()
-        });
-        $(options.main_selector).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
-
-                // if the mouse is still on the sidebar,
-                // expand contents inside
-          
-                if (options.after_expand != undefined) {
-                    options.after_expand();
-                }
-                                            
-                if ($(options.main_selector).data("expanded") != true) {
-
-                    setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
-                    
-                    $(options.content_selector).fadeIn(250, function() {
-                            // nothing to do
-                        });
-                    $(options.main_selector).data("expanded", true);
-                }
-                    
-            });    
-        $(options.main_selector).addClass(options.expanded_class);
-            
-    };
-    
-    $(options.main_selector).on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {    
-        if (ConferenceControls.resizeToolbarsOnDisplay == true &&
-            $(options.main_selector).data("expanded") == true) {
-            log("resizing " + options.name + " after CSS transition");
-            // saw a CSS transition while sidebar was expanded - adjust slimscroll
-            removeSidebarContentSlimscroll(options.content_selector);
-            setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);            
-            ConferenceControls.resizeToolbarsOnDisplay = false;
-        }
-    });    
-   
-    reduceFunction = function(options) {
-        $(options.header_selector).addClass("action-sidebar-header-centered");
-        $(options.icon_selector).removeClass("action-siderbar-inactive-selected");
-        $(options.icon_selector).unbind('click');
-       
-        // perform transition after fadeout
-    
-        $(options.content_selector).fadeOut(250, function() {    
-            removeSidebarContentSlimscroll(options.content_selector);
-                                        
-            $(options.main_selector).removeClass(options.expanded_class);
-        });
-        $(options.main_selector).data("expanded", false);
-        $(options.main_selector).removeClass("action-sidebar-expanded");
-    }
-
-    resizeContentFunction = function() {
-        log("resizing content for " + options.name);
-        removeSidebarContentSlimscroll(options.content_selector);
-        setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
-    }
-    
-    expandHandler = function(event) {
-        log("expandHandler [" + options.main_selector + "]");
-
-        if ($(options.main_selector).data("expanded") == true) {
-            // don't do anything
-            return;
-        }
-       
-        // close all previously open sidebars
-        closeAllSidebars();
-        
-        if (options.before_expand != undefined) {
-            options.before_expand();
-        }
-        enlargeFunction(options);
-    };
-    
-    collapseHandler = function() {
-        log("collapseHandler [" + options.main_selector + "]");
-
-        if (options.before_reduce != undefined) {
-            options.before_reduce();
-        }    
-        reduceFunction(options);
-
-    };
-
-    $(options.main_selector).on('click', expandHandler);
-
-    var result = {
-        expandCallback: expandHandler,
-        collapseCallback: collapseHandler,
-        resizeCallback: resizeContentFunction,
-    };
-    
-    return result;
-    
-}
-
 function setupSidebarContentSlimscroll(main_selector, header_selector, footer_selector, content_selector) {
     var total_height = $(main_selector).first().height();
     var header_height = $(header_selector).first().height();
@@ -277,14 +162,7 @@ function removeSidebarContentSlimscroll(content_selector) {
 }
 
 function closeAllSidebars() {
-    $(".action-sidebar-active").each(function() {
-        if( $(this).data("expanded") == true ) {
-            var name = $(this).data("sidebar-name");
-            log("sidebar " + name + " is expanded");
-            ConferenceControls.sidebarHandlers[name].collapseCallback();
-        }
-    });
-    
+    $(document).trigger('close_all_sidebars');
 }
 
 function controlsResize() {
@@ -379,7 +257,7 @@ function actionSidebarMouseMoveHandler() {
 
 function setupMouseMoveCallback() {
     if (ConferenceControls.touchMode) {
-        $("#control_event_layer").on("click", function() {
+        $("#mouse_event_layer").on("click", function() {
             // if toolbar is not shown, show toolbar
             // if toolbar is shown,
             //   if any sidebars expanded, close them
@@ -400,9 +278,9 @@ function setupMouseMoveCallback() {
             }
         });
     } else {
-        $("#control_event_layer").mousemove(mouseMoveHandler);
+        $("#mouse_event_layer").mousemove(mouseMoveHandler);
         $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
-        $("#control_event_layer").on("click", function() {
+        $("#mouse_event_layer").on("click", function() {
             // close sidebars
             closeAllSidebars();
         });        
@@ -411,7 +289,7 @@ function setupMouseMoveCallback() {
 
 function removeMouseMoveCallback() {
     if( ! ConferenceControls.touchMode ) {
-        $("#control_event_layer").unbind('mousemove');
+        $("#mouse_event_layer").unbind('mousemove');
         $(".action-sidebar").unbind('mousemove');
     }
 }

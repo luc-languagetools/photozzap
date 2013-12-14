@@ -80,7 +80,7 @@ a, a:hover {
     margin-top: 5px;
 }
 
-#control_event_layer {
+#control_event_layer {    
     position: relative;
     overflow: hidden;    
     top: 0px;
@@ -88,6 +88,14 @@ a, a:hover {
     width: 100%;
     height: 100%;
     z-index:1;
+}
+
+#mouse_event_layer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
 }
 
 .action-sidebar {
