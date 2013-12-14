@@ -2,6 +2,8 @@
 var NS_MUC = "http://jabber.org/protocol/muc";
 var STANDARD_IMAGES_QUEUE = "standard_images_queue";
 var HIGHRES_IMAGES_QUEUE = "highres_images_queue";
+var DEFAULT_DIMENSION = 400;           
+var PRELOAD_NUMTRIES = 3;
 
 var Conference = {
     connection: null,
@@ -186,6 +188,9 @@ var Conference = {
     
     process_queued_events: function(image_id) {
         var queued_events = Conference.queued_events[image_id];
+        if (queued_events == undefined) {
+            return;
+        }
         delete Conference.queued_events[image_id];
         for (var i = 0; i < queued_events.length; i++) {
             qevent = queued_events[i];
@@ -228,7 +233,6 @@ var Conference = {
                 delayed = true;
             }
             var user = Conference.users[from];
-            var defaultDimension = 400;           
             
             var image = {id: image_id,
                          thumbnail_id: image_id + "_th",
@@ -253,7 +257,7 @@ var Conference = {
                             }
                          },
                          blur_url: function() {
-                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: defaultDimension, height: defaultDimension, effect: 'blur:500'});
+                            return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: 200, height: 200, effect: 'blur:600'});
                          },
                          image_url_for_dimension: function(maxDimension) {
                             return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: maxDimension, height: maxDimension});
@@ -264,44 +268,7 @@ var Conference = {
             Conference.images_loading[image.id] = image;
             Conference.add_queued_event(image.id, 'new_image', image);
                        
-            $.ajaxq( STANDARD_IMAGES_QUEUE, {
-                     url: image.image_url_for_dimension(defaultDimension),
-                     cache: true,
-                     success: function(data) {
-                        image.loaded_dimension = defaultDimension;
-                        log("image " + image.image_url_for_dimension(defaultDimension) + " loaded");
-                        image_element = document.createElement('img');
-                        $(image_element).attr('src', image.image_url());
-                        $("#image-cache").append(image_element);
-                    }});
-
-            $.ajaxq( STANDARD_IMAGES_QUEUE, {
-                     url: image.thumbnail_url(),
-                     cache: true,
-                     success: function(data) {
-                        log("thumbnail " + image.thumbnail_url() + " loaded");
-                        
-                        image_element = document.createElement('img');
-                        $(image_element).attr('src', image.thumbnail_url());
-                        $("#image-cache").append(image_element);                    
-                        
-                        // add to images
-                        Conference.images[image.id] = image;
-                        Conference.images[image.id].loaded_dimension = defaultDimension;
-                        
-                        // remove from images_loading
-                        delete Conference.images_loading[image.id];
-                        
-                        // was it an image we uploaded ourselves ?
-                        if (Conference.self_images_in_progress[image.id] != undefined) {
-                            delete Conference.self_images_in_progress[image.id];
-                        }
-                        
-                        log(Conference.queued_events[image.id]);
-                        
-                        // any queued events ?
-                        Conference.process_queued_events(image.id);
-                    }});
+            Conference.preload_image(image, PRELOAD_NUMTRIES);
             
         } else if (body == "comment") {
             // comment on an image
@@ -342,6 +309,62 @@ var Conference = {
         }        
         
         return true;
+    },
+    
+    handle_preload_error: function( image, num_tries, jqXHR, textStatus, errorThrown ) {
+        if (num_tries > 0 ) {
+            log("ERROR: loading " + image.id + " failed: " + textStatus + ", " + errorThrown + " retrying up to " + num_tries + " times");
+            Conference.preload_image(image, num_tries - 1);
+        } else {
+            log("ERROR: loading " + image.id + " failed: " + textStatus + ", " + errorThrown + " giving up");
+        }
+    },
+    
+    preload_image: function (image, num_tries) {
+        $.ajaxq( STANDARD_IMAGES_QUEUE, {
+                 url: image.image_url_for_dimension(DEFAULT_DIMENSION),
+                 cache: true,
+                 success: function(data) {
+                    image.loaded_dimension = DEFAULT_DIMENSION;
+                    log("image " + image.image_url_for_dimension(DEFAULT_DIMENSION) + " loaded");
+                    image_element = document.createElement('img');
+                    $(image_element).attr('src', image.image_url());
+                    $("#image-cache").append(image_element);
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    Conference.handle_preload_error( image, num_tries, jqXHR, textStatus, errorThrown );
+                }});
+
+        $.ajaxq( STANDARD_IMAGES_QUEUE, {
+                 url: image.thumbnail_url(),
+                 cache: true,
+                 success: function(data) {
+                    log("thumbnail " + image.thumbnail_url() + " loaded");
+                    
+                    image_element = document.createElement('img');
+                    $(image_element).attr('src', image.thumbnail_url());
+                    $("#image-cache").append(image_element);                    
+                    
+                    // add to images
+                    Conference.images[image.id] = image;
+                    Conference.images[image.id].loaded_dimension = DEFAULT_DIMENSION;
+                    
+                    // remove from images_loading
+                    delete Conference.images_loading[image.id];
+                    
+                    // was it an image we uploaded ourselves ?
+                    if (Conference.self_images_in_progress[image.id] != undefined) {
+                        delete Conference.self_images_in_progress[image.id];
+                    }
+                    
+                    log(Conference.queued_events[image.id]);
+                    
+                    // any queued events ?
+                    Conference.process_queued_events(image.id);
+                },
+                error: function( jqXHR, textStatus, errorThrown ) {
+                    Conference.handle_preload_error( image, num_tries, jqXHR, textStatus, errorThrown );
+                }});    
     },
     
     on_private_message: function (message) {

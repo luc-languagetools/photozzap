@@ -33,6 +33,7 @@ function SidebarCtrl($scope, conferenceService) {
     };
     
     $scope.collapse = function() {
+        log("SidebarCtrl.collapse");
         $scope.expanded = false;
     };
     

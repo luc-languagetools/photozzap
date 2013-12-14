@@ -229,14 +229,14 @@ function ready_for_connection() {
             </div>
         </div>
 
-        <div id="history-sidebar" class="action-sidebar history-sidebar history-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active">
-            <div id="history-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
+        <div id="history-sidebar" class="action-sidebar action-sidebar-expanded history-sidebar history-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active">
+            <div id="history-sidebar-header" class="action-sidebar-header">
+                <img ng-click="collapse()" src="${icon_files['slide_right_white']}" />
                 <img src="${icon_files['clock_medium_white']}" />
                 <br/>
                 History
-                <span ng-click="collapse()">[close]</span>
             </div>
-            <div id="history-sidebar-content" style="display: none;">
+            <div id="history-sidebar-content">
             </div>
         </div>
     </div>
@@ -265,21 +265,24 @@ function ready_for_connection() {
         </div>
     </div>
 
-    <div id="users-sidebar-icon" class="action-sidebar users-sidebar-default action-sidebar-inactive">
-        <div class="action-sidebar-header action-sidebar-header-centered">
-            <img src="${icon_files['users_medium_white']}" />
-            <br/>
-            Users
+    <div ng-controller="SidebarCtrl">
+        <div id="users-sidebar-icon" class="action-sidebar users-sidebar-icon" ng-click="expand()" ng-hide="expanded">
+            <div class="action-sidebar-header action-sidebar-header-centered">
+                <img src="${icon_files['users_medium_white']}" />
+                <br/>
+                Users
+            </div>
         </div>
-    </div>
 
-    <div id="users-sidebar" class="action-sidebar users-sidebar-default sidebar-transitions action-sidebar-active">
-        <div id="users-sidebar-header" class="action-sidebar-header action-sidebar-header-centered">
-            <img src="${icon_files['users_medium_white']}" />
-            <br/>
-            Users
-        </div>
-        <div id="users-sidebar-content" style="display: none;">
+        <div id="users-sidebar" class="action-sidebar users-sidebar users-sidebar-{{class_state()}} sidebar-transitions action-sidebar-expanded action-sidebar-active">
+            <div id="users-sidebar-header" class="action-sidebar-header">
+                <img src="${icon_files['users_medium_white']}" />
+                <br/>
+                Users
+                <img ng-click="collapse()" src="${icon_files['slide_left_white']}" />
+            </div>
+            <div id="users-sidebar-content">
+            </div>
         </div>
     </div>
 

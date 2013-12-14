@@ -35,7 +35,7 @@ function setupControlHandlers() {
     ConferenceControls.sidebarHandlers.users = setupUsersSidebar();
     ConferenceControls.sidebarHandlers.gallery = setupGallerySidebar();
     ConferenceControls.sidebarHandlers.chat = setupChatSidebar();
-    // ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
+    ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
     
     if (! ConferenceControls.touchMode ) {
         $(".action-sidebar").mouseenter(mouseEnterControlElement);
@@ -85,20 +85,8 @@ function setupUsersSidebar() {
         main_selector: "#users-sidebar",
         header_selector: "#users-sidebar-header",
         content_selector: "#users-sidebar-content",
-        icon_selector: "#users-sidebar-icon",
-        expanded_class: "users-sidebar-expanded",
-        after_expand: function() {
-            $("#gallery-sidebar").addClass("gallery-sidebar-alternate-right");
-            $("#status-sidebar").addClass("status-sidebar-alternate-right");
-            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
-        },
-        before_reduce: function() {
-            $("#gallery-sidebar").removeClass("gallery-sidebar-alternate-right");
-            $("#status-sidebar").removeClass("status-sidebar-alternate-right");
-            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
-        },        
     };
-    return setupSidebar(ConferenceControls.sidebarOptions.users);
+    return setupSlidingSidebar(ConferenceControls.sidebarOptions.users);
 }
 
 function setupHistorySidebar() {
@@ -107,20 +95,8 @@ function setupHistorySidebar() {
         main_selector: "#history-sidebar",
         header_selector: "#history-sidebar-header",
         content_selector: "#history-sidebar-content",
-        icon_selector: "#history-sidebar-icon",
-        expanded_class: "history-sidebar-expanded",
-        after_expand: function() {
-            $("#gallery-sidebar").addClass("gallery-sidebar-alternate-left");
-            $("#status-sidebar").addClass("status-sidebar-alternate-left");
-            $("#status-sidebar").addClass("status-sidebar-other-bars-open");
-        },
-        before_reduce: function() {
-            $("#gallery-sidebar").removeClass("gallery-sidebar-alternate-left");
-            $("#status-sidebar").removeClass("status-sidebar-alternate-left");
-            $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
-        },                
     };
-    return setupSidebar(ConferenceControls.sidebarOptions.history);
+    return setupSlidingSidebar(ConferenceControls.sidebarOptions.history);
 }
 
 
@@ -133,16 +109,12 @@ function setupGallerySidebar() {
         icon_selector: "#gallery-sidebar-icon",
         expanded_class: "gallery-sidebar-expanded",
         before_expand: function() {
-            $("#history-sidebar").addClass("history-sidebar-alternate");
-            $("#users-sidebar").addClass("users-sidebar-alternate");
             $("#chat-sidebar").addClass("chat-sidebar-alternate");
             $("#status-sidebar").addClass("status-sidebar-alternate-off");
             $("#status-sidebar").addClass("status-sidebar-other-bars-open");
         },
         before_reduce: function() {
             // restore sidebars to their original location
-            $("#history-sidebar").removeClass("history-sidebar-alternate");
-            $("#users-sidebar").removeClass("users-sidebar-alternate");
             $("#chat-sidebar").removeClass("chat-sidebar-alternate");
             $("#status-sidebar").removeClass("status-sidebar-alternate-off");
             $("#status-sidebar").removeClass("status-sidebar-other-bars-open");
@@ -151,6 +123,39 @@ function setupGallerySidebar() {
     return setupSidebar(ConferenceControls.sidebarOptions.gallery);
 }
 
+
+function setupSlidingSidebar(options) {
+    // options must have:
+    // main_selector (main sidebar div id)
+    // header_selector
+    // content_selector
+    // footer_selector
+    // expanded_class
+    
+    // set the sidebar name
+    $(options.main_selector).data("sidebar-name", options.name);
+    
+    // expand sidebar right away
+    setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
+    $(options.main_selector).data("expanded", true);
+    
+    resizeContentFunction = function() {
+        log("resizing content for " + options.name);
+        removeSidebarContentSlimscroll(options.content_selector);
+        setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
+    }
+    
+    var result = {
+        resizeCallback: resizeContentFunction,
+        expandCallback: function() {},
+        collapseCallback: function() {},
+    };
+    
+    return result;
+    
+}
+
+// deprecated
 function setupSidebar(options) {
     // options must have:
     // main_selector (main sidebar div id)
@@ -357,7 +362,7 @@ $(document).bind('hide_toolbar', function(ev) {
 
 
 function mouseMoveHandler() {
-        log("mouseMoveHandler");
+        // log("mouseMoveHandler");
 
         // if toolbar is not shown, show it and start timeout
         // if toolbar is shown, update timeout 
@@ -381,7 +386,7 @@ function mouseMoveHandler() {
 }
 
 function actionSidebarMouseMoveHandler() {
-        log("actionSidebarMouseMoveHandler");
+        // log("actionSidebarMouseMoveHandler");
 
         // if toolbar is not shown, show it and start timeout
         // if toolbar is shown, update timeout 

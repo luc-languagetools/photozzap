@@ -50,6 +50,8 @@ icon_files = {
 'upload_photo_white': "static/icons/upload_photo_white.png",
 'users_medium_white': "static/icons/users_medium_white.png",
 'chat_medium_white': "static/icons/chat_medium_white.png",
+'slide_left_white': "static/icons/slide_left_white.png",
+'slide_right_white': "static/icons/slide_right_white.png",
 }
 
 cdn_asset_list = []
