@@ -137,7 +137,6 @@ var ConferenceUi = {
         // create notification element for the sidebar
         sidebar_notification_element = $("#combined-notification-template2").jqote(combined_notification);
         $("#history-sidebar-content").prepend(sidebar_notification_element);
-		relayout_even_odd_image_previews("#history-sidebar-content");
         
         // add timeago
         jQuery("#" + combined_notification.element_id + " .timestamp").timeago();
@@ -241,8 +240,7 @@ $(document).bind('user_joined', function (ev, user) {
     log(user_wrapper);
     
     $('#users-sidebar-content').append(user_wrapper);
-	relayout_even_odd_image_previews('#users-sidebar-content');
-	
+
     // slide down
     var selector = "#" + dom_id_from_user(user);
     log("sliding down: [" + selector + "]");
@@ -286,13 +284,6 @@ function add_click_event_to_user_viewing(selector, user) {
         $(document).trigger('following_user', user);
     });
 };
-
-function relayout_even_odd_image_previews(container_selector) {
-	$(container_selector + " .image-preview").removeClass("image-preview-left");
-	$(container_selector + " .image-preview").removeClass("image-preview-right");
-	$(container_selector + " .image-preview:even").addClass("image-preview-left")
-	$(container_selector + " .image-preview:odd").addClass("image-preview-right")
-}
 
 $(document).bind('new_image', function(ev, image) {
     /*

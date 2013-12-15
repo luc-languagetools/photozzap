@@ -198,8 +198,8 @@ function ready_for_connection() {
     <div id="mouse_event_layer">
     </div>
 
-    <div ng-controller="TopSidebarCtrl">
-        <div id="top-sidebar-icon" class="action-sidebar top-sidebar-icon"  ng-style="element_style()">
+    <div ng-controller="TopSidebarCtrl" ng-init="init('top')">
+        <div id="top-sidebar-icon" class="action-sidebar top-sidebar-icon other-sidebars-expanded-{{other_sidebars_expanded}}"  ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <div class="status-sidebar-content">
 
@@ -284,7 +284,7 @@ function ready_for_connection() {
         </div>
     </div>
 
-    <div ng-controller="SidebarCtrl">
+    <div ng-controller="SidebarCtrl" ng-init="init('history')">
         <div id="history-sidebar-icon" class="action-sidebar history-sidebar-icon actionable" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['clock_medium_white']}" />
@@ -304,7 +304,7 @@ function ready_for_connection() {
         </div>
     </div>
 
-    <div ng-controller="SidebarCtrl">
+    <div ng-controller="SidebarCtrl" ng-init="init('users')">
         <div id="users-sidebar-icon" class="action-sidebar users-sidebar-icon actionable" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['users_medium_white']}" />
@@ -324,7 +324,7 @@ function ready_for_connection() {
         </div>
     </div>
 
-    <div ng-controller="SidebarCtrl">
+    <div ng-controller="SidebarCtrl" ng-init="init('chat')">
         <div id="chat-sidebar-icon" class="action-sidebar chat-sidebar-icon actionable" ng-click="expand()" ng-hide="expanded" ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['chat_medium_white']}" />

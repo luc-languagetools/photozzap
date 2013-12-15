@@ -1,34 +1,65 @@
 @media all and (max-width: 640px), all and (max-height: 400px) {
 
-    .gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
-        top: 84%;
-        width: 20%;
-        height: 15%;i
+    /* need to override bootstrap responsive defaults */
+    body {
+        padding: 0px;
+        padding-right: 0px;
+        padding-left: 0x;
     }
 
-    .users-sidebar-default {
-        left: 4%;
+    .other-sidebars-expanded-false {
     }
-
-    .gallery-sidebar-default {
-        left: 28%;
+    
+    .other-sidebars-expanded-true {
     }
-
-    .chat-sidebar-default {
-        left: 52%;
-    }
-
-    .history-sidebar-default {
-        left: 76%;
-    }
-
-    .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
-        top: 2%;
+    
+    .top-sidebar-icon {
         left: 5%;
-        width: 94%;
-        height: 78%;
+        width: 90%;
+    }
+    
+    .chat-sidebar-icon {
+        left: 37%;
+        width: 25%;
+    }    
+    
+    .users-sidebar-icon {
+        width: 25%;
+    }    
+    
+    .history-sidebar-icon {
+        right: 0%;
+        width: 25%;
+    }    
+    
+   
+    /* history sidebar */
+    .history-sidebar {
+        width: 50%;
     }
 
+    .history-sidebar-expanded {
+        right: 0%;
+    }
+
+
+    .history-sidebar-collapsed {
+        right: -51%;
+    }    
+    
+    /* users sidebar */
+    .users-sidebar {
+        width: 50%;
+    }
+
+    .users-sidebar-expanded {
+        left: 0%;
+    }    
+    
+    .users-sidebar-collapsed {
+        left: -51%;
+    }    
+    
     .action-sidebar-header-centered {
         position: relative;
         top: 5%;
@@ -56,6 +87,7 @@
       margin-left: 5px;
     }
 
+    /*
     .image-preview {
         width: 45%;
     }
@@ -72,6 +104,7 @@
         margin-right: 15px;
         
     }
+    */    
 
     .image-preview .notification-overlay {
         font-size: 14px;

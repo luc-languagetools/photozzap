@@ -5,6 +5,8 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     
     service.display_image = undefined;
     
+    service.sidebars_open_map = {};
+    
     service.display_image_event = function(ev, image) {
         service.displayed_image = image;
         log("broadcasting image_change, image: " + image);
@@ -152,6 +154,11 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.image = undefined;
     $scope.size = undefined;
     $scope.expanded = false;
+    $scope.other_sidebars_expanded = false;
+    
+    $scope.init = function(name) {
+        $scope.name = name;
+    };
     
     $scope.expand = function() {
         $(document).trigger('close_all_sidebars_internal');
