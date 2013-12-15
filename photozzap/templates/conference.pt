@@ -210,14 +210,14 @@ function ready_for_connection() {
                             <div class="actionable" ng-click="expand()">
                                 <img src="${icon_files['gallery_medium_white']}" />
                                 <br/>
-                                Photos
+                                <span class="header">Photos</span>
                             </div>
                         </td>
                         <td>
                             <div class="actionable" onclick="show_upload_modal();">
                                 <img src="${icon_files['upload_photo_white']}" />
                                 <br/>
-                                Upload
+                                <span class="header">Upload</span>
                             </div>                        
                         </td>
                         <td>
@@ -244,7 +244,7 @@ function ready_for_connection() {
             <div id="gallery-sidebar-header" class="action-sidebar-header">
                 <img class="actionable" ng-click="collapse()" src="${icon_files['slide_up_white']}" />
                 <img src="${icon_files['gallery_medium_white']}" />
-                Photos
+                <span class="header">Photos</span>
             </div>
             <div id="gallery-sidebar-content">
                 <ul id="image-list" class="thumbnails">
@@ -263,7 +263,7 @@ function ready_for_connection() {
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['clock_medium_white']}" />
                 <br/>
-                History
+                <span class="header">History</span>
             </div>
         </div>
 
@@ -271,7 +271,7 @@ function ready_for_connection() {
             <div id="history-sidebar-header" class="action-sidebar-header">
                 <img class="actionable" ng-click="collapse()" src="${icon_files['slide_right_white']}" />
                 <img src="${icon_files['clock_medium_white']}" />
-                History
+                <span class="header">History</span>
             </div>
             <div id="history-sidebar-content">
             </div>
@@ -283,14 +283,14 @@ function ready_for_connection() {
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['users_medium_white']}" />
                 <br/>
-                Users
+                <span class="header">Users</span>
             </div>
         </div>
 
         <div id="users-sidebar" class="action-sidebar users-sidebar users-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active" ng-style="element_style()">
             <div id="users-sidebar-header" class="action-sidebar-header">
                 <img src="${icon_files['users_medium_white']}" />
-                Users
+                <span class="header">Users</span>
                 <img class="actionable" ng-click="collapse()" src="${icon_files['slide_left_white']}" />
             </div>
             <div id="users-sidebar-content">
@@ -303,7 +303,7 @@ function ready_for_connection() {
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <img src="${icon_files['chat_medium_white']}" />
                 <br/>
-                Chat
+                <span class="header">Chat</span>
             </div>
         </div>
 
@@ -311,7 +311,7 @@ function ready_for_connection() {
             <div id="chat-sidebar-header" class="action-sidebar-header">
                 <img class="actionable" ng-click="collapse()" src="${icon_files['slide_down_white']}" />
                 <img src="${icon_files['chat_medium_white']}" />
-                Chat
+                <span class="header">Chat</span>
             </div>
             <div id="chat-sidebar-content" class="container-fluid">
                 <div id="comment_area" class="row-fluid" >
