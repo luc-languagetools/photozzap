@@ -23,6 +23,10 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('close_sidebar');
     }
     
+    service.close_all_sidebars_internal_event = function(ev) {
+        $rootScope.$broadcast('close_sidebar_internal');
+    }    
+    
     $(document).bind('loaded_highres', service.loaded_highres_event);
     
     $(document).bind('display_image', service.display_image_event);
@@ -30,6 +34,8 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     $(document).bind('resize_image', service.resize_image_event);
     
     $(document).bind('close_all_sidebars', service.close_all_sidebars_event);
+    
+    $(document).bind('close_all_sidebars_internal', service.close_all_sidebars_internal_event);
     
     return service;
 });
@@ -47,7 +53,7 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.expanded = false;
     
     $scope.expand = function() {
-        $(document).trigger('close_all_sidebars');
+        $(document).trigger('close_all_sidebars_internal');
         $scope.expanded = true;
     };
     
@@ -66,7 +72,7 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.element_style = function() {
 
         if ($scope.image == undefined || $scope.size == undefined) {
-            return {'background-color': "#CCCCCC"};
+            return {'background-color': "#555555"};
         }
         
         var backgroundUrl = "url(" + $scope.image.blur_url() + ")";
@@ -79,7 +85,13 @@ function SidebarCtrl($scope, conferenceService) {
                 };        
     }
     
+    $scope.$on('close_sidebar_internal',  function() {
+        // this is coming from angular, and doesn't need an $apply
+        $scope.expanded = false;
+    });
+    
     $scope.$on('close_sidebar',  function() {
+        // this is coming from outside angular and does need an $apply
         $scope.expanded = false;
         $scope.$apply();
     });
