@@ -12,7 +12,8 @@ var ConferenceControls = {
     disableToolbarTimeout: null,
     mouseOverActionSidebar: false,
     touchMode: false,
-    resizeToolbarsOnDisplay: false
+    resizeToolbarsOnDisplay: false,
+    firstResizePerformed: false
 };
 
 
@@ -35,7 +36,7 @@ function setupControlHandlers() {
     ConferenceControls.sidebarHandlers.gallery = setupGallerySidebar();
     ConferenceControls.sidebarHandlers.chat = setupChatSidebar();
     ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
-    
+
     if (! ConferenceControls.touchMode ) {
         $(".action-sidebar").mouseenter(mouseEnterControlElement);
         $(".action-sidebar").mouseleave(mouseLeaveControlElement);
@@ -112,7 +113,6 @@ function setupSlidingSidebar(options) {
     
     // expand sidebar right away
     setupSidebarContentSlimscroll(options.main_selector, options.header_selector, options.footer_selector, options.content_selector);
-    $(options.main_selector).data("expanded", true);
     
     resizeContentFunction = function() {
         log("resizing content for " + options.name);
@@ -177,11 +177,9 @@ function controlsResize() {
 
 function resizeAllOpenSidebars() {
     $(".action-sidebar-active").each(function() {
-        if( $(this).data("expanded") == true ) {
-            var name = $(this).data("sidebar-name");
-            log("sidebar " + name + " is expanded");
-            ConferenceControls.sidebarHandlers[name].resizeCallback();
-        }
+        var name = $(this).data("sidebar-name");
+        log("sidebar " + name + " is expanded, resizing");
+        ConferenceControls.sidebarHandlers[name].resizeCallback();
     });
 }
 
@@ -310,11 +308,18 @@ function displayHistorySidebarForNotification(highlightSelector) {
 
 }
 
+$(document).bind('display_image', function(ev, image) {
+    if( ! ConferenceControls.firstResizePerformed ) {
+        resizeHandler();
+        ConferenceControls.firstResizePerformed = true;
+    }
+});
+
 function resizeHandler() {
     log("resizeHandler");
     $(document).trigger('resize_image');
     controlsResize();
-};
+}
 
 (function($) {
     $.eventReport = function(selector, root) {
