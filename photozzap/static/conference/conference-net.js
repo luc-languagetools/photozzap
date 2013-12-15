@@ -205,6 +205,7 @@ var Conference = {
             } else if (qevent.special_type == "deferred_comment" ) {
                 var image = Conference.images[image_id];
                 qevent.data.image = image;
+                Conference.assign_comment_to_image( image, qevent.data );
             }
             
             log("processing event: " + qevent.name);
@@ -243,6 +244,13 @@ var Conference = {
                          timestamp: timestamp,
                          delayed: delayed,
                          loaded_dimension: 0,
+                         comments: [],
+                         comments_available: function() {
+                            if( this.comments.length > 0 ) {
+                                return true;
+                            }
+                            return false;
+                         },
                          image_url: function() {
                             if (this.loaded_dimension == 0 ) {
                                 throw "loaded_dimension is 0 for image " + this.id;
@@ -293,6 +301,7 @@ var Conference = {
                     timestamp: timestamp,
                     delayed: delayed
                 };
+                Conference.assign_comment_to_image( image, comment_event );
                 $(document).trigger('new_comment', comment_event);
             } else {
                 // we don't have the image loaded yet, add a queued event
@@ -309,6 +318,10 @@ var Conference = {
         }        
         
         return true;
+    },
+    
+    assign_comment_to_image: function( image, comment_event ) {
+        Conference.images[image.id].comments.push(comment_event);
     },
     
     handle_preload_error: function( image, num_tries, jqXHR, textStatus, errorThrown ) {

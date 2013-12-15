@@ -252,7 +252,8 @@ function ready_for_connection() {
                         <a href="#" style="display: table-cell;" ng-click="select_image(image.id)">
                             <img ng-src="{{image.thumbnail_url()}}" class="notification-thumbnail"/>
                         </a>
-                        <img class="comments-available" src="${icon_files['comment_big_white']}" style="visibility: hidden;"/>
+                        
+                        <img class="comments-available comments-available-{{image.comments_available()}}" src="${icon_files['comment_big_white']}"/>
                     </li>
                     <li id="image-placeholder" style="display: table;">
                         <a href="#" onclick="show_upload_modal();" style="display: table-cell;">

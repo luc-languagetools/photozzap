@@ -316,15 +316,23 @@ $(document).bind('new_image', function(ev, image) {
     }
 });
 
-$(document).bind('display_image', function(ev, image) {
-    log("conference-ui display_image");
-    
+function show_comments_for_image(image) {
     // hide all comments
     $("#comment_list_area .comment-holder").hide();
     // show the relevant comment area
     $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
+}
 
+
+$(document).bind('display_image', function(ev, image) {
+    log("conference-ui display_image");
+    show_comments_for_image(image);
 });
+
+$(document).bind('display_image_internal', function(ev, image) {
+    show_comments_for_image(image);
+});
+
 
 $(document).bind('user_update', function(ev, user) {
 

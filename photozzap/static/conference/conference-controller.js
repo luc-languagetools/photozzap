@@ -32,9 +32,10 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('close_sidebar_internal');
     }    
     
-    service.new_image_event = function(ev) {
+    service.image_list_update_event = function(ev) {
         $rootScope.$broadcast('image_list_update_event');
     }
+
     
     $(document).bind('loaded_highres', service.loaded_highres_event);
     
@@ -48,7 +49,9 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     
     $(document).bind('close_all_sidebars_internal', service.close_all_sidebars_internal_event);
     
-    $(document).bind('new_image', service.new_image_event);
+    $(document).bind('new_image', service.image_list_update_event);
+    
+    $(document).bind('new_comment', service.image_list_update_event);
     
     return service;
 });

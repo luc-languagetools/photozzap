@@ -354,6 +354,13 @@ a, a:hover {
     top: -88px;
 }
 
+.comments-available-true {
+}
+
+.comments-available-false {
+    visibility: hidden;
+}
+
 #history-sidebar-overlay-gradient div {
     margin-top: 30px;
     text-align: center;
