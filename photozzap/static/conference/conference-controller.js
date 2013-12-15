@@ -60,6 +60,53 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
     $scope.image_list = [];
+    $scope.image_id_to_num = {};
+    $scope.image = undefined;
+    
+    $scope.num_images = function() {
+        return $scope.image_list.length;
+    };
+    
+    $scope.current_image_index = function() {
+        if( $scope.image == undefined ) {
+            return 0;
+        }
+        if( $scope.image_id_to_num[$scope.image.id] == undefined ) {
+            return 0;
+        }
+        return $scope.image_id_to_num[$scope.image.id];    
+    }
+    
+    // human-readable function - add +1
+    $scope.currently_showing = function() {
+        return $scope.current_image_index() + 1;
+    },
+    
+    $scope.prev_enabled = function() {
+        if ( $scope.current_image_index() > 0 ) {
+            return true;
+        }
+        return false;
+    },
+    
+    $scope.next_enabled = function() {
+        if ( $scope.current_image_index() < $scope.num_images() - 1 ) {
+            return true;
+        }
+        return false;
+    }
+    
+    $scope.prev = function() {
+        if ( $scope.prev_enabled() ) {
+            $scope.select_image( $scope.image_list[ $scope.current_image_index() - 1 ].id );
+        }
+    },
+    
+    $scope.next = function() {
+        if ( $scope.next_enabled() ) {
+            $scope.select_image( $scope.image_list[ $scope.current_image_index() + 1 ].id );
+        }    
+    },
     
     $scope.select_image = function(image_id) {
         log("selected image: " + image_id);
@@ -67,7 +114,6 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image_internal', image);
-        $(document).trigger('hide_toolbar');
         $scope.expanded = false;
     };
     
@@ -80,6 +126,23 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
         // sort image_list by timestamp
         image_list.sort(function(a,b) { return a.timestamp - b.timestamp } );
         $scope.image_list = image_list;
+        $scope.image_id_to_num = {};
+        var i = 0;
+        for (var image_index in image_list) {
+            var image = image_list[image_index];
+            $scope.image_id_to_num[image.id] = i;
+            i++;
+        }
+        $scope.$apply();
+    });        
+    
+    // internal notification with no $apply        
+    $scope.$on('image_change_internal', function() {
+        $scope.image = conferenceService.displayed_image;
+    });            
+        
+    $scope.$on('image_change', function() {
+        $scope.image = conferenceService.displayed_image;
         $scope.$apply();
     });        
     

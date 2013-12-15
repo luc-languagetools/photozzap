@@ -221,8 +221,27 @@ function ready_for_connection() {
                             </div>                        
                         </td>
                         <td>
-                            <p style="font-size: 26px; font-weight: bold; margin-top: 5px; margin-right: 5px;">Welcome <span id="user-nickname"></span> <span id="following_nick" style="font-style:italic; font-size: 14px;"></span></p>                                        
-                        </td>                        
+                            <div class="actionable actionable-enabled-{{prev_enabled()}}" ng-click="prev()">
+                                <img src="${icon_files['prev']}" />
+                                <br/>                            
+                                <span class="header">Prev</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actionable actionable-enabled-{{next_enabled()}}" ng-click="next()">
+                                <img src="${icon_files['next']}" />
+                                <br/>                            
+                                <span class="header">Next</span>
+                            </div>                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-top: 5px;">
+                            <span id="user-nickname" class="header-small"></span> <span id="following_nick" style="font-style:italic; font-size: 14px;"></span>
+                        </td>
+                        <td colspan="2">
+                            <span class="header-small">{{currently_showing()}} of {{num_images()}}</span>
+                        </td>
                     </tr>
                </table>
                <div class="status-sidebar-content">
