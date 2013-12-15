@@ -295,23 +295,25 @@ function relayout_even_odd_image_previews(container_selector) {
 }
 
 $(document).bind('new_image', function(ev, image) {
+    /*
     // create element from template
     image_element = $("#image-template").jqote(image);
     $('#image-list').prepend(image_element);
     add_click_event_to_new_image("#image-list #"+image.thumbnail_id, image);
+    */
     
-    ConferenceUi.notify_new_image(image);
     
     // add comment holder
     var comment_list_obj = {element_id: image_comment_list_dom_id(image)};
     var comment_list_element = $("#comment-list-template").jqote(comment_list_obj);
     $("#comment_list_area").append(comment_list_element);
     
+    ConferenceUi.notify_new_image(image);
+    
     if (Conference.currently_viewing == null) {
         // not currently viewing an image, show this one
         $(document).trigger('display_image', image);
     }
-    
 });
 
 $(document).bind('display_image', function(ev, image) {

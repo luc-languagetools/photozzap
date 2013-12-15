@@ -11,6 +11,11 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('image_change');
     };
     
+    service.display_image_internal_event = function(ev, image) {
+        service.displayed_image = image;
+        $rootScope.$broadcast('image_change_internal');
+    };
+    
     service.loaded_highres_event = function(ev) {
         $rootScope.$broadcast('image_change');
     };
@@ -27,9 +32,15 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('close_sidebar_internal');
     }    
     
+    service.new_image_event = function(ev) {
+        $rootScope.$broadcast('image_list_update_event');
+    }
+    
     $(document).bind('loaded_highres', service.loaded_highres_event);
     
     $(document).bind('display_image', service.display_image_event);
+    
+    $(document).bind('display_image_internal', service.display_image_internal_event);
     
     $(document).bind('resize_image', service.resize_image_event);
     
@@ -37,14 +48,38 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     
     $(document).bind('close_all_sidebars_internal', service.close_all_sidebars_internal_event);
     
+    $(document).bind('new_image', service.new_image_event);
+    
     return service;
 });
 
-function AppCtrl($scope, conferenceService) {
-}
 
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
+    $scope.image_list = [];
+    
+    $scope.select_image = function(image_id) {
+        log("selected image: " + image_id);
+        var image = Conference.images[image_id];
+        $(document).trigger('not_following_user');
+        $(document).trigger('show_current_image', false);
+        $(document).trigger('display_image_internal', image);
+        $(document).trigger('hide_toolbar');
+        $scope.expanded = false;
+    };
+    
+    $scope.$on('image_list_update_event', function() {
+        var images = Conference.images;
+        var image_list = [];
+        for (var image_id in images) {
+            image_list.push(images[image_id]);
+        }
+        // sort image_list by timestamp
+        image_list.sort(function(a,b) { return a.timestamp - b.timestamp } );
+        $scope.image_list = image_list;
+        $scope.$apply();
+    });        
+    
 }
 
 function SidebarCtrl($scope, conferenceService) {
@@ -96,6 +131,11 @@ function SidebarCtrl($scope, conferenceService) {
         $scope.$apply();
     });
         
+    // internal notification with no $apply        
+    $scope.$on('image_change_internal', function() {
+        $scope.image = conferenceService.displayed_image;
+    });            
+        
     $scope.$on('image_change', function() {
         $scope.image = conferenceService.displayed_image;
         $scope.$apply();
@@ -146,6 +186,11 @@ function ImageCtrl($scope, conferenceService) {
         }
         return result;
     };
+
+    // internal notification with no $apply
+    $scope.$on('image_change_internal', function() {
+        $scope.image = conferenceService.displayed_image;
+    });
     
     $scope.$on('image_change', function() {
         log("controller on image_change");
@@ -156,6 +201,5 @@ function ImageCtrl($scope, conferenceService) {
 }
 
 ImageCtrl.$inject = ['$scope', 'conferenceService'];
-AppCtrl.$inject = ['$scope', 'conferenceService'];
 SidebarCtrl.$inject = ['$scope', 'conferenceService'];
 TopSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];

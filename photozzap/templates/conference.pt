@@ -33,7 +33,7 @@
 </style>
 
 </head>
-<body ng-controller="AppCtrl">
+<body>
 <script tal:repeat="file javascript_files" tal:attributes="src file"  defer></script>
 <script type="text/javascript">
 function ready_for_connection() {
@@ -248,6 +248,12 @@ function ready_for_connection() {
             </div>
             <div id="gallery-sidebar-content">
                 <ul id="image-list" class="thumbnails">
+                    <li ng-repeat="image in image_list" style="display: table; margin-right: -60px;">
+                        <a href="#" style="display: table-cell;" ng-click="select_image(image.id)">
+                            <img ng-src="{{image.thumbnail_url()}}" class="notification-thumbnail"/>
+                        </a>
+                        <img class="comments-available" src="${icon_files['comment_big_white']}" style="visibility: hidden;"/>
+                    </li>
                     <li id="image-placeholder" style="display: table;">
                         <a href="#" onclick="show_upload_modal();" style="display: table-cell;">
                             <img class="notification-thumbnail" data-src="holder.js/266x200/auto/text:Upload Photo"/>

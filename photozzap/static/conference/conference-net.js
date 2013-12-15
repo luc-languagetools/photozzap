@@ -536,6 +536,11 @@ $(document).bind('display_image', function(ev, image) {
     Conference.viewing_image(image);
 });
 
+$(document).bind('display_image_internal', function(ev, image) {
+    log("conference-net display_image");
+    Conference.viewing_image(image);
+});
+
 $(document).bind('following_user', function(ev, user) {
     Conference.follow_user(user);
 });
