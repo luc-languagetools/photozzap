@@ -7,31 +7,40 @@
         padding-left: 0x;
     }
 
-    .other-sidebars-expanded-false {
-    }
-    
-    .other-sidebars-expanded-true {
-    }
-    
     .top-sidebar-icon {
         left: 5%;
         width: 90%;
     }
+    
+    .top-sidebar-icon-other-sidebars-expanded {
+        top: -50%;
+    }    
     
     .chat-sidebar-icon {
         left: 37%;
         width: 25%;
     }    
     
+    .chat-sidebar-icon-other-sidebars-expanded {
+        bottom: -20%;
+    }
+    
     .users-sidebar-icon {
         width: 25%;
+    }    
+    
+    .users-sidebar-icon-other-sidebars-expanded {
+        left: -30%;
     }    
     
     .history-sidebar-icon {
         right: 0%;
         width: 25%;
     }    
-    
+
+    .history-sidebar-icon-other-sidebars-expanded {
+        right: -30%;
+    }        
    
     /* history sidebar */
     .history-sidebar {
