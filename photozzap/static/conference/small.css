@@ -12,7 +12,7 @@
         width: 90%;
     }
     
-    .top-sidebar-icon-other-sidebars-expanded {
+    .top-sidebar-icon-other-sidebars-expanded, .top-sidebar-icon-hidden {
         top: -50%;
     }    
     
@@ -21,7 +21,7 @@
         width: 25%;
     }    
     
-    .chat-sidebar-icon-other-sidebars-expanded {
+    .chat-sidebar-icon-other-sidebars-expanded, .chat-sidebar-icon-hidden {
         bottom: -20%;
     }
     
@@ -29,7 +29,7 @@
         width: 25%;
     }    
     
-    .users-sidebar-icon-other-sidebars-expanded {
+    .users-sidebar-icon-other-sidebars-expanded, .users-sidebar-icon-hidden {
         left: -30%;
     }    
     
@@ -38,7 +38,7 @@
         width: 25%;
     }    
 
-    .history-sidebar-icon-other-sidebars-expanded {
+    .history-sidebar-icon-other-sidebars-expanded, .history-sidebar-icon-hidden {
         right: -30%;
     }        
    

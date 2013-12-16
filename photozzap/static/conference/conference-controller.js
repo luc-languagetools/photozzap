@@ -7,6 +7,8 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     
     service.sidebars_open_map = {};
     
+    service.show_interface = true;
+    
     service.display_image_event = function(ev, image) {
         service.displayed_image = image;
         log("broadcasting image_change, image: " + image);
@@ -52,6 +54,11 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('sidebar_status_update');
     }
     
+    service.set_interface_visible_event = function(ev, value) {
+        service.show_interface = value;
+        $rootScope.$broadcast('interface_visible_update');
+    }
+    
     $(document).bind('loaded_highres', service.loaded_highres_event);
     
     $(document).bind('display_image', service.display_image_event);
@@ -69,6 +76,8 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     $(document).bind('new_comment', service.image_list_update_event);
     
     $(document).bind('report_sidebar_status', service.sidebar_status_event);
+    
+    $(document).bind('set_interface_visible', service.set_interface_visible_event);
     
     return service;
 });
@@ -261,7 +270,13 @@ function SidebarCtrl($scope, conferenceService) {
         }
         $scope.other_sidebars_expanded = result;        
     });    
-    
+ 
+    // interface_visible_update
+    $scope.$on('interface_visible_update', function(){ 
+        $scope.icon_visible = conferenceService.show_interface;
+        $scope.$apply();
+    });
+ 
 }
 
 function ImageCtrl($scope, conferenceService) {

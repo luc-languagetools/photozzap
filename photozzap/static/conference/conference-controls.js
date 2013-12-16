@@ -190,6 +190,7 @@ function showToolbar() {
             ConferenceControls.resizeToolbarsOnDisplay = false;
         }
     });
+    $(document).trigger('set_interface_visible', true);
     // set timeout to restore
     ConferenceControls.toolbarShown = true;
 }
@@ -197,6 +198,7 @@ function showToolbar() {
 function hideToolbar() {
     $(".action-sidebar").fadeOut(200);
     ConferenceControls.toolbarShown = false;
+    $(document).trigger('set_interface_visible', false);
 }
 
 $(document).bind('hide_toolbar', function(ev) {

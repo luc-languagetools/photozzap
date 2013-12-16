@@ -273,6 +273,10 @@ a, a:hover {
     border-bottom-left-radius: 0px;            
 }
 
+.chat-sidebar-icon-hidden {
+    bottom: -20%;
+}
+
 .chat-sidebar {
     position: absolute;
     left: 25%;
@@ -303,6 +307,9 @@ a, a:hover {
     border-top-left-radius: 0px;            
 }
 
+.top-sidebar-icon-hidden {
+    top: -50%;
+}
 
 .users-sidebar-icon {
     position: fixed;
@@ -311,6 +318,10 @@ a, a:hover {
     width: 15%;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
+}
+
+.users-sidebar-icon-hidden {
+    left: -20%;
 }
 
 .users-sidebar {
@@ -338,6 +349,10 @@ a, a:hover {
     
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
+}
+
+.history-sidebar-icon-hidden {
+    right: -20%;
 }
 
 .history-sidebar {
