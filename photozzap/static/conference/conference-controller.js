@@ -180,7 +180,7 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.size = undefined;
     $scope.expanded = false;
     $scope.other_sidebars_expanded = false;
-    $scope.icon_visible = true;
+    $scope.interface_visible = true;
     
     $scope.init = function(name) {
         $scope.name = name;
@@ -199,14 +199,16 @@ function SidebarCtrl($scope, conferenceService) {
     };
     
     $scope.class_state = function() {
-        if ( $scope.expanded == true) {
+        if ( $scope.interface_visible == false ) {
+            return "collapsed";
+        } else if ( $scope.expanded == true) {
             return "expanded";
         }
         return "collapsed";
     };
     
     $scope.icon_class_state = function() {
-        if (! $scope.icon_visible ) {
+        if (! $scope.interface_visible ) {
             return "hidden";
         } else if ($scope.other_sidebars_expanded) {
             return "other-sidebars-expanded";
@@ -273,7 +275,7 @@ function SidebarCtrl($scope, conferenceService) {
  
     // interface_visible_update
     $scope.$on('interface_visible_update', function(){ 
-        $scope.icon_visible = conferenceService.show_interface;
+        $scope.interface_visible = conferenceService.show_interface;
         $scope.$apply();
     });
  

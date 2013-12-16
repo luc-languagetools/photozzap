@@ -184,33 +184,18 @@ function resizeAllOpenSidebars() {
 }
 
 function showToolbar() {
-    $(".action-sidebar").fadeIn(200, function() {
-        if( ConferenceControls.resizeToolbarsOnDisplay ) {
-            resizeAllOpenSidebars();
-            ConferenceControls.resizeToolbarsOnDisplay = false;
-        }
-    });
     $(document).trigger('set_interface_visible', true);
     // set timeout to restore
     ConferenceControls.toolbarShown = true;
 }
 
 function hideToolbar() {
-    $(".action-sidebar").fadeOut(200);
     ConferenceControls.toolbarShown = false;
     $(document).trigger('set_interface_visible', false);
 }
 
 $(document).bind('hide_toolbar', function(ev) {
     hideToolbar();
-    if (! ConferenceControls.touchMode ) {
-        // temporarily disable mouse move handlers
-        removeMouseMoveCallback();    
-        // restore mouse move handler after a while
-        setTimeout(function() {
-            setupMouseMoveCallback();
-        }, 1000);
-    }
 });
 
 
