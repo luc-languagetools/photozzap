@@ -11,6 +11,10 @@
         left: 5%;
         width: 90%;
     }
+	
+	#nickname-change-container {
+		display: none;
+	}
     
     .top-sidebar-icon-other-sidebars-expanded, .top-sidebar-icon-hidden {
         top: -50%;

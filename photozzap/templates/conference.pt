@@ -201,49 +201,36 @@ function ready_for_connection() {
     <div ng-controller="TopSidebarCtrl" ng-init="init('top')">
         <div id="top-sidebar-icon" class="action-sidebar top-sidebar-icon top-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
-                <div class="status-sidebar-content">
-
-                </div>
-                <table>
-                    <tr>
-                        <td>
-                            <div class="actionable" ng-click="expand()">
-                                <img src="${icon_files['gallery_medium_white']}" />
-                                <br/>
-                                <span class="header">Photos</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="actionable" onclick="show_upload_modal();">
-                                <img src="${icon_files['upload_photo_white']}" />
-                                <br/>
-                                <span class="header">Upload</span>
-                            </div>                        
-                        </td>
-                        <td>
-                            <div class="actionable actionable-enabled-{{prev_enabled()}}" ng-click="prev()">
-                                <img src="${icon_files['prev']}" />
-                                <br/>                            
-                                <span class="header">Prev</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="actionable actionable-enabled-{{next_enabled()}}" ng-click="next()">
-                                <img src="${icon_files['next']}" />
-                                <br/>                            
-                                <span class="header">Next</span>
-                            </div>                            
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding-top: 5px;">
-                            <span id="user-nickname" class="header-small"></span> <span id="following_nick" style="font-style:italic; font-size: 14px;"></span>
-                        </td>
-                        <td colspan="2">
-                            <span class="header-small">{{currently_showing()}} of {{num_images()}}</span>
-                        </td>
-                    </tr>
-               </table>
+				<div class="toolbar">
+					<div class="tool actionable" ng-click="expand()">
+						<img src="${icon_files['gallery_medium_white']}" />
+						<br/>
+						<span class="header">Photos</span>
+					</div>
+					<div class="tool actionable" onclick="show_upload_modal();">
+						<img src="${icon_files['upload_photo_white']}" />
+						<br/>
+						<span class="header">Upload</span>
+					</div>
+					<div class="tool actionable actionable-enabled-{{prev_enabled()}}" ng-click="prev()">
+						<img src="${icon_files['prev']}" />
+						<br/>                            
+						<span class="header">Prev</span>
+					</div>		
+					<div class="tool actionable actionable-enabled-{{next_enabled()}}" ng-click="next()">
+						<img src="${icon_files['next']}" />
+						<br/>                            
+						<span class="header">Next</span>
+					</div> 						
+				</div>
+				<div class="toolbar">
+					<div class="tool-large">
+						<span id="user-nickname" class="header-small"></span> <span id="following_nick" style="font-style:italic; font-size: 14px;"></span>
+					</div>
+					<div class="tool-large">
+						<span class="header-small">{{currently_showing()}} of {{num_images()}}</span>					
+					</div>
+				</div>
                <div class="status-sidebar-content">
                    <div id="nickname-change-container">
                    </div>        

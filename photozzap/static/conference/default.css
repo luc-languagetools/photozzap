@@ -148,11 +148,17 @@ a, a:hover {
 
 .top-sidebar-icon img {
     height: auto;
-    width: 75%;
+    width: 55%;
 }
 
-.top-sidebar-icon table {
-	width: 100%;
+.top-sidebar-icon .toolbar .tool {
+	display: inline-block;
+	width: 22%;
+}
+
+.top-sidebar-icon .toolbar .tool-large {
+	display: inline-block;
+	width: 40%;
 }
 
 .status-sidebar-content {
