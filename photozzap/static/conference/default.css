@@ -151,6 +151,10 @@ a, a:hover {
     width: 75%;
 }
 
+.top-sidebar-icon table {
+	width: 100%;
+}
+
 .status-sidebar-content {
     margin-top: 15px;
     color: #FFFFFF;

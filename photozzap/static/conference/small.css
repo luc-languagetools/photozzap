@@ -26,20 +26,29 @@
     }
     
     .users-sidebar-icon {
+		top: auto;
         width: 25%;
+		bottom: 0%;
+		left: 5%;
+		border-bottom-right-radius: 0px;
+		border-top-left-radius: 10px;
     }    
     
     .users-sidebar-icon-other-sidebars-expanded, .users-sidebar-icon-hidden {
-        left: -30%;
+		bottom: -20%;
     }    
     
     .history-sidebar-icon {
-        right: 0%;
+		top: auto;
+		bottom: 0%;
+        right: 5%;
         width: 25%;
+		border-bottom-left-radius: 0px;
+		border-top-right-radius: 10px;
     }    
 
     .history-sidebar-icon-other-sidebars-expanded, .history-sidebar-icon-hidden {
-        right: -30%;
+        bottom: -20%;
     }        
    
     /* history sidebar */
