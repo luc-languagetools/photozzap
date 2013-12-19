@@ -1,55 +1,45 @@
 @media all and (max-width: 640px) and (orientation : landscape), all and (max-height: 400px) and (orientation : landscape) {
 
-    .gallery-sidebar-default, .chat-sidebar-default, .users-sidebar-default, .history-sidebar-default {
-        left: 2%;
-        width: 15%;
-        height: 20%;
-    }
-
-    .users-sidebar-default {
-        top: 4%;
-    }
-
-    .gallery-sidebar-default {
-        top: 28%;
-    }
-
-    .chat-sidebar-default {
-        top: 52%;
-    }
-
-    .history-sidebar-default {
-        top: 76%;
-    } 
-
-    .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded, .status-sidebar-default {
-        top: 2%;
-        left: 20%;
-        width: 78%;
-    }
-
-    .gallery-sidebar-expanded, .chat-sidebar-expanded, .users-sidebar-expanded, .history-sidebar-expanded {
-        height: 96%;
-    }
-
+	/* reduce icon size */
     .action-sidebar-header img {
-        width: 30%;
+        height: auto;
+        width: 40%;
     }
 
-    .status-sidebar-header img {
-        width: 10%;
-    }
+	/* common between history, users, chat sidebars */
+	.history-sidebar-icon, .chat-sidebar-icon, .users-sidebar-icon {
+		bottom: auto;
+		left: auto;
+		right: 0%;
+		border-bottom-right-radius: 0px;
+		border-top-right-radius: 0px;
+		border-bottom-left-radius: 10px;
+		width: 20%;
+	}	
 
-    .action-sidebar-expanded .action-sidebar-header img {
-        width: 7%;
-    }
-
-    .action-sidebar .action-sidebar-header {
-        font-size: 18px;
-    }
-
+	/* history sidebar */
+	.history-sidebar-icon {
+		top: 5%;
+	}
+	
+    .history-sidebar-icon-other-sidebars-expanded, .history-sidebar-icon-hidden, .chat-sidebar-icon-other-sidebars-expanded, .chat-sidebar-icon-hidden, .users-sidebar-icon-other-sidebars-expanded, .users-sidebar-icon-hidden  {
+        right: -30%;
+    }        	
+	
     .notification-preview { 
         width: 40%;
     }
+	
+	/* chat sidebar */
+	.chat-sidebar-icon {
+		top: 37%;
+	}
+	
+	/* users sidebar */
+	.users-sidebar-icon {
+		top: 68%;
+	}
+	
+	
     
 }
