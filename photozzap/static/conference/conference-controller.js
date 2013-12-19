@@ -140,7 +140,7 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image_internal', image);
-        $scope.expanded = false;
+		$scope.collapse();
     };
     
     $scope.$on('image_list_update_event', function() {
