@@ -11,15 +11,9 @@ improvements
  - use nginx for reverse proxying of BOSH channel
 - add carousel to move from one photo to another 
  - swipe action on mobile
-- improve client performance on mobile
-- improve client performance on desktop, don't use connection modal
 - when using angular and ng-src, we see a new get request when display new images
 - show loading indicator when processing messages
 - pushover.net notifications (will require a custom xmpp bot)
-- use jquery ajax queue to queue events one after the other (will solve image order issue)
-- have dynamic scaling of images, low res images downloaded first, with high-res versions downloaded
-  when displaying
-- upload all images to CDN
 - create one static page per conference, with all minified css/js and assets also static
 - create load testing python bot
 - report client latency to google analytics 
@@ -31,6 +25,8 @@ improvements
 - mobile layouts
  - make sure that after showing / hiding the virtual keyboard on iOS, we are never stuck with a bad layout
  - fix iPad layouts (especially around keyboard)
+  - in portrait mode, top toolbar is cramped
+  - in portrait, chat window is too narrow
 - handle disconnection better
  - reconnect and request missing history
 
