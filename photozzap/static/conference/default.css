@@ -32,10 +32,6 @@ a, a:hover {
 }
 
 #main_image img {
-    -webkit-transition:all linear 0.3s;
-    -moz-transition:all linear 0.3s;
-    -o-transition:all linear 0.3s;
-    transition:all linear 0.3s;
     box-shadow: 0px 0px 10px 6px #222222;
 }
 
@@ -311,8 +307,8 @@ a, a:hover {
 .top-sidebar-icon {
     position: fixed;
     top: 0%;
-    left: 35%;
-    width: 30%;
+    left: 30%;
+    width: 40%;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;            
 }

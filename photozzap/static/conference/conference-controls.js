@@ -41,7 +41,23 @@ function setupControlHandlers() {
         $(".action-sidebar").mouseenter(mouseEnterControlElement);
         $(".action-sidebar").mouseleave(mouseLeaveControlElement);
     }
+	
+	// need to handle "unfocus" from the text input as the ipad doesn't resize well
+	// after typing a comment
+	setupTextInputUnfocusEvent();
     
+}
+
+function setupTextInputUnfocusEvent() {
+
+	$("#comment-input").on('blur', function(ev) {
+		// resize in 500ms
+		setTimeout(function() {
+				window.scrollTo(0, 1);
+				resizeHandler();
+			}, 800);
+	})
+
 }
 
 function mouseEnterControlElement() {
