@@ -3,20 +3,74 @@ var conferenceModule = angular.module('conferenceModule', []);
 conferenceModule.factory('conferenceService', function ($rootScope) {
     var service = {};
     
-    service.display_image = undefined;
+	service.image_data = {
+		prev_image: undefined,
+		next_image: undefined,
+		current_image: undefined,
+		num_images: 0,
+		current_index: 0,
+		image_list: [],
+	};
     
     service.sidebars_open_map = {};
     
     service.show_interface = true;
     
+	service.register_image_change = function(image) {
+		service.image_data.current_image = image;
+		service.recalc_image_data();
+	};
+	
+	service.recalc_image_data = function() {
+		// go over images and sort them
+        var images = Conference.images;
+        var image_list = [];
+        for (var image_id in images) {
+            image_list.push(images[image_id]);
+        }
+        // sort image_list by timestamp
+        image_list.sort(function(a,b) { return a.timestamp - b.timestamp } );
+		service.image_data.image_list = image_list;
+        var image_id_to_num = {};
+        var i = 0;
+        for (var image_index in image_list) {
+            var image = image_list[image_index];
+            image_id_to_num[image.id] = i;
+            i++;
+        }		
+		
+		service.image_data.num_images = image_list.length;
+		service.image_data.current_index = 0;
+		if( service.image_data.current_image != undefined &&
+		    image_id_to_num[ service.image_data.current_image.id ] != undefined ) {
+			service.image_data.current_index = image_id_to_num[ service.image_data.current_image.id ];
+		}
+		
+		if( service.image_data.current_index > 0 ) {
+			// previous available
+			service.image_data.prev_image = image_list[ service.image_data.current_index - 1];
+		} else {
+			// previous not available
+			service.image_data.prev_image = undefined;
+		}
+		
+		if( service.image_data.current_index < service.image_data.num_images - 1 ) {
+			// next available
+			service.image_data.next_image = image_list[ service.image_data.current_index + 1];
+		} else {
+			// next not available
+			service.image_data.next_image = undefined;
+		}
+		
+	};
+	
     service.display_image_event = function(ev, image) {
-        service.displayed_image = image;
-        log("broadcasting image_change, image: " + image);
+		service.register_image_change(image);
         $rootScope.$broadcast('image_change');
     };
     
     service.display_image_internal_event = function(ev, image) {
-        service.displayed_image = image;
+		service.register_image_change(image);
         $rootScope.$broadcast('image_change_internal');
     };
     
@@ -39,6 +93,7 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     }    
     
     service.image_list_update_event = function(ev) {
+		service.recalc_image_data();
         $rootScope.$broadcast('image_list_update_event');
     }
 
@@ -85,52 +140,25 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
 
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    $scope.image_list = [];
-    $scope.image_id_to_num = {};
-    $scope.image = undefined;
-    
-    $scope.num_images = function() {
-        return $scope.image_list.length;
-    };
-    
-    $scope.current_image_index = function() {
-        if( $scope.image == undefined ) {
-            return 0;
-        }
-        if( $scope.image_id_to_num[$scope.image.id] == undefined ) {
-            return 0;
-        }
-        return $scope.image_id_to_num[$scope.image.id];    
-    }
-    
-    // human-readable function - add +1
-    $scope.currently_showing = function() {
-        return $scope.current_image_index() + 1;
-    },
+	$scope.image_data = conferenceService.image_data;
     
     $scope.prev_enabled = function() {
-        if ( $scope.current_image_index() > 0 ) {
-            return true;
-        }
-        return false;
+		return $scope.image_data.prev_image != undefined;
     },
     
     $scope.next_enabled = function() {
-        if ( $scope.current_image_index() < $scope.num_images() - 1 ) {
-            return true;
-        }
-        return false;
+		return $scope.image_data.next_image != undefined;
     }
     
     $scope.prev = function() {
         if ( $scope.prev_enabled() ) {
-            $scope.select_image( $scope.image_list[ $scope.current_image_index() - 1 ].id );
+            $scope.select_image( $scope.image_data.prev_image.id );
         }
     },
     
     $scope.next = function() {
         if ( $scope.next_enabled() ) {
-            $scope.select_image( $scope.image_list[ $scope.current_image_index() + 1 ].id );
+            $scope.select_image( $scope.image_data.next_image.id );
         }    
     },
     
@@ -144,31 +172,17 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
     };
     
     $scope.$on('image_list_update_event', function() {
-        var images = Conference.images;
-        var image_list = [];
-        for (var image_id in images) {
-            image_list.push(images[image_id]);
-        }
-        // sort image_list by timestamp
-        image_list.sort(function(a,b) { return a.timestamp - b.timestamp } );
-        $scope.image_list = image_list;
-        $scope.image_id_to_num = {};
-        var i = 0;
-        for (var image_index in image_list) {
-            var image = image_list[image_index];
-            $scope.image_id_to_num[image.id] = i;
-            i++;
-        }
+		$scope.image_data = conferenceService.image_data;
         $scope.$apply();
     });        
     
     // internal notification with no $apply        
     $scope.$on('image_change_internal', function() {
-        $scope.image = conferenceService.displayed_image;
+        $scope.image_data = conferenceService.image_data;
     });            
         
     $scope.$on('image_change', function() {
-        $scope.image = conferenceService.displayed_image;
+        $scope.image_data = conferenceService.image_data;
         $scope.$apply();
     });        
     
@@ -245,11 +259,11 @@ function SidebarCtrl($scope, conferenceService) {
         
     // internal notification with no $apply        
     $scope.$on('image_change_internal', function() {
-        $scope.image = conferenceService.displayed_image;
+        $scope.image = conferenceService.image_data.current_image;
     });            
         
     $scope.$on('image_change', function() {
-        $scope.image = conferenceService.displayed_image;
+        $scope.image = conferenceService.image_data.current_image;
         $scope.$apply();
     });    
     
@@ -259,7 +273,7 @@ function SidebarCtrl($scope, conferenceService) {
         var winHeight = win.height();
         $scope.size = {width: winWidth, height: winHeight};
         $scope.$apply();
-    });        
+    });
     
     $scope.$on('sidebar_status_update', function() {
         var result = false;        
@@ -282,20 +296,16 @@ function SidebarCtrl($scope, conferenceService) {
 }
 
 function ImageCtrl($scope, conferenceService) {
-    $scope.image = undefined;
+    $scope.image_data = conferenceService.image_data;
 
     $scope.showing_image = function() {
-        var result = false;
-        if ($scope.image != undefined) {
-            result = true;
-        }
-        return result;
+		return $scope.image_data.current_image != undefined;
     };
     
     $scope.image_id = function() {
         var result = "n/a";
         if ($scope.showing_image()) {
-            result = $scope.image.id;
+            result = $scope.image_data.current_image.id;
         };
         log("$scope.image_id, result: " + result);
         return result;
@@ -304,7 +314,7 @@ function ImageCtrl($scope, conferenceService) {
     $scope.image_src = function() {
         result = "";
         if( $scope.showing_image() ) {
-            result = $scope.image.image_url();
+            result = $scope.image_data.current_image.image_url();
         }
         return result;
     };
@@ -312,20 +322,19 @@ function ImageCtrl($scope, conferenceService) {
     $scope.blur_src = function() {
         result = "";
         if( $scope.showing_image() ) {
-            result = $scope.image.blur_url();
+            result = $scope.image_data.current_image.blur_url();
         }
         return result;
     };
 
     // internal notification with no $apply
     $scope.$on('image_change_internal', function() {
-        $scope.image = conferenceService.displayed_image;
+        $scope.image_data = conferenceService.image_data;
     });
     
     $scope.$on('image_change', function() {
         log("controller on image_change");
-        $scope.image = conferenceService.displayed_image;
-        log("$scope.image.id is: " + $scope.image.id);
+		$scope.image_data = conferenceService.image_data;
         $scope.$apply();
     });
 }

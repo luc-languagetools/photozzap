@@ -228,7 +228,7 @@ function ready_for_connection() {
 						<span id="user-nickname" class="header-small"></span> <span id="following_nick" style="font-style:italic; font-size: 14px;"></span>
 					</div>
 					<div class="tool-large">
-						<span class="header-small">{{currently_showing()}} of {{num_images()}}</span>					
+						<span class="header-small">{{image_data.current_index + 1}} of {{image_data.num_images}}</span>					
 					</div>
 				</div>
                <div class="status-sidebar-content">
@@ -254,7 +254,7 @@ function ready_for_connection() {
             </div>
             <div id="gallery-sidebar-content">
                 <ul id="image-list" class="thumbnails">
-                    <li ng-repeat="image in image_list" style="display: table; margin-right: -60px;">
+                    <li ng-repeat="image in image_data.image_list" style="display: table; margin-right: -60px;">
                         <a href="#" style="display: table-cell;" ng-click="select_image(image.id)">
                             <img ng-src="{{image.thumbnail_url()}}" class="notification-thumbnail"/>
                         </a>
