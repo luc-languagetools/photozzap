@@ -495,23 +495,29 @@ function download_highres_thumbnails() {
     return result;
 }
 
-function resize_image_area() {
-    // ensure image is fullscreen
-    // this should work with any aspect ratio
-    
-    if (Conference.currently_viewing == undefined ) {
-        return;
-    }
-    
-    var image = Conference.images[Conference.currently_viewing];
-    var imageMaxWidth = image.width;
-    var imageMaxHeight = image.height;
-    var imageRatio = imageMaxWidth / imageMaxHeight;
-
+function getWinRatio() {
     var win = $(window);
     var winWidth = win.width();
     var winHeight = win.height();
     var winRatio = winWidth / winHeight;
+	
+	return winRatio;
+}
+
+function getImageRatio(image) {
+    var imageMaxWidth = image.width;
+    var imageMaxHeight = image.height;
+    var imageRatio = imageMaxWidth / imageMaxHeight;
+	return imageRatio;
+}
+
+function resize_image(image, selector) {
+    var imageRatio = getImageRatio(image);
+
+    var win = $(window);
+    var winWidth = win.width();
+    var winHeight = win.height();
+    var winRatio = getWinRatio();
   
     log("winWidth: " + winWidth + " winHeight: " + winHeight + " winRatio: " + winRatio);
   
@@ -533,19 +539,52 @@ function resize_image_area() {
         topSpacing = (winHeight - imageHeight) / 2;
         log("topSpacing: " + topSpacing);
         
-        $("#displayed_image img").css({
+        $(selector).css({
             width: newImageWidth,
             height: newImageHeight,
             marginTop: topSpacing + "px"
         })        
     } else {
-        $("#displayed_image img").css({
+        $(selector).css({
             width: newImageWidth,
             height: newImageHeight,
             marginTop: "0px"
         }) 
     }
+}
+
+function resize_image_area() {
+    // ensure image is fullscreen
+    // this should work with any aspect ratio
     
+    if (Conference.currently_viewing == undefined ) {
+        return;
+    }
+    
+	var n_child = 1;
+	var selector = "";
+	if (Conference.image_data.prev_image != undefined) {
+		selector = "#displayed_image_container img:nth-child(" + n_child + ")";
+		n_child++;
+		resize_image(Conference.image_data.prev_image, selector);
+	}	
+	
+	selector = "#displayed_image_container img:nth-child(" + n_child + ")";	
+	n_child++;
+    var image = Conference.images[Conference.currently_viewing];
+	resize_image(image, selector);
+	
+	if (Conference.image_data.next_image != undefined) {
+		selector = "#displayed_image_container img:nth-child(" + n_child + ")";	
+		resize_image(Conference.image_data.next_image, selector);
+	}
+	
+	
+	
+    var win = $(window);
+    var winWidth = win.width();
+    var winHeight = win.height();	
+	
     // resize blur image to take up all available space, don't respect aspect ratio
     $("#blur_image img").css({width: winWidth,
                               height: winHeight});    
@@ -553,7 +592,7 @@ function resize_image_area() {
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});
                                    
-    ensure_optimal_image_resolution(image, winRatio, imageRatio);
+    ensure_optimal_image_resolution(image, getWinRatio(), getImageRatio(image));
 }
 
 $(document).bind('resize_image', function(ev) {

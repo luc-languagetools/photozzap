@@ -11,6 +11,16 @@ var Conference = {
     using_default_nickname: true,
     nickname_change_requested: false,
     
+	// maintained by the angular service
+	image_data: {
+		prev_image: undefined,
+		next_image: undefined,
+		current_image: undefined,
+		num_images: 0,
+		current_index: 0,
+		image_list: [],
+	},
+	
     currently_viewing: null,
     
     following_user_jid: null,
