@@ -298,6 +298,22 @@ function SidebarCtrl($scope, conferenceService) {
 function ImageCtrl($scope, conferenceService) {
     $scope.image_data = conferenceService.image_data;
 
+	$scope.has_prev = function() {
+		return $scope.image_data.prev_image != undefined;
+	};
+	
+	$scope.has_next = function() {
+		return $scope.image_data.next_image != undefined;
+	};
+	
+	$scope.prev_image_src = function() {
+		return $scope.image_data.prev_image.image_url();
+	};
+	
+	$scope.next_image_src = function() {
+		return $scope.image_data.next_image.image_url();
+	};
+	
     $scope.showing_image = function() {
 		return $scope.image_data.current_image != undefined;
     };
