@@ -41,7 +41,7 @@ a, a:hover {
 	top: 0%;
 	height: 100%;
 	z-index:-1;
-	/* display: none; */
+	/* opacity: 0; */
 }
 
 #main_image img {
