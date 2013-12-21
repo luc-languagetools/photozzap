@@ -646,7 +646,8 @@ function transition_next() {
 	if (Conference.image_data.prev_image != undefined ) {
 		translateX = -( img2Width / 2 + img3Width / 2 );
 	} else {
-		translateX = -( img1Width + img2Width / 2 - getWinWidth() / 2 );
+		//translateX = -( img1Width + img2Width / 2 - getWinWidth() / 2 );
+		translateX = -( img1Width / 2 + img2Width / 2 );
 	}
 	
 	transition_swipe(translateX);
@@ -658,24 +659,19 @@ function transition_prev() {
 	var img1Width = $("#swipe_images img:nth-child(1)").width();
 	var img2Width = $("#swipe_images img:nth-child(2)").width();
 	
-	// translateX is img1Width / 2 - winWidth / 2
-	// var translateX = -( img1Width / 2 - img2Width / 2 );
-	// var translateX = -( img1Width / 2 - getWinWidth() / 2);
 	var translateX = img1Width / 2 + img2Width / 2 ;
 
 	transition_swipe(translateX);
 }
 
 function transition_swipe(translateX) {
-	$("#displayed_image").hide();
-	//$("#swipe_images").css("opacity", 1.0);
+	$("#swipe_images").css("opacity", 1.0);
 	$('#swipe_images').
-		transition({ x: translateX + 'px'}, 500, function(){
-			ConferenceUi.swipe_transition_in_progress = false;
-			$("#displayed_image").show();			
-			//$("#swipe_images").css("opacity", 0.0);
-			//$('#swipe_images').transition({ opacity: 0.0}, 200);
-			rebuild_swipe_container();
+		transition({ x: translateX + 'px'}, 600, function(){
+			$('#swipe_images').transition({ opacity: 0.0}, 1000, function() {
+				ConferenceUi.swipe_transition_in_progress = false;
+				rebuild_swipe_container();
+			});
 		});
 }
 
