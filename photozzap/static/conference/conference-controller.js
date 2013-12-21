@@ -1,5 +1,13 @@
 
-var conferenceModule = angular.module('conferenceModule', []);
+var ConferenceAngular = {
+	transition_info: {
+		direction: undefined,
+		image_before: undefined,
+		image_after: undefined,
+	},
+};
+
+var conferenceModule = angular.module('conferenceModule', ['ngAnimate']);
 conferenceModule.factory('conferenceService', function ($rootScope) {
     var service = {};
     
@@ -132,6 +140,42 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
+/*
+conferenceModule.animation('.img-container-animation', function() {
+  return {
+    enter : function(element, done) {
+		if( ConferenceAngular.transition_info.direction == "prev" ) {
+			// the element which is leaving is going to tell us by how much we
+			// should shift the view in a "next" transition
+			// add up half of the width of the first 2 elements
+			var width1 = $("#displayed_image_container img:nth-child(1)").width();
+			var width2 = $("#displayed_image_container img:nth-child(2)").width();
+			var translate_x = width1 / 2 + width2 / 2;
+			log("Angular animation: translating by " + translate_x);
+			$('#displayed_image_container').transition({ x: translate_x + 'px' }, done);
+		} else {
+			done();
+		}
+    },
+    leave : function(element, done) { 
+		if( ConferenceAngular.transition_info.direction == "next" ) {
+			// the element which is leaving is going to tell us by how much we
+			// should shift the view in a "next" transition
+			// add up half of the width of the first 2 elements
+			var width1 = $("#displayed_image_container img:nth-child(1)").width();
+			var width2 = $("#displayed_image_container img:nth-child(2)").width();
+			var translate_x = -(width1 / 2 + width2 / 2);
+			log("Angular animation: translating by " + translate_x);
+			$('#displayed_image_container').transition({ x: translate_x + 'px' }, done);
+		} else {
+			done();
+		}
+	},
+    move : function(element, done) { done(); },
+  };
+});
+*/
+
 
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
@@ -147,12 +191,20 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.prev = function() {
         if ( $scope.prev_enabled() ) {
+			transition_prev();
+			ConferenceAngular.transition_info.direction = "prev";
+			ConferenceAngular.transition_info.image_before = $scope.image_data.current_image;
+			ConferenceAngular.transition_info.image_after = $scope.image_data.prev_image;
             $scope.select_image( $scope.image_data.prev_image.id );
         }
     },
     
     $scope.next = function() {
         if ( $scope.next_enabled() ) {
+			transition_next();
+			ConferenceAngular.transition_info.direction = "next";
+			ConferenceAngular.transition_info.image_before = $scope.image_data.current_image;
+			ConferenceAngular.transition_info.image_after = $scope.image_data.next_image;
             $scope.select_image( $scope.image_data.next_image.id );
         }    
     },
@@ -298,42 +350,14 @@ function ImageCtrl($scope, conferenceService) {
 		return $scope.image_data.current_image != undefined;
     };
 	
-	// deprecated functions below
-	/*
-	$scope.has_prev = function() {
-		return $scope.image_data.prev_image != undefined;
-	};
-	
-	$scope.has_next = function() {
-		return $scope.image_data.next_image != undefined;
-	};
-	
-	$scope.prev_image_src = function() {
-		return $scope.image_data.prev_image.image_url();
-	};
-	
-	$scope.next_image_src = function() {
-		return $scope.image_data.next_image.image_url();
-	};
-    
-    $scope.image_id = function() {
-        var result = "n/a";
-        if ($scope.showing_image()) {
-            result = $scope.image_data.current_image.id;
-        };
-        log("$scope.image_id, result: " + result);
-        return result;
-    };
-    
     $scope.image_src = function() {
         result = "";
         if( $scope.showing_image() ) {
             result = $scope.image_data.current_image.image_url();
         }
         return result;
-    };
-	*/
-
+    };	
+	
     $scope.blur_src = function() {
         result = "";
         if( $scope.showing_image() ) {

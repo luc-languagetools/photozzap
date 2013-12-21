@@ -348,10 +348,10 @@ function ready_for_connection() {
 </div>
 
 <div id="main_image" ng-controller="ImageCtrl">
-	<div id="displayed_image_container" class="image-container">
-		<img ng-repeat="image in displayed_images_list" ng-src="{{image.image_url()}}"
-		onload="$(document).trigger('resize_image');"/>
-	</div>
+    <div id="displayed_image" class="image-container">
+        <img ng-if="showing_image()" id="displayed-image" ng-src="{{image_src()}}"
+            onload="$(document).trigger('resize_image');" />
+    </div>
     <div id="blur_image" class="image-container">
         <img ng-if="showing_image()" ng-src="{{blur_src()}}"
             onload="$(document).trigger('resize_image');" />

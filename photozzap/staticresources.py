@@ -6,6 +6,7 @@ javascript_files = [
 "static/bootstrap/js/bootstrap.min.js",
 "static/strophe/strophe.min.js",
 "static/angular/angular.min.js",
+"static/angular/angular-animate.min.js",
 "static/jslibs/jquery.jqote2.js",
 "static/jslibs/holder.js",
 "static/timeago/jquery.timeago.js",

@@ -9,10 +9,14 @@ a, a:hover {
     left: 0%;
     top: 0%;
     height: 100%;
-    /* width: 100%; */
-    /*overflow: hidden;*/
-    /* text-align: center; */
+    width: 100%;    
+    overflow: hidden;
+    text-align: center;
     z-index:-4;
+}
+
+#displayed_image {
+    z-index:-2;
 }
 
 #blur_image {
@@ -20,20 +24,16 @@ a, a:hover {
 }
 
 .image-container {
-    z-index:-2;
-	float:left;
-	display:inline;
+    position: absolute;
     left: 0%;
     top: 0%;
     height: 100%;
-    width: 2000px;	
+    width: 100%;
 }
 
-.image-container img {
-	box-shadow: 0px 0px 10px 6px #222222;
-	display: inline;
+#main_image img {
+    box-shadow: 0px 0px 10px 6px #222222;
 }
-
 
 .action-icon {
     margin-right: 4px;
