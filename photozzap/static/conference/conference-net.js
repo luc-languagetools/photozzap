@@ -263,6 +263,9 @@ var Conference = {
                             }
                             return false;
                          },
+						 base_image_url: function() {
+							return $.cloudinary.url(this.id + ".jpg", {crop: 'fit', width: DEFAULT_DIMENSION, height: DEFAULT_DIMENSION});
+						},
                          image_url: function() {
                             if (this.loaded_dimension == 0 ) {
                                 throw "loaded_dimension is 0 for image " + this.id;
