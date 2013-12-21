@@ -8,6 +8,8 @@ var element_id_increment = 0;
 
 var ConferenceUi = {
 
+	swipe_transition_in_progress: false,
+
     // last combined notification that was displayed. this is stored to determine whether an upcoming
     // notification should be combined with that one.
     // the object should have the following format:
@@ -315,56 +317,55 @@ function show_comments_for_image(image) {
 }
 
 function rebuild_swipe_container() {
-	setTimeout(function() {
-		// rebuild swipe images container
-		log("maintaining swipe images container");
-		$("#swipe_images img").remove();
-		var totalRatio = 0;
-		// figure out the total ratio to resize the container first
-		for( var i in Conference.image_data.swipe_images_list ) {
-			var image = Conference.image_data.swipe_images_list[i];
-			totalRatio += image.ratio;
-		}
-		var winHeight = getWinHeight();
-		var newWidth = winHeight * totalRatio;
-		// set swipe_images's width to total width
-		$("#swipe_images").css("width", newWidth + "px");		
-		for( var i in Conference.image_data.swipe_images_list ) {
-			var image = Conference.image_data.swipe_images_list[i];
-			var img = $(document.createElement('img'));
-			img.attr('src', image.image_url());
-			img.appendTo('#swipe_images');
-			var n_child = parseInt(i) + 1;
-			var selector = "#swipe_images img:nth-child(" + n_child + ")";
-			log("rebuild_swipe_container: " + selector);
-			resize_image(image, selector);
-		}
-		// figure out what the translation needs to be
-		var translateX = 0;
-		var img1Width = $("#swipe_images img:nth-child(1)").width();
-		var img2Width = $("#swipe_images img:nth-child(2)").width();
-		// if prev_image is present, translate X is img1Width + img2Width/2 - winWidth/2
-		// if prev_image is not present, translate X is img1Width/2 - winWidth/2
-		if( Conference.image_data.prev_image != undefined ) {
-			translateX = -( img1Width + img2Width / 2 - getWinWidth() / 2 );
-		} else {
-			translateX = -( img1Width / 2 - getWinWidth() / 2 );
-		}
-		// $("#swipe_images").css("transform", "translateX(200px)")
-		var cssTransform = "translateX(" + translateX + "px)";
-		$("#swipe_images").css("transform", cssTransform);
-	}, 300);
+	if( ConferenceUi.swipe_transition_in_progress ) {
+		// swipe transition in progress, don't modify the swipe container
+		return;
+	}
+
+	log("maintaining swipe images container");
+	$("#swipe_images img").remove();
+	var totalRatio = 0;
+	// figure out the total ratio to resize the container first
+	for( var i in Conference.image_data.swipe_images_list ) {
+		var image = Conference.image_data.swipe_images_list[i];
+		totalRatio += image.ratio;
+	}
+	var winHeight = getWinHeight();
+	var newWidth = winHeight * totalRatio;
+	// set swipe_images's width to total width
+	$("#swipe_images").css("width", newWidth + "px");		
+	for( var i in Conference.image_data.swipe_images_list ) {
+		var image = Conference.image_data.swipe_images_list[i];
+		var img = $(document.createElement('img'));
+		img.attr('src', image.image_url());
+		img.appendTo('#swipe_images');
+		var n_child = parseInt(i) + 1;
+		var selector = "#swipe_images img:nth-child(" + n_child + ")";
+		log("rebuild_swipe_container: " + selector);
+		resize_image(image, selector);
+	}
+	// figure out what the translation needs to be
+	var translateX = 0;
+	var img1Width = $("#swipe_images img:nth-child(1)").width();
+	var img2Width = $("#swipe_images img:nth-child(2)").width();
+	// if prev_image is present, translate X is img1Width + img2Width/2 - winWidth/2
+	// if prev_image is not present, translate X is img1Width/2 - winWidth/2
+	if( Conference.image_data.prev_image != undefined ) {
+		translateX = -( img1Width + img2Width / 2 - getWinWidth() / 2 );
+	} else {
+		translateX = -( img1Width / 2 - getWinWidth() / 2 );
+	}
+	var cssTransform = "translateX(" + translateX + "px)";
+	$("#swipe_images").css("transform", cssTransform);
 }
 
 $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
     show_comments_for_image(image);
-	rebuild_swipe_container();
 });
 
 $(document).bind('display_image_internal', function(ev, image) {
     show_comments_for_image(image);
-	rebuild_swipe_container();
 });
 
 
@@ -625,25 +626,45 @@ function resize_image_area() {
                                    height: winHeight});
                                    
     ensure_optimal_image_resolution(image, getWinRatio(), image.ratio);
+	
+	rebuild_swipe_container();
 }
 
 function transition_next() {
-	var width1 = $("#displayed_image_container img:nth-child(1)").width();
-	var width2 = $("#displayed_image_container img:nth-child(2)").width();
-	if( $("#displayed_image_container img").length == 3 ) {	
-		// calculate widths between images 2 and 3
-		var width1 = $("#displayed_image_container img:nth-child(2)").width();
-		var width2 = $("#displayed_image_container img:nth-child(3)").width();		
+	ConferenceUi.swipe_transition_in_progress = true;
+	// if prev_image is present, translateX is img1Width + img2Width + img3Width / 2 - winWidth /2
+	// if prev_image is not present, translateX is img1Width + img2Width / 2 - winWidth / 2
+	var translateX = 0;
+	
+	var img1Width = $("#swipe_images img:nth-child(1)").width();
+	var img2Width = $("#swipe_images img:nth-child(2)").width();
+	var img3Width = $("#swipe_images img:nth-child(3)").width();
+	
+	if (Conference.image_data.prev_image != undefined ) {
+		translateX = -( img1Width + img2Width + img3Width / 2 - getWinWidth() / 2);
+	} else {
+		translateX = -( img1Width + img2Width / 2 - getWinWidth() / 2 );
 	}
-	var translate_x = -(width1 / 2 + width2 / 2);
-	$('#displayed_image_container').transition({ x: translate_x + 'px' });	
+	
+	$('#swipe_images').transition({ x: translateX + 'px' }, function(){
+		ConferenceUi.swipe_transition_in_progress = false;
+		rebuild_swipe_container();
+	});
 }
 
 function transition_prev() {
-	var width1 = $("#displayed_image_container img:nth-child(2)").width();
-	var width2 = $("#displayed_image_container img:nth-child(1)").width();
-	var translate_x = -(width1 / 2 + width2 / 2);
-	$('#displayed_image_container').transition({ x: translate_x + 'px' });	
+	ConferenceUi.swipe_transition_in_progress = true;
+	
+	var img1Width = $("#swipe_images img:nth-child(1)").width();
+	
+	// translateX is img1Width / 2 - winWidth / 2
+	var translateX = -( img1Width / 2 - getWinWidth() / 2 );
+
+	$('#swipe_images').transition({ x: translateX + 'px' }, function(){
+		ConferenceUi.swipe_transition_in_progress = false;
+		rebuild_swipe_container();
+	});
+	
 }
 
 $(document).bind('resize_image', function(ev) {

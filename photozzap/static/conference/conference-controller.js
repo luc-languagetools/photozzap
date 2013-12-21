@@ -191,14 +191,14 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.prev = function() {
         if ( $scope.prev_enabled() ) {
-			//transition_prev();
+			transition_prev();
             $scope.select_image( $scope.image_data.prev_image.id );
         }
     },
     
     $scope.next = function() {
         if ( $scope.next_enabled() ) {
-			//transition_next();
+			transition_next();
             $scope.select_image( $scope.image_data.next_image.id );
         }    
     },
