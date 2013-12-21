@@ -314,14 +314,57 @@ function show_comments_for_image(image) {
     $("#comment_list_area #" + image_comment_list_dom_id(image)).show();
 }
 
+function rebuild_swipe_container() {
+	setTimeout(function() {
+		// rebuild swipe images container
+		log("maintaining swipe images container");
+		$("#swipe_images img").remove();
+		var totalRatio = 0;
+		// figure out the total ratio to resize the container first
+		for( var i in Conference.image_data.swipe_images_list ) {
+			var image = Conference.image_data.swipe_images_list[i];
+			totalRatio += image.ratio;
+		}
+		var winHeight = getWinHeight();
+		var newWidth = winHeight * totalRatio;
+		// set swipe_images's width to total width
+		$("#swipe_images").css("width", newWidth + "px");		
+		for( var i in Conference.image_data.swipe_images_list ) {
+			var image = Conference.image_data.swipe_images_list[i];
+			var img = $(document.createElement('img'));
+			img.attr('src', image.image_url());
+			img.appendTo('#swipe_images');
+			var n_child = parseInt(i) + 1;
+			var selector = "#swipe_images img:nth-child(" + n_child + ")";
+			log("rebuild_swipe_container: " + selector);
+			resize_image(image, selector);
+		}
+		// figure out what the translation needs to be
+		var translateX = 0;
+		var img1Width = $("#swipe_images img:nth-child(1)").width();
+		var img2Width = $("#swipe_images img:nth-child(2)").width();
+		// if prev_image is present, translate X is img1Width + img2Width/2 - winWidth/2
+		// if prev_image is not present, translate X is img1Width/2 - winWidth/2
+		if( Conference.image_data.prev_image != undefined ) {
+			translateX = -( img1Width + img2Width / 2 - getWinWidth() / 2 );
+		} else {
+			translateX = -( img1Width / 2 - getWinWidth() / 2 );
+		}
+		// $("#swipe_images").css("transform", "translateX(200px)")
+		var cssTransform = "translateX(" + translateX + "px)";
+		$("#swipe_images").css("transform", cssTransform);
+	}, 300);
+}
 
 $(document).bind('display_image', function(ev, image) {
     log("conference-ui display_image");
     show_comments_for_image(image);
+	rebuild_swipe_container();
 });
 
 $(document).bind('display_image_internal', function(ev, image) {
     show_comments_for_image(image);
+	rebuild_swipe_container();
 });
 
 
@@ -495,6 +538,18 @@ function download_highres_thumbnails() {
     return result;
 }
 
+function getWinHeight() {
+    var win = $(window);
+    var winHeight = win.height();
+	return winHeight;
+}
+
+function getWinWidth() {
+    var win = $(window);
+    var winWidth = win.width();
+	return winWidth;
+}
+
 function getWinRatio() {
     var win = $(window);
     var winWidth = win.width();
@@ -504,15 +559,8 @@ function getWinRatio() {
 	return winRatio;
 }
 
-function getImageRatio(image) {
-    var imageMaxWidth = image.width;
-    var imageMaxHeight = image.height;
-    var imageRatio = imageMaxWidth / imageMaxHeight;
-	return imageRatio;
-}
-
 function resize_image(image, selector) {
-    var imageRatio = getImageRatio(image);
+    var imageRatio = image.ratio;
 
     var win = $(window);
     var winWidth = win.width();
@@ -576,7 +624,7 @@ function resize_image_area() {
     $("#control_event_layer").css({width: winWidth,
                                    height: winHeight});
                                    
-    ensure_optimal_image_resolution(image, getWinRatio(), getImageRatio(image));
+    ensure_optimal_image_resolution(image, getWinRatio(), image.ratio);
 }
 
 function transition_next() {

@@ -1,12 +1,4 @@
 
-var ConferenceAngular = {
-	transition_info: {
-		direction: undefined,
-		image_before: undefined,
-		image_after: undefined,
-	},
-};
-
 var conferenceModule = angular.module('conferenceModule', ['ngAnimate']);
 conferenceModule.factory('conferenceService', function ($rootScope) {
     var service = {};
@@ -47,17 +39,25 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
 			service.image_data.current_index = image_id_to_num[ service.image_data.current_image.id ];
 		}
 		
+		service.image_data.swipe_images_list = [];
+		
 		if( service.image_data.current_index > 0 ) {
 			// previous available
 			service.image_data.prev_image = image_list[ service.image_data.current_index - 1];
+			service.image_data.swipe_images_list.push(service.image_data.prev_image);
 		} else {
 			// previous not available
 			service.image_data.prev_image = undefined;
 		}
 		
+		if ( service.image_data.current_image != undefined ) {
+			service.image_data.swipe_images_list.push(service.image_data.current_image);
+		}
+		
 		if( service.image_data.current_index < service.image_data.num_images - 1 ) {
 			// next available
 			service.image_data.next_image = image_list[ service.image_data.current_index + 1];
+			service.image_data.swipe_images_list.push(service.image_data.next_image);
 		} else {
 			// next not available
 			service.image_data.next_image = undefined;
@@ -191,20 +191,14 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.prev = function() {
         if ( $scope.prev_enabled() ) {
-			transition_prev();
-			ConferenceAngular.transition_info.direction = "prev";
-			ConferenceAngular.transition_info.image_before = $scope.image_data.current_image;
-			ConferenceAngular.transition_info.image_after = $scope.image_data.prev_image;
+			//transition_prev();
             $scope.select_image( $scope.image_data.prev_image.id );
         }
     },
     
     $scope.next = function() {
         if ( $scope.next_enabled() ) {
-			transition_next();
-			ConferenceAngular.transition_info.direction = "next";
-			ConferenceAngular.transition_info.image_before = $scope.image_data.current_image;
-			ConferenceAngular.transition_info.image_after = $scope.image_data.next_image;
+			//transition_next();
             $scope.select_image( $scope.image_data.next_image.id );
         }    
     },
@@ -344,7 +338,6 @@ function SidebarCtrl($scope, conferenceService) {
 
 function ImageCtrl($scope, conferenceService) {
     $scope.image_data = conferenceService.image_data;
-	$scope.displayed_images_list = [];
 
 	$scope.showing_image = function() {
 		return $scope.image_data.current_image != undefined;
@@ -365,31 +358,15 @@ function ImageCtrl($scope, conferenceService) {
         }
         return result;
     };
-
-	$scope.rebuild_displayed_images_list = function() {
-		var displayed_images_list = [];
-		if ($scope.image_data.prev_image != undefined) {
-			displayed_images_list.push($scope.image_data.prev_image);
-		}
-		if ($scope.image_data.current_image != undefined ) {
-			displayed_images_list.push($scope.image_data.current_image);
-		}
-		if ($scope.image_data.next_image != undefined) {
-			displayed_images_list.push($scope.image_data.next_image);
-		}
-		$scope.displayed_images_list = displayed_images_list;
-	};
 	
     // internal notification with no $apply
     $scope.$on('image_change_internal', function() {
         $scope.image_data = conferenceService.image_data;
-		$scope.rebuild_displayed_images_list();
     });
     
     $scope.$on('image_change', function() {
         log("controller on image_change");
 		$scope.image_data = conferenceService.image_data;
-		$scope.rebuild_displayed_images_list();
         $scope.$apply();
     });
 }

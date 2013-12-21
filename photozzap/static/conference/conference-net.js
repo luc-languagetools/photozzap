@@ -19,6 +19,7 @@ var Conference = {
 		num_images: 0,
 		current_index: 0,
 		image_list: [],
+		swipe_images_list: [],
 	},
 	
     currently_viewing: null,
@@ -249,6 +250,7 @@ var Conference = {
                          thumbnail_id: image_id + "_th",
                          width: image_width,
                          height: image_height,
+						 ratio: image_width / image_height, 
                          added_by: user,
                          added_by_nick: nick,
                          timestamp: timestamp,

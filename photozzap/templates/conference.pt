@@ -348,6 +348,8 @@ function ready_for_connection() {
 </div>
 
 <div id="main_image" ng-controller="ImageCtrl">
+	<div id="swipe_images" class="image-swipe-container">
+	</div>
     <div id="displayed_image" class="image-container">
         <img ng-if="showing_image()" id="displayed-image" ng-src="{{image_src()}}"
             onload="$(document).trigger('resize_image');" />

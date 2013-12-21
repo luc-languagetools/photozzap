@@ -11,8 +11,11 @@ a, a:hover {
     height: 100%;
     width: 100%;    
     overflow: hidden;
-    text-align: center;
     z-index:-4;
+}
+
+#displayed_image {
+    text-align: center;
 }
 
 #displayed_image {
@@ -29,6 +32,15 @@ a, a:hover {
     top: 0%;
     height: 100%;
     width: 100%;
+}
+
+.image-swipe-container {
+	position: absolute;
+	display:inline;
+	left: 0%;
+	top: 0%;
+	height: 100%;
+	z-index:-1;
 }
 
 #main_image img {
