@@ -676,7 +676,7 @@ function transition_prev() {
 function transition_swipe(translateX) {
 	$("#swipe_images").css("opacity", 1.0);
 	$('#swipe_images').
-		transition({ x: translateX + 'px'}, 600, function(){
+		transition({ x: translateX + 'px'}, 500, function(){
 			$('#swipe_images').transition({ opacity: 0.0}, 1000, function() {
 				ConferenceUi.swipe_transition_in_progress = false;
 				rebuild_swipe_container();
