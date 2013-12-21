@@ -634,6 +634,10 @@ function resize_image_area() {
 }
 
 function transition_next() {
+	if( ConferenceUi.swipe_transition_in_progress == true) {
+		// don't perform two animations at once
+		return;
+	}
 	ConferenceUi.swipe_transition_in_progress = true;
 	// if prev_image is present, translateX is img1Width + img2Width + img3Width / 2 - winWidth /2
 	// if prev_image is not present, translateX is img1Width + img2Width / 2 - winWidth / 2
@@ -654,6 +658,11 @@ function transition_next() {
 }
 
 function transition_prev() {
+	if( ConferenceUi.swipe_transition_in_progress == true) {
+		// don't perform two animations at once
+		return;
+	}
+
 	ConferenceUi.swipe_transition_in_progress = true;
 	
 	var img1Width = $("#swipe_images img:nth-child(1)").width();
