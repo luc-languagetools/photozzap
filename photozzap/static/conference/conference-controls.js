@@ -52,7 +52,8 @@ function setupControlHandlers() {
 		{
 			triggerOnTouchEnd : true,        
 			swipeStatus : swipeStatus,
-			threshold:200          
+			threshold:200,
+            cancelThreshold:10			
 		};
 	 
 		$("#control_event_layer").swipe( swipeOptions );
@@ -65,25 +66,23 @@ function swipeStatus(event, phase, direction, distance)
 	//If we are moving before swipe, and we are going Lor R in X mode, or U or D in Y mode then drag.
 	if( phase=="move" && (direction=="left" || direction=="right") )
 	{
+		$("#displayed_image").css("opacity", 0.0);
 		$("#swipe_images").css("opacity", 1.0);
 		var translateX = getDefaultTranslateX();
 		if (direction == "left") {
+			ConferenceUi.swipe_already_translated = -distance;
 			translateX -= distance;
 		} else if (direction == "right") {
+			ConferenceUi.swipe_already_translated = distance;
 			translateX += distance;
 		}
-		ConferenceUi.swipe_already_translated = translateX;
 		performTranslateX(translateX);
 			
 	}
 	
 	else if ( phase == "cancel")
 	{
-		ConferenceUi.swipe_already_translated = 0;
-		var defaultTranslateX = getDefaultTranslateX();
-		performTranslateXTransition(translateX, function() {
-			$("#swipe_images").css("opacity", 0.0);		
-		});
+		cancel_swipe_transition();
 	}
 	
 	else if ( phase =="end" )
@@ -91,16 +90,21 @@ function swipeStatus(event, phase, direction, distance)
 		if (direction == "left") {
 			if( Conference.image_data.next_image != undefined ) {
 				selectImageAndTransition(Conference.image_data.next_image, true);
+			} else {
+				cancel_swipe_transition();
 			}
 		} else if (direction == "right") {
 			if ( Conference.image_data.prev_image != undefined) {
 				selectImageAndTransition(Conference.image_data.prev_image, false);
+			} else {
+				cancel_swipe_transition();
 			}
 		}
 	}
 }
 
 function selectImageAndTransition(image, is_next) {
+	$("#displayed_image").css("opacity", 1.0);
 	if (image != undefined) {
 		if( is_next ) {
 			transition_next();

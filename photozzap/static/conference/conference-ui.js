@@ -376,7 +376,7 @@ function performTranslateX(translateX) {
 }
 
 function performTranslateXTransition(translateX, done) {
-	$('#swipe_images').transition({ x: translateX + 'px'}, 500, done());
+	$('#swipe_images').transition({ x: translateX + 'px'}, 500, done);
 }
 
 $(document).bind('display_image', function(ev, image) {
@@ -704,6 +704,17 @@ function transition_swipe(translateX) {
 				rebuild_swipe_container();
 			});
 		});
+}
+
+function cancel_swipe_transition() {
+	var translateX =  - ConferenceUi.swipe_already_translated;
+	ConferenceUi.swipe_already_translated = 0;
+	log("cancel_swipe_transition starting");
+	performTranslateXTransition(translateX, function() {
+		log("cancel_swipe_transition done");
+		$("#swipe_images").css("opacity", 0.0);		
+		$("#displayed_image").css("opacity", 1.0);
+	});
 }
 
 $(document).bind('resize_image', function(ev) {
