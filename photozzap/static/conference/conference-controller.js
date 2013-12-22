@@ -140,42 +140,6 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
-/*
-conferenceModule.animation('.img-container-animation', function() {
-  return {
-    enter : function(element, done) {
-		if( ConferenceAngular.transition_info.direction == "prev" ) {
-			// the element which is leaving is going to tell us by how much we
-			// should shift the view in a "next" transition
-			// add up half of the width of the first 2 elements
-			var width1 = $("#displayed_image_container img:nth-child(1)").width();
-			var width2 = $("#displayed_image_container img:nth-child(2)").width();
-			var translate_x = width1 / 2 + width2 / 2;
-			log("Angular animation: translating by " + translate_x);
-			$('#displayed_image_container').transition({ x: translate_x + 'px' }, done);
-		} else {
-			done();
-		}
-    },
-    leave : function(element, done) { 
-		if( ConferenceAngular.transition_info.direction == "next" ) {
-			// the element which is leaving is going to tell us by how much we
-			// should shift the view in a "next" transition
-			// add up half of the width of the first 2 elements
-			var width1 = $("#displayed_image_container img:nth-child(1)").width();
-			var width2 = $("#displayed_image_container img:nth-child(2)").width();
-			var translate_x = -(width1 / 2 + width2 / 2);
-			log("Angular animation: translating by " + translate_x);
-			$('#displayed_image_container').transition({ x: translate_x + 'px' }, done);
-		} else {
-			done();
-		}
-	},
-    move : function(element, done) { done(); },
-  };
-});
-*/
-
 
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});

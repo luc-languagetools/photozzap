@@ -9,6 +9,7 @@ var element_id_increment = 0;
 var ConferenceUi = {
 
 	swipe_transition_in_progress: false,
+	swipe_already_translated: 0,
 
     // last combined notification that was displayed. this is stored to determine whether an upcoming
     // notification should be combined with that one.
@@ -347,6 +348,14 @@ function rebuild_swipe_container() {
 		log("rebuild_swipe_container: " + selector);
 		resize_image(image, selector);
 	}
+	
+	var translateX = getDefaultTranslateX();
+	performTranslateX(translateX);
+	
+	ConferenceUi.swipe_already_translated = 0;
+}
+
+function getDefaultTranslateX() {
 	// figure out what the translation needs to be
 	var translateX = 0;
 	var img1Width = $("#swipe_images img:nth-child(1)").width();
@@ -358,8 +367,16 @@ function rebuild_swipe_container() {
 	} else {
 		translateX = -( img1Width / 2 - getWinWidth() / 2 );
 	}
+	return translateX;
+}
+
+function performTranslateX(translateX) {
 	var cssTransform = "translateX(" + translateX + "px)";
 	$("#swipe_images").css("transform", cssTransform);
+}
+
+function performTranslateXTransition(translateX, done) {
+	$('#swipe_images').transition({ x: translateX + 'px'}, 500, done());
 }
 
 $(document).bind('display_image', function(ev, image) {
@@ -674,6 +691,11 @@ function transition_prev() {
 }
 
 function transition_swipe(translateX) {
+	if (ConferenceUi.swipe_already_translated != 0) {
+		translateX -= ConferenceUi.swipe_already_translated;
+		ConferenceUi.swipe_already_translated = 0;
+	}
+
 	$("#swipe_images").css("opacity", 1.0);
 	$('#swipe_images').
 		transition({ x: translateX + 'px'}, 500, function(){

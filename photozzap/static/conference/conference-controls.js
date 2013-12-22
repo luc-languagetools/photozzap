@@ -46,6 +46,71 @@ function setupControlHandlers() {
 	// after typing a comment
 	setupTextInputUnfocusEvent();
     
+	// listener for swipe events
+	if( ConferenceControls.touchMode ) {
+		var swipeOptions=
+		{
+			triggerOnTouchEnd : true,        
+			swipeStatus : swipeStatus,
+			threshold:200          
+		};
+	 
+		$("#control_event_layer").swipe( swipeOptions );
+	}
+	
+}
+
+function swipeStatus(event, phase, direction, distance)
+{
+	//If we are moving before swipe, and we are going Lor R in X mode, or U or D in Y mode then drag.
+	if( phase=="move" && (direction=="left" || direction=="right") )
+	{
+		$("#swipe_images").css("opacity", 1.0);
+		var translateX = getDefaultTranslateX();
+		if (direction == "left") {
+			translateX -= distance;
+		} else if (direction == "right") {
+			translateX += distance;
+		}
+		ConferenceUi.swipe_already_translated = translateX;
+		performTranslateX(translateX);
+			
+	}
+	
+	else if ( phase == "cancel")
+	{
+		ConferenceUi.swipe_already_translated = 0;
+		var defaultTranslateX = getDefaultTranslateX();
+		performTranslateXTransition(translateX, function() {
+			$("#swipe_images").css("opacity", 0.0);		
+		});
+	}
+	
+	else if ( phase =="end" )
+	{
+		if (direction == "left") {
+			if( Conference.image_data.next_image != undefined ) {
+				selectImageAndTransition(Conference.image_data.next_image, true);
+			}
+		} else if (direction == "right") {
+			if ( Conference.image_data.prev_image != undefined) {
+				selectImageAndTransition(Conference.image_data.prev_image, false);
+			}
+		}
+	}
+}
+
+function selectImageAndTransition(image, is_next) {
+	if (image != undefined) {
+		if( is_next ) {
+			transition_next();
+		} else {
+			transition_prev();
+		}
+		$(document).trigger('not_following_user');
+		$(document).trigger('show_current_image', false);
+		$(document).trigger('display_image', image);
+	}
 }
 
 function setupTextInputUnfocusEvent() {

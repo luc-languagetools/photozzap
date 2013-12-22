@@ -11,6 +11,7 @@ javascript_files = [
 "static/jslibs/holder.js",
 "static/timeago/jquery.timeago.js",
 "static/transit/jquery.transit.min.js",
+"static/touchswipe/jquery.touchSwipe.min.js",
 "static/modernizr/modernizr.touch.min.js",
 "static/ajaxq/jquery.ajaxq-0.0.1.js",
 # cloudinary files
