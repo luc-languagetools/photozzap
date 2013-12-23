@@ -778,6 +778,9 @@ function transition_swipe(translateX) {
 function cancel_swipe_transition() {
 	var translateX =  - ConferenceUi.swipe_already_translated;
 	ConferenceUi.swipe_already_translated = 0;
+	if ( ConferenceControls.useTranslate3d ) {
+		translateX = getDefaultTranslateX();
+	}
 	log("cancel_swipe_transition starting");
 	performTranslateXTransition(translateX, function() {
 		log("cancel_swipe_transition done");
