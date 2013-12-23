@@ -31,8 +31,11 @@ a, a:hover {
     height: 100%;
     width: 100%;    
     overflow: hidden;
-    text-align: center;
     z-index:-4;
+}
+
+#displayed_image {
+    text-align: center;
 }
 
 #displayed_image {
@@ -51,11 +54,21 @@ a, a:hover {
     width: 100%;
 }
 
+.image-swipe-container {
+	position: absolute;
+	display:inline;
+	left: 0%;
+	top: 0%;
+	height: 100%;
+	z-index:-1;
+	opacity: 0;
+}
+
+.image-swipe-container img {
+	vertical-align: top;
+}
+
 #main_image img {
-    -webkit-transition:all linear 0.3s;
-    -moz-transition:all linear 0.3s;
-    -o-transition:all linear 0.3s;
-    transition:all linear 0.3s;
     box-shadow: 0px 0px 10px 6px #222222;
 }
 
@@ -331,8 +344,8 @@ a, a:hover {
 .top-sidebar-icon {
     position: fixed;
     top: 0%;
-    left: 35%;
-    width: 30%;
+    left: 30%;
+    width: 40%;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;            
 }
@@ -657,7 +670,35 @@ body {
         top: -28px;
     }
 
+	/* intro sidebar */
+	
+	#intro-sidebar {
+		position: absolute;
+		width: 60%;
+		left: 20%;
+		top: 20%;
+		color: #FFFFFF;
+		font-size: 22px;
+	}
+
+	#intro-sidebar img {
+		width: 20%;
+	}
+
+	#intro-sidebar-content {
+		text-align: center;
+	}
+	
+	#intro-sidebar-content img {
+		width: 50%;
+	}	
+	
+	#intro-sidebar-content p {
+		margin: 5px;
+	}
+
 }
+
 @media all and (max-width: 640px) and (orientation : landscape), all and (max-height: 400px) and (orientation : landscape) {
 
 	/* reduce icon size */
