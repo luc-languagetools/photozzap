@@ -58,6 +58,8 @@ icon_files = {
 'slide_up_white': "static/icons/slide_up_white.png",
 'prev': "static/icons/prev.png",
 'next': "static/icons/next.png",
+'photozzap_logo': "static/icons/photozzap_logo.png",
+'swipe': "static/icons/swipe.png",
 }
 
 cdn_asset_list = []

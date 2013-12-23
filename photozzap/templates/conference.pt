@@ -341,6 +341,20 @@ function ready_for_connection() {
             </div>    
         </div>
     </div>
+	
+	<div ng-controller="SidebarCtrl" ng-init="init('intro')">
+		<div id="intro-sidebar" class="action-sidebar intro-sidebar sidebar-transitions" ng-style="element_style()">
+			<div id="intro-sidebar-header" class="action-sidebar-header">
+				<img src="${icon_files['photozzap_logo']}" />
+				<span class="header">Photozzap</span>
+			</div>
+			<div id="intro-sidebar-content" class="intro-sidebar-content">
+				<img src="${icon_files['swipe']}" />
+				<br/>
+				<p>Swipe left/right to see more images. Tap here to close or show menu.</p>
+			</div>
+		</div>
+	</div>
 
 </div>    
     
