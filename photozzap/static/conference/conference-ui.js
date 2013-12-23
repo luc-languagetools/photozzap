@@ -595,9 +595,9 @@ function resize_image(image, selector) {
   
     if(winRatio > imageRatio) {
         newImageWidth = "auto";
-        newImageHeight = "100%";
+        newImageHeight = winHeight + "px";
     } else {
-        newImageWidth = "100%";
+        newImageWidth = winWidth + "px";
         newImageHeight = "auto";
     }
     

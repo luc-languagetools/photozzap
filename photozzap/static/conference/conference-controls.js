@@ -52,11 +52,12 @@ function setupControlHandlers() {
 		{
 			triggerOnTouchEnd : true,        
 			swipeStatus : swipeStatus,
-			threshold:200,
+			tap: clickMouseEventLayerInTouchMode,
+			threshold:75,
             cancelThreshold:10			
 		};
 	 
-		$("#control_event_layer").swipe( swipeOptions );
+		$("#mouse_event_layer").swipe( swipeOptions );
 	}
 	
 }
@@ -325,28 +326,30 @@ function actionSidebarMouseMoveHandler() {
         }           
 }
 
+function clickMouseEventLayerInTouchMode() {
+	// if toolbar is not shown, show toolbar
+	// if toolbar is shown,
+	//   if any sidebars expanded, close them
+	//   if no sidebars expanded, hide toolbar
+
+	if ( ! ConferenceControls.toolbarShown ) {
+		log("no sidebars open, and toolbar not shown, show toolbar");
+		showToolbar();
+	} else {
+		var open_sidebars = $(".action-sidebar-expanded");
+		if (open_sidebars.length > 0) {                
+			log("one sidebar open, close all sidebars");
+			closeAllSidebars();                
+		} else {
+			log("no sidebars open, and toolbar shown, hide toolbar");
+			hideToolbar();
+		}
+	}
+}
+
 function setupMouseMoveCallback() {
     if (ConferenceControls.touchMode) {
-        $("#mouse_event_layer").on("click", function() {
-            // if toolbar is not shown, show toolbar
-            // if toolbar is shown,
-            //   if any sidebars expanded, close them
-            //   if no sidebars expanded, hide toolbar
-
-            if ( ! ConferenceControls.toolbarShown ) {
-                log("no sidebars open, and toolbar not shown, show toolbar");
-                showToolbar();
-            } else {
-                var open_sidebars = $(".action-sidebar-expanded");
-                if (open_sidebars.length > 0) {                
-                    log("one sidebar open, close all sidebars");
-                    closeAllSidebars();                
-                } else {
-                    log("no sidebars open, and toolbar shown, hide toolbar");
-                    hideToolbar();
-                }
-            }
-        });
+        $("#mouse_event_layer").on("click", clickMouseEventLayerInTouchMode);
     } else {
         $("#mouse_event_layer").mousemove(mouseMoveHandler);
         $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);

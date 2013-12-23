@@ -44,6 +44,10 @@ a, a:hover {
 	opacity: 0;
 }
 
+.image-swipe-container img {
+	vertical-align: top;
+}
+
 #main_image img {
     box-shadow: 0px 0px 10px 6px #222222;
 }
