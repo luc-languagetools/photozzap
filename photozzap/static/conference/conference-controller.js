@@ -137,6 +137,10 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     
     $(document).bind('set_interface_visible', service.set_interface_visible_event);
     
+	$(document).bind('show_intro', function(ev) {
+		$rootScope.$broadcast('show_intro_event');
+	});
+	
     return service;
 });
 
@@ -192,6 +196,21 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
     });        
     
    
+}
+
+function IntroSidebarCtrl($scope, $controller, conferenceService) {
+    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
+	$scope.shown = false;
+
+	$scope.dont_show = function() {
+        $scope.shown = false;	
+	};
+	
+    $scope.$on('show_intro_event', function(){ 
+        $scope.shown = true;
+        $scope.$apply();
+    });	
+	
 }
 
 function SidebarCtrl($scope, conferenceService) {
@@ -338,3 +357,4 @@ function ImageCtrl($scope, conferenceService) {
 ImageCtrl.$inject = ['$scope', 'conferenceService'];
 SidebarCtrl.$inject = ['$scope', 'conferenceService'];
 TopSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
+IntroSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];

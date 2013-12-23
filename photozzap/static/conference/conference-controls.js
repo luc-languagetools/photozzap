@@ -21,6 +21,11 @@ function setupControlHandlers() {
     ConferenceControls.touchMode = Modernizr.touch;
     // for debugging only
     // ConferenceControls.touchMode = true;
+	
+	if (ConferenceControls.touchMode) {
+		$(document).trigger('show_intro');
+		hideToolbar();
+	}
 
     setupMouseMoveCallback();
     
