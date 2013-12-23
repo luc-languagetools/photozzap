@@ -13,7 +13,9 @@ var ConferenceControls = {
     mouseOverActionSidebar: false,
     touchMode: false,
     resizeToolbarsOnDisplay: false,
-    firstResizePerformed: false
+    firstResizePerformed: false,
+	
+	useTranslate3d: has3d()
 };
 
 
@@ -22,11 +24,6 @@ function setupControlHandlers() {
     // for debugging only
     // ConferenceControls.touchMode = true;
 	
-	if (ConferenceControls.touchMode) {
-		$(document).trigger('show_intro');
-		hideToolbar();
-	}
-
     setupMouseMoveCallback();
     
     //resizeHandler();
@@ -392,6 +389,10 @@ $(document).bind('display_image', function(ev, image) {
     if( ! ConferenceControls.firstResizePerformed ) {
         resizeHandler();
         ConferenceControls.firstResizePerformed = true;
+		if (ConferenceControls.touchMode) {
+			$(document).trigger('show_intro');
+			hideToolbar();
+		}		
     }
 });
 
@@ -430,3 +431,28 @@ function resizeHandler() {
     }
 })(jQuery);
 
+function has3d() {
+    var el = document.createElement('p'), 
+        has3d,
+        transforms = {
+            'webkitTransform':'-webkit-transform',
+            'OTransform':'-o-transform',
+            'msTransform':'-ms-transform',
+            'MozTransform':'-moz-transform',
+            'transform':'transform'
+        };
+
+    // Add it to the body to get the computed style.
+    document.body.insertBefore(el, null);
+
+    for (var t in transforms) {
+        if (el.style[t] !== undefined) {
+            el.style[t] = "translate3d(1px,1px,1px)";
+            has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+        }
+    }
+
+    document.body.removeChild(el);
+
+    return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
+}

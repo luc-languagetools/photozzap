@@ -198,7 +198,7 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
    
 }
 
-function IntroSidebarCtrl($scope, $controller, conferenceService) {
+function IntroSidebarCtrl($scope, $controller, $timeout, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
 	$scope.shown = false;
 
@@ -208,6 +208,7 @@ function IntroSidebarCtrl($scope, $controller, conferenceService) {
 	
     $scope.$on('show_intro_event', function(){ 
         $scope.shown = true;
+		$timeout($scope.dont_show, 4000);
         $scope.$apply();
     });	
 	
@@ -357,4 +358,4 @@ function ImageCtrl($scope, conferenceService) {
 ImageCtrl.$inject = ['$scope', 'conferenceService'];
 SidebarCtrl.$inject = ['$scope', 'conferenceService'];
 TopSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
-IntroSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
+IntroSidebarCtrl.$inject = ['$scope', '$controller', '$timeout', 'conferenceService'];
