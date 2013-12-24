@@ -208,7 +208,7 @@ function IntroSidebarCtrl($scope, $controller, $timeout, conferenceService) {
 	
     $scope.$on('show_intro_event', function(){ 
         $scope.shown = true;
-		$timeout($scope.dont_show, 4000);
+		$timeout($scope.dont_show, 5000);
         $scope.$apply();
     });	
 	

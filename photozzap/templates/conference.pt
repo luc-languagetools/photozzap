@@ -343,7 +343,7 @@ function ready_for_connection() {
     </div>
 	
 	<div ng-controller="IntroSidebarCtrl" ng-init="init('intro')">
-		<div id="intro-sidebar" class="action-sidebar intro-sidebar sidebar-transitions" ng-style="element_style()" ng-click="dont_show()" ng-show="shown">
+		<div id="intro-sidebar" class="action-sidebar intro-sidebar show-hide-fade-animation" ng-style="element_style()" ng-click="dont_show()" ng-show="shown">
 			<div id="intro-sidebar-header" class="action-sidebar-header">
 				<img src="${icon_files['photozzap_logo']}" />
 				<span class="header">Photozzap</span>

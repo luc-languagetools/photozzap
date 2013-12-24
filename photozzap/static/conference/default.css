@@ -436,6 +436,20 @@ a, a:hover {
 	margin: 5px;
 }
 
+.show-hide-fade-animation.ng-hide-add, 
+.show-hide-fade-animation.ng-hide-remove {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  /* remember to add this */
+  display:block!important;
+  opacity:1;
+}
+
+.show-hide-fade-animation.ng-hide {
+	opacity:0;
+}
+
 #image-list {
     margin: 10px;
 }
