@@ -429,6 +429,47 @@ a, a:hover {
     width: 15%;
 }
 
+/* intro sidebar */
+
+#intro-sidebar {
+	position: absolute;
+	width: 60%;
+	left: 20%;
+	top: 20%;
+	color: #FFFFFF;
+	font-size: 22px;
+}
+
+#intro-sidebar img {
+	width: 20%;
+}
+
+#intro-sidebar-content {
+	text-align: center;
+}
+
+#intro-sidebar-content img {
+	width: 50%;
+}	
+
+#intro-sidebar-content p {
+	margin: 5px;
+}
+
+.show-hide-fade-animation.ng-hide-add, 
+.show-hide-fade-animation.ng-hide-remove {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  /* remember to add this */
+  display:block!important;
+  opacity:1;
+}
+
+.show-hide-fade-animation.ng-hide {
+	opacity:0;
+}
+
 #image-list {
     margin: 10px;
 }
@@ -483,6 +524,14 @@ a, a:hover {
     border-top-right-radius:0px;    
 }
 
+.resize-controls {
+	text-align: left;
+	margin-left: 30px;
+}
+
+.resize-controls label {
+	font-size: 22px;
+}
 
 body {
 	background: #000000;
@@ -677,32 +726,6 @@ body {
         top: -28px;
     }
 
-	/* intro sidebar */
-	
-	#intro-sidebar {
-		position: absolute;
-		width: 60%;
-		left: 20%;
-		top: 20%;
-		color: #FFFFFF;
-		font-size: 22px;
-	}
-
-	#intro-sidebar img {
-		width: 20%;
-	}
-
-	#intro-sidebar-content {
-		text-align: center;
-	}
-	
-	#intro-sidebar-content img {
-		width: 50%;
-	}	
-	
-	#intro-sidebar-content p {
-		margin: 5px;
-	}
 
 }
 
