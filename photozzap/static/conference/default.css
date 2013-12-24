@@ -409,6 +409,33 @@ a, a:hover {
     width: 15%;
 }
 
+/* intro sidebar */
+
+#intro-sidebar {
+	position: absolute;
+	width: 60%;
+	left: 20%;
+	top: 20%;
+	color: #FFFFFF;
+	font-size: 22px;
+}
+
+#intro-sidebar img {
+	width: 20%;
+}
+
+#intro-sidebar-content {
+	text-align: center;
+}
+
+#intro-sidebar-content img {
+	width: 50%;
+}	
+
+#intro-sidebar-content p {
+	margin: 5px;
+}
+
 #image-list {
     margin: 10px;
 }

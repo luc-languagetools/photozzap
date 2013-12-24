@@ -91,12 +91,22 @@ function swipeStatus(event, phase, direction, distance)
 	
 	else if ( phase == "cancel")
 	{
+		if( ConferenceUi.swipe_transition_in_progress ) {
+			// don't drag picture, wait until current transition is done
+			return;
+		}	
+	
 		log("swipeStatus cancel");
 		cancel_swipe_transition();
 	}
 	
 	else if ( phase =="end" )
 	{
+		if( ConferenceUi.swipe_transition_in_progress ) {
+			// don't drag picture, wait until current transition is done
+			return;
+		}	
+	
 		log("swipeStatus end");
 		if (direction == "left") {
 			if( Conference.image_data.next_image != undefined ) {
