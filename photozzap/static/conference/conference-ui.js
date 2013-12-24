@@ -796,10 +796,38 @@ $(document).bind('resize_image', function(ev) {
 function show_upload_modal() {
     $.get('/upload_data', function(upload_data) {
         log("received upload data: " + upload_data);
-        $("input.cloudinary-fileupload[type=file]").fileupload({formData: upload_data,
-                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload'});
+		cloudinary_configure_resize(upload_data);
         $('#upload-modal').modal('show');
     });
+}
+
+function cloudinary_configure(resize) {
+    $.get('/upload_data', function(upload_data) {
+        log("received upload data: " + upload_data);
+		if (resize) {
+			cloudinary_configure_resize(upload_data);
+		} else {
+			cloudinary_configure_no_resize(upload_data);
+		}
+    });	
+}
+
+function cloudinary_configure_resize(upload_data) {
+	log("configuring cloudinary for resize on upload");
+	$("input.cloudinary-fileupload[type=file]").fileupload({formData: upload_data,
+															url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
+															disableImageResize: false,
+															imageMaxWidth: 1024,
+															imageMaxHeight: 1024,
+															});
+}
+
+function cloudinary_configure_no_resize(upload_data) {
+	log("configuring cloudinary for no resize on upload");
+	$("input.cloudinary-fileupload[type=file]").fileupload({formData: upload_data,
+															url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
+															disableImageResize: true,
+															});
 }
 
 function hide_upload_modal() {

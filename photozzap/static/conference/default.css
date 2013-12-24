@@ -504,6 +504,14 @@ a, a:hover {
     border-top-right-radius:0px;    
 }
 
+.resize-controls {
+	text-align: left;
+	margin-left: 30px;
+}
+
+.resize-controls label {
+	font-size: 22px;
+}
 
 body {
 	background: #000000;

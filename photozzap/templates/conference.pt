@@ -186,6 +186,18 @@ function ready_for_connection() {
                 Or
                 <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
             </div>
+			<div class="resize-controls">
+				<form>
+				<label class="radio">
+				<input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
+				Resize to 1024x768 (faster upload, lower quality)
+				</label>
+				<label class="radio">
+				<input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
+				Upload full image (slower upload, faster quality)
+				</label>
+				</form>
+			</div>
         </div>
     </div>
 </div>
