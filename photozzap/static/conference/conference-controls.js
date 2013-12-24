@@ -69,6 +69,12 @@ function swipeStatus(event, phase, direction, distance)
 	//If we are moving before swipe, and we are going Lor R in X mode, or U or D in Y mode then drag.
 	if( phase=="move" && (direction=="left" || direction=="right") )
 	{
+		if( ConferenceUi.swipe_transition_in_progress ) {
+			// don't drag picture, wait until current transition is done
+			return;
+		}
+	
+		log("swipeStatus move " + direction);
 		$("#displayed_image").css("opacity", 0.0);
 		$("#swipe_images").css("opacity", 1.0);
 		var translateX = getDefaultTranslateX();
@@ -85,11 +91,13 @@ function swipeStatus(event, phase, direction, distance)
 	
 	else if ( phase == "cancel")
 	{
+		log("swipeStatus cancel");
 		cancel_swipe_transition();
 	}
 	
 	else if ( phase =="end" )
 	{
+		log("swipeStatus end");
 		if (direction == "left") {
 			if( Conference.image_data.next_image != undefined ) {
 				selectImageAndTransition(Conference.image_data.next_image, true);
