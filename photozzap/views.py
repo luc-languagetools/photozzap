@@ -51,9 +51,11 @@ def new_conference(request):
 
 @view_config(route_name='home', renderer='templates/home.pt')
 def home(request):
-    return {'new_conf_url': request.route_url('new_conference')}
+    settings = request.registry.settings
+    tracking_id = settings['analytics_tracking_id'] 
+    return {'new_conf_url': request.route_url('new_conference'),
+            'tracking_id': tracking_id}
     
-
 def sign_request(params, api_key, api_secret):
     params = dict( [ (k,v) for (k,v) in params.items() if v] )
     params["signature"] = api_sign_request(params, api_secret)
@@ -106,6 +108,7 @@ def conference(request):
     bosh_service = settings['bosh_service']
     assets_on_cdn = settings['assets_on_cdn']
     cdn_server = settings['cdn_server']
+    tracking_id = settings['analytics_tracking_id']
         
     
     conf_key = request.matchdict['conf_key']
@@ -135,7 +138,8 @@ def conference(request):
               'conference': conf.name + '@' + jabber_conf_server,
               'javascript_files': javascript_files_abs,
               'css_files': css_files_abs,
-              'icon_files': icon_files_abs}
+              'icon_files': icon_files_abs,
+              'tracking_id': tracking_id}
     while user_created == False:
         try:
             with transaction.manager:
