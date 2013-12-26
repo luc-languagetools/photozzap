@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
+<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
 <script src="${request.static_url('photozzap:static/jquery/jquery-1.10.2.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
 
@@ -25,7 +26,7 @@
 
       /* Main marketing message and sign up button */
       .jumbotron {
-        margin: 60px 0;
+        margin-top: 5px;
         text-align: center;
       }
       .jumbotron h1 {
@@ -44,6 +45,14 @@
       .marketing p + h4 {
         margin-top: 28px;
       }
+      .container-narrow hr {
+        margin-top: 3px;
+        margin-bottom: 3px;
+      }
+      .likebox {
+        text-align: center;
+      }
+      
     </style>
     
     <script>
@@ -70,8 +79,16 @@
   </head>
 
   <body>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=230215589885";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>  
 
-    <div class="container-narrow">
+    <div class="container">
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
@@ -81,14 +98,20 @@
       </div>
 
       <hr>
-
-      <div class="jumbotron">
-        <h1>Real-time Photo Sharing</h1>
-        <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
-        <a id='new-conf-button' class="btn btn-large btn-success" href="#">Start Conference</a>
-        <div class="alert alert-block" style="margin-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
-            <strong>Note:</strong> your conference will stay available for 7 days, after that it will be deleted.
+      <div class="row-fluid">
+        <div class="span8">
+          <div class="jumbotron">
+            <h1>Real-time<br/>Photo Sharing</h1>
+            <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
+            <a id='new-conf-button' class="btn btn-large btn-success" href="#">Start Conference</a>
+            <div class="alert alert-block" style="margin-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
+                <strong>Note:</strong> your conference will stay available for 7 days, after that it will be deleted.
+            </div>
+          </div>
         </div>
+        <div class="span4 likebox">
+            <div class="fb-like-box" data-href="http://www.facebook.com/photozzap" data-width="350" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+        </div>              
       </div>
 
       <hr>
