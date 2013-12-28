@@ -15,6 +15,7 @@ for each platform
 6. use prev/next buttons
 7. for touch platforms, swipe left/right
 8. resize/re-orient and make sure image resizes properly as well as UI
+   make sure expanded sidebars resize properly when open
 9. try chat on image1, then on image 2. Make sure switching between two images adjusts chat contents
 10. try history sidebar, make sure it allows switching between images
 11. try users sidebar, make sure it allows following a user
