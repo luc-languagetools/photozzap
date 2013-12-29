@@ -706,9 +706,6 @@ function resize_image_area() {
     $("#control_event_layer").css({width: winWidth + 'px',
                                    height: winHeight + 'px'});
                                    
-    $("body").css({width: winWidth + 'px',
-                   height: winHeight + 'px'});     
-    
     if (Conference.currently_viewing == undefined ) {
         return;
     }

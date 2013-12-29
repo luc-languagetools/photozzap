@@ -191,7 +191,7 @@ function ready_for_connection() {
     <div class="modal-body">
         <div id="upload-controls" style="text-align: center;">
             <div id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
-                <h3 style="margin-top: 50px;">Drag And Drop photos into this area</h3>
+                <h3 class="upload-header">Drag And Drop photos into this area</h3>
                 Or
                 <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
             </div>

@@ -186,5 +186,11 @@
         top: -28px;
     }
 
+    .upload-header {
+        margin-top: 10px;
+        font-size: 20px;
+    }
+    
+    
 
 }

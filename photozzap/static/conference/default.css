@@ -513,7 +513,13 @@ a, a:hover {
 	font-size: 22px;
 }
 
+.upload-header {
+    margin-top: 50px;
+}
+
 body {
 	background: #000000;
     font-family: 'Pathway Gothic One', sans-serif;
+    height: 100%;
+    width: 100%;
 }
