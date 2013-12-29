@@ -1,0 +1,23 @@
+testing plan:
+------------
+for each platform
+ - Firefox/Windows
+ - Chrome/Windows
+ - Chrome/Android
+ - Safari/iPhone
+ - Safari/iPad
+ 
+1. go to homepage
+2. start new conference
+3. upload photo, default resolution
+4. upload photo, full resolution
+5. upload 3 photos in a bunch
+6. use prev/next buttons
+7. for touch platforms, swipe left/right
+8. resize/re-orient and make sure image resizes properly as well as UI
+   make sure expanded sidebars resize properly when open
+9. try chat on image1, then on image 2. Make sure switching between two images adjusts chat contents
+10. try history sidebar, make sure it allows switching between images
+11. try users sidebar, make sure it allows following a user
+12. make sure unfollowing users works.
+13. upload portrait picture on ipad, make sure image is diplayed properly on both orientations on ipad and PC.
