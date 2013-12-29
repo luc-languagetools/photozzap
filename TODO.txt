@@ -9,12 +9,9 @@ improvements
  - make sure all uploaded photos for a conference are in the same directory
  - prevent listing of conferences on ejabberd
  - use nginx for reverse proxying of BOSH channel
-- add carousel to move from one photo to another 
- - swipe action on mobile
 - when using angular and ng-src, we see a new get request when display new images
 - show loading indicator when processing messages
 - pushover.net notifications (will require a custom xmpp bot)
-- create one static page per conference, with all minified css/js and assets also static
 - create load testing python bot
 - report client latency to google analytics 
   - jabber message latency
@@ -22,11 +19,6 @@ improvements
   - other ajax queries time
 - show when user is away using Page Visibility API
  - find a way to do notifications when page not visible
-- mobile layouts
- - make sure that after showing / hiding the virtual keyboard on iOS, we are never stuck with a bad layout
- - fix iPad layouts (especially around keyboard)
-  - in portrait mode, top toolbar is cramped
-  - in portrait, chat window is too narrow
 - handle disconnection better
  - reconnect and request missing history
 
@@ -39,3 +31,8 @@ bugs
 - improve upload UI, right now too easy to drag a photo into the browser window
 - when chatting, don't show chat notifications when chat window is open if same image
 
+paid version features
+=====================
+- auto downloading of images in a local directory
+- desktop/mobile notifications
+- better browsing of photos
