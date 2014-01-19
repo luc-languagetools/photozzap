@@ -171,12 +171,12 @@ a, a:hover {
     width: 55%;
 }
 
-.top-sidebar-icon .toolbar .tool {
+.action-sidebar-header .toolbar .tool {
 	display: inline-block;
 	width: 22%;
 }
 
-.top-sidebar-icon .toolbar .tool-large {
+.action-sidebar-header .toolbar .tool-large {
 	display: inline-block;
 	width: 40%;
 }
@@ -339,6 +339,19 @@ a, a:hover {
 
 .top-sidebar-icon-hidden {
     top: -50%;
+}
+
+.bottom-sidebar-icon {
+    position: fixed;
+    bottom: 0%;
+    left: 30%;
+    width: 40%;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;            
+}
+
+.bottom-sidebar-icon-hidden {
+    bottom: -50%;
 }
 
 .users-sidebar-icon {
