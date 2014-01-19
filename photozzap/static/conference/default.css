@@ -171,6 +171,11 @@ a, a:hover {
     width: 55%;
 }
 
+.bottom-sidebar-icon img {
+    height: auto;
+    width: 55%;
+}
+
 .action-sidebar-header .toolbar .tool {
 	display: inline-block;
 	width: 22%;
@@ -344,8 +349,8 @@ a, a:hover {
 .bottom-sidebar-icon {
     position: fixed;
     bottom: 0%;
-    left: 30%;
-    width: 40%;
+    left: 32.5%;
+    width: 35%;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;            
 }

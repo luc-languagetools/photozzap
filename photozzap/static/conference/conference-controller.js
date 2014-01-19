@@ -202,57 +202,53 @@ function IntroSidebarCtrl($scope, $controller, $timeout, conferenceService) {
 // contains multiple sidebars which can be expanded / collapsed
 function ToolSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    $scope.expanded_sidebar = {};
     
-    $scope.expand_sidebar = function(name) {
-        $scope.expanded_sidebar[name] = true;
-    };
-    
-    $scope.collapse_sidebar = function(name) {
-        $scope.expanded_sidebar[name] = false;
-    };
-    
-    $scope.sidebar_class_state = function(name) {
-        if ($scope.expanded_sidebar[name] == undefined ||
-            $scope.expanded_sidebar[name] == false) {
-            return "collapsed";
-        }
-        return "expanded";
-    };
- 
 }
 
 function SidebarCtrl($scope, conferenceService) {
     $scope.image = undefined;
     $scope.size = undefined;
-    $scope.expanded = false;
     $scope.other_sidebars_expanded = false;
     $scope.interface_visible = true;
     $scope.image_data = conferenceService.image_data;    
+    $scope.expanded_sidebar = {};
     
     $scope.init = function(name) {
         $scope.name = name;
     };
     
-    $scope.expand = function() {
-        $(document).trigger('close_all_sidebars_internal');
-        $scope.expanded = true;
-        $(document).trigger('report_sidebar_status', {name: $scope.name, expanded: $scope.expanded});
-    };
-    
-    $scope.collapse = function() {
-        log("SidebarCtrl.collapse");
-        $scope.expanded = false;
-        $(document).trigger('report_sidebar_status', {name: $scope.name, expanded: $scope.expanded});
-    };
-    
-    $scope.class_state = function() {
-        if ( $scope.interface_visible == false ) {
-            return "collapsed";
-        } else if ( $scope.expanded == true) {
-            return "expanded";
+    $scope.toggle_sidebar = function(name) {
+        if ($scope.is_expanded(name)) {
+            $scope.collapse_sidebar(name);
+        } else {
+            $scope.expand_sidebar(name);
         }
-        return "collapsed";
+    };
+    
+    $scope.expand_sidebar = function(name) {
+        $(document).trigger('close_all_sidebars_internal');
+        $scope.expanded_sidebar[name] = true;
+        $(document).trigger('report_sidebar_status', {name: name, expanded: true});
+    };
+    
+    $scope.collapse_sidebar = function(name) {
+        $scope.expanded_sidebar[name] = false;
+        $(document).trigger('report_sidebar_status', {name: name, expanded: false});
+    };
+    
+    $scope.is_expanded = function(name) {
+        if ($scope.expanded_sidebar[name] == undefined ||
+            $scope.expanded_sidebar[name] == false) {
+            return false;
+        }
+        return true;    
+    };
+    
+    $scope.sidebar_class_state = function(name) {
+        if (! $scope.is_expanded(name)) {
+            return "collapsed";
+        }
+        return "expanded";
     };
     
     $scope.icon_class_state = function() {
@@ -280,14 +276,20 @@ function SidebarCtrl($scope, conferenceService) {
                 };        
     }
     
+    $scope.collapse_all_sidebars = function() {
+        for (var sidebar in $scope.expanded_sidebar) {
+            $scope.collapse_sidebar(sidebar);
+        }
+    }
+    
     $scope.$on('close_sidebar_internal',  function() {
         // this is coming from angular, and doesn't need an $apply
-        $scope.expanded = false;
+        $scope.collapse_all_sidebars();
     });
     
     $scope.$on('close_sidebar',  function() {
         // this is coming from outside angular and does need an $apply
-        $scope.expanded = false;
+        $scope.collapse_all_sidebars();
         $scope.$apply();
     });
 
@@ -302,10 +304,8 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.$on('sidebar_status_update', function() {
         var result = false;        
         for (var name in conferenceService.sidebars_open_map) {
-            if (name != $scope.name) {
-                if(conferenceService.sidebars_open_map[name] == true) {
-                    result = true;
-                }
+            if(conferenceService.sidebars_open_map[name] == true) {
+                result = true;
             }
         }
         $scope.other_sidebars_expanded = result;        

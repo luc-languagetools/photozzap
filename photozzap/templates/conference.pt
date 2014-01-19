@@ -223,7 +223,7 @@ function ready_for_connection() {
         <div id="top-sidebar-icon" class="action-sidebar top-sidebar-icon top-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <div class="toolbar">
-                    <div class="tool actionable" ng-click="expand()">
+                    <div class="tool actionable" ng-click="sidebar_expand('gallery')">
                         <img src="${icon_files['gallery_medium_white']}" />
                         <br/>
                         <span class="header">Photos</span>
@@ -267,7 +267,7 @@ function ready_for_connection() {
             </div>
         </div>
 
-        <div id="gallery-sidebar" class="action-sidebar gallery-sidebar gallery-sidebar-{{class_state()}} sidebar-transitions action-sidebar-active"  ng-style="element_style()">
+        <div id="gallery-sidebar" class="action-sidebar gallery-sidebar gallery-sidebar-{{sidebar_class_state('history')}} sidebar-transitions action-sidebar-active"  ng-style="element_style()">
             <div id="gallery-sidebar-header" class="action-sidebar-header">
                 <img class="actionable" ng-click="collapse()" src="${icon_files['slide_up_white']}" />
                 <img src="${icon_files['gallery_medium_white']}" />
@@ -297,21 +297,21 @@ function ready_for_connection() {
         <div id="bottom-sidebar-icon" class="action-sidebar bottom-sidebar-icon bottom-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
             <div class="action-sidebar-header action-sidebar-header-centered">
                 <div class="toolbar">
-                    <div class="tool actionable" ng-click="expand_sidebar('history')">
-                        <img src="${icon_files['clock_medium_white']}" />
-                        <br/>
-                        <span class="header">History</span>
-                    </div>    
-                    <div class="tool actionable" ng-click="expand_sidebar('users')">
+                    <div class="tool actionable" ng-click="toggle_sidebar('users')">
                         <img src="${icon_files['users_medium_white']}" />
                         <br/>
                         <span class="header">Users</span>
                     </div>    
-                    <div class="tool actionable" ng-click="expand_sidebar('chat')">
+                    <div class="tool actionable" ng-click="toggle_sidebar('chat')">
                         <img src="${icon_files['chat_medium_white']}" />
                         <br/>
                         <span class="header">Chat</span>
                     </div>        
+                    <div class="tool actionable" ng-click="toggle_sidebar('history')">
+                        <img src="${icon_files['clock_medium_white']}" />
+                        <br/>
+                        <span class="header">History</span>
+                    </div>                        
                 </div>
 
             </div>
