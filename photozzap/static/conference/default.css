@@ -176,6 +176,11 @@ a, a:hover {
     width: 55%;
 }
 
+.prev-sidebar-icon img, .next-sidebar-icon img {
+    height: 70px;
+    width: auto;
+}
+
 .action-sidebar-header .toolbar .tool {
 	display: inline-block;
 	width: 22%;
@@ -299,19 +304,6 @@ a, a:hover {
     width: 6%;
 }
 
-.chat-sidebar-icon {
-    position: fixed;
-    bottom: 0%;
-    left: 42%;
-    width: 15%;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;            
-}
-
-.chat-sidebar-icon-hidden {
-    bottom: -20%;
-}
-
 .chat-sidebar {
     position: absolute;
     left: 25%;
@@ -359,17 +351,33 @@ a, a:hover {
     bottom: -50%;
 }
 
-.users-sidebar-icon {
+.prev-sidebar-icon {
     position: fixed;
-    top: 42%;
+    top: 40%;
     left: 0%;
-    width: 15%;
+    width: 100px;
+    height: 120px;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
 
-.users-sidebar-icon-hidden {
+.prev-sidebar-icon-hidden {
     left: -20%;
+}
+
+.next-sidebar-icon {
+    position: fixed;
+    top: 40%;
+    right: 0%;
+    width: 100px;
+    height: 120px;    
+    
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.next-sidebar-icon-hidden {
+    right: -20%;
 }
 
 .users-sidebar {
@@ -389,19 +397,6 @@ a, a:hover {
     left: -31%;
 }
 
-.history-sidebar-icon {
-    position: fixed;
-    top: 42%;
-    right: 0%;
-    width: 15%;
-    
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-}
-
-.history-sidebar-icon-hidden {
-    right: -20%;
-}
 
 .history-sidebar {
     position: absolute;

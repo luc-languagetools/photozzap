@@ -148,12 +148,28 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
     
-    $scope.prev_enabled = function() {
-        return $scope.image_data.prev_image != undefined;
-    },
+}
+
+function NextSidebarCtrl($scope, $controller, conferenceService) {
+    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
     
     $scope.next_enabled = function() {
         return $scope.image_data.next_image != undefined;
+    }    
+    
+    $scope.next = function() {
+        if ( $scope.next_enabled() ) {
+            transition_next();
+            $scope.select_image( $scope.image_data.next_image.id );
+        }    
+    }    
+}
+
+function PrevSidebarCtrl($scope, $controller, conferenceService) {
+    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
+    
+    $scope.prev_enabled = function() {
+        return $scope.image_data.prev_image != undefined;
     }
     
     $scope.prev = function() {
@@ -161,26 +177,7 @@ function TopSidebarCtrl($scope, $controller, conferenceService) {
             transition_prev();
             $scope.select_image( $scope.image_data.prev_image.id );
         }
-    },
-    
-    $scope.next = function() {
-        if ( $scope.next_enabled() ) {
-            transition_next();
-            $scope.select_image( $scope.image_data.next_image.id );
-        }    
-    },
-    
-    $scope.select_image = function(image_id) {
-        log("selected image: " + image_id);
-        var image = Conference.images[image_id];
-        $(document).trigger('not_following_user');
-        $(document).trigger('show_current_image', false);
-        $(document).trigger('display_image_internal', image);
-        $scope.collapse();
-    };
-    
-
-   
+    }
 }
 
 function IntroSidebarCtrl($scope, $controller, $timeout, conferenceService) {
@@ -281,6 +278,15 @@ function SidebarCtrl($scope, conferenceService) {
             $scope.collapse_sidebar(sidebar);
         }
     }
+    
+    $scope.select_image = function(image_id) {
+        log("selected image: " + image_id);
+        var image = Conference.images[image_id];
+        $(document).trigger('not_following_user');
+        $(document).trigger('show_current_image', false);
+        $(document).trigger('display_image_internal', image);
+        $scope.collapse_all_sidebars();
+    };    
     
     $scope.$on('close_sidebar_internal',  function() {
         // this is coming from angular, and doesn't need an $apply

@@ -233,16 +233,6 @@ function ready_for_connection() {
                         <br/>
                         <span class="header">Upload</span>
                     </div>
-                    <div class="tool actionable actionable-enabled-{{prev_enabled()}}" ng-click="prev()">
-                        <img src="${icon_files['prev']}" />
-                        <br/>                            
-                        <span class="header">Prev</span>
-                    </div>        
-                    <div class="tool actionable actionable-enabled-{{next_enabled()}}" ng-click="next()">
-                        <img src="${icon_files['next']}" />
-                        <br/>                            
-                        <span class="header">Next</span>
-                    </div>                         
                 </div>
                 <div class="toolbar">
                     <div class="tool-large">
@@ -358,6 +348,34 @@ function ready_for_connection() {
             </div>    
         </div>        
     </div>    
+    
+    <div ng-controller="PrevSidebarCtrl" ng-init="init('prev')">
+        <div id="prev-sidebar-icon" class="action-sidebar prev-sidebar-icon prev-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
+            <div class="action-sidebar-header">
+                <div class="toolbar">
+                    <div class="actionable actionable-enabled-{{prev_enabled()}}" ng-click="prev()">
+                        <img src="${icon_files['prev']}" />
+                        <br/>                            
+                        <span class="header">Prev</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-controller="NextSidebarCtrl" ng-init="init('next')">
+        <div id="next-sidebar-icon" class="action-sidebar next-sidebar-icon next-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
+            <div class="action-sidebar-header">
+                <div class="toolbar">
+                    <div class="actionable actionable-enabled-{{next_enabled()}}" ng-click="next()">
+                        <img src="${icon_files['next']}" />
+                        <br/>                            
+                        <span class="header">Next</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div ng-controller="IntroSidebarCtrl" ng-init="init('intro')">
         <div id="intro-sidebar" class="action-sidebar intro-sidebar show-hide-fade-animation" ng-style="element_style()" ng-click="dont_show()" ng-show="shown">
