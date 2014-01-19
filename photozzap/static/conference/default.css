@@ -177,8 +177,8 @@ a, a:hover {
 }
 
 .prev-sidebar-icon img, .next-sidebar-icon img {
-    height: 70px;
-    width: auto;
+    height: auto;
+    width: 55%;
 }
 
 .action-sidebar-header .toolbar .tool {
@@ -355,13 +355,14 @@ a, a:hover {
     position: fixed;
     top: 40%;
     left: 0%;
-    width: 100px;
-    height: 120px;
+    width: 9%;
+    height: 0;
+    padding-bottom: 9%;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
 
-.prev-sidebar-icon-hidden {
+.prev-sidebar-icon-hidden, .prev-sidebar-icon-other-sidebars-expanded {
     left: -20%;
 }
 
@@ -369,14 +370,15 @@ a, a:hover {
     position: fixed;
     top: 40%;
     right: 0%;
-    width: 100px;
-    height: 120px;    
+    width: 9%;
+    height: 0;
+    padding-bottom: 9%;
     
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
 
-.next-sidebar-icon-hidden {
+.next-sidebar-icon-hidden, .next-sidebar-icon-other-sidebars-expanded {
     right: -20%;
 }
 
