@@ -369,12 +369,12 @@ $(document).bind('display_image', function(ev, image) {
     if( ! ConferenceControls.firstResizePerformed ) {
         resizeHandler();
         ConferenceControls.firstResizePerformed = true;
+        // disable menu
+        $(document).trigger('toggle_menu_visible');
         if (ConferenceControls.touchMode) {
             $(document).trigger('show_intro');
             hideToolbar();
         }
-        // disable menu
-        $(document).trigger('toggle_menu_visible');
     }
 });
 

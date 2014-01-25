@@ -11,7 +11,12 @@
         left: 5%;
         width: 90%;
     }
-	
+
+    .bottom-sidebar-icon {
+        left: 5%;
+        width: 90%;
+    }    
+    
 	#nickname-change-container {
 		display: none;
 	}
@@ -20,41 +25,22 @@
         top: -50%;
     }    
     
-    .chat-sidebar-icon {
-        left: 37%;
-        width: 25%;
-    }    
-    
-    .chat-sidebar-icon-other-sidebars-expanded, .chat-sidebar-icon-hidden {
-        bottom: -20%;
-    }
-    
-    .users-sidebar-icon {
-		top: auto;
-        width: 25%;
-		bottom: 0%;
-		left: 5%;
-		border-bottom-right-radius: 0px;
-		border-top-left-radius: 10px;
-    }    
-    
-    .users-sidebar-icon-other-sidebars-expanded, .users-sidebar-icon-hidden {
-		bottom: -20%;
-    }    
-    
-    .history-sidebar-icon {
-		top: auto;
-		bottom: 0%;
-        right: 5%;
-        width: 25%;
-		border-bottom-left-radius: 0px;
-		border-top-right-radius: 10px;
-    }    
-
-    .history-sidebar-icon-other-sidebars-expanded, .history-sidebar-icon-hidden {
-        bottom: -20%;
-    }        
    
+    .prev-sidebar-icon {
+        width: 20%;
+        padding-bottom: 20%;
+    }   
+
+    .next-sidebar-icon {
+        width: 20%;
+        padding-bottom: 20%;
+    }   
+    
+    .menu-sidebar-icon {
+        width: 20%;
+        padding-bottom: 20%;
+    }    
+    
     /* history sidebar */
     .history-sidebar {
         width: 50%;
