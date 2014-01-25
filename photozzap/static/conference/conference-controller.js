@@ -115,6 +115,10 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     }
     
     service.set_interface_visible_event = function(ev, value) {
+        if( service.menu_visible && value == false ) {
+            // ignore this update
+            return;
+        }
         service.show_interface = value;
         $rootScope.$broadcast('interface_visible_update');
     }

@@ -10,7 +10,6 @@ var ConferenceControls = {
     
     toolbarShown: false,
     disableToolbarTimeout: null,
-    mouseOverActionSidebar: false,
     touchMode: false,
     resizeToolbarsOnDisplay: false,
     firstResizePerformed: false,
@@ -39,11 +38,6 @@ function setupControlHandlers() {
     ConferenceControls.sidebarHandlers.chat = setupChatSidebar();
     ConferenceControls.sidebarHandlers.history = setupHistorySidebar();
 
-    if (! ConferenceControls.touchMode ) {
-        $(".action-sidebar").mouseenter(mouseEnterControlElement);
-        $(".action-sidebar").mouseleave(mouseLeaveControlElement);
-    }
-    
     // need to handle "unfocus" from the text input as the ipad doesn't resize well
     // after typing a comment
     setupTextInputUnfocusEvent();
@@ -148,19 +142,6 @@ function setupTextInputUnfocusEvent() {
             }, 800);
     })
 
-}
-
-function mouseEnterControlElement() {
-    ConferenceControls.mouseOverActionSidebar = true;
-    // is there a timer to hide toolbar ? if so, cancel it
-    if( ConferenceControls.disableToolbarTimeout != null ) {
-        // disable previous timeout
-        clearTimeout(ConferenceControls.disableToolbarTimeout);
-    }
-}
-
-function mouseLeaveControlElement() {
-    ConferenceControls.mouseOverActionSidebar = false;
 }
 
 function setupChatSidebar() {
@@ -320,30 +301,12 @@ function mouseMoveHandler() {
             // disable previous timeout
             clearTimeout(ConferenceControls.disableToolbarTimeout);
         }           
-        
-        // only setup timer if we're not over action sidebar
-        if ( ! ConferenceControls.mouseOverActionSidebar ) {
-            ConferenceControls.disableToolbarTimeout = setTimeout(function() {
-                hideToolbar();
-                ConferenceControls.disableToolbarTimeout = null;
-            }, 1000);
-        }
-}
 
-function actionSidebarMouseMoveHandler() {
-        // log("actionSidebarMouseMoveHandler");
+        ConferenceControls.disableToolbarTimeout = setTimeout(function() {
+            hideToolbar();
+            ConferenceControls.disableToolbarTimeout = null;
+        }, 2000);
 
-        // if toolbar is not shown, show it and start timeout
-        // if toolbar is shown, update timeout 
-    
-        if ( ! ConferenceControls.toolbarShown ) {
-            showToolbar();
-        }
-        
-        if( ConferenceControls.disableToolbarTimeout != null ) {
-            // disable previous timeout
-            clearTimeout(ConferenceControls.disableToolbarTimeout);
-        }           
 }
 
 function clickMouseEventLayerInTouchMode() {
@@ -372,7 +335,6 @@ function setupMouseMoveCallback() {
         $("#mouse_event_layer").on("click", clickMouseEventLayerInTouchMode);
     } else {
         $("#mouse_event_layer").mousemove(mouseMoveHandler);
-        $(".action-sidebar").mousemove(actionSidebarMouseMoveHandler);
         $("#mouse_event_layer").on("click", function() {
             // close sidebars
             closeAllSidebars();
@@ -410,7 +372,9 @@ $(document).bind('display_image', function(ev, image) {
         if (ConferenceControls.touchMode) {
             $(document).trigger('show_intro');
             hideToolbar();
-        }        
+        }
+        // disable menu
+        $(document).trigger('toggle_menu_visible');
     }
 });
 
