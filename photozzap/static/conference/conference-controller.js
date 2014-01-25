@@ -9,6 +9,8 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     
     service.show_interface = true;
     
+    service.menu_visible = true;
+    
     service.register_image_change = function(image) {
         service.image_data.current_image = image;
         service.recalc_image_data();
@@ -141,6 +143,11 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('show_intro_event');
     });
     
+    $(document).bind('toggle_menu_visible', function(ev) {
+        service.menu_visible = ! service.menu_visible;
+        $rootScope.$broadcast('menu_visible_event');
+    });
+    
     return service;
 });
 
@@ -148,6 +155,15 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
     
+    
+    $scope.icon_class_state = function() {
+        if (! $scope.interface_visible || ! $scope.menu_visible) {
+            return "hidden";
+        } else if ($scope.other_sidebars_expanded) {
+            return "other-sidebars-expanded";
+        }
+        return "visible";
+    };        
 }
 
 function NextSidebarCtrl($scope, $controller, conferenceService) {
@@ -200,6 +216,23 @@ function IntroSidebarCtrl($scope, $controller, $timeout, conferenceService) {
 function ToolSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
     
+    $scope.icon_class_state = function() {
+        if (! $scope.interface_visible || ! $scope.menu_visible) {
+            return "hidden";
+        } else if ($scope.other_sidebars_expanded) {
+            return "other-sidebars-expanded";
+        }
+        return "visible";
+    };    
+    
+}
+
+function MenuSidebarCtrl($scope, $controller, conferenceService) {
+    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
+    
+    $scope.toggle = function() {
+        $(document).trigger('toggle_menu_visible');
+    };
 }
 
 function SidebarCtrl($scope, conferenceService) {
@@ -207,6 +240,7 @@ function SidebarCtrl($scope, conferenceService) {
     $scope.size = undefined;
     $scope.other_sidebars_expanded = false;
     $scope.interface_visible = true;
+    $scope.menu_visible = true;
     $scope.image_data = conferenceService.image_data;    
     $scope.expanded_sidebar = {};
     
@@ -323,6 +357,9 @@ function SidebarCtrl($scope, conferenceService) {
         $scope.$apply();
     });
     
+    $scope.$on('menu_visible_event', function() {
+        $scope.menu_visible = conferenceService.menu_visible;
+    });
     
     $scope.$on('image_list_update_event', function() {
         $scope.image_data = conferenceService.image_data;
@@ -382,4 +419,5 @@ ImageCtrl.$inject = ['$scope', 'conferenceService'];
 SidebarCtrl.$inject = ['$scope', 'conferenceService'];
 TopSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
 ToolSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
+MenuSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
 IntroSidebarCtrl.$inject = ['$scope', '$controller', '$timeout', 'conferenceService'];

@@ -376,6 +376,20 @@ function ready_for_connection() {
             </div>
         </div>
     </div>
+
+    <div ng-controller="MenuSidebarCtrl" ng-init="init('menu')">
+        <div id="menu-sidebar-icon" class="action-sidebar menu-sidebar-icon menu-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
+            <div class="action-sidebar-header">
+                <div class="toolbar">
+                    <div class="actionable" ng-click="toggle()">
+                        <img src="${icon_files['menu']}" />
+                        <br/>                            
+                        <span class="header">Menu</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div ng-controller="IntroSidebarCtrl" ng-init="init('intro')">
         <div id="intro-sidebar" class="action-sidebar intro-sidebar show-hide-fade-animation" ng-style="element_style()" ng-click="dont_show()" ng-show="shown">

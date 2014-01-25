@@ -14,8 +14,8 @@ var ConferenceControls = {
     touchMode: false,
     resizeToolbarsOnDisplay: false,
     firstResizePerformed: false,
-	
-	useTranslate3d: has3d()
+    
+    useTranslate3d: has3d()
 };
 
 
@@ -23,7 +23,7 @@ function setupControlHandlers() {
     ConferenceControls.touchMode = Modernizr.touch;
     // for debugging only
     // ConferenceControls.touchMode = true;
-	
+    
     setupMouseMoveCallback();
     
     //resizeHandler();
@@ -43,110 +43,110 @@ function setupControlHandlers() {
         $(".action-sidebar").mouseenter(mouseEnterControlElement);
         $(".action-sidebar").mouseleave(mouseLeaveControlElement);
     }
-	
-	// need to handle "unfocus" from the text input as the ipad doesn't resize well
-	// after typing a comment
-	setupTextInputUnfocusEvent();
     
-	// listener for swipe events
-	if( ConferenceControls.touchMode ) {
-		var swipeOptions=
-		{
-			triggerOnTouchEnd : true,        
-			swipeStatus : swipeStatus,
-			tap: clickMouseEventLayerInTouchMode,
-			threshold:75,
-            cancelThreshold:10			
-		};
-	 
-		$("#mouse_event_layer").swipe( swipeOptions );
-	}
-	
+    // need to handle "unfocus" from the text input as the ipad doesn't resize well
+    // after typing a comment
+    setupTextInputUnfocusEvent();
+    
+    // listener for swipe events
+    if( ConferenceControls.touchMode ) {
+        var swipeOptions=
+        {
+            triggerOnTouchEnd : true,        
+            swipeStatus : swipeStatus,
+            tap: clickMouseEventLayerInTouchMode,
+            threshold:75,
+            cancelThreshold:10            
+        };
+     
+        $("#mouse_event_layer").swipe( swipeOptions );
+    }
+    
 }
 
 function swipeStatus(event, phase, direction, distance)
 {
-	//If we are moving before swipe, and we are going Lor R in X mode, or U or D in Y mode then drag.
-	if( phase=="move" && (direction=="left" || direction=="right") )
-	{
-		if( ConferenceUi.swipe_transition_in_progress ) {
-			// don't drag picture, wait until current transition is done
-			return;
-		}
-	
-		log("swipeStatus move " + direction);
-		$("#displayed_image").css("opacity", 0.0);
-		$("#swipe_images").css("opacity", 1.0);
-		var translateX = getDefaultTranslateX();
-		if (direction == "left") {
-			ConferenceUi.swipe_already_translated = -distance;
-			translateX -= distance;
-		} else if (direction == "right") {
-			ConferenceUi.swipe_already_translated = distance;
-			translateX += distance;
-		}
-		performTranslateX(translateX);
-			
-	}
-	
-	else if ( phase == "cancel")
-	{
-		if( ConferenceUi.swipe_transition_in_progress ) {
-			// don't drag picture, wait until current transition is done
-			return;
-		}	
-	
-		log("swipeStatus cancel");
-		cancel_swipe_transition();
-	}
-	
-	else if ( phase =="end" )
-	{
-		if( ConferenceUi.swipe_transition_in_progress ) {
-			// don't drag picture, wait until current transition is done
-			return;
-		}	
-	
-		log("swipeStatus end");
-		if (direction == "left") {
-			if( Conference.image_data.next_image != undefined ) {
-				selectImageAndTransition(Conference.image_data.next_image, true);
-			} else {
-				cancel_swipe_transition();
-			}
-		} else if (direction == "right") {
-			if ( Conference.image_data.prev_image != undefined) {
-				selectImageAndTransition(Conference.image_data.prev_image, false);
-			} else {
-				cancel_swipe_transition();
-			}
-		}
-	}
+    //If we are moving before swipe, and we are going Lor R in X mode, or U or D in Y mode then drag.
+    if( phase=="move" && (direction=="left" || direction=="right") )
+    {
+        if( ConferenceUi.swipe_transition_in_progress ) {
+            // don't drag picture, wait until current transition is done
+            return;
+        }
+    
+        log("swipeStatus move " + direction);
+        $("#displayed_image").css("opacity", 0.0);
+        $("#swipe_images").css("opacity", 1.0);
+        var translateX = getDefaultTranslateX();
+        if (direction == "left") {
+            ConferenceUi.swipe_already_translated = -distance;
+            translateX -= distance;
+        } else if (direction == "right") {
+            ConferenceUi.swipe_already_translated = distance;
+            translateX += distance;
+        }
+        performTranslateX(translateX);
+            
+    }
+    
+    else if ( phase == "cancel")
+    {
+        if( ConferenceUi.swipe_transition_in_progress ) {
+            // don't drag picture, wait until current transition is done
+            return;
+        }    
+    
+        log("swipeStatus cancel");
+        cancel_swipe_transition();
+    }
+    
+    else if ( phase =="end" )
+    {
+        if( ConferenceUi.swipe_transition_in_progress ) {
+            // don't drag picture, wait until current transition is done
+            return;
+        }    
+    
+        log("swipeStatus end");
+        if (direction == "left") {
+            if( Conference.image_data.next_image != undefined ) {
+                selectImageAndTransition(Conference.image_data.next_image, true);
+            } else {
+                cancel_swipe_transition();
+            }
+        } else if (direction == "right") {
+            if ( Conference.image_data.prev_image != undefined) {
+                selectImageAndTransition(Conference.image_data.prev_image, false);
+            } else {
+                cancel_swipe_transition();
+            }
+        }
+    }
 }
 
 function selectImageAndTransition(image, is_next) {
-	$("#displayed_image").css("opacity", 1.0);
-	if (image != undefined) {
-		if( is_next ) {
-			transition_next();
-		} else {
-			transition_prev();
-		}
-		$(document).trigger('not_following_user');
-		$(document).trigger('show_current_image', false);
-		$(document).trigger('display_image', image);
-	}
+    $("#displayed_image").css("opacity", 1.0);
+    if (image != undefined) {
+        if( is_next ) {
+            transition_next();
+        } else {
+            transition_prev();
+        }
+        $(document).trigger('not_following_user');
+        $(document).trigger('show_current_image', false);
+        $(document).trigger('display_image', image);
+    }
 }
 
 function setupTextInputUnfocusEvent() {
 
-	$("#comment-input").on('blur', function(ev) {
-		// resize in 500ms
-		setTimeout(function() {
-				window.scrollTo(0, 1);
-				resizeHandler();
-			}, 800);
-	})
+    $("#comment-input").on('blur', function(ev) {
+        // resize in 500ms
+        setTimeout(function() {
+                window.scrollTo(0, 1);
+                resizeHandler();
+            }, 800);
+    })
 
 }
 
@@ -347,24 +347,24 @@ function actionSidebarMouseMoveHandler() {
 }
 
 function clickMouseEventLayerInTouchMode() {
-	// if toolbar is not shown, show toolbar
-	// if toolbar is shown,
-	//   if any sidebars expanded, close them
-	//   if no sidebars expanded, hide toolbar
+    // if toolbar is not shown, show toolbar
+    // if toolbar is shown,
+    //   if any sidebars expanded, close them
+    //   if no sidebars expanded, hide toolbar
 
-	if ( ! ConferenceControls.toolbarShown ) {
-		log("no sidebars open, and toolbar not shown, show toolbar");
-		showToolbar();
-	} else {
-		var open_sidebars = $(".action-sidebar-expanded");
-		if (open_sidebars.length > 0) {                
-			log("one sidebar open, close all sidebars");
-			closeAllSidebars();                
-		} else {
-			log("no sidebars open, and toolbar shown, hide toolbar");
-			hideToolbar();
-		}
-	}
+    if ( ! ConferenceControls.toolbarShown ) {
+        log("no sidebars open, and toolbar not shown, show toolbar");
+        showToolbar();
+    } else {
+        var open_sidebars = $(".action-sidebar-expanded");
+        if (open_sidebars.length > 0) {                
+            log("one sidebar open, close all sidebars");
+            closeAllSidebars();                
+        } else {
+            log("no sidebars open, and toolbar shown, hide toolbar");
+            hideToolbar();
+        }
+    }
 }
 
 function setupMouseMoveCallback() {
@@ -407,10 +407,10 @@ $(document).bind('display_image', function(ev, image) {
     if( ! ConferenceControls.firstResizePerformed ) {
         resizeHandler();
         ConferenceControls.firstResizePerformed = true;
-		if (ConferenceControls.touchMode) {
-			$(document).trigger('show_intro');
-			hideToolbar();
-		}		
+        if (ConferenceControls.touchMode) {
+            $(document).trigger('show_intro');
+            hideToolbar();
+        }        
     }
 });
 
