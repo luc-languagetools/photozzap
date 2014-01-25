@@ -253,6 +253,7 @@ function SidebarCtrl($scope, conferenceService) {
     };
     
     $scope.toggle_sidebar = function(name) {
+        log("toggle_sidebar " + name);
         if ($scope.is_expanded(name)) {
             $scope.collapse_sidebar(name);
         } else {
