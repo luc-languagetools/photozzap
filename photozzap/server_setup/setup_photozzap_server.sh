@@ -15,10 +15,14 @@ echo "short name: " $SHORT_NAME
 
 REPLACE_CMD="sed -i s/master-/$SHORT_NAME-/g"
 
+NGINX_CONFIG_SOURCE=/home/dev/prod/photozzap/photozzap/server_setup/prod_configs/photozzap_nginx
 NGINX_CONFIG=/etc/nginx/sites-enabled/photozzap
+cp $NGINX_CONFIG_SOURCE $NGINX_CONFIG
 $REPLACE_CMD $NGINX_CONFIG
 
+EJABBERD_CONFIG_SOURCE=/home/dev/env/photozzap/photozzap/server_setup/prod_configs/ejabberd.cfg
 EJABBERD_CONFIG=/etc/ejabberd/ejabberd.cfg
+cp $EJABBERD_CONFIG_SOURCE $EJABBERD_CONFIG
 $REPLACE_CMD $EJABBERD_CONFIG
 
 # reset jabber config
