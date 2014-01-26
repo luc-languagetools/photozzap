@@ -298,14 +298,18 @@ function togglePointerMode(event) {
     }
     ConferenceControls.pointerMode = ! ConferenceControls.pointerMode;
     if (ConferenceControls.pointerMode) {
-        $("#control_event_layer").css("cursor", "pointer");
-        $("#user-pointer").show();
-        $("#control_event_layer").mousemove(pointerMouseMoveHandler);
+        if( ! ConferenceControls.touchMode ) {
+            $("#control_event_layer").css("cursor", "pointer");
+            $("#user-pointer").show();
+            $("#control_event_layer").mousemove(pointerMouseMoveHandler);
+        }
         $("#control_event_layer").on("click", pointerMouseClickHandler);
     } else {
-        $("#control_event_layer").css("cursor", "auto");
-        $("#user-pointer").hide();
-        $("#control_event_layer").unbind('mousemove'); 
+        if( ! ConferenceControls.touchMode ) {
+            $("#control_event_layer").css("cursor", "auto");
+            $("#user-pointer").hide();
+            $("#control_event_layer").unbind('mousemove'); 
+        }
         $("#control_event_layer").unbind("click");
     }
     return false;
@@ -321,7 +325,6 @@ function pointerMouseClickHandler(event) {
     
     var percentX = adjustedX / $("#displayed_image img").width();
     var percentY = adjustedY / $("#displayed_image img").height();
-    log("pointer click: " + percentX + ", " + percentY);
     
     Conference.send_pointer_location(percentX, percentY);
     
