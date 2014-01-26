@@ -654,8 +654,9 @@ function getWinRatio() {
 }
 
 function resize_image(image, selector) {
-    var imageRatio = image.ratio;
-
+    // dynamically calculate image ratio
+    var imageRatio = $(selector).width() / $(selector).height();
+    
     var win = $(window);
     var winWidth = win.width();
     var winHeight = win.height();
@@ -819,6 +820,7 @@ function cloudinary_configure_resize(upload_data) {
 															disableImageResize: false,
 															imageMaxWidth: 1024,
 															imageMaxHeight: 1024,
+                                                            imageOrientation: true,
 															});
 }
 
@@ -827,6 +829,7 @@ function cloudinary_configure_no_resize(upload_data) {
 	$("input.cloudinary-fileupload[type=file]").fileupload({formData: upload_data,
 															url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
 															disableImageResize: true,
+                                                            imageOrientation: true,
 															});
 }
 

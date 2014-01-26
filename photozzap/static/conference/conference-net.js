@@ -236,8 +236,6 @@ var Conference = {
         
         if (body == "image") {
             var image_id = $(message).children('image').children('id').text();
-            var image_width = parseInt($(message).children('image').children('width').text());
-            var image_height = parseInt($(message).children('image').children('height').text());
             var timestamp = new Date(); // assume right now
             var delayed = false;
             if( $(message).children('delay').length > 0 ) {
@@ -248,9 +246,6 @@ var Conference = {
             
             var image = {id: image_id,
                          thumbnail_id: image_id + "_th",
-                         width: image_width,
-                         height: image_height,
-						 ratio: image_width / image_height, 
                          added_by: user,
                          added_by_nick: nick,
                          timestamp: timestamp,
@@ -358,6 +353,8 @@ var Conference = {
                     image_element = document.createElement('img');
                     $(image_element).attr('src', image.image_url());
                     $("#image-cache").append(image_element);
+                    var last_img_element = $("#image-cache img:last");
+                    log("image dimensions are: " + last_img_element.width() + "x" + last_img_element.height());                    
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     Conference.handle_preload_error( image, num_tries, jqXHR, textStatus, errorThrown );
@@ -449,8 +446,6 @@ var Conference = {
         
         message.c('body').t("image").up();
         message.c('image').c('id').t(image.id).up();
-        message.c('width').t(image.width.toString()).up();
-        message.c('height').t(image.height.toString()).up();
         
         log("sending message: " + message);
         Conference.self_images_in_progress[image.id] = true;
