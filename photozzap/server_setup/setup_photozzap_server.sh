@@ -15,12 +15,12 @@ echo "short name: " $SHORT_NAME
 
 REPLACE_CMD="sed -i s/master-/$SHORT_NAME-/g"
 
-NGINX_CONFIG_SOURCE=/home/dev/prod/photozzap/photozzap/server_setup/prod_configs/photozzap_nginx
+NGINX_CONFIG_SOURCE=/home/prod/env/photozzap/photozzap/server_setup/prod_configs/photozzap_nginx
 NGINX_CONFIG=/etc/nginx/sites-enabled/photozzap
 cp $NGINX_CONFIG_SOURCE $NGINX_CONFIG
 $REPLACE_CMD $NGINX_CONFIG
 
-EJABBERD_CONFIG_SOURCE=/home/dev/env/photozzap/photozzap/server_setup/prod_configs/ejabberd.cfg
+EJABBERD_CONFIG_SOURCE=/home/prod/env/photozzap/photozzap/server_setup/prod_configs/ejabberd.cfg
 EJABBERD_CONFIG=/etc/ejabberd/ejabberd.cfg
 cp $EJABBERD_CONFIG_SOURCE $EJABBERD_CONFIG
 $REPLACE_CMD $EJABBERD_CONFIG
@@ -39,6 +39,8 @@ PHOTOZZAP_CONFIG=/home/prod/env/photozzap/production.ini
 rm /home/prod/env/photozzap/photozzap.sqlite
 rm -rf /home/prod/env/photozzap/photozzap/static/photo_uploads/*
 rm -f /home/prod/env/photozzap/log/*
+# create log directory
+sudo -u prod mkdir /home/prod/env/photozzap/log
 # configure
 sudo -u prod cp $PHOTOZZAP_CONFIG $PHOTOZZAP_CONFIG.bak
 sudo -u prod $REPLACE_CMD $PHOTOZZAP_CONFIG
