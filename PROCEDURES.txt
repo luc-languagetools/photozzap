@@ -12,3 +12,4 @@ bin/easy_install pyramid
 cd photozzap
 ../bin/python setup.py develop
 ../bin/easy_install sleekxmpp
+../bin/initialize_photozzap_db
