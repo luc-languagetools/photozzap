@@ -1,0 +1,14 @@
+procedures
+==========
+
+re-create virtual env
+=====================
+
+mv env env_backup
+virtualenv --no-site-packages env
+cd env
+bin/easy_install pyramid
+# checkout photozzap project or move it
+cd photozzap
+../bin/python setup.py develop
+../bin/easy_install sleekxmpp
