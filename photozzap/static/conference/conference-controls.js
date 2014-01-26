@@ -313,13 +313,14 @@ function togglePointerMode(event) {
 
 function pointerMouseClickHandler(event) {
     log("pointer click: " + event.pageX + ", " + event.pageY);
-    
-    var win = $(window);
-    var winWidth = win.width();
-    var winHeight = win.height();
 
-    var percentX = event.pageX / winWidth;
-    var percentY = event.pageY / winHeight;
+    var offset = $("#displayed_image img").offset();
+    
+    var adjustedX = event.pageX - offset.left;
+    var adjustedY = event.pageY - offset.top;
+    
+    var percentX = adjustedX / $("#displayed_image img").width();
+    var percentY = adjustedY / $("#displayed_image img").height();
     log("pointer click: " + percentX + ", " + percentY);
     
     Conference.send_pointer_location(percentX, percentY);

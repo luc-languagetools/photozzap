@@ -608,8 +608,14 @@ $(document).bind('user_pointer', function(ev, pointer_data) {
     var winWidth = win.width();
     var winHeight = win.height();
     
-    var left = Math.round(winWidth * pointer_data.x);
-    var top = Math.round(winHeight * pointer_data.y);
+    // convert coordinates into coordinates into the picture
+    var inPictureX = pointer_data.x * $("#displayed_image img").width();
+    var inPictureY = pointer_data.y * $("#displayed_image img").height();
+
+    var offset = $("#displayed_image img").offset();
+    
+    var left = Math.round(inPictureX + offset.left);
+    var top = Math.round(inPictureY + offset.top);
     
     pointer_data.left = left;
     pointer_data.top = top;
