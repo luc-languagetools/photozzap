@@ -23,7 +23,7 @@ var ConferenceControls = {
 function setupControlHandlers() {
     ConferenceControls.touchMode = Modernizr.touch;
     // for debugging only
-    // ConferenceControls.touchMode = true;
+    ConferenceControls.touchMode = true;
     
     setupMouseMoveCallback();
     
@@ -106,7 +106,6 @@ function swipeStatus(event, phase, direction, distance)
             return;
         }    
     
-        log("swipeStatus end");
         if (direction == "left") {
             if( Conference.image_data.next_image != undefined ) {
                 selectImageAndTransition(Conference.image_data.next_image, true);
@@ -124,16 +123,20 @@ function swipeStatus(event, phase, direction, distance)
 }
 
 function selectImageAndTransition(image, is_next) {
-    $("#displayed_image").css("opacity", 1.0);
-    if (image != undefined) {
-        if( is_next ) {
-            transition_next();
-        } else {
-            transition_prev();
-        }
+    $("#displayed_image").css("opacity", 0.0);
+    
+    var after_transition = function() {
         $(document).trigger('not_following_user');
         $(document).trigger('show_current_image', false);
         $(document).trigger('display_image', image);
+    };
+    
+    if (image != undefined) {
+        if( is_next ) {
+            transition_next(after_transition);
+        } else {
+            transition_prev(after_transition);
+        }
     }
 }
 

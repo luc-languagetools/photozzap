@@ -732,6 +732,7 @@ function resize_image(image, selector) {
             marginTop: "0px"
         }) 
     }
+    
 }
 
 function resize_image_area() {
@@ -760,32 +761,36 @@ function resize_image_area() {
     ensure_optimal_image_resolution(image, getWinRatio(), image.ratio);
 	
 	rebuild_swipe_container();
+    
+    log("resize_image_area done");
 }
 
-function transition_next() {
+function transition_next(after_transition) {
 	if( ConferenceUi.swipe_transition_in_progress == true) {
 		// don't perform two animations at once
+        after_transition();
 		return;
 	}
 	ConferenceUi.swipe_transition_in_progress = true;
 	
 	var translateX = calculateNextTransactionX();
-	transition_swipe(translateX);
+	transition_swipe(translateX, after_transition);
 }
 
-function transition_prev() {
+function transition_prev(after_transition) {
 	if( ConferenceUi.swipe_transition_in_progress == true) {
 		// don't perform two animations at once
+        after_transition();
 		return;
 	}
 
 	ConferenceUi.swipe_transition_in_progress = true;
 	
 	var translateX = calculatePrevTransactionX();
-	transition_swipe(translateX);
+	transition_swipe(translateX, after_transition);
 }
 
-function transition_swipe(translateX) {
+function transition_swipe(translateX, after_transition) {
 	if (ConferenceUi.swipe_already_translated != 0) {
 		if( ! ConferenceControls.useTranslate3d ) {
 			translateX -= ConferenceUi.swipe_already_translated;
@@ -796,17 +801,22 @@ function transition_swipe(translateX) {
 	$("#swipe_images").css("opacity", 1.0);
 	
 	var done = function(){
-		$('#swipe_images').transition({ opacity: 0.0}, 300, function() {
-			ConferenceUi.swipe_transition_in_progress = false;
-			rebuild_swipe_container();
-		});
+        after_transition();
+        $("#displayed_image").css("opacity", 1.0);
+        $(document).trigger('resize_image');
+        // only proceed with hiding swipe images when we've got the full image loaded below
+        $('#swipe_images').transition({ opacity: 0.0}, 300, function() {
+            log("after_transition done() resize_image_done after swipe_images fade");
+            ConferenceUi.swipe_transition_in_progress = false;
+            rebuild_swipe_container();
+        });                
 	};
 	
 	if (ConferenceControls.useTranslate3d ) {
 		$('#swipe_images').addClass("image-swipe-container-transitions");
 		$("#swipe_images").one("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
 			$('#swipe_images').removeClass("image-swipe-container-transitions");
-			done();			
+			done();
 		});
 		$("#swipe_images").css("-webkit-transform", "translate3d(" + translateX + "px,0px,0px)");		
 	} else {
@@ -830,6 +840,7 @@ function cancel_swipe_transition() {
 
 $(document).bind('resize_image', function(ev) {
     resize_image_area();
+    $(document).trigger('resize_image_done');
 });
 
 function show_upload_modal() {

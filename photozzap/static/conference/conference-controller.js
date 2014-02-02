@@ -179,7 +179,7 @@ function NextSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.next = function() {
         if ( $scope.next_enabled() ) {
-            transition_next();
+            transition_next(function(){});
             $scope.select_image( $scope.image_data.next_image.id );
         }    
     }    
@@ -194,7 +194,7 @@ function PrevSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.prev = function() {
         if ( $scope.prev_enabled() ) {
-            transition_prev();
+            transition_prev(function(){});
             $scope.select_image( $scope.image_data.prev_image.id );
         }
     }

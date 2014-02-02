@@ -554,8 +554,13 @@ var Conference = {
 
 function log(msg) 
 {
-    // $('#log').append("<p>" + msg + "</p>");
-    console.log(msg);
+    // var timestamp = '[' + Date.now() + '] ';
+    // var timestamp = '[' + new Date().toUTCString() + '] ';
+    var currentDate = new Date();
+    
+    var timestamp = "[" + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + "." +
+                    currentDate.getMilliseconds() + "]";
+    console.log(timestamp, msg);
 }
 
 function connection_callback(status) {
