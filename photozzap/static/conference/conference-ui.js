@@ -552,6 +552,10 @@ function dom_id_from_user(user) {
     return result;
 };
 
+function dom_id_from_user_pointer(user) {
+    return dom_id_from_user(user) + "_pointer";
+};
+
 function dom_id_from_user_popover(user) {
     return dom_id_from_user(user) + "_popover";
 };
@@ -596,6 +600,40 @@ $(document).bind('new_comment', function(ev, comment) {
     
     ConferenceUi.notify_comment(comment);
 
+});
+
+$(document).bind('user_pointer', function(ev, pointer_data) {
+    // convert percentage positions into screen pixels
+    var win = $(window);
+    var winWidth = win.width();
+    var winHeight = win.height();
+    
+    // convert coordinates into coordinates into the picture
+    var inPictureX = pointer_data.x * $("#displayed_image img").width();
+    var inPictureY = pointer_data.y * $("#displayed_image img").height();
+
+    var offset = $("#displayed_image img").offset();
+    
+    var left = Math.round(inPictureX + offset.left);
+    var top = Math.round(inPictureY + offset.top);
+    
+    pointer_data.left = left;
+    pointer_data.top = top;
+    
+    var element_id = dom_id_from_user_pointer(pointer_data.user);
+    pointer_data.element_id = element_id;    
+    
+    var pointer_element = $("#user-pointer-template").jqote(pointer_data);
+    $("#other-user-pointers").append(pointer_element);
+    
+    // fade-in the pointer
+    $("#" + element_id).fadeIn();
+    
+    setTimeout(function() {
+        $("#" + element_id).fadeOut(function() {
+            $("#" + element_id).remove();
+        });
+    }, 3000);
 });
 
 function ensure_optimal_image_resolution(image, winRatio, imageRatio) {

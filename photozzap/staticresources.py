@@ -66,6 +66,7 @@ icon_files = {
 'photozzap_logo': "static/icons/photozzap_logo.png",
 'swipe': "static/icons/swipe.png",
 'menu': "static/icons/menu.png",
+'pointer': "static/icons/pointer.png",
 }
 
 cdn_asset_list = []

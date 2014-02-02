@@ -183,6 +183,15 @@ function ready_for_connection() {
 ]]>
 </script>                        
 
+<script type="text/html" id="user-pointer-template">
+<![CDATA[
+    <div id="<%= this.element_id %>" class="other-user-pointer" style="left: <%= this.left %>px; top: <%= this.top %>px;">
+        <img src="${icon_files['pointer']}" />
+        <span class="pointer-nick"><%= this.user.nick %></span>
+    </div>
+]]>
+</script>                        
+
 
 <div id="upload-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upload-modal-label" aria-hidden="true">
     <div class="modal-header">
@@ -301,7 +310,12 @@ function ready_for_connection() {
                         <img src="${icon_files['clock_medium_white']}" />
                         <br/>
                         <span class="header">History</span>
-                    </div>                        
+                    </div>
+                    <div id="pointer-mode-icon" class="tool actionable">
+                        <img src="${icon_files['pointer']}" />
+                        <br/>
+                        <span class="header">Point</span>
+                    </div>                    
                 </div>
 
             </div>
@@ -402,6 +416,14 @@ function ready_for_connection() {
                 <br/>
                 <p>Swipe left/right to see more images. Tap here to close or show menu.</p>
             </div>
+        </div>
+    </div>
+    
+    <div id="pointer-layer">
+        <div id="user-pointer">
+            <img src="${icon_files['pointer']}" />
+        </div>
+        <div id="other-user-pointers">
         </div>
     </div>
 

@@ -325,7 +325,28 @@ var Conference = {
                 Conference.add_comment_queued_event(image_id, comment_event);
             }
                         
-        }        
+        } else if (body == "pointer") {
+            var image_id = $(message).children('pointer').children('id').text();
+            var x = $(message).children('pointer').children('x').text();
+            var y = $(message).children('pointer').children('y').text();
+            var user = Conference.users[from];
+            
+            var delayed = false;
+            if( $(message).children('delay').length > 0 ) {
+                timestamp = new Date($(message).children('delay').attr('stamp'));
+                delayed = true;
+            }            
+            
+            var pointer_data = {image_id: image_id,
+                                user: user,
+                                delayed: delayed,
+                                x: x,
+                                y: y};
+            log("got pointer message: " + pointer_data);
+            if (! delayed && image_id == Conference.currently_viewing) {
+                $(document).trigger('user_pointer', pointer_data);
+            }
+        }
         
         return true;
     },
@@ -463,6 +484,29 @@ var Conference = {
         Conference.self_images_in_progress[image.id] = true;
         Conference.connection.send(message);
     },    
+    
+    send_pointer_location: function(percentX, percentY) {
+        if (Conference.currently_viewing == undefined) {
+            return;
+        }
+        
+        var scaledX = Math.round(percentX * 1000.0);
+        var scaledY = Math.round(percentY * 1000.0);
+        
+        
+        message = $msg({
+        to: Conference.room,
+        type: "groupchat"});
+        
+        message.c('body').t("pointer").up();
+        message.c('pointer').c('id').t(Conference.currently_viewing).up();
+        message.c('x').t(percentX.toString()).up();
+        message.c('y').t(percentY.toString()).up();
+        
+        log("sending message: " + message);
+        Conference.connection.send(message);        
+        
+    },
     
     viewing_image: function (image) {
         // notify other users we're viewing this image

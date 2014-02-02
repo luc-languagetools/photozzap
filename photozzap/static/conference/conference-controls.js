@@ -14,6 +14,8 @@ var ConferenceControls = {
     resizeToolbarsOnDisplay: false,
     firstResizePerformed: false,
     
+    pointerMode: false,
+    
     useTranslate3d: has3d()
 };
 
@@ -55,6 +57,9 @@ function setupControlHandlers() {
      
         $("#mouse_event_layer").swipe( swipeOptions );
     }
+    
+    
+    $("#pointer-mode-icon").click(togglePointerMode);
     
 }
 
@@ -286,8 +291,53 @@ $(document).bind('hide_toolbar', function(ev) {
 });
 
 
+function togglePointerMode(event) {
+    log("togglePointerMode");
+    if( event != undefined ) {
+        event.stopImmediatePropagation();
+    }
+    ConferenceControls.pointerMode = ! ConferenceControls.pointerMode;
+    if (ConferenceControls.pointerMode) {
+        if( ! ConferenceControls.touchMode ) {
+            $("#control_event_layer").css("cursor", "pointer");
+            $("#user-pointer").show();
+            $("#control_event_layer").mousemove(pointerMouseMoveHandler);
+        }
+        $("#control_event_layer").on("click", pointerMouseClickHandler);
+    } else {
+        if( ! ConferenceControls.touchMode ) {
+            $("#control_event_layer").css("cursor", "auto");
+            $("#user-pointer").hide();
+            $("#control_event_layer").unbind('mousemove'); 
+        }
+        $("#control_event_layer").unbind("click");
+    }
+    return false;
+}
 
-function mouseMoveHandler() {
+function pointerMouseClickHandler(event) {
+    log("pointer click: " + event.pageX + ", " + event.pageY);
+
+    var offset = $("#displayed_image img").offset();
+    
+    var adjustedX = event.pageX - offset.left;
+    var adjustedY = event.pageY - offset.top;
+    
+    var percentX = adjustedX / $("#displayed_image img").width();
+    var percentY = adjustedY / $("#displayed_image img").height();
+    
+    Conference.send_pointer_location(percentX, percentY);
+    
+    togglePointerMode();
+}
+
+function pointerMouseMoveHandler(event) {
+    // update pointer location
+    // event.pageX, event.pageY
+    $("#user-pointer").css({top: event.pageY, left: event.pageX});
+}
+
+function mouseMoveHandler(event) {
         // log("mouseMoveHandler");
 
         // if toolbar is not shown, show it and start timeout
