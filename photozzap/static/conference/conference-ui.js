@@ -655,7 +655,7 @@ function getWinRatio() {
 
 function resize_image(image, selector) {
     // dynamically calculate image ratio
-    var imageRatio = $(selector).width() / $(selector).height();
+    var imageRatio = image.ratio;
     
     var win = $(window);
     var winWidth = win.width();

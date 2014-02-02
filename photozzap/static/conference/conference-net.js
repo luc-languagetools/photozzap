@@ -352,9 +352,21 @@ var Conference = {
                     log("image " + image.image_url_for_dimension(DEFAULT_DIMENSION) + " loaded");
                     image_element = document.createElement('img');
                     $(image_element).attr('src', image.image_url());
+                    $(image_element).data("image-id", image.id);
+                    $(image_element).one('load', function(event){
+                        var loaded_element = $(event.target);
+                        var image_id = loaded_element.data("image-id");
+                        var width = loaded_element.width();
+                        var height = loaded_element.height();
+                        log("dimensions for " + image_id + ": " + width + "x" + height);
+                        // Conference.images[image_id].ratio = width / height;
+                        if (image == undefined || image.id != image_id) {
+                            throw "image_id " + image_id + " unrecognized";
+                        }
+                        image.ratio = width / height;
+                        loaded_element.hide();
+                    });
                     $("#image-cache").append(image_element);
-                    var last_img_element = $("#image-cache img:last");
-                    log("image dimensions are: " + last_img_element.width() + "x" + last_img_element.height());                    
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     Conference.handle_preload_error( image, num_tries, jqXHR, textStatus, errorThrown );

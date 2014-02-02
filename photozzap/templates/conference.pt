@@ -431,7 +431,7 @@ function ready_for_connection() {
 </div>
 
 <!-- contains all loaded images so that they remain in the browser cache -->
-<div id="image-cache" style="display:none;">
+<div id="image-cache">
 </div>
 
 
