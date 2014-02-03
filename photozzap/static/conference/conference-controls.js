@@ -358,7 +358,7 @@ function mouseMoveHandler(event) {
         ConferenceControls.disableToolbarTimeout = setTimeout(function() {
             hideToolbar();
             ConferenceControls.disableToolbarTimeout = null;
-        }, 2000);
+        }, 5000);
 
 }
 

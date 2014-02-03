@@ -268,7 +268,7 @@ function ready_for_connection() {
 
         <div id="gallery-sidebar" class="action-sidebar gallery-sidebar gallery-sidebar-{{sidebar_class_state('gallery')}} sidebar-transitions action-sidebar-active"  ng-style="element_style()">
             <div id="gallery-sidebar-header" class="action-sidebar-header">
-                <img class="actionable" ng-click="collapse()" src="${icon_files['slide_up_white']}" />
+                <img class="actionable" ng-click="toggle_sidebar('gallery')" src="${icon_files['slide_up_white']}" />
                 <img src="${icon_files['gallery_medium_white']}" />
                 <span class="header">Photos</span>
             </div>
