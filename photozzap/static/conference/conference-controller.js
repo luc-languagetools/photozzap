@@ -84,8 +84,8 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         // are the previous or next images changing ? if so, rebuild swipe container
         if (backup_prev_image_id != current_prev_image_id ||
             backup_next_image_id != current_next_image_id) {
-            log("prev_image or next_image changed, resize_image");
-            $(document).trigger('resize_image');            
+            log("prev_image or next_image changed, rebuild_swipe_container");
+            rebuild_swipe_container();
         }
         
         Conference.image_data = service.image_data;
