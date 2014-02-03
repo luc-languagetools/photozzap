@@ -386,6 +386,9 @@ var Conference = {
                         }
                         image.ratio = width / height;
                         loaded_element.hide();
+                        // trigger a resize - we don't know if that image is on the left or right or the current displayed one
+                        // this would change the swipe images container, so just resize (not efficient)
+                        $(document).trigger('resize_image');
                     });
                     $("#image-cache").append(image_element);
                 },
