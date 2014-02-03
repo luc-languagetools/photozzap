@@ -17,6 +17,18 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     };
     
     service.recalc_image_data = function() {
+        // make a backup copy of prev and next image ids, we want to know if they changed
+        var backup_prev_image_id = undefined;
+        var backup_next_image_id = undefined;
+        var current_prev_image_id = undefined;
+        var current_next_image_id = undefined;
+        if (Conference.image_data.prev_image != undefined) {
+            backup_prev_image_id = Conference.image_data.prev_image.id;
+        }
+        if (Conference.image_data.next_image != undefined) {
+            backup_next_image_id = Conference.image_data.next_image.id;
+        }
+    
         // go over images and sort them
         var images = Conference.images;
         var image_list = [];
@@ -47,6 +59,7 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
             // previous available
             service.image_data.prev_image = image_list[ service.image_data.current_index - 1];
             service.image_data.swipe_images_list.push(service.image_data.prev_image);
+            current_prev_image_id = service.image_data.prev_image.id;
         } else {
             // previous not available
             service.image_data.prev_image = undefined;
@@ -60,9 +73,19 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
             // next available
             service.image_data.next_image = image_list[ service.image_data.current_index + 1];
             service.image_data.swipe_images_list.push(service.image_data.next_image);
+            current_next_image_id = service.image_data.next_image.id;
         } else {
             // next not available
             service.image_data.next_image = undefined;
+        }
+        
+        log("recalc_image_data, swipe_images_list.length: " + service.image_data.swipe_images_list.length);
+        
+        // are the previous or next images changing ? if so, rebuild swipe container
+        if (backup_prev_image_id != current_prev_image_id ||
+            backup_next_image_id != current_next_image_id) {
+            log("prev_image or next_image changed, resize_image");
+            $(document).trigger('resize_image');            
         }
         
         Conference.image_data = service.image_data;
@@ -179,7 +202,7 @@ function NextSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.next = function() {
         if ( $scope.next_enabled() ) {
-            transition_next(function(){});
+            transition_next(null);
             $scope.select_image( $scope.image_data.next_image.id );
         }    
     }    
@@ -194,7 +217,7 @@ function PrevSidebarCtrl($scope, $controller, conferenceService) {
     
     $scope.prev = function() {
         if ( $scope.prev_enabled() ) {
-            transition_prev(function(){});
+            transition_prev(null);
             $scope.select_image( $scope.image_data.prev_image.id );
         }
     }

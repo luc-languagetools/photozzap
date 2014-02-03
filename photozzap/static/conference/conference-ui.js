@@ -318,16 +318,17 @@ function show_comments_for_image(image) {
 }
 
 function rebuild_swipe_container() {
+    log("rebuild_swipe_container");
 	if( ConferenceUi.swipe_transition_in_progress ) {
 		// swipe transition in progress, don't modify the swipe container
 		return;
 	}
 
-	log("maintaining swipe images container");
 	$("#swipe_images img").remove();
 	$("#swipe_images").css("transform", "translateX(0px)");	
 	var totalRatio = 0;
 	// figure out the total ratio to resize the container first
+    log("rebuild_swipe_container: " + Conference.image_data.swipe_images_list.length + " images in swipe_images_list");
 	for( var i in Conference.image_data.swipe_images_list ) {
 		var image = Conference.image_data.swipe_images_list[i];
 		totalRatio += image.ratio;
@@ -801,15 +802,22 @@ function transition_swipe(translateX, after_transition) {
 	$("#swipe_images").css("opacity", 1.0);
 	
 	var done = function(){
-        after_transition();
-        $("#displayed_image").css("opacity", 1.0);
-        $(document).trigger('resize_image');
-        // only proceed with hiding swipe images when we've got the full image loaded below
-        $('#swipe_images').transition({ opacity: 0.0}, 300, function() {
-            log("after_transition done() resize_image_done after swipe_images fade");
-            ConferenceUi.swipe_transition_in_progress = false;
-            rebuild_swipe_container();
-        });                
+        var finalize_fn = function() {
+            $("#displayed_image").css("opacity", 1.0);
+            // $(document).trigger('resize_image');
+            // only proceed with hiding swipe images when we've got the full image loaded below
+            $('#swipe_images').transition({ opacity: 0.0}, 300, function() {
+                log("after_transition done() resize_image_done after swipe_images fade");
+                ConferenceUi.swipe_transition_in_progress = false;
+                rebuild_swipe_container();
+            });                        
+        };
+        if (after_transition != null) {
+            $("#displayed-image").one('load', finalize_fn);
+            after_transition();
+        } else {
+            finalize_fn();
+        }
 	};
 	
 	if (ConferenceControls.useTranslate3d ) {
@@ -822,6 +830,7 @@ function transition_swipe(translateX, after_transition) {
 	} else {
 		$('#swipe_images').transition({ x: translateX + 'px'}, 500, done);
 	}
+    // change image while transition is happening
 }
 
 function cancel_swipe_transition() {

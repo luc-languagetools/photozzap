@@ -23,7 +23,7 @@ var ConferenceControls = {
 function setupControlHandlers() {
     ConferenceControls.touchMode = Modernizr.touch;
     // for debugging only
-    ConferenceControls.touchMode = true;
+    // ConferenceControls.touchMode = true;
     
     setupMouseMoveCallback();
     

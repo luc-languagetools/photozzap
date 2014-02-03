@@ -251,6 +251,8 @@ var Conference = {
                          timestamp: timestamp,
                          delayed: delayed,
                          loaded_dimension: 0,
+                         full_image_preloaded: false,
+                         thumbnail_preloaded: false,
                          comments: [],
                          comments_available: function() {
                             if( this.comments.length > 0 ) {
@@ -386,9 +388,9 @@ var Conference = {
                         }
                         image.ratio = width / height;
                         loaded_element.hide();
-                        // trigger a resize - we don't know if that image is on the left or right or the current displayed one
-                        // this would change the swipe images container, so just resize (not efficient)
-                        $(document).trigger('resize_image');
+                        image.full_image_preloaded = true;
+                        
+                        Conference.process_image_if_loaded(image);
                     });
                     $("#image-cache").append(image_element);
                 },
@@ -406,26 +408,34 @@ var Conference = {
                     $(image_element).attr('src', image.thumbnail_url());
                     $("#image-cache").append(image_element);                    
                     
-                    // add to images
-                    Conference.images[image.id] = image;
-                    Conference.images[image.id].loaded_dimension = DEFAULT_DIMENSION;
+                    image.thumbnail_preloaded = true;
                     
-                    // remove from images_loading
-                    delete Conference.images_loading[image.id];
-                    
-                    // was it an image we uploaded ourselves ?
-                    if (Conference.self_images_in_progress[image.id] != undefined) {
-                        delete Conference.self_images_in_progress[image.id];
-                    }
-                    
-                    log(Conference.queued_events[image.id]);
-                    
-                    // any queued events ?
-                    Conference.process_queued_events(image.id);
+                    Conference.process_image_if_loaded(image);
                 },
                 error: function( jqXHR, textStatus, errorThrown ) {
                     Conference.handle_preload_error( image, num_tries, jqXHR, textStatus, errorThrown );
                 }});    
+    },
+    
+    process_image_if_loaded: function (image) {
+        if (image.full_image_preloaded && image.thumbnail_preloaded) {
+            // add to list of images
+            Conference.images[image.id] = image;
+            Conference.images[image.id].loaded_dimension = DEFAULT_DIMENSION;
+            
+            // remove from images_loading
+            delete Conference.images_loading[image.id];
+            
+            // was it an image we uploaded ourselves ?
+            if (Conference.self_images_in_progress[image.id] != undefined) {
+                delete Conference.self_images_in_progress[image.id];
+            }
+            
+            log(Conference.queued_events[image.id]);
+            
+            // any queued events ?
+            Conference.process_queued_events(image.id);
+        }
     },
     
     on_private_message: function (message) {
