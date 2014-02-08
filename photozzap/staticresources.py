@@ -7,6 +7,7 @@ javascript_files = [
 "static/strophe/strophe.min.js",
 "static/angular/angular.min.js",
 "static/angular/angular-animate.min.js",
+"static/angular/ui-bootstrap-0.10.0.min.js",
 "static/jslibs/jquery.jqote2.js",
 "static/jslibs/holder.js",
 "static/timeago/jquery.timeago.js",
@@ -24,6 +25,9 @@ javascript_files = [
 "static/cloudinary/jquery.fileupload-process.js",
 "static/cloudinary/jquery.fileupload-image.js",
 "static/cloudinary/jquery.fileupload-validate.js",
+# firebase
+"static/firebase/firebase.js",
+"static/firebase/angularfire.min.js",
 
 "static/conference/conference-net.js",
 "static/conference/conference-ui.js",

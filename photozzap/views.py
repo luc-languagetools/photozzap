@@ -53,8 +53,10 @@ def new_conference(request):
 def home(request):
     settings = request.registry.settings
     tracking_id = settings['analytics_tracking_id'] 
+    firebase = settings['firebase']
     return {'new_conf_url': request.route_url('new_conference'),
-            'tracking_id': tracking_id}
+            'tracking_id': tracking_id,
+            'firebase': firebase}
     
 def sign_request(params, api_key, api_secret):
     params = dict( [ (k,v) for (k,v) in params.items() if v] )

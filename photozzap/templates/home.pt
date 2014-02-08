@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="photozzap-home">
 <head>
 <title>Photozzap - Realtime Photo Sharing</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,11 @@
 <link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
 <script src="${request.static_url('photozzap:static/jquery/jquery-1.10.2.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
+<!-- angular and firebase -->
+<script src="${request.static_url('photozzap:static/angular/angular.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/angular/ui-bootstrap-0.10.0.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/firebase/firebase.js')}"></script>
+<script src="${request.static_url('photozzap:static/firebase/angularfire.min.js')}"></script>
 
     <style type="text/css">
       body {
@@ -56,15 +61,35 @@
     </style>
     
     <script>
-    $(document).ready(function() {
+   
+    var app = angular.module("photozzap-home", ["firebase", "ui.bootstrap"]);
     
-        $("#new-conf-button").click(function() {
-            $.getJSON('${new_conf_url}', function(data) {
-                window.location.href = data.conf_url;
-            });  
-        });
+    function PhotozzapHomeController($scope, $firebase, $modal) { 
+        var conferencesRef = new Firebase("${firebase}conferences");
+        // $scope.conferences = $firebase(ref);
+        
+        $scope.open_add_conf_modal = function() {
+            var modalInstance = $modal.open({template: "create_conf_modal.html"});
+        };
+        
+        $scope.add_conference = function() {
+            //var newRef = $scope.conferences.$add({name: "new_conf_1"});
+            //console.log(newRef.name());
+            var tentative_unique_key = "new_conf_1234";
+            var confRef = new Firebase("${firebase}conferences/" + tentative_unique_key);
+            confRef.on('value', function(snapshot) {
+                if(snapshot.val() === null) {
+                    console.log("conference does not exist");
+                } else {
+                    console.log("conference already exists");
+                    console.log(snapshot);
+                }
+            });
+            //var myConf = conferencesRef.child("new_conf_1234");
+            //myConf.set({name: "myconf"});
+        };
+    }
     
-    });
     </script>   
 
     <script>
@@ -88,6 +113,8 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>  
 
+   
+    
     <div class="container">
 
       <div class="masthead">
@@ -99,11 +126,23 @@
 
       <hr>
       <div class="row-fluid">
-        <div class="span8">
+        <div class="span8" ng-controller="PhotozzapHomeController">
+            <script type="text/ng-template" id="create_conf_modal.html">
+                <div class="modal-header">
+                    <h3>I'm a modal!</h3>
+                </div>
+                <div class="modal-body">
+                    bla bla
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" >OK</button>
+                    <button class="btn btn-warning" >Cancel</button>
+                </div>
+            </script>        
           <div class="jumbotron">
             <h1>Real-time<br/>Photo Sharing</h1>
             <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
-            <a id='new-conf-button' class="btn btn-large btn-success" href="#">Start Conference</a>
+            <a id='new-conf-button' class="btn btn-large btn-success" href="#" ng-click="open_add_conf_modal()">Start Conference</a>
             <div class="alert alert-block" style="margin-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
                 <strong>Note:</strong> your conference will stay available for 7 days, after that it will be deleted.
             </div>
