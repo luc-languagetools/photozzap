@@ -10,7 +10,7 @@
 <script src="${request.static_url('photozzap:static/bootstrap3/js/bootstrap.min.js')}"></script>
 <!-- angular and firebase -->
 <script src="${request.static_url('photozzap:static/angular/angular.min.js')}"></script>
-<script src="${request.static_url('photozzap:static/angular/ui-bootstrap-0.10.0.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/angular/ui-bootstrap-tpls-0.10.0.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/firebase/firebase.js')}"></script>
 <script src="${request.static_url('photozzap:static/firebase/angularfire.min.js')}"></script>
 
@@ -62,14 +62,29 @@
     
     <script>
    
+    function randomString(length) {
+        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+
+        if (! length) {
+            length = Math.floor(Math.random() * chars.length);
+        }
+
+        var str = '';
+        for (var i = 0; i < length; i++) {
+            str += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return str;
+    }   
+   
     var app = angular.module("photozzap-home", ["firebase", "ui.bootstrap"]);
     
-    function PhotozzapHomeController($scope, $firebase, $modal) { 
+    function PhotozzapHomeController($scope, $firebase, $modal, $log) { 
         var conferencesRef = new Firebase("${firebase}conferences");
         // $scope.conferences = $firebase(ref);
         
         $scope.open_add_conf_modal = function() {
-            var modalInstance = $modal.open({template: "create_conf_modal.html"});
+            $scope.modalInstance = $modal.open({templateUrl: "create_conf_modal.html",
+                                                controller: PhotozzapNewConfModalController});
         };
         
         $scope.add_conference = function() {
@@ -88,6 +103,40 @@
             //var myConf = conferencesRef.child("new_conf_1234");
             //myConf.set({name: "myconf"});
         };
+
+    }
+    
+    function PhotozzapNewConfModalController($scope, $modalInstance, $firebase, $log) {
+        $scope.status = '';
+    
+        $scope.ok = function () {
+            $scope.create_unique_conf_key($scope.confname);
+        };
+        
+        $scope.create_unique_conf_key = function(confName) {
+            var prefix = randomString(6);
+            var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
+            var tentativeConfKey = prefix + "-" + confNameEncoded;
+            var confRef = new Firebase("${firebase}conferences/" + tentativeConfKey);
+            confRef.on('value', function(snapshot) {
+                confRef.off('value');
+                if(snapshot.val() === null) {
+                    $log.info("conference " + tentativeConfKey + " does not exist, creating");
+                    var conferencesRef = new Firebase("${firebase}conferences");
+                    var newConf = conferencesRef.child(tentativeConfKey);
+                    newConf.set({name: confName});                    
+                    $scope.status = "conference " + tentativeConfKey + " created";
+                    $scope.$apply();
+                } else {
+                    $log.info("conference " + tentativeConfKey + " already exists, trying again");
+                    $scope.create_unique_conf_key(confName);
+                }
+            });            
+        };
+       
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };        
     }
     
     </script>   
@@ -129,14 +178,20 @@
         <div class="col-md-8" ng-controller="PhotozzapHomeController">
             <script type="text/ng-template" id="create_conf_modal.html">
                 <div class="modal-header">
-                    <h3>I'm a modal!</h3>
+                    <h3>Create new Photozzap Conference</h3>
                 </div>
                 <div class="modal-body">
-                    bla bla
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="confName">Conference Name</label>
+                            <input type="text" name="confname-input" class="form-control" id="confName" ng-model="$parent.confname" placeholder="Enter a description, for example 'my photos'" required ng-trim="true">
+                        </div>
+                    </form>
                 </div>
+                <span>status: {{status}}</span>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" >OK</button>
-                    <button class="btn btn-warning" >Cancel</button>
+                    <button class="btn btn-primary" ng-click="ok()">OK</button>
+                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 </div>
             </script>        
           <div class="jumbotron">
