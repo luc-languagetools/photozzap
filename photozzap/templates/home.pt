@@ -79,31 +79,12 @@
     var app = angular.module("photozzap-home", ["firebase", "ui.bootstrap"]);
     
     function PhotozzapHomeController($scope, $firebase, $modal, $log) { 
-        var conferencesRef = new Firebase("${firebase}conferences");
-        // $scope.conferences = $firebase(ref);
         
         $scope.open_add_conf_modal = function() {
             $scope.modalInstance = $modal.open({templateUrl: "create_conf_modal.html",
                                                 controller: PhotozzapNewConfModalController});
         };
         
-        $scope.add_conference = function() {
-            //var newRef = $scope.conferences.$add({name: "new_conf_1"});
-            //console.log(newRef.name());
-            var tentative_unique_key = "new_conf_1234";
-            var confRef = new Firebase("${firebase}conferences/" + tentative_unique_key);
-            confRef.on('value', function(snapshot) {
-                if(snapshot.val() === null) {
-                    console.log("conference does not exist");
-                } else {
-                    console.log("conference already exists");
-                    console.log(snapshot);
-                }
-            });
-            //var myConf = conferencesRef.child("new_conf_1234");
-            //myConf.set({name: "myconf"});
-        };
-
     }
     
     function PhotozzapNewConfModalController($scope, $modalInstance, $firebase, $log) {
@@ -124,7 +105,9 @@
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
                     var conferencesRef = new Firebase("${firebase}conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
-                    newConf.set({name: confName});                    
+                    var conf_url = "${new_conf_url}".replace("new-conference-template", tentativeConfKey);
+                    newConf.set({name: confName,
+                                 url: conf_url});                    
                     $scope.status = "conference " + tentativeConfKey + " created";
                     $scope.$apply();
                 } else {
@@ -184,7 +167,7 @@
                     <form role="form">
                         <div class="form-group">
                             <label for="confName">Conference Name</label>
-                            <input type="text" name="confname-input" class="form-control" id="confName" ng-model="$parent.confname" placeholder="Enter a description, for example 'my photos'" required ng-trim="true">
+                            <input type="text" name="confName" class="form-control" id="confName" ng-model="$parent.confname" placeholder="Enter a description, for example 'my photos'">
                         </div>
                     </form>
                 </div>

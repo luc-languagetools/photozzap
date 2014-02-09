@@ -49,14 +49,22 @@ def new_conference(request):
 
     return params
 
+    
+    
 @view_config(route_name='home', renderer='templates/home.pt')
 def home(request):
     settings = request.registry.settings
     tracking_id = settings['analytics_tracking_id'] 
     firebase = settings['firebase']
+    www_server = settings['www_server']
+    www_port = settings['www_port']    
+    
+    new_conf_url = request.route_url('conference', conf_key="new-conference-template", _host=www_server, _port=www_port)
+    
     return {'new_conf_url': request.route_url('new_conference'),
             'tracking_id': tracking_id,
-            'firebase': firebase}
+            'firebase': firebase,
+            'new_conf_url': new_conf_url}
     
 def sign_request(params, api_key, api_secret):
     params = dict( [ (k,v) for (k,v) in params.items() if v] )
