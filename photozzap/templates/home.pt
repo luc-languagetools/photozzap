@@ -4,10 +4,10 @@
 <title>Photozzap - Realtime Photo Sharing</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
-<link href="${request.static_url('photozzap:static/bootstrap/css/bootstrap-responsive.min.css')}" rel="stylesheet" media="screen">
+<link href="${request.static_url('photozzap:static/bootstrap3/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
+<link href="${request.static_url('photozzap:static/bootstrap3/css/bootstrap-theme.min.css')}" rel="stylesheet" media="screen">
 <script src="${request.static_url('photozzap:static/jquery/jquery-1.10.2.min.js')}"></script>
-<script src="${request.static_url('photozzap:static/bootstrap/js/bootstrap.min.js')}"></script>
+<script src="${request.static_url('photozzap:static/bootstrap3/js/bootstrap.min.js')}"></script>
 <!-- angular and firebase -->
 <script src="${request.static_url('photozzap:static/angular/angular.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/angular/ui-bootstrap-0.10.0.min.js')}"></script>
@@ -125,8 +125,8 @@
       </div>
 
       <hr>
-      <div class="row-fluid">
-        <div class="span8" ng-controller="PhotozzapHomeController">
+      <div class="row">
+        <div class="col-md-8" ng-controller="PhotozzapHomeController">
             <script type="text/ng-template" id="create_conf_modal.html">
                 <div class="modal-header">
                     <h3>I'm a modal!</h3>
@@ -148,15 +148,15 @@
             </div>
           </div>
         </div>
-        <div class="span4 likebox">
+        <div class="col-md-4 likebox">
             <div class="fb-like-box" data-href="http://www.facebook.com/photozzap" data-width="280" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
         </div>              
       </div>
 
       <hr>
 
-      <div class="row-fluid marketing">
-        <div class="span6">
+      <div class="row marketing">
+        <div class="col-md-6">
           <h4>What's special about Photozzap ?</h4>
           <p>The number one feature is that you can <i>see</i> what photo your friends are looking at and <i>follow</i> them (or they can follow you). This makes it easier to discuss photos together over the Internet.</p>
           <h4>How do I use Photozzap ?</h4>
@@ -165,7 +165,7 @@
           <p>Once you start the conference, you can share the URL with your friends. Only people who have this URL can 
           view your photos.</p>                  
         </div>
-        <div class="span6">
+        <div class="col-md-6">
           <h4>Why should I use Photozzap instead of Picasa, Facebook, etc ?</h4>
           <p>Picasa, Facebook, Google+ are more suitable for complete albums with many photos. If you want to show 2 or 3 photos to friends or family right away, and view them together, maybe while having a Skype conference, Photozzap is more convenient.</p>
           <h4>Why did you make this?</h4>

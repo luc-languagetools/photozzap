@@ -3,7 +3,7 @@ javascript_files = [
 "static/jquery/jquery-1.10.2.min.js",
 "static/jquery-ui/jquery-ui.min.js",
 "static/slimscroll/jquery.slimscroll.js",
-"static/bootstrap/js/bootstrap.min.js",
+"static/bootstrap3/js/bootstrap.min.js",
 "static/strophe/strophe.min.js",
 "static/angular/angular.min.js",
 "static/angular/angular-animate.min.js",
@@ -40,8 +40,8 @@ combined_javascript_file = "static/combined/all.min.js"
 
 # files which must be displayed under any media queries
 css_files = [
-"static/bootstrap/css/bootstrap.min.css",
-"static/bootstrap/css/bootstrap-responsive.min.css",
+"static/bootstrap3/css/bootstrap.min.css",
+"static/bootstrap3/css/bootstrap-theme.min.css",
 "static/conference/default.css",
 "static/conference/small.css",
 "static/conference/small-landscape.css",
