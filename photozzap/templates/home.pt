@@ -79,19 +79,24 @@
     var app = angular.module("photozzap-home", ["firebase", "ui.bootstrap"]);
     
     function PhotozzapHomeController($scope, $firebase, $modal, $log) { 
-        
+       
         $scope.open_add_conf_modal = function() {
+            $log.info("PhotozzapHomeController.open_add_conf_modal");
             $scope.modalInstance = $modal.open({templateUrl: "create_conf_modal.html",
                                                 controller: PhotozzapNewConfModalController});
+        };
+        
+        $scope.cancel = function() {
+            $log.info("PhotozzapHomeController.cancel");
         };
         
     }
     
     function PhotozzapNewConfModalController($scope, $modalInstance, $firebase, $log) {
-        $scope.status = '';
-    
+        $scope.form_data = {};
+   
         $scope.ok = function () {
-            $scope.create_unique_conf_key($scope.confname);
+            $scope.create_unique_conf_key($scope.form_data.confname);
         };
         
         $scope.create_unique_conf_key = function(confName) {
@@ -164,23 +169,30 @@
                     <h3>Create new Photozzap Conference</h3>
                 </div>
                 <div class="modal-body">
-                    <form role="form">
+                    <form name="form.form" role="form">
                         <div class="form-group">
                             <label for="confName">Conference Name</label>
-                            <input type="text" name="confName" class="form-control" id="confName" ng-model="$parent.confname" placeholder="Enter a description, for example 'my photos'">
+                            <input type="text" name="name" class="form-control" id="confName" 
+                              ng-model="form_data.confname" 
+                              ng-minlength="3"
+                              ng-maxlength="30"
+                              placeholder="Enter a description, for example 'my photos'" required>
                         </div>
                     </form>
                 </div>
                 <span>status: {{status}}</span>
+                <tt>valid: {{form.form.$valid}}</tt>
+                <span ng-show="form.form.name.$error.minlength">Must be at least 3 characters</span>
+                <span ng-show="form.form.name.$error.maxlength">Must be less than 30 characters</span>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" ng-click="ok()">OK</button>
+                    <button class="btn btn-primary" ng-click="ok()"  ng-disabled="form.form.$invalid">OK</button>
                     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 </div>
             </script>        
           <div class="jumbotron">
             <h1>Real-time<br/>Photo Sharing</h1>
             <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
-            <a id='new-conf-button' class="btn btn-large btn-success" href="#" ng-click="open_add_conf_modal()">Start Conference</a>
+            <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()'>Start Conference</a>
             <div class="alert alert-block" style="margin-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
                 <strong>Note:</strong> your conference will stay available for 7 days, after that it will be deleted.
             </div>
