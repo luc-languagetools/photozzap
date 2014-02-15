@@ -12,6 +12,7 @@
 <script src="${request.static_url('photozzap:static/angular/angular.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/angular/ui-bootstrap-tpls-0.10.0.min.js')}"></script>
 <script src="${request.static_url('photozzap:static/firebase/firebase.js')}"></script>
+<script src="${request.static_url('photozzap:static/firebase/firebase-simple-login.js')}"></script>
 <script src="${request.static_url('photozzap:static/firebase/angularfire.min.js')}"></script>
 
     <style type="text/css">
@@ -92,14 +93,46 @@
         
     }
     
-    function PhotozzapNewConfModalController($scope, $modalInstance, $firebase, $log) {
+    function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log) {
         $scope.form_data = {};
+        $scope.form_data.logged_in = false;
+        var firebaseRef = new Firebase("${firebase}");
+        $scope.loginObj = $firebaseSimpleLogin(firebaseRef);
+        $scope.alerts = [];
+        $scope.user_object = {}; // bound with firebase user object
    
-        $scope.ok = function () {
-            $scope.create_unique_conf_key($scope.form_data.confname);
+        $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
+            $log.info("User " + user.id + " logged in");
+            $scope.form_data.logged_in = true;
+            var user_node = $firebase(new Firebase("${firebase}users/" + user.uid));
+            user_node.$bind($scope, "user_object");
+        });
+        if ($scope.loginObj.user == null) {
+            $scope.loginObj.$login('anonymous');
+        }
+        
+        $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
+            $scope.alerts.push({type: 'danger', msg: "Couldn't log-in: " + error});
+        });
+
+        $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
+            $scope.alerts.push({type: 'info', msg: "Logged out"});
+            $scope.form_data.logged_in = false;
+        });        
+        
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };        
+        
+        $scope.logout = function() {
+            $scope.loginObj.$logout();
         };
         
-        $scope.create_unique_conf_key = function(confName) {
+        $scope.ok = function () {
+            $scope.create_unique_conf_key($scope.form_data.confname, $scope.loginObj.user.uid);
+        };
+        
+        $scope.create_unique_conf_key = function(confName, owner_uid) {
             var prefix = randomString(6);
             var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
             var tentativeConfKey = prefix + "-" + confNameEncoded;
@@ -112,16 +145,17 @@
                     var newConf = conferencesRef.child(tentativeConfKey);
                     var conf_url = "${new_conf_url}".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
-                                 url: conf_url});                    
+                                 url: conf_url,
+                                 owner_uid: owner_uid});
                     $scope.status = "conference " + tentativeConfKey + " created";
                     $scope.$apply();
                 } else {
                     $log.info("conference " + tentativeConfKey + " already exists, trying again");
-                    $scope.create_unique_conf_key(confName);
+                    $scope.create_unique_conf_key(confName, owner_uid);
                 }
             });            
         };
-       
+        
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };        
@@ -169,6 +203,7 @@
                     <h3>Create new Photozzap Conference</h3>
                 </div>
                 <div class="modal-body">
+                    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
                     <form name="form.form" class="form-horizontal" role="form">
                         <div class="form-group has-feedback" ng-class="{'has-error': form.form.nickname.$invalid, 'has-success': form.form.nickname.$valid}">
                             <label class="control-label col-sm-4" for="nickname">Nickname
@@ -177,7 +212,7 @@
                             </label>
                             <div class="col-sm-8">
                             <input type="text" name="nickname" class="form-control" id="nickname" 
-                              ng-model="form_data.nickname" 
+                              ng-model="user_object.nickname" 
                               ng-minlength="3"
                               ng-maxlength="30"
                               placeholder="Enter your nickname" required>
@@ -200,12 +235,16 @@
                         </div>
                     </form>
                 </div>
-                <span>status: {{status}}</span>
+                <tt>status: {{status}}</tt>
+                <tt>loginObj.user: {{loginObj.user}}</tt>
+                <tt>form_data.logged_in: {{form_data.logged_in}}</tt>
                 <div class="modal-footer">
-                    <button class="btn btn-success btn-lg" ng-click="ok()"  ng-disabled="form.form.$invalid">
+                    <button class="btn btn-success btn-lg" ng-click="ok()"  ng-disabled="form.form.$invalid || ! form_data.logged_in">
                         <span class="glyphicon glyphicon-ok"></span> OK</button>
                     <button class="btn btn-default btn-lg" ng-click="cancel()">
                         <span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                    <button class="btn btn-default btn-lg" ng-click="logout()">
+                        <span class="glyphicon glyphicon-remove"></span> Logout</button>                        
                 </div>
             </script>        
           <div class="jumbotron">
