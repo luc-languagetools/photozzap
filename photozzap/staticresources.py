@@ -4,7 +4,6 @@ javascript_files = [
 "static/jquery-ui/jquery-ui.min.js",
 "static/slimscroll/jquery.slimscroll.js",
 "static/bootstrap3/js/bootstrap.min.js",
-"static/strophe/strophe.min.js",
 "static/angular/angular.min.js",
 "static/angular/angular-animate.min.js",
 "static/angular/ui-bootstrap-0.10.0.min.js",
@@ -25,8 +24,10 @@ javascript_files = [
 "static/cloudinary/jquery.fileupload-process.js",
 "static/cloudinary/jquery.fileupload-image.js",
 "static/cloudinary/jquery.fileupload-validate.js",
+
 # firebase
 "static/firebase/firebase.js",
+"static/firebase/firebase-simple-login.js",
 "static/firebase/angularfire.min.js",
 
 "static/conference/conference-net.js",

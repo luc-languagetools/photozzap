@@ -15,9 +15,6 @@ $(document).ready(function() {
         $(document).trigger('send_comment');
     });
     
-    // connect to jabber and conference
-    ready_for_connection();
-
     // setup controls
     setupControlHandlers();    
     resizeHandler();    

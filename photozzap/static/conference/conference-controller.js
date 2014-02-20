@@ -1,5 +1,5 @@
 
-var conferenceModule = angular.module('conferenceModule', ['ngAnimate']);
+var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase"]);
 conferenceModule.factory('conferenceService', function ($rootScope) {
     var service = {};
     
@@ -178,6 +178,10 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
+function PhotozzapCtrl($scope, $firebase) {
+    $scope.conference = $firebase(new Firebase("https://fiery-fire-5557.firebaseio.com/conferences/" + PHOTOZZAP_CONF_KEY));
+    
+}
 
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});

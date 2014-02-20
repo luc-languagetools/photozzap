@@ -113,20 +113,11 @@ def get_cdn_path(cdn_server, file_path):
 def conference(request):
 
     settings = request.registry.settings
-    jabber_server = settings['jabber_server']
-    jabber_conf_server = settings['jabber_conf_server']
-    bosh_service = settings['bosh_service']
+    conf_key = request.matchdict['conf_key']
     assets_on_cdn = settings['assets_on_cdn']
     cdn_server = settings['cdn_server']
     tracking_id = settings['analytics_tracking_id']
         
-    
-    conf_key = request.matchdict['conf_key']
-    conf = DBSession.query(Conference).filter_by(secret=conf_key).one()
-
-    # create new user
-    user_created = False
-    
     javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.javascript_files)
     css_files_abs = get_file_list_abs(request, photozzap.staticresources.css_files)
 
@@ -144,24 +135,11 @@ def conference(request):
         for key, file in photozzap.staticresources.icon_files.items():
             icon_files_abs[key] = get_cdn_path(cdn_server, file)
         
-    params = {'bosh_service': bosh_service,
-              'conference': conf.name + '@' + jabber_conf_server,
+    params = {'conf_key': conf_key,
               'javascript_files': javascript_files_abs,
               'css_files': css_files_abs,
               'icon_files': icon_files_abs,
               'tracking_id': tracking_id}
-    while user_created == False:
-        try:
-            with transaction.manager:
-                user = User()
-                DBSession.add(user)
-                params['login'] = user.login + '@' + jabber_server
-                params['password'] = user.password
-            user_created = True
-        except IntegrityError:
-            # user already exists, will retry
-            user_created = False
-
                   
     return params
 

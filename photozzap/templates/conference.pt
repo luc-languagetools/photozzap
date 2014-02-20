@@ -33,12 +33,11 @@
 </style>
 
 </head>
-<body>
-<script tal:repeat="file javascript_files" tal:attributes="src file"  defer></script>
-<script type="text/javascript">
-function ready_for_connection() {
-    connection_initialize("${login}", "${password}", "${bosh_service}", "${conference}");
-}
+<body ng-controller="PhotozzapCtrl">
+<script tal:repeat="file javascript_files" tal:attributes="src file" defer></script>
+
+<script>
+    var PHOTOZZAP_CONF_KEY = "${conf_key}";
 </script>
 
 <script>
@@ -449,6 +448,7 @@ function ready_for_connection() {
     <div class="loading-screen-content">
         <span id="photozzap-title">Photozzap</span>
         <p id="connection-status-text">Please wait, loading</p>
+        <p>{{conference.name}}</p>
     </div>
 </div>
 
