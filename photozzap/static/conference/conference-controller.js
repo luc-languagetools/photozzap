@@ -175,11 +175,33 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
         $rootScope.$broadcast('menu_visible_event');
     });
     
+    $(document).bind('upload_image', function(ev, image_data) {
+        $rootScope.$broadcast('upload_image_data', image_data);
+    });
+    
     return service;
 });
 
-function PhotozzapCtrl($scope, $firebase) {
-    $scope.conference = $firebase(new Firebase("https://fiery-fire-5557.firebaseio.com/conferences/" + PHOTOZZAP_CONF_KEY));
+function PhotozzapCtrl($scope, $firebase, $log) {
+    var DEFAULT_DIMENSION = 400;
+    var conference_path_base = "https://fiery-fire-5557.firebaseio.com/conferences/" + PHOTOZZAP_CONF_KEY;
+    var conference_images_path = conference_path_base + "/images";
+    $scope.conference = $firebase(new Firebase(conference_path_base));
+    $scope.images = $firebase(new Firebase(conference_images_path));
+    $scope.processed_images = {};
+    
+    $scope.$on('upload_image_data', function(event, data){ 
+        $log.info("upload_image_data, cloudinary id: " + data.id);
+        $scope.images.$add({id: data.id});
+    });
+    
+    $scope.images.$on("child_added", function(childSnapshot, prevChildName) {
+        $log.info("child_added: " + childSnapshot);
+        $log.info(childSnapshot);
+        $scope.processed_images[childSnapshot.name] = {
+            url:  $.cloudinary.url(childSnapshot.snapshot.value.id + ".jpg", {crop: 'fit', width: DEFAULT_DIMENSION, height: DEFAULT_DIMENSION})
+        };
+    });
     
 }
 
@@ -416,14 +438,20 @@ function ImageCtrl($scope, conferenceService) {
     $scope.image_data = conferenceService.image_data;
 
     $scope.showing_image = function() {
-        return $scope.image_data.current_image != undefined;
+        return (Object.keys($scope.processed_images).length > 0 );
     };
     
     $scope.image_src = function() {
         result = "";
+        if(Object.keys($scope.processed_images).length > 0 ) {
+            var first_key = Object.keys($scope.processed_images)[0];
+            result = $scope.processed_images[first_key].url;
+        }
+        /*
         if( $scope.showing_image() ) {
             result = $scope.image_data.current_image.image_url();
         }
+        */
         return result;
     };    
     

@@ -29,7 +29,8 @@ $(document).ready(function() {
         var image = {id: data.result.public_id,
                      width: data.result.width,
                      height: data.result.height};
-        Conference.send_img_url(image);
+        // Conference.send_img_url(image);
+        $(document).trigger('upload_image', image);
     });
     
     $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
@@ -48,6 +49,8 @@ $(document).ready(function() {
         log("starting cloudinary file upload");
         $(".cloudinary-fileupload").fileupload();
     });
+    
+    $("#loading-screen").hide();
     
    
 });
