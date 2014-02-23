@@ -228,6 +228,7 @@
 </div> 
 
 
+<!--
 <div id="control_event_layer">
     <div id="mouse_event_layer">
     </div>
@@ -394,7 +395,7 @@
             </div>
         </div>
     </div>
-
+    
     <div ng-controller="MenuSidebarCtrl" ng-init="init('menu')">
         <div id="menu-sidebar-icon" class="action-sidebar menu-sidebar-icon menu-sidebar-icon-{{icon_class_state()}} sidebar-transitions"  ng-style="element_style()">
             <div class="action-sidebar-header">
@@ -431,24 +432,21 @@
         </div>
     </div>
 
-</div>    
+</div>
+-->
     
 <div id="notification-area">
 </div>
 
 <div id="main_image" ng-controller="ImageCtrl">
-    <div id="swipe_images" class="image-swipe-container">
-    </div>
-    <div id="displayed_image" class="image-container">
-        <div id="current_image_container" 
-        ng-if="showing_image()" 
-        style="width: 100%; height: 100%; background-repeat: no-repeat; background-size: contain; background-position: center center;" 
-        ng-style="{'background-image': 'url(' + image_src() + ')'}">
-        </div>
-        <!-- 
-        <img ng-if="showing_image()" id="displayed-image" ng-src="{{image_src()}}"
-            onload="$(document).trigger('resize_image');" />
-        -->
+    <div id="displayed_image">
+        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator class="ng-cloak">
+            <li ng-repeat="image in sorted_images"
+            ng-style="{'background-image': 'url(' + cloudinary_default_url(image) + ')',
+                       'width': window_width,
+                       'height': window_height}">
+            </li>        
+        </ul>
     </div>
     <!--
     <div id="blur_image" class="image-container">
@@ -466,9 +464,30 @@
     </div>
 </div>
 
-<!-- contains all loaded images so that they remain in the browser cache -->
-<div id="image-cache">
+
+<div class="container-fluid">
+    <div class="row" ng-controller="ThumbnailsCtrl">
+        <div class="col-md-12">
+            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator class="ng-cloak">
+                <li ng-repeat="group in thumbnail_groups track by group.id_list">
+                    <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.images track by image.id">
+                        <a href="#" class="thumbnail-tight">
+                          <img ng-src="{{cloudinary_thumbnail_url(image)}}">
+                        </a>
+                    </div>
+                </li>        
+            </ul>
+        </div>
+    </div>
+    
+    <div class="row">
+        <button class="btn btn-primary btn-lg"  onclick="show_upload_modal();">
+            Upload
+        </button>
+    </div>
+
 </div>
+
 
 
 </body>

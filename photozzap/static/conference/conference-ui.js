@@ -746,7 +746,17 @@ function resize_image_area() {
     
     $("#control_event_layer").css({width: winWidth + 'px',
                                    height: winHeight + 'px'});
-                                   
+
+    /*
+    $("#main_image").css({width: winWidth + 'px',
+                          height: winHeight + 'px'});
+
+    $("#displayed_image li").css({width: winWidth + 'px',
+                                  height: winHeight + 'px'});
+    */
+                          
+    /*
+                     
     if (Conference.currently_viewing == undefined ) {
         return;
     }
@@ -762,6 +772,8 @@ function resize_image_area() {
     ensure_optimal_image_resolution(image, getWinRatio(), image.ratio);
 	
 	rebuild_swipe_container();
+    
+    */
     
     log("resize_image_area done");
 }

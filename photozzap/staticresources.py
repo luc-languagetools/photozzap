@@ -5,8 +5,10 @@ javascript_files = [
 "static/slimscroll/jquery.slimscroll.js",
 "static/bootstrap3/js/bootstrap.min.js",
 "static/angular/angular.min.js",
+"static/angular/angular-touch.min.js",
 "static/angular/angular-animate.min.js",
 "static/angular/ui-bootstrap-0.10.0.min.js",
+"static/angular-carousel/angular-carousel.js",
 "static/jslibs/jquery.jqote2.js",
 "static/jslibs/holder.js",
 "static/timeago/jquery.timeago.js",
@@ -46,6 +48,7 @@ css_files = [
 "static/conference/default.css",
 "static/conference/small.css",
 "static/conference/small-landscape.css",
+"static/angular-carousel/angular-carousel.css",
 ]
 
 combined_css_file = "static/combined/all.css"

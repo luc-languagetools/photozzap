@@ -1,5 +1,24 @@
 
-var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase"]);
+var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel']);
+
+conferenceModule.filter('orderObjectBy', function(){
+ return function(input, attribute) {
+    if (!angular.isObject(input)) return input;
+
+    var array = [];
+    for(var objectKey in input) {
+        array.push(input[objectKey]);
+    }
+
+    array.sort(function(a, b){
+        a = parseInt(a[attribute]);
+        b = parseInt(b[attribute]);
+        return a - b;
+    });
+    return array;
+ }
+});
+
 conferenceModule.factory('conferenceService', function ($rootScope) {
     var service = {};
     
@@ -182,28 +201,113 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
-function PhotozzapCtrl($scope, $firebase, $log) {
-    var DEFAULT_DIMENSION = 400;
+function PhotozzapCtrl($scope, $firebase, $log, $window, $filter) {
+    var DEFAULT_DIMENSION = 600;
+    var THUMBNAIL_DIMENSION = 240;
     var conference_path_base = "https://fiery-fire-5557.firebaseio.com/conferences/" + PHOTOZZAP_CONF_KEY;
     var conference_images_path = conference_path_base + "/images";
     $scope.conference = $firebase(new Firebase(conference_path_base));
     $scope.images = $firebase(new Firebase(conference_images_path));
-    $scope.processed_images = {};
+    $scope.sorted_images = [];
+    
+    $scope.window_width = $(window).width();
+    $scope.window_height = $(window).height();   
     
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
-        $scope.images.$add({id: data.id});
+        $scope.images.$add({id: data.id,
+                            time_added: new Date().getTime()});
     });
     
-    $scope.images.$on("child_added", function(childSnapshot, prevChildName) {
-        $log.info("child_added: " + childSnapshot);
-        $log.info(childSnapshot);
-        $scope.processed_images[childSnapshot.name] = {
-            url:  $.cloudinary.url(childSnapshot.snapshot.value.id + ".jpg", {crop: 'fit', width: DEFAULT_DIMENSION, height: DEFAULT_DIMENSION})
-        };
+    angular.element($window).bind('resize', function () {
+        $scope.window_width = $(window).width();
+        $scope.window_height = $(window).height();   
+        $scope.$apply();
     });
     
+    $scope.$watch("conference.images", function(newValue, OldValue) {
+        $log.info("change in images, sorting");
+        $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
+    }, true);
+   
+    $scope.cloudinary_default_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', width: DEFAULT_DIMENSION, height: DEFAULT_DIMENSION});
+    };
+    
+    $scope.cloudinary_thumbnail_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', width: 400, height: 300});
+    };    
 }
+
+
+function ThumbnailsCtrl($scope, $log) {
+    $scope.thumbnail_groups = [];
+    $scope.num_thumbnails = 3;
+    $scope.thumbnails_width = 33;
+
+    $scope.refresh_thumbnail_groups = function() {
+        $log.info("change in images, generating thumbnail groups");
+        $scope.thumbnail_groups = $scope.generate_thumbnail_groups();    
+    };
+    
+    $scope.refresh_num_thumbnails = function() {
+        if ($scope.window_width > 1200) {
+            $scope.num_thumbnails = 6;
+        } else if ($scope.window_width > 900) {
+            $scope.num_thumbnails = 6;
+        } else if ($scope.window_width > 600) {
+            $scope.num_thumbnails = 5;
+        } else if ($scope.window_width > 500) {
+            $scope.num_thumbnails = 4;
+        } else if ($scope.window_width > 400) {
+            $scope.num_thumbnails = 3;
+        } else {
+            $scope.num_thumbnails = 2;
+        }
+        $scope.thumbnails_width = Math.floor(100 / $scope.num_thumbnails);
+        $log.info("refresh_num_thumbnails: num_thumbnails: " + $scope.num_thumbnails +
+                  " thumbnails_width: " + $scope.thumbnails_width);
+    };
+    $scope.refresh_num_thumbnails();
+    
+    $scope.$watch("sorted_images", function(newValue, OldValue) {
+        $scope.refresh_thumbnail_groups();
+    }, true);
+
+    $scope.$watch("window_width", function(newValue, oldValue) {
+        $scope.refresh_num_thumbnails();
+        $scope.refresh_thumbnail_groups();
+    });
+    
+    // return thumbnail groups which can be used with angular-carousel
+    $scope.generate_thumbnail_groups = function() {
+        var result = [];
+        var images = $scope.sorted_images;
+        if (images == undefined) {
+            return [];
+        }
+        var current_group = [];
+        for (var i = 0; i < images.length; i++) {
+            current_group.push(images[i]);
+            if ((i + 1) % $scope.num_thumbnails == 0) {
+                var id_list = $.map(current_group, function(image, i){ return image.id; });
+                result.push({id_list: id_list.join("_"),
+                             images: current_group});
+                current_group = [];
+            }
+        }
+        if (current_group.length > 0 ) {
+            var id_list = $.map(current_group, function(image, i){ return image.id; });
+            result.push({id_list: id_list.join("_"),
+                         images: current_group});
+        }
+        
+        $log.info("num groups: " + result.length);
+        
+        return result;
+    };
+}
+
 
 function TopSidebarCtrl($scope, $controller, conferenceService) {
     $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
