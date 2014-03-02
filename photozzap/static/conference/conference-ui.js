@@ -774,8 +774,6 @@ function resize_image_area() {
 	rebuild_swipe_container();
     
     */
-    
-    log("resize_image_area done");
 }
 
 function transition_next(after_transition) {
@@ -927,7 +925,9 @@ String.prototype.trunc = String.prototype.trunc ||
           return this.length>n ? this.substr(0,n-1)+'&hellip;' : this;
       };
 
+/*
 var clone = (function(){ 
   return function (obj) { Clone.prototype=obj; return new Clone() };
   function Clone(){}
 }());
+*/

@@ -7,7 +7,7 @@ javascript_files = [
 "static/angular/angular.min.js",
 "static/angular/angular-touch.min.js",
 "static/angular/angular-animate.min.js",
-"static/angular/ui-bootstrap-0.10.0.min.js",
+"static/angular/ui-bootstrap-tpls-0.10.0.min.js",
 "static/angular-carousel/angular-carousel.js",
 "static/jslibs/jquery.jqote2.js",
 "static/jslibs/holder.js",

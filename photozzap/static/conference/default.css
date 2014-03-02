@@ -232,8 +232,10 @@ a, a:hover {
 
 .thumbnail-container-tight img {
     max-width: 100%;
+    width: 100%;
     padding-left: 2px;
     padding-right: 2px;
+    padding-bottom: 2px;
 }
 
 .image-preview {
@@ -541,9 +543,18 @@ a, a:hover {
     margin-top: 50px;
 }
 
+.no-bullet {
+    list-style-type: none;
+}
+
+ul.no-bullet li {
+    margin-left: -25px;
+}
+
 body {
 	background: #000000;
     font-family: 'Pathway Gothic One', sans-serif;
+    font-size: 18px;
     height: 100%;
     width: 100%;
 }

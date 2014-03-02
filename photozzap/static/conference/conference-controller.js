@@ -1,5 +1,5 @@
 
-var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel']);
+var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap']);
 
 conferenceModule.filter('orderObjectBy', function(){
  return function(input, attribute) {
@@ -201,18 +201,27 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
-function PhotozzapCtrl($scope, $firebase, $log, $window, $filter) {
-    var DEFAULT_DIMENSION = 600;
-    var THUMBNAIL_DIMENSION = 240;
+function PhotozzapCtrl($scope, $firebase, $log, $window, $filter, $http, $q, $timeout) {
+    var DIMENSION_INCREMENT = 100;
+
+    var DEFAULT_THUMBNAIL_DIMENSION = 250;    
+    var DEFAULT_DIMENSION = 640;
+    var DEFAULT_COMPRESSION = 75;
+    var FULL_COMPRESSION = 90;
+    
+    $scope.global_data = {};
+    $scope.global_data.photo_index = 0;
+    $scope.global_data.photo_state_by_id = {};
+
+    $scope.http_canceler = $q.defer();
+    
     var conference_path_base = "https://fiery-fire-5557.firebaseio.com/conferences/" + PHOTOZZAP_CONF_KEY;
     var conference_images_path = conference_path_base + "/images";
     $scope.conference = $firebase(new Firebase(conference_path_base));
     $scope.images = $firebase(new Firebase(conference_images_path));
     $scope.sorted_images = [];
     
-    $scope.window_width = $(window).width();
-    $scope.window_height = $(window).height();   
-    
+   
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,
@@ -220,22 +229,144 @@ function PhotozzapCtrl($scope, $firebase, $log, $window, $filter) {
     });
     
     angular.element($window).bind('resize', function () {
-        $scope.window_width = $(window).width();
-        $scope.window_height = $(window).height();   
-        $scope.$apply();
+        $scope.resize_handler();
     });
+    
+    $scope.round_dimension = function(real_dimension) {
+        return Math.ceil(real_dimension / DIMENSION_INCREMENT) * DIMENSION_INCREMENT;
+    }
+
+    $scope.window_dimensions = {width: $(window).width(),
+                                height: $(window).height()};
+    
+    $scope.default_params = {width: DEFAULT_DIMENSION,
+                             height: DEFAULT_DIMENSION,
+                             quality: DEFAULT_COMPRESSION};
+    $scope.full_params = {width: $scope.round_dimension($(window).width()),
+                          height: $scope.round_dimension($(window).height()),
+                          quality: FULL_COMPRESSION};
+    
+    $scope.resize_handler = function() {
+        var new_width = $(window).width();
+        var new_height = $(window).height();
+
+        var pixelRatio = 1;
+        if( window.devicePixelRatio != undefined ) {
+            pixelRatio = window.devicePixelRatio;
+        }
+        
+        $scope.full_params.width = $scope.round_dimension(new_width * pixelRatio);
+        $scope.full_params.height = $scope.round_dimension(new_height * pixelRatio);
+        
+        if (new_width == $scope.window_width && 
+            new_height - $scope.window_height < 60) {
+            // don't do anything, window resize is due to user scrolling down
+        } else {
+            $scope.window_dimensions.width = $(window).width();
+            $scope.window_dimensions.height = $(window).height();   
+            $scope.$apply();
+        }
+    }
+    
+    // return true if new params have at least one dimension greater
+    $scope.params_greater = function(old_params, new_params) {
+        if (new_params.width > old_params.width ||
+            new_params.height > old_params.height ||
+            new_params.quality > old_params.quality) {
+                return true;
+            }
+        return false;
+    }
     
     $scope.$watch("conference.images", function(newValue, OldValue) {
         $log.info("change in images, sorting");
         $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
+        angular.forEach($scope.sorted_images, function(image, index){
+            if (this[image.id] == undefined) {
+                this[image.id] = {photo_loaded_params: clone($scope.default_params),
+                                  photo_url: $scope.cloudinary_photo_default_url(image),
+                                  thumbnail_url: $scope.cloudinary_thumbnail_url(image)};
+            }
+        }, $scope.global_data.photo_state_by_id);
     }, true);
    
-    $scope.cloudinary_default_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', width: DEFAULT_DIMENSION, height: DEFAULT_DIMENSION});
+    $scope.$watch("global_data.photo_index", function(newValue, oldValue) {
+        $log.info("global_data.photo_index changed: " + newValue);
+        // do we need to load a new photo ?
+        $scope.check_and_load_new_url(newValue);
+    });
+   
+    $scope.$watch("full_params", function(newValue, oldValue) {
+        $scope.check_and_load_new_url($scope.global_data.photo_index);
+    }, true);
+   
+    $scope.check_and_load_new_url = function(photo_index) {
+        
+        var check_and_load_new_url_function = function(sorted_images, photo_index) {
+            var image_data = $scope.sorted_images[photo_index];
+            var loaded_params = $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params;
+            if ($scope.params_greater(loaded_params, $scope.full_params)) {
+                    $log.info("loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
+                    // cancel existing http request and configure new promise
+                    $scope.http_canceler.resolve();
+                    $scope.http_canceler = $q.defer();
+                    // load new URL
+                    var http_get_config = {method: 'GET',
+                                           url: $scope.cloudinary_photo_full_url(image_data),
+                                           timeout: $scope.http_canceler.promise,
+                                           image_id: image_data.id,
+                                           loaded_params: clone($scope.full_params)};
+                    $http(http_get_config).
+                    success(function(data, status, headers, config) {
+                        $log.info("successfully loaded full res for image id: " + config.image_id);
+                        $scope.global_data.photo_state_by_id[config.image_id].photo_loaded_params = config.loaded_params;
+                        $scope.global_data.photo_state_by_id[config.image_id].photo_url = config.url;
+                    }).
+                    error(function(data, status, headers, config) {
+                        $log.info("aborted load for  " + config.image_id);
+                    });
+                } else {
+                    $log.info("not loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
+                }
+        }
+        
+        if ($scope.sorted_images == undefined || $scope.sorted_images.length == 0) {
+            // run 
+            var watch_handler = $scope.$watch("sorted_images", function(new_value) {
+                if ($scope.sorted_images != undefined && $scope.sorted_images.length > 0) {
+                    $log.info("sorted_images changed, can run check_and_load_new_url_function: ", $scope.sorted_images);
+                    check_and_load_new_url_function($scope.sorted_images, photo_index);
+                    watch_handler();
+                }
+            });
+        } else {
+            // run directly
+            check_and_load_new_url_function($scope.sorted_images, photo_index);
+        }
+    
+
+    }
+    
+    $scope.cloudinary_photo_full_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
+                                                         width: $scope.full_params.width, 
+                                                         height: $scope.full_params.height,
+                                                         quality: $scope.full_params.quality});
+    };
+   
+    $scope.cloudinary_photo_default_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
+                                                         width: $scope.default_params.width, 
+                                                         height: $scope.default_params.height,
+                                                         quality: $scope.default_params.quality});
     };
     
     $scope.cloudinary_thumbnail_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', width: 400, height: 300});
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
+                                                         width: DEFAULT_THUMBNAIL_DIMENSION, 
+                                                         height: DEFAULT_THUMBNAIL_DIMENSION,
+                                                         quality: DEFAULT_COMPRESSION,
+                                                         sharpen: 400});
     };    
 }
 
@@ -251,20 +382,32 @@ function ThumbnailsCtrl($scope, $log) {
     };
     
     $scope.refresh_num_thumbnails = function() {
-        if ($scope.window_width > 1200) {
+        var window_width = $scope.window_dimensions.width;
+    
+        if (window_width > 1500) {
+            $scope.num_thumbnails = 10;
+        } else if (window_width > 1300) {
+            $scope.num_thumbnails = 9;
+        } else if (window_width > 1100) {
+            $scope.num_thumbnails = 8;            
+        } else if (window_width > 1024) {
+            $scope.num_thumbnails = 7;            
+        } else if (window_width > 770) {
             $scope.num_thumbnails = 6;
-        } else if ($scope.window_width > 900) {
-            $scope.num_thumbnails = 6;
-        } else if ($scope.window_width > 600) {
+        } else if (window_width > 500) {
             $scope.num_thumbnails = 5;
-        } else if ($scope.window_width > 500) {
+        } else if (window_width > 400) {
+            // iphone4 landscape
             $scope.num_thumbnails = 4;
-        } else if ($scope.window_width > 400) {
+        } else if (window_width >= 320) {
+            // iphone4 portrait
             $scope.num_thumbnails = 3;
         } else {
             $scope.num_thumbnails = 2;
         }
-        $scope.thumbnails_width = Math.floor(100 / $scope.num_thumbnails);
+        var temp_width = (100 / $scope.num_thumbnails) * 10.0;
+        var int_width = Math.floor(temp_width);
+        $scope.thumbnails_width = int_width / 10.0;
         $log.info("refresh_num_thumbnails: num_thumbnails: " + $scope.num_thumbnails +
                   " thumbnails_width: " + $scope.thumbnails_width);
     };
@@ -274,10 +417,15 @@ function ThumbnailsCtrl($scope, $log) {
         $scope.refresh_thumbnail_groups();
     }, true);
 
-    $scope.$watch("window_width", function(newValue, oldValue) {
+    $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
         $scope.refresh_num_thumbnails();
         $scope.refresh_thumbnail_groups();
     });
+    
+    $scope.select_image = function(image) {
+        $log.info("select_image, index: " + image.index);
+        $scope.global_data.photo_index = image.index;
+    }
     
     // return thumbnail groups which can be used with angular-carousel
     $scope.generate_thumbnail_groups = function() {
@@ -288,6 +436,8 @@ function ThumbnailsCtrl($scope, $log) {
         }
         var current_group = [];
         for (var i = 0; i < images.length; i++) {
+            // store index in image object for easy selection
+            images[i].index = i;
             current_group.push(images[i]);
             if ((i + 1) % $scope.num_thumbnails == 0) {
                 var id_list = $.map(current_group, function(image, i){ return image.id; });

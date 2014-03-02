@@ -432,7 +432,6 @@ $(document).bind('display_image', function(ev, image) {
 });
 
 function resizeHandler() {
-    log("resizeHandler");
     $(document).trigger('resize_image');
     controlsResize();
 }
