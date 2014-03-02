@@ -201,7 +201,7 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
-function PhotozzapCtrl($scope, $firebase, $log, $window, $filter, $http, $q, $timeout) {
+function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $log, $window, $filter, $http, $q, $timeout) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -210,17 +210,44 @@ function PhotozzapCtrl($scope, $firebase, $log, $window, $filter, $http, $q, $ti
     var FULL_COMPRESSION = 90;
     
     $scope.global_data = {};
-    $scope.global_data.photo_index = 0;
+    $scope.global_data.photo_index = 0;     
     $scope.global_data.photo_state_by_id = {};
 
     $scope.http_canceler = $q.defer();
     
-    var conference_path_base = "https://fiery-fire-5557.firebaseio.com/conferences/" + PHOTOZZAP_CONF_KEY;
-    var conference_images_path = conference_path_base + "/images";
-    $scope.conference = $firebase(new Firebase(conference_path_base));
-    $scope.images = $firebase(new Firebase(conference_images_path));
+    $scope.firebase_base = "https://fiery-fire-5557.firebaseio.com/";
+    var firebaseRef = new Firebase($scope.firebase_base);
+
     $scope.sorted_images = [];
+    $scope.logged_in = false;
     
+    $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
+   
+    $scope.initialize_bindings = function() {
+        var conference_path_base = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY;
+        var conference_images_path = conference_path_base + "/images";
+        var users_path = conference_path_base + "/users";
+    
+        $scope.conference = $firebase(new Firebase(conference_path_base));
+        $scope.images = $firebase(new Firebase(conference_images_path));
+        $scope.users = $firebase(new Firebase(users_path));    
+       
+        $scope.start_watch_photo_index();
+    }
+   
+    $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
+        $log.info("User " + user.id + " logged in");
+        $scope.logged_in = true;
+        $scope.initialize_bindings();
+    });
+    
+    $scope.login_obj.$getCurrentUser().then(function(user){
+        $log.info("getCurrentUser: ", user);
+        if (user == null) {
+            $scope.login_obj.$login('anonymous', {rememberMe: true});
+        }        
+    });
+
    
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
@@ -279,6 +306,10 @@ function PhotozzapCtrl($scope, $firebase, $log, $window, $filter, $http, $q, $ti
     }
     
     $scope.$watch("conference.images", function(newValue, OldValue) {
+        if ($scope.conference == undefined) {
+            // cannot do anything yet
+            return;
+        }
         $log.info("change in images, sorting");
         $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
         angular.forEach($scope.sorted_images, function(image, index){
@@ -290,12 +321,19 @@ function PhotozzapCtrl($scope, $firebase, $log, $window, $filter, $http, $q, $ti
         }, $scope.global_data.photo_state_by_id);
     }, true);
    
-    $scope.$watch("global_data.photo_index", function(newValue, oldValue) {
-        $log.info("global_data.photo_index changed: " + newValue);
-        // do we need to load a new photo ?
-        $scope.check_and_load_new_url(newValue);
-    });
-   
+    $scope.start_watch_photo_index = function() {
+        $scope.$watch("global_data.photo_index", function(newValue, oldValue) {
+            $log.info("global_data.photo_index changed: " + newValue);
+            // do we need to load a new photo ?
+            $scope.check_and_load_new_url(newValue);
+            
+            // update user object on firebase
+            $scope.users[$scope.login_obj.user.uid] = {photo_index: newValue};
+            $scope.users.$save($scope.login_obj.user.uid);        
+            
+        });
+    }
+ 
     $scope.$watch("full_params", function(newValue, oldValue) {
         $scope.check_and_load_new_url($scope.global_data.photo_index);
     }, true);
