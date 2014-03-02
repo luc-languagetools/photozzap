@@ -413,10 +413,16 @@ function ThumbnailsCtrl($scope, $log) {
     $scope.thumbnail_groups = [];
     $scope.num_thumbnails = 3;
     $scope.thumbnails_width = 33;
+    $scope.thumbnail_group_index = 0;
 
     $scope.refresh_thumbnail_groups = function() {
         $log.info("change in images, generating thumbnail groups");
-        $scope.thumbnail_groups = $scope.generate_thumbnail_groups();    
+        $scope.thumbnail_groups = $scope.generate_thumbnail_groups();
+        if ($scope.thumbnail_group_index >= $scope.thumbnail_groups.length &&
+            $scope.thumbnail_group_index > 0) {
+            // the index is too far ahead, there aren't enough groups
+            $scope.thumbnail_group_index = $scope.thumbnail_groups.length - 1;
+        }
     };
     
     $scope.refresh_num_thumbnails = function() {
