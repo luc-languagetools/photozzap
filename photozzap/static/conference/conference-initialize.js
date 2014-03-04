@@ -82,7 +82,4 @@ $(document).ready(function() {
         $(".cloudinary-fileupload").fileupload();
     });
     
-    $("#loading-screen").hide();
-    
-   
 });

@@ -19,6 +19,25 @@ conferenceModule.filter('orderObjectBy', function(){
  }
 });
 
+conferenceModule.filter('orderObjectByAndInsertId', function(){
+ return function(input, attribute) {
+    if (!angular.isObject(input)) return input;
+
+    var array = [];
+    for(var objectKey in input) {
+        input[objectKey].id = objectKey;
+        array.push(input[objectKey]);
+    }
+
+    array.sort(function(a, b){
+        a = parseInt(a[attribute]);
+        b = parseInt(b[attribute]);
+        return a - b;
+    });
+    return array;
+ }
+});
+
 conferenceModule.factory('conferenceService', function ($rootScope) {
     var service = {};
     
@@ -206,6 +225,7 @@ function PhotozzapLoginModalCtrl($scope, $rootScope, $modalInstance, $log) {
     
     $scope.login = function() {
         $scope.perform_login($scope.user_object.nickname);
+        $modalInstance.dismiss('close');
     }
 }
 
@@ -231,21 +251,30 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     var firebaseRef = new Firebase($scope.firebase_base);
 
     $scope.sorted_images = [];
-    $scope.logged_in = false;
+    $scope.sorted_users = [];
+    
+    $scope.logged_in_and_ready = false;
+    $scope.status_string = "loading";
     
     $scope.perform_setup_on_login = false;
     $scope.new_nickname = undefined;
     $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
    
+    $scope.watching_photo_index = false;
    
     $scope.initialize_user_bindings = function(user) {
         var global_user_path = $scope.firebase_users + user.uid;
         var conference_user_path = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY + "/users/" + user.uid;
+        var conference_user_connected_path = conference_user_path + "/connected";
     
         var global_user_node = $firebase(new Firebase(global_user_path));
         var conference_user_node = $firebase(new Firebase(conference_user_path));
         
+        var connected_ref = new Firebase(conference_user_connected_path);
+        connected_ref.onDisconnect().set(false);
+        
         $log.info("binding to [", global_user_path, "], [", conference_user_path, "]");
+        $log.info("connected_ref path: [", conference_user_connected_path, "]");
         
         var binding_done_promise = global_user_node.$bind($scope, "global_user_object").
         then(function(unbind) {
@@ -259,13 +288,12 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.initialize_bindings = function() {
         var conference_path_base = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY;
         var conference_images_path = conference_path_base + "/images";
-        var users_path = conference_path_base + "/users";
     
         $scope.conference = $firebase(new Firebase(conference_path_base));
         $scope.images = $firebase(new Firebase(conference_images_path));
-        $scope.users = $firebase(new Firebase(users_path));    
        
-        $scope.start_watch_photo_index();
+        $scope.logged_in_and_ready = true;
+        
     }
    
     $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
@@ -273,6 +301,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         $scope.initialize_user_bindings(user).then(function() {
             $log.info("bound user bindings");
+            $scope.conference_user_object.connected = true;
+            $scope.conference_user_object.time_connected = new Date().getTime();
             if($scope.perform_setup_on_login) {
                 $scope.global_user_object.nickname = $scope.new_nickname;
                 $scope.conference_user_object.nickname = $scope.new_nickname;
@@ -282,13 +312,18 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                 $scope.conference_user_object.nickname = $scope.global_user_object.nickname;
             }
             
-            $scope.logged_in = true;
             $scope.initialize_bindings();            
         });
 
     });
     
+    $rootScope.$on("$firebaseSimpleLogin:logout", function() {
+        $scope.logged_in_and_ready = false;
+        $scope.status_string = "logged out";
+    });
+    
     $scope.login_obj.$getCurrentUser().then(function(user){
+        $scope.status_string = "logging in";
         $log.info("getCurrentUser: ", user);
         if (user == null) {
             // show login modal
@@ -383,11 +418,29 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             if (this[image.id] == undefined) {
                 this[image.id] = {photo_loaded_params: clone($scope.default_params),
                                   photo_url: $scope.cloudinary_photo_default_url(image),
-                                  thumbnail_url: $scope.cloudinary_thumbnail_url(image)};
+                                  thumbnail_url: $scope.cloudinary_thumbnail_url(image),
+                                  photo_index: index};
             }
         }, $scope.global_data.photo_state_by_id);
+        
+        if (! $scope.watching_photo_index && $scope.sorted_images.length > 0) {
+            $scope.start_watch_photo_index();
+            $scope.watching_photo_index = true;
+        }
+        
     }, true);
-   
+
+    $scope.$watch("conference.users", function(newValue, OldValue) {
+        if ($scope.conference == undefined) {
+            // cannot do anything yet
+            return;
+        }
+
+        var sorted_users_array =  $filter('orderObjectByAndInsertId')($scope.conference.users, 'time_added');
+        $scope.sorted_users = $filter('filter')(sorted_users_array, {connected: true});
+        
+    }, true);
+    
     $scope.start_watch_photo_index = function() {
         $scope.$watch("global_data.photo_index", function(newValue, oldValue) {
             $log.info("global_data.photo_index changed: " + newValue);
@@ -395,9 +448,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $scope.check_and_load_new_url(newValue);
             
             // update user object on firebase
-            $scope.conference_user_object.photo_index = newValue;
+            $scope.conference_user_object.viewing_image_id = $scope.sorted_images[newValue].id;
             
         });
+    }
+ 
+    $scope.show_image = function(image_id) {
+        var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
+        $scope.global_data.photo_index = photo_index;
     }
  
     $scope.$watch("full_params", function(newValue, oldValue) {
@@ -465,8 +523,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          quality: $scope.default_params.quality});
     };
     
-    $scope.cloudinary_thumbnail_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
+    $scope.cloudinary_thumbnail_url = function(image_id) {
+        return $.cloudinary.url(image_id + ".jpg", {crop: 'fill', 
                                                          width: DEFAULT_THUMBNAIL_DIMENSION, 
                                                          height: DEFAULT_THUMBNAIL_DIMENSION,
                                                          quality: DEFAULT_COMPRESSION,
@@ -481,8 +539,14 @@ function ThumbnailsCtrl($scope, $log) {
     $scope.thumbnails_width = 33;
     $scope.thumbnail_group_index = 0;
 
+    $scope.init = function(watch_expression)
+    {    
+        $scope.watch_expression = watch_expression;
+        $scope.$watch($scope.watch_expression, $scope.watch_handler, true); 
+    }
+    
     $scope.refresh_thumbnail_groups = function() {
-        $log.info("change in images, generating thumbnail groups");
+        $log.info("change in ", $scope.watch_expression , " generating thumbnail groups");
         $scope.thumbnail_groups = $scope.generate_thumbnail_groups();
         if ($scope.thumbnail_group_index >= $scope.thumbnail_groups.length &&
             $scope.thumbnail_group_index > 0) {
@@ -522,44 +586,37 @@ function ThumbnailsCtrl($scope, $log) {
                   " thumbnails_width: " + $scope.thumbnails_width);
     };
     $scope.refresh_num_thumbnails();
-    
-    $scope.$watch("sorted_images", function(newValue, OldValue) {
-        $scope.refresh_thumbnail_groups();
-    }, true);
 
+    $scope.watch_handler = function(newValue, OldValue) {
+        $scope.refresh_thumbnail_groups();
+    };
+    
     $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
         $scope.refresh_num_thumbnails();
         $scope.refresh_thumbnail_groups();
     });
     
-    $scope.select_image = function(image) {
-        $log.info("select_image, index: " + image.index);
-        $scope.global_data.photo_index = image.index;
-    }
-    
     // return thumbnail groups which can be used with angular-carousel
     $scope.generate_thumbnail_groups = function() {
         var result = [];
-        var images = $scope.sorted_images;
-        if (images == undefined) {
+        var obj_array = $scope[$scope.watch_expression];
+        if (obj_array == undefined) {
             return [];
         }
         var current_group = [];
-        for (var i = 0; i < images.length; i++) {
-            // store index in image object for easy selection
-            images[i].index = i;
-            current_group.push(images[i]);
+        for (var i = 0; i < obj_array.length; i++) {
+            current_group.push(obj_array[i]);
             if ((i + 1) % $scope.num_thumbnails == 0) {
-                var id_list = $.map(current_group, function(image, i){ return image.id; });
+                var id_list = $.map(current_group, function(obj, i){ return obj.id; });
                 result.push({id_list: id_list.join("_"),
-                             images: current_group});
+                             objs: current_group});
                 current_group = [];
             }
         }
         if (current_group.length > 0 ) {
-            var id_list = $.map(current_group, function(image, i){ return image.id; });
+            var id_list = $.map(current_group, function(obj, i){ return obj.id; });
             result.push({id_list: id_list.join("_"),
-                         images: current_group});
+                         objs: current_group});
         }
         
         $log.info("num groups: " + result.length);
