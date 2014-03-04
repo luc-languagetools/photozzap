@@ -502,11 +502,11 @@
     <div class="row">
         <div class="col-md-12">
             <tabset>
-                <tab>
+                <tab  ng-controller="ThumbnailsCtrl" ng-init="init('sorted_images')" select="refresh_thumbnail_groups()">
                     <tab-heading>
                         <i class="glyphicon glyphicon-picture"></i> Photos
                     </tab-heading>
-                    <div class="row" ng-controller="ThumbnailsCtrl" ng-init="init('sorted_images')">
+                    <div class="row">
                         <div class="col-md-12">
                             <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak">
                                 <li ng-repeat="group in thumbnail_groups track by group.id_list">
@@ -520,11 +520,11 @@
                         </div>
                     </div>            
                 </tab>
-                <tab>
+                <tab ng-controller="ThumbnailsCtrl"  ng-init="init('sorted_images')" select="refresh_thumbnail_groups()">
                     <tab-heading>
                         <i class="glyphicon glyphicon-picture"></i> All Photos
                     </tab-heading>
-                    <div class="row" ng-controller="ThumbnailsCtrl"  ng-init="init('sorted_images')">
+                    <div class="row">
                         <div class="col-md-12">
                             <div ng-repeat="group in thumbnail_groups track by group.id_list">
                                 <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
@@ -536,11 +536,11 @@
                         </div>
                     </div>                
                 </tab>            
-                <tab>
+                <tab ng-controller="ThumbnailsCtrl" ng-init="init('sorted_users')" select="refresh_thumbnail_groups()">
                     <tab-heading>
                         <i class="glyphicon glyphicon-user"></i> Users
                     </tab-heading>
-                    <div class="row" ng-controller="ThumbnailsCtrl" ng-init="init('sorted_users')">
+                    <div class="row">
                         <div class="col-md-12">
                             <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
                                 <li ng-repeat="group in thumbnail_groups track by group.id_list">

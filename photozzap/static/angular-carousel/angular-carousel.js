@@ -224,7 +224,7 @@ angular.module('angular-carousel')
                     }
 
                     function getCarouselWidth() {
-                       // container.css('width', 'auto');
+                        //container.css('width', 'auto');
                         var slides = carousel.children();
                         if (slides.length === 0) {
                             containerWidth = carousel[0].getBoundingClientRect().width;
@@ -238,10 +238,21 @@ angular.module('angular-carousel')
                     function updateContainerWidth() {
                         // force the carousel container width to match the first slide width
                         container.css('width', '100%');
-                        // test luc 2014/03/04: don't set pixel size as this is buggy
-                        var carouselWidth = getCarouselWidth();
-                        if (carouselWidth > 0 )
-                            container.css('width', getCarouselWidth() + 'px');
+                        container.css('width', getCarouselWidth() + 'px');
+                        /*
+                        console.log("container.css set to " + container.css("width"));
+                        var tempCarouselWidth = getCarouselWidth();
+                        if (tempCarouselWidth > 0 ) {
+                            container.css('width', tempCarouselWidth + 'px');
+                        } else {
+                            console.log("retrying to obtain width in 1000ms");
+                            container.css('width', 'auto');
+                            setTimeout(function() {
+                                tempCarouselWidth = getCarouselWidth();
+                                container.css('width', tempCarouselWidth + 'px');
+                            }, 1000);
+                        }
+                        */
                     }
 
                     function scroll(x) {
