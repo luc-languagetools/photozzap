@@ -201,7 +201,15 @@ conferenceModule.factory('conferenceService', function ($rootScope) {
     return service;
 });
 
-function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $log, $window, $filter, $http, $q, $timeout) {
+function PhotozzapLoginModalCtrl($scope, $rootScope, $modalInstance, $log) {
+    $scope.user_object = {};
+    
+    $scope.login = function() {
+        $scope.perform_login($scope.user_object.nickname);
+    }
+}
+
+function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -213,15 +221,40 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $log
     $scope.global_data.photo_index = 0;     
     $scope.global_data.photo_state_by_id = {};
 
+    $scope.global_user_object = {}; // will be bound to the user's global object
+    $scope.conference_user_object = {}; // will be bound to the user's conference object
+    
     $scope.http_canceler = $q.defer();
     
     $scope.firebase_base = "https://fiery-fire-5557.firebaseio.com/";
+    $scope.firebase_users = $scope.firebase_base + "users/";
     var firebaseRef = new Firebase($scope.firebase_base);
 
     $scope.sorted_images = [];
     $scope.logged_in = false;
     
+    $scope.perform_setup_on_login = false;
+    $scope.new_nickname = undefined;
     $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
+   
+   
+    $scope.initialize_user_bindings = function(user) {
+        var global_user_path = $scope.firebase_users + user.uid;
+        var conference_user_path = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY + "/users/" + user.uid;
+    
+        var global_user_node = $firebase(new Firebase(global_user_path));
+        var conference_user_node = $firebase(new Firebase(conference_user_path));
+        
+        $log.info("binding to [", global_user_path, "], [", conference_user_path, "]");
+        
+        var binding_done_promise = global_user_node.$bind($scope, "global_user_object").
+        then(function(unbind) {
+            $log.info("bound global_user_object");
+            return conference_user_node.$bind($scope, "conference_user_object");
+        });
+
+        return binding_done_promise;
+    }
    
     $scope.initialize_bindings = function() {
         var conference_path_base = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY;
@@ -237,17 +270,51 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $log
    
     $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
         $log.info("User " + user.id + " logged in");
-        $scope.logged_in = true;
-        $scope.initialize_bindings();
+        
+        $scope.initialize_user_bindings(user).then(function() {
+            $log.info("bound user bindings");
+            if($scope.perform_setup_on_login) {
+                $scope.global_user_object.nickname = $scope.new_nickname;
+                $scope.conference_user_object.nickname = $scope.new_nickname;
+            } else {
+                // see what the user has in his global object, and copy from there
+                // $log.info("global_user_object.nickname is: ", $scope.global_user_object.nickname);
+                $scope.conference_user_object.nickname = $scope.global_user_object.nickname;
+            }
+            
+            $scope.logged_in = true;
+            $scope.initialize_bindings();            
+        });
+
     });
     
     $scope.login_obj.$getCurrentUser().then(function(user){
         $log.info("getCurrentUser: ", user);
         if (user == null) {
-            $scope.login_obj.$login('anonymous', {rememberMe: true});
+            // show login modal
+            $scope.open_login_modal();
         }        
     });
-
+    
+    $scope.open_login_modal = function() {
+        $log.info("open_login_modal");
+        $scope.modalInstance = $modal.open({templateUrl: "login_modal.html",
+                                            controller: PhotozzapLoginModalCtrl,
+                                            scope: $scope
+                                            });
+    };    
+   
+    $scope.perform_login = function(nickname) {
+        $log.info("perform_login with nickname " + nickname);
+        $scope.perform_setup_on_login = true;
+        $scope.new_nickname = nickname;
+        $scope.login_obj.$login('anonymous', {rememberMe: true});        
+    }
+   
+    $scope.logout = function() {
+        $log.info("logout");
+        $scope.login_obj.$logout();
+    }
    
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
@@ -328,8 +395,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $log
             $scope.check_and_load_new_url(newValue);
             
             // update user object on firebase
-            $scope.users[$scope.login_obj.user.uid] = {photo_index: newValue};
-            $scope.users.$save($scope.login_obj.user.uid);        
+            $scope.conference_user_object.photo_index = newValue;
             
         });
     }

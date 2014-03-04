@@ -438,6 +438,37 @@
 <div id="notification-area">
 </div>
 
+<script type="text/ng-template" id="login_modal.html">
+    <div class="modal-header">
+        <h3>Login</h3>
+    </div>
+    <div class="modal-body">
+        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        <form name="form.form" class="form-horizontal" role="form">
+            <div class="form-group has-feedback" ng-class="{'has-error': form.form.nickname.$invalid, 'has-success': form.form.nickname.$valid}">
+                <label class="control-label col-sm-4" for="nickname">Nickname
+                    <small ng-show="form.form.nickname.$error.minlength"><br/>Min 3 characters</small>
+                    <small ng-show="form.form.nickname.$error.maxlength"><br/>Max 30 characters</small>
+                </label>
+                <div class="col-sm-8">
+                <input type="text" name="nickname" class="form-control" id="nickname" 
+                  ng-model="user_object.nickname" 
+                  ng-minlength="3"
+                  ng-maxlength="30"
+                  placeholder="Enter your nickname" required>
+                <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok': form.form.nickname.$valid, 'glyphicon-remove': form.form.nickname.$invalid}" ></span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-lg" ng-click="login()"  ng-disabled="form.form.$invalid">
+            <span class="glyphicon glyphicon-ok"></span> Login</button>
+        <button class="btn btn-default btn-lg" ng-click="cancel()">
+            <span class="glyphicon glyphicon-remove"></span> Cancel</button>
+    </div>
+</script>  
+
 <div id="main_image" ng-controller="ImageCtrl">
     <div id="displayed_image">
         <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak">
@@ -524,7 +555,10 @@
                     <tab-heading>
                         <i class="glyphicon glyphicon-cog"></i> Options
                     </tab-heading>
-                </tab>                
+                    <button class="btn btn-primary btn-lg" ng-click="logout()">
+                        Logout
+                    </button>                    
+                </tab> 
             </tabset>
         </div>
     </div>
