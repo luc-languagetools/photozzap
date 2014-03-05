@@ -36,7 +36,7 @@ $(document).ready(function() {
     $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
     
     $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
-        log("fileuploaddone, data: " + data);
+        //log("fileuploaddone, data: " + data);
         // data.result.public_id
         // data.result.height
         // data.result.width
@@ -48,7 +48,7 @@ $(document).ready(function() {
     });
     
     $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
-       log("fileuploadstart");
+       //log("fileuploadstart");
        hide_upload_modal();
        show_progress_bar();
      });    
@@ -60,7 +60,7 @@ $(document).ready(function() {
     });
     
     $("#upload-cloudinary").on('click', function(){
-        log("starting cloudinary file upload");
+        //log("starting cloudinary file upload");
         $(".cloudinary-fileupload").fileupload();
     });
     
