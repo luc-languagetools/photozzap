@@ -1,10 +1,4 @@
 
-/*
-a, a:hover {
-    color: #333333;
-}
-*/
-
 #main_image {
     left: 0%;
     top: 0%;
@@ -21,14 +15,6 @@ a, a:hover {
     box-shadow: 0px 0px 10px 6px #222222;
 }
 
-/* override bootstrap's thumbnail */
-/*
-.thumbnail {
-    border-width: 0px;
-    padding: 0px;
-}
-*/
-
 .thumbnail-container-tight {
     float: left;
 }
@@ -43,14 +29,6 @@ a, a:hover {
 
 .upload-header {
     margin-top: 50px;
-}
-
-.no-bullet {
-    list-style-type: none;
-}
-
-ul.no-bullet li {
-    margin-left: -25px;
 }
 
 body {

@@ -36,8 +36,6 @@ css_files = [
 "static/bootstrap3/css/bootstrap.min.css",
 "static/bootstrap3/css/bootstrap-theme.min.css",
 "static/conference/default.css",
-"static/conference/small.css",
-"static/conference/small-landscape.css",
 "static/angular-carousel/angular-carousel.css",
 ]
 
