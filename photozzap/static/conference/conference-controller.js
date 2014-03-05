@@ -548,9 +548,11 @@ function ThumbnailsCtrl($scope, $log) {
     $scope.refresh_thumbnail_groups = function() {
         $log.info("change in ", $scope.watch_expression , " generating thumbnail groups");
         $scope.thumbnail_groups = $scope.generate_thumbnail_groups();
+        $log.info("thumbnail_groups: ", $scope.thumbnail_groups);
         if ($scope.thumbnail_group_index >= $scope.thumbnail_groups.length &&
             $scope.thumbnail_group_index > 0) {
             // the index is too far ahead, there aren't enough groups
+            $log.info("changing thumbnail_group_index as there aren't enough groups");
             $scope.thumbnail_group_index = $scope.thumbnail_groups.length - 1;
         }
     };

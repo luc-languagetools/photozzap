@@ -221,6 +221,7 @@ angular.module('angular-carousel')
                         var items = [];
                         for (var i = 0; i < slidesCount; i++) items[i] = i;
                         scope.carouselIndicatorArray = items;
+                        console.log("item.length: ", items.length, " slidesCount: ", slidesCount);
                     }
 
                     function getCarouselWidth() {
@@ -239,20 +240,6 @@ angular.module('angular-carousel')
                         // force the carousel container width to match the first slide width
                         container.css('width', '100%');
                         container.css('width', getCarouselWidth() + 'px');
-                        /*
-                        console.log("container.css set to " + container.css("width"));
-                        var tempCarouselWidth = getCarouselWidth();
-                        if (tempCarouselWidth > 0 ) {
-                            container.css('width', tempCarouselWidth + 'px');
-                        } else {
-                            console.log("retrying to obtain width in 1000ms");
-                            container.css('width', 'auto');
-                            setTimeout(function() {
-                                tempCarouselWidth = getCarouselWidth();
-                                container.css('width', tempCarouselWidth + 'px');
-                            }, 1000);
-                        }
-                        */
                     }
 
                     function scroll(x) {
