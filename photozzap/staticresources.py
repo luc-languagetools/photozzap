@@ -1,7 +1,6 @@
 
 javascript_files = [
 "static/jquery/jquery-1.10.2.min.js",
-"static/jquery-ui/jquery-ui.min.js",
 "static/bootstrap3/js/bootstrap.min.js",
 "static/angular/angular.min.js",
 "static/angular/angular-touch.min.js",
