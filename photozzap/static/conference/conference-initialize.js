@@ -33,24 +33,6 @@ function clone(obj) {
 
 $(document).ready(function() {
 
-    // prevent form submission from happening on all forms
-    $('form').submit(function() {
-      return false;
-    });
-
-    $("#comment-input").keyup(function (e) {
-        if (e.keyCode == 13) {
-            $(document).trigger('send_comment');
-        }
-    });
-    $("#comment-submit").click(function() {
-        $(document).trigger('send_comment');
-    });
-    
-    // setup controls
-    setupControlHandlers();    
-    resizeHandler();    
-
     $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
     
     $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {

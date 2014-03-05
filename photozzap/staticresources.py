@@ -7,7 +7,6 @@ javascript_files = [
 "static/angular/angular.min.js",
 "static/angular/angular-touch.min.js",
 "static/angular/angular-animate.min.js",
-"static/angular/ng-mobile.js",
 "static/angular/ui-bootstrap-tpls-0.10.0.min.js",
 "static/angular-carousel/angular-carousel.js",
 "static/jslibs/jquery.jqote2.js",
@@ -33,9 +32,7 @@ javascript_files = [
 "static/firebase/firebase-simple-login.js",
 "static/firebase/angularfire.min.js",
 
-"static/conference/conference-net.js",
 "static/conference/conference-ui.js",
-"static/conference/conference-controls.js",
 "static/conference/conference-controller.js",
 "static/conference/conference-initialize.js",
 ]

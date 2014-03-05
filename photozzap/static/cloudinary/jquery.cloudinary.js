@@ -422,7 +422,6 @@
   }
   
   $(function() {
-    log("performing cloudinary setup");
     $("input.cloudinary-fileupload[type=file]").cloudinary_fileupload();
   });
 })( jQuery );
