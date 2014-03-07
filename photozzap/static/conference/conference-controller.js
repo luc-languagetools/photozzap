@@ -61,7 +61,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
-    var DEFAULT_DIMENSION = 640;
+    var DEFAULT_DIMENSION = 500;
     var DEFAULT_COMPRESSION = 75;
     var FULL_COMPRESSION = 90;
     
@@ -296,32 +296,20 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             var image_data = $scope.sorted_images[photo_index];
             var loaded_params = $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params;
             if ($scope.params_greater(loaded_params, $scope.full_params)) {
+
                     $log.info("loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
-                    // cancel existing http request and configure new promise
-                    $scope.http_canceler.resolve();
-                    $scope.http_canceler = $q.defer();
-                    // load new URL
-                    var http_get_config = {method: 'GET',
-                                           url: $scope.cloudinary_photo_full_url(image_data),
-                                           timeout: $scope.http_canceler.promise,
-                                           image_id: image_data.id,
-                                           loaded_params: clone($scope.full_params)};
-                    $http(http_get_config).
-                    success(function(data, status, headers, config) {
-                        $log.info("successfully loaded full res for image id: " + config.image_id);
-                        $scope.global_data.photo_state_by_id[config.image_id].photo_loaded_params = config.loaded_params;
-                        $scope.global_data.photo_state_by_id[config.image_id].photo_url = config.url;
-                    }).
-                    error(function(data, status, headers, config) {
-                        $log.info("aborted load for  " + config.image_id);
-                    });
+            
+                    // put new url in map - angular will load it automatically
+                    $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params = clone($scope.full_params);
+                    $scope.global_data.photo_state_by_id[image_data.id].photo_hires_url = $scope.cloudinary_photo_full_url(image_data);
+            
                 } else {
                     $log.info("not loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
                 }
         }
         
         if ($scope.sorted_images == undefined || $scope.sorted_images.length == 0) {
-            // run 
+            // need this one-off handler for the first time a photo is loaded
             var watch_handler = $scope.$watch("sorted_images", function(new_value) {
                 if ($scope.sorted_images != undefined && $scope.sorted_images.length > 0) {
                     $log.info("sorted_images changed, can run check_and_load_new_url_function: ", $scope.sorted_images);

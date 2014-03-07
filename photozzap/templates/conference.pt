@@ -115,11 +115,17 @@
 
 <div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak">
     <div id="displayed_image">
-        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak">
-            <li ng-repeat="image in sorted_images"
-            ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')',
-                       'width': window_dimensions.width,
+        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
+            ng-style="{'width': window_dimensions.width,
                        'height': window_dimensions.height}">
+            <li class="image_layer_container" ng-repeat="image in sorted_images">
+                <div class="image_layer image_layer_top"
+                ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
+                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
+                </div>
+                <div class="image_layer image_layer_bottom"
+                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
+                </div>                
             </li>        
         </ul>
     </div>
