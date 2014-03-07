@@ -89,6 +89,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
    
     $scope.watching_photo_index = false;
+    $scope.load_new_url_promise = undefined;
    
     $scope.initialize_user_bindings = function(user) {
         var global_user_path = $scope.firebase_users + user.uid;
@@ -297,11 +298,19 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             var loaded_params = $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params;
             if ($scope.params_greater(loaded_params, $scope.full_params)) {
 
-                    $log.info("loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
+                    if ($scope.load_new_url_promise != undefined) {
+                        $timeout.cancel($scope.load_new_url_promise);
+                        $scope.load_new_url_promise = undefined;
+                    }
             
-                    // put new url in map - angular will load it automatically
-                    $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params = clone($scope.full_params);
-                    $scope.global_data.photo_state_by_id[image_data.id].photo_hires_url = $scope.cloudinary_photo_full_url(image_data);
+                    $scope.load_new_url_promise = $timeout(function() {
+                            $log.info("loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
+                    
+                            // put new url in map - angular will load it automatically
+                            $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params = clone($scope.full_params);
+                            $scope.global_data.photo_state_by_id[image_data.id].photo_hires_url = $scope.cloudinary_photo_full_url(image_data);
+                            $scope.load_new_url_promise = undefined;
+                        }, 2000);
             
                 } else {
                     $log.info("not loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
