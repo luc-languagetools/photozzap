@@ -75,7 +75,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.http_canceler = $q.defer();
     
     $scope.firebase_base = "https://fiery-fire-5557.firebaseio.com/";
-    $scope.firebase_users = $scope.firebase_base + "users/";
+    //$scope.firebase_users = $scope.firebase_base + "users/";
     var firebaseRef = new Firebase($scope.firebase_base);
 
     $scope.sorted_images = [];
@@ -91,19 +91,36 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.watching_photo_index = false;
     $scope.load_new_url_promise = undefined;
    
+    $scope.firebase_references = function() {
+        return $scope.compute_firebase_references({user_uid: $scope.login_obj.user.uid, 
+                                                   conf_key: PHOTOZZAP_CONF_KEY});
+    }
+   
+    $scope.compute_firebase_references = function(inputs) {
+        // inputs is {user_uid: "<>", conf_key: "<>"}
+        
+        var connection_state = $scope.firebase_base + "/.info/connected";
+        var firebase_user = $scope.firebase_base + "users/" + inputs.user_uid;
+        var conference = $scope.firebase_base + "conferences/" + inputs.conf_key;
+        var conference_images = conference + "/images";
+        var conference_user = conference + "/users/" + inputs.user_uid;
+        var connected = conference_user + "/connected";
+        
+        return {
+            firebase_user: firebase_user,
+            conference_user: conference_user,
+            conference: conference,
+            conference_images: conference_images,
+            connected: connected,
+            connection_state: connection_state,
+        };
+    }
+   
     $scope.initialize_user_bindings = function(user) {
-        var global_user_path = $scope.firebase_users + user.uid;
-        var conference_user_path = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY + "/users/" + user.uid;
-        var conference_user_connected_path = conference_user_path + "/connected";
-    
-        var global_user_node = $firebase(new Firebase(global_user_path));
-        var conference_user_node = $firebase(new Firebase(conference_user_path));
-        
-        var connected_ref = new Firebase(conference_user_connected_path);
-        connected_ref.onDisconnect().set(false);
-        
-        $log.info("binding to [", global_user_path, "], [", conference_user_path, "]");
-        $log.info("connected_ref path: [", conference_user_connected_path, "]");
+        var references = $scope.firebase_references();
+   
+        var global_user_node = $firebase(new Firebase(references.firebase_user));
+        var conference_user_node = $firebase(new Firebase(references.conference_user));
         
         var binding_done_promise = global_user_node.$bind($scope, "global_user_object").
         then(function(unbind) {
@@ -115,14 +132,35 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }
    
     $scope.initialize_bindings = function() {
-        var conference_path_base = $scope.firebase_base + "conferences/" + PHOTOZZAP_CONF_KEY;
-        var conference_images_path = conference_path_base + "/images";
-    
-        $scope.conference = $firebase(new Firebase(conference_path_base));
-        $scope.images = $firebase(new Firebase(conference_images_path));
+        var references = $scope.firebase_references();
+
+        $scope.conference = $firebase(new Firebase(references.conference));
+        $scope.images = $firebase(new Firebase(references.conference_images));
        
         $scope.logged_in_and_ready = true;
         
+    }
+   
+    $scope.watch_connection_state = function() {
+        var references = $scope.firebase_references();        
+        var connected_ref = new Firebase(references.connection_state);
+        
+        connected_ref.on("value", function(snap) {
+            if (snap.val() === true) {
+                $log.info("connection state: connected");
+                $scope.mark_user_connected();
+            }
+        }); 
+    }
+   
+    $scope.mark_user_connected = function() {
+        var references = $scope.firebase_references();
+        
+        var connected_ref = new Firebase(references.connected);
+        connected_ref.onDisconnect().set(false);        
+    
+        $scope.conference_user_object.connected = true;
+        $scope.conference_user_object.time_connected = new Date().getTime();
     }
    
     $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
@@ -130,8 +168,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         $scope.initialize_user_bindings(user).then(function() {
             $log.info("bound user bindings");
-            $scope.conference_user_object.connected = true;
-            $scope.conference_user_object.time_connected = new Date().getTime();
+            $scope.watch_connection_state();
+    
             if($scope.perform_setup_on_login) {
                 $scope.global_user_object.nickname = $scope.new_nickname;
                 $scope.conference_user_object.nickname = $scope.new_nickname;
@@ -682,50 +720,5 @@ function SidebarCtrl($scope, conferenceService) {
  
 }
 
-function ImageCtrl($scope, conferenceService) {
-    $scope.image_data = conferenceService.image_data;
-
-    $scope.showing_image = function() {
-        return (Object.keys($scope.processed_images).length > 0 );
-    };
-    
-    $scope.image_src = function() {
-        result = "";
-        if(Object.keys($scope.processed_images).length > 0 ) {
-            var first_key = Object.keys($scope.processed_images)[0];
-            result = $scope.processed_images[first_key].url;
-        }
-        /*
-        if( $scope.showing_image() ) {
-            result = $scope.image_data.current_image.image_url();
-        }
-        */
-        return result;
-    };    
-    
-    $scope.blur_src = function() {
-        result = "";
-        if( $scope.showing_image() ) {
-            result = $scope.image_data.current_image.blur_url();
-        }
-        return result;
-    };
-    
-    // internal notification with no $apply
-    $scope.$on('image_change_internal', function() {
-        $scope.image_data = conferenceService.image_data;
-    });
-    
-    $scope.$on('image_change', function() {
-        log("controller on image_change");
-        $scope.image_data = conferenceService.image_data;
-        $scope.$apply();
-    });
+function ImageCtrl($scope) {
 }
-
-ImageCtrl.$inject = ['$scope', 'conferenceService'];
-SidebarCtrl.$inject = ['$scope', 'conferenceService'];
-TopSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
-ToolSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
-MenuSidebarCtrl.$inject = ['$scope', '$controller', 'conferenceService'];
-IntroSidebarCtrl.$inject = ['$scope', '$controller', '$timeout', 'conferenceService'];
