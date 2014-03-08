@@ -7,6 +7,7 @@ javascript_files = [
 "static/angular/angular-animate.min.js",
 "static/angular/ui-bootstrap-tpls-0.10.0.min.js",
 "static/angular-carousel/angular-carousel.js",
+"static/jquery-libs/jquery-visibility.js",
 # cloudinary files
 "static/cloudinary/jquery.ui.widget.js",
 "static/cloudinary/jquery.iframe-transport.js",

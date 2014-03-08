@@ -192,7 +192,9 @@
                                         <a href="#" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
                                           <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
                                           <br/>
-                                          {{user.nickname}}
+                                          {{user.nickname}} 
+                                          <span ng-if="user.page_visible == false" 
+                                          class="label label-default">Away</span>
                                         </a>
                                     </div>
                                 </li>        

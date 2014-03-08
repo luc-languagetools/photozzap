@@ -153,6 +153,27 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         }); 
     }
    
+    $scope.watch_page_visibility = function() {
+        if ($.support.pageVisibility) {
+            $log.info("page visibility API supported");
+            
+            $(document).on({
+                'show.visibility': function() {
+                    $log.info("page visible");
+                    $scope.conference_user_object.page_visible = true;
+                    $scope.$apply();
+                },
+                'hide.visibility': function() {
+                    $log.info("page not visible");
+                    $scope.conference_user_object.page_visible = false;
+                    $scope.$apply();
+                }
+            });            
+        } else {
+            $log.info("page visibility API not supported");
+        }
+    }
+   
     $scope.mark_user_connected = function() {
         var references = $scope.firebase_references();
         
@@ -160,6 +181,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         connected_ref.onDisconnect().set(false);        
     
         $scope.conference_user_object.connected = true;
+        $scope.conference_user_object.page_visible = true;
         $scope.conference_user_object.time_connected = new Date().getTime();
     }
    
@@ -169,6 +191,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.initialize_user_bindings(user).then(function() {
             $log.info("bound user bindings");
             $scope.watch_connection_state();
+            $scope.watch_page_visibility();
     
             if($scope.perform_setup_on_login) {
                 $scope.global_user_object.nickname = $scope.new_nickname;
