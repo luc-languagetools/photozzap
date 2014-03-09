@@ -74,9 +74,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     $scope.http_canceler = $q.defer();
     
-    $scope.firebase_base = "https://fiery-fire-5557.firebaseio.com/";
-    //$scope.firebase_users = $scope.firebase_base + "users/";
-    var firebaseRef = new Firebase($scope.firebase_base);
 
     $scope.sorted_images = [];
     $scope.sorted_users = [];
@@ -86,10 +83,26 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     $scope.perform_setup_on_login = false;
     $scope.new_nickname = undefined;
-    $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
    
     $scope.watching_photo_index = false;
     $scope.load_new_url_promise = undefined;
+   
+    $scope.init = function(firebase_base) {
+        $scope.firebase_base = firebase_base;
+        var firebaseRef = new Firebase($scope.firebase_base);    
+        $scope.login_obj = $firebaseSimpleLogin(firebaseRef);       
+
+        $scope.login_obj.$getCurrentUser().then(function(user){
+            $scope.status_string = "logging in";
+            $log.info("getCurrentUser: ", user);
+            if (user == null) {
+                // show login modal
+                $scope.open_login_modal();
+            }        
+        });        
+    }
+    
+    $scope.init("https://fiery-fire-5557.firebaseio.com/");
    
     $scope.firebase_references = function() {
         return $scope.compute_firebase_references({user_uid: $scope.login_obj.user.uid, 
@@ -212,15 +225,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.status_string = "logged out";
     });
     
-    $scope.login_obj.$getCurrentUser().then(function(user){
-        $scope.status_string = "logging in";
-        $log.info("getCurrentUser: ", user);
-        if (user == null) {
-            // show login modal
-            $scope.open_login_modal();
-        }        
-    });
-    
+   
     $scope.open_login_modal = function() {
         $log.info("open_login_modal");
         $scope.modalInstance = $modal.open({templateUrl: "login_modal.html",
