@@ -102,8 +102,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         });        
     }
     
-    $scope.init("https://fiery-fire-5557.firebaseio.com/");
-   
     $scope.firebase_references = function() {
         return $scope.compute_firebase_references({user_uid: $scope.login_obj.user.uid, 
                                                    conf_key: PHOTOZZAP_CONF_KEY});
