@@ -152,7 +152,7 @@
                             <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak">
                                 <li ng-repeat="group in thumbnail_groups track by group.id_list">
                                     <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
-                                        <a href="#" class="thumbnail-tight" ng-click="show_image(image.id)">
+                                        <a class="thumbnail-tight" ng-click="show_image(image.id)">
                                           <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
                                         </a>
                                     </div>
@@ -169,7 +169,7 @@
                         <div class="col-md-12">
                             <div ng-repeat="group in thumbnail_groups track by group.id_list">
                                 <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
-                                    <a href="#" class="thumbnail-tight" ng-click="show_image(image.id)">
+                                    <a class="thumbnail-tight" ng-click="show_image(image.id)">
                                       <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
                                     </a>
                                 </div>
@@ -186,7 +186,7 @@
                             <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
                                 <li ng-repeat="group in thumbnail_groups track by group.id_list">
                                     <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
-                                        <a href="#" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
+                                        <a class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
                                           <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
                                           <br/>
                                           {{user.nickname}} 

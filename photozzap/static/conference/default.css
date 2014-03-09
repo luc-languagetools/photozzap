@@ -46,6 +46,10 @@
     padding-bottom: 2px;
 }
 
+.thumbnail-container-tight a {
+    cursor: pointer;
+}
+
 .upload-header {
     margin-top: 50px;
 }
