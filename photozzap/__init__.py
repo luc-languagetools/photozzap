@@ -20,6 +20,6 @@ def main(global_config, **settings):
     config.add_route('upload_photo', '/upload_photo')
     config.add_route('new_conference', '/new_conference')
     config.add_route('upload_data', '/upload_data')
-    config.add_route('conference', '/conference/{conf_key}')    
+    config.add_route('conference', '/conference')    
     config.scan()
     return config.make_wsgi_app()

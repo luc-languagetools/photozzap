@@ -113,7 +113,6 @@ def get_cdn_path(cdn_server, file_path):
 def conference(request):
 
     settings = request.registry.settings
-    conf_key = request.matchdict['conf_key']
     assets_on_cdn = settings['assets_on_cdn']
     cdn_server = settings['cdn_server']
     tracking_id = settings['analytics_tracking_id']
@@ -136,8 +135,7 @@ def conference(request):
         for key, file in photozzap.staticresources.icon_files.items():
             icon_files_abs[key] = get_cdn_path(cdn_server, file)
         
-    params = {'conf_key': conf_key,
-              'javascript_files': javascript_files_abs,
+    params = {'javascript_files': javascript_files_abs,
               'css_files': css_files_abs,
               'icon_files': icon_files_abs,
               'tracking_id': tracking_id,

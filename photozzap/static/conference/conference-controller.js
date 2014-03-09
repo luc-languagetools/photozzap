@@ -19,6 +19,7 @@ conferenceModule.filter('orderObjectBy', function(){
  }
 });
 
+
 conferenceModule.filter('orderObjectByAndInsertId', function(){
  return function(input, attribute) {
     if (!angular.isObject(input)) return input;
@@ -57,7 +58,7 @@ function PhotozzapLoginModalCtrl($scope, $rootScope, $modalInstance, $log) {
     }
 }
 
-function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout) {
+function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -88,6 +89,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.load_new_url_promise = undefined;
    
     $scope.init = function(firebase_base) {
+        $scope.conf_key = $location.path().substring(1);
+    
         $scope.firebase_base = firebase_base;
         var firebaseRef = new Firebase($scope.firebase_base);    
         $scope.login_obj = $firebaseSimpleLogin(firebaseRef);       
@@ -104,7 +107,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     $scope.firebase_references = function() {
         return $scope.compute_firebase_references({user_uid: $scope.login_obj.user.uid, 
-                                                   conf_key: PHOTOZZAP_CONF_KEY});
+                                                   conf_key: $scope.conf_key});
     }
    
     $scope.compute_firebase_references = function(inputs) {
