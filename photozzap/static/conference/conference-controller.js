@@ -352,6 +352,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.show_image = function(image_id) {
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
+        $("html, body").animate({ scrollTop: 0 }, 400);
     }
  
     $scope.$watch("full_params", function(newValue, oldValue) {
