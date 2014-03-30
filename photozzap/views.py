@@ -26,31 +26,6 @@ from .models import (
 
 log = logging.getLogger(__name__)    
 
-@view_config(route_name='new_conference',renderer='json')
-def new_conference(request):
-    conf_created = False
-    
-    settings = request.registry.settings
-    www_server = settings['www_server']
-    www_port = settings['www_port']
-    
-    params = {}
-    while conf_created == False:
-        try:
-            with transaction.manager:
-                conf = Conference()
-                DBSession.add(conf)
-                params['conf_key'] = conf.secret
-                params['conf_url'] = request.route_url('conference', conf_key=conf.secret, _host=www_server, _port=www_port)
-            conf_created = True
-        except IntegrityError:
-            # user already exists, will retry
-            conf_created = False
-
-    return params
-
-    
-    
 @view_config(route_name='home', renderer='templates/home.pt')
 def home(request):
     settings = request.registry.settings
@@ -59,10 +34,9 @@ def home(request):
     www_server = settings['www_server']
     www_port = settings['www_port']    
     
-    new_conf_url = request.route_url('conference', conf_key="new-conference-template", _host=www_server, _port=www_port)
+    new_conf_url = request.route_url('conference', _host=www_server, _port=www_port) + "#/new-conference-template"
     
-    return {'new_conf_url': request.route_url('new_conference'),
-            'tracking_id': tracking_id,
+    return {'tracking_id': tracking_id,
             'firebase': firebase,
             'new_conf_url': new_conf_url}
     

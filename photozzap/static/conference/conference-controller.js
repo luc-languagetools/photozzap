@@ -39,10 +39,11 @@ conferenceModule.filter('orderObjectByAndInsertId', function(){
  }
 });
 
-conferenceModule.factory('conferenceService', function ($rootScope) {
+conferenceModule.factory('conferenceService', function ($rootScope, $log) {
     var service = {};
     
     $(document).bind('upload_image', function(ev, image_data) {
+        $log.info("conferenceService: received upload_image event");
         $rootScope.$broadcast('upload_image_data', image_data);
     });
     
@@ -58,7 +59,7 @@ function PhotozzapLoginModalCtrl($scope, $rootScope, $modalInstance, $log) {
     }
 }
 
-function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location) {
+function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, conferenceService) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -417,6 +418,9 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     };
     
     $scope.cloudinary_thumbnail_url = function(image_id) {
+        if (image_id == undefined) {
+            return "holder.js/100x100/text:na";
+        }
         return $.cloudinary.url(image_id + ".jpg", {crop: 'fill', 
                                                          width: DEFAULT_THUMBNAIL_DIMENSION, 
                                                          height: DEFAULT_THUMBNAIL_DIMENSION,
@@ -520,235 +524,7 @@ function ThumbnailsCtrl($scope, $log) {
     };
 }
 
-
-function TopSidebarCtrl($scope, $controller, conferenceService) {
-    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    
-    
-    $scope.icon_class_state = function() {
-        if (! $scope.interface_visible || ! $scope.menu_visible) {
-            return "hidden";
-        } else if ($scope.other_sidebars_expanded) {
-            return "other-sidebars-expanded";
-        }
-        return "visible";
-    };        
-}
-
-function NextSidebarCtrl($scope, $controller, conferenceService) {
-    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    
-    $scope.next_enabled = function() {
-        return $scope.image_data.next_image != undefined;
-    }    
-    
-    $scope.next = function() {
-        if ( $scope.next_enabled() ) {
-            transition_next(null);
-            $scope.select_image( $scope.image_data.next_image.id );
-        }    
-    }    
-}
-
-function PrevSidebarCtrl($scope, $controller, conferenceService) {
-    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    
-    $scope.prev_enabled = function() {
-        return $scope.image_data.prev_image != undefined;
-    }
-    
-    $scope.prev = function() {
-        if ( $scope.prev_enabled() ) {
-            transition_prev(null);
-            $scope.select_image( $scope.image_data.prev_image.id );
-        }
-    }
-}
-
-function IntroSidebarCtrl($scope, $controller, $timeout, conferenceService) {
-    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    $scope.shown = false;
-
-    $scope.dont_show = function() {
-        $scope.shown = false;    
-    };
-    
-    $scope.$on('show_intro_event', function(){ 
-        $scope.shown = true;
-        $timeout($scope.dont_show, 5000);
-        $scope.$apply();
-    });    
-    
-}
-
-// contains multiple sidebars which can be expanded / collapsed
-function ToolSidebarCtrl($scope, $controller, conferenceService) {
-    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    
-    $scope.icon_class_state = function() {
-        if (! $scope.interface_visible || ! $scope.menu_visible) {
-            return "hidden";
-        } else if ($scope.other_sidebars_expanded) {
-            return "other-sidebars-expanded";
-        }
-        return "visible";
-    };    
-    
-}
-
-function MenuSidebarCtrl($scope, $controller, conferenceService) {
-    $controller('SidebarCtrl', {$scope: $scope, conferenceService: conferenceService});
-    
-    $scope.toggle = function() {
-        $(document).trigger('toggle_menu_visible');
-    };
-}
-
-function SidebarCtrl($scope, conferenceService) {
-    $scope.image = undefined;
-    $scope.size = undefined;
-    $scope.other_sidebars_expanded = false;
-    $scope.interface_visible = true;
-    $scope.menu_visible = true;
-    $scope.image_data = conferenceService.image_data;    
-    $scope.expanded_sidebar = {};
-    
-    $scope.init = function(name) {
-        $scope.name = name;
-    };
-    
-    $scope.toggle_sidebar = function(name) {
-        log("toggle_sidebar " + name);
-        if ($scope.is_expanded(name)) {
-            $scope.collapse_sidebar(name);
-        } else {
-            $scope.expand_sidebar(name);
-        }
-    };
-    
-    $scope.expand_sidebar = function(name) {
-        $(document).trigger('close_all_sidebars_internal');
-        $scope.expanded_sidebar[name] = true;
-        $(document).trigger('report_sidebar_status', {name: name, expanded: true});
-    };
-    
-    $scope.collapse_sidebar = function(name) {
-        $scope.expanded_sidebar[name] = false;
-        $(document).trigger('report_sidebar_status', {name: name, expanded: false});
-    };
-    
-    $scope.is_expanded = function(name) {
-        if ($scope.expanded_sidebar[name] == undefined ||
-            $scope.expanded_sidebar[name] == false) {
-            return false;
-        }
-        return true;    
-    };
-    
-    $scope.sidebar_class_state = function(name) {
-        if (! $scope.is_expanded(name)) {
-            return "collapsed";
-        }
-        return "expanded";
-    };
-    
-    $scope.icon_class_state = function() {
-        if (! $scope.interface_visible ) {
-            return "hidden";
-        } else if ($scope.other_sidebars_expanded) {
-            return "other-sidebars-expanded";
-        }
-        return "visible";
-    };
-    
-    $scope.element_style = function() {
-
-        if ($scope.image == undefined || $scope.size == undefined) {
-            return {'background-color': "#555555"};
-        }
-        
-        var backgroundUrl = "url(" + $scope.image.blur_url() + ")";
-        var sizeString = $scope.size.width + "px " + $scope.size.height + "px";
-        
-        return {'background-image': backgroundUrl,
-                'background-size': sizeString,
-                'background-repeat': 'no-repeat',
-                'background-attachment': 'fixed',
-                };        
-    }
-    
-    $scope.collapse_all_sidebars = function() {
-        for (var sidebar in $scope.expanded_sidebar) {
-            $scope.collapse_sidebar(sidebar);
-        }
-    }
-    
-    $scope.select_image = function(image_id) {
-        log("selected image: " + image_id);
-        var image = Conference.images[image_id];
-        $(document).trigger('not_following_user');
-        $(document).trigger('show_current_image', false);
-        $(document).trigger('display_image_internal', image);
-        $scope.collapse_all_sidebars();
-    };    
-    
-    $scope.$on('close_sidebar_internal',  function() {
-        // this is coming from angular, and doesn't need an $apply
-        $scope.collapse_all_sidebars();
-    });
-    
-    $scope.$on('close_sidebar',  function() {
-        // this is coming from outside angular and does need an $apply
-        $scope.collapse_all_sidebars();
-        $scope.$apply();
-    });
-
-    $scope.$on('image_resize', function() {
-        var win = $(window);
-        var winWidth = win.width();
-        var winHeight = win.height();
-        $scope.size = {width: winWidth, height: winHeight};
-        $scope.$apply();
-    });
-    
-    $scope.$on('sidebar_status_update', function() {
-        var result = false;        
-        for (var name in conferenceService.sidebars_open_map) {
-            if(conferenceService.sidebars_open_map[name] == true) {
-                result = true;
-            }
-        }
-        $scope.other_sidebars_expanded = result;        
-    });    
- 
-    // interface_visible_update
-    $scope.$on('interface_visible_update', function(){ 
-        $scope.interface_visible = conferenceService.show_interface;
-        $scope.$apply();
-    });
-    
-    $scope.$on('menu_visible_event', function() {
-        $scope.menu_visible = conferenceService.menu_visible;
-    });
-    
-    $scope.$on('image_list_update_event', function() {
-        $scope.image_data = conferenceService.image_data;
-        $scope.$apply();
-    });        
-    
-    // internal notification with no $apply        
-    $scope.$on('image_change_internal', function() {
-        $scope.image = conferenceService.image_data.current_image;
-        $scope.image_data = conferenceService.image_data;
-    });            
-        
-    $scope.$on('image_change', function() {
-        $scope.image = conferenceService.image_data.current_image;
-        $scope.image_data = conferenceService.image_data;
-        $scope.$apply();
-    });            
- 
-}
-
 function ImageCtrl($scope) {
 }
+
+// PhotozzapCtrl.$inject = ['$scope', 'conferenceService'];

@@ -17,8 +17,6 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.include('pyramid_chameleon')
     config.add_route('home', '/')
-    config.add_route('upload_photo', '/upload_photo')
-    config.add_route('new_conference', '/new_conference')
     config.add_route('upload_data', '/upload_data')
     config.add_route('conference', '/conference')    
     config.scan()

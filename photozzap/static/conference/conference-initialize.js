@@ -36,14 +36,10 @@ $(document).ready(function() {
     $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
     
     $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
-        //log("fileuploaddone, data: " + data);
-        // data.result.public_id
-        // data.result.height
-        // data.result.width
         var image = {id: data.result.public_id,
                      width: data.result.width,
                      height: data.result.height};
-        // Conference.send_img_url(image);
+       
         $(document).trigger('upload_image', image);
     });
     
