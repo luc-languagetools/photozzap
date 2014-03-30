@@ -93,7 +93,7 @@
         
     }
     
-    function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log) {
+    function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log, $window) {
         $scope.form_data = {};
         $scope.form_data.logged_in = false;
         var firebaseRef = new Firebase("${firebase}");
@@ -148,7 +148,9 @@
                                  url: conf_url,
                                  owner_uid: owner_uid});
                     $scope.status = "conference " + tentativeConfKey + " created";
-                    $scope.$apply();
+                    // $scope.$apply();
+                    // redirect to conference URL
+                    $window.location.href = conf_url;
                 } else {
                     $log.info("conference " + tentativeConfKey + " already exists, trying again");
                     $scope.create_unique_conf_key(confName, owner_uid);
@@ -235,9 +237,6 @@
                         </div>
                     </form>
                 </div>
-                <tt>status: {{status}}</tt>
-                <tt>loginObj.user: {{loginObj.user}}</tt>
-                <tt>form_data.logged_in: {{form_data.logged_in}}</tt>
                 <div class="modal-footer">
                     <button class="btn btn-success btn-lg" ng-click="ok()"  ng-disabled="form.form.$invalid || ! form_data.logged_in">
                         <span class="glyphicon glyphicon-ok"></span> OK</button>
