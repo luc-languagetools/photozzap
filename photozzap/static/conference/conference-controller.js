@@ -50,11 +50,15 @@ conferenceModule.factory('conferenceService', function ($rootScope, $log) {
     return service;
 });
 
-function PhotozzapLoginModalCtrl($scope, $rootScope, $modalInstance, $log) {
+function PhotozzapNickChangeModalCtrl($scope, $rootScope, $modalInstance, $log) {
     $scope.user_object = {};
     
-    $scope.login = function() {
-        $scope.perform_login($scope.user_object.nickname);
+    $scope.change = function() {
+        $scope.nickname_change($scope.temp_data.new_nickname);
+        $modalInstance.dismiss('close');
+    }
+    
+    $scope.cancel = function() {
         $modalInstance.dismiss('close');
     }
 }
@@ -66,6 +70,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     var DEFAULT_DIMENSION = 500;
     var DEFAULT_COMPRESSION = 75;
     var FULL_COMPRESSION = 90;
+    
+    $scope.temp_data = {};
     
     $scope.global_data = {};
     $scope.global_data.photo_index = 0;     
@@ -100,8 +106,11 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $scope.status_string = "logging in";
             $log.info("getCurrentUser: ", user);
             if (user == null) {
+                // login with generated nickname
+                var randomNick = "Guest" + randomNumString(5);
+                $scope.perform_login(randomNick);
                 // show login modal
-                $scope.open_login_modal();
+                //$scope.open_login_modal();
             }        
         });        
     }
@@ -228,13 +237,17 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     });
     
    
-    $scope.open_login_modal = function() {
-        $log.info("open_login_modal");
-        $scope.modalInstance = $modal.open({templateUrl: "login_modal.html",
-                                            controller: PhotozzapLoginModalCtrl,
+    $scope.open_nick_change_modal = function() {
+        $scope.modalInstance = $modal.open({templateUrl: "nick_change_modal.html",
+                                            controller: PhotozzapNickChangeModalCtrl,
                                             scope: $scope
                                             });
     };    
+   
+    $scope.nickname_change = function(nickname) {
+        $scope.global_user_object.nickname = nickname;
+        $scope.conference_user_object.nickname = nickname;
+    }
    
     $scope.perform_login = function(nickname) {
         $log.info("perform_login with nickname " + nickname);
@@ -526,5 +539,3 @@ function ThumbnailsCtrl($scope, $log) {
 
 function ImageCtrl($scope) {
 }
-
-// PhotozzapCtrl.$inject = ['$scope', 'conferenceService'];

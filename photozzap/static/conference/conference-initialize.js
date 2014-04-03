@@ -31,6 +31,29 @@ function clone(obj) {
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
+
+function randomStringFromChars(length, chars) {
+    if (! length) {
+        length = Math.floor(Math.random() * chars.length);
+    }
+
+    var str = '';
+    for (var i = 0; i < length; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
+}   
+
+function randomString(length) {
+    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+    return randomStringFromChars(length, chars);
+}   
+
+function randomNumString(length) {
+    var chars = '0123456789'.split('');
+    return randomStringFromChars(length, chars);
+}   
+
 $(document).ready(function() {
 
     $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
