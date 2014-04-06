@@ -24,9 +24,18 @@ function ConferenceObject(key, path) {
     
     var usersPath = path + "/users";
     var usersRef = new Firebase(usersPath);
+    
+    var notificationsPath = path + "/notifications";
+    this.notificationsRef = new Firebase(notificationsPath);
 
     this.log_event = function(message) {
         console.log((new Date()).toUTCString(), ": [", this.key ,"] ", message);
+    };
+    
+    this.user_nickname = function(user_key) {
+        if (this.user_cache[user_key] != undefined)
+            return this.user_cache[user_key].nickname;
+        return undefined;
     };
     
     this.log_user_event = function(user_key, message) {
@@ -37,6 +46,23 @@ function ConferenceObject(key, path) {
         console.log("conference ", this.key, ": image added");
     };   
 
+    this.addNotification = function(user_key, data) {
+        var newNotificationRef = this.notificationsRef.push();
+        data.user_key = user_key;
+        data.timestamp = new Date().getTime();
+        data.nickname = this.user_nickname(user_key);
+        newNotificationRef.set(data);
+        var self = this;
+        setTimeout(function() {
+            self.removeNotification(newNotificationRef);
+        }, 5000);
+    };
+    
+    this.removeNotification = function(notificationRef) {
+        this.log_event("removing notification " + notificationRef.name());
+        notificationRef.remove();
+    }
+    
     this.userChildChanged = function(snapshot) {
         var key = snapshot.name();
         var user_data = snapshot.val();
@@ -51,24 +77,29 @@ function ConferenceObject(key, path) {
                 user_data.connected == true) 
             {
                 this.log_user_event(key, "connected");
+                this.addNotification(key, {type: "connected"});
             } else if (this.user_cache[key].connected == true &&
                        user_data.connected == false) 
             {
                 this.log_user_event(key, "disconnected");
+                this.addNotification(key, {type: "disconnected"});
             }
             
             // is user away ?
             if (this.user_cache[key].page_visible == false &&
                 user_data.page_visible == true) {
                 this.log_user_event(key, "is back");
+                this.addNotification(key, {type: "back"});
             } else if (this.user_cache[key].page_visible == true &&
                 user_data.page_visible == false) {
                 this.log_user_event(key, "is away");
+                this.addNotification(key, {type: "away"});
             }
             
             // user watching different picture ?
             if (this.user_cache[key].viewing_image_id != user_data.viewing_image_id) {
                 this.log_user_event(key, "viewing image " + user_data.viewing_image_id);
+                this.addNotification(key, {type: "viewing", image_id: user_data.viewing_image_id});
             }
         }
         
@@ -78,7 +109,6 @@ function ConferenceObject(key, path) {
     imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
     usersRef.on('child_added', this.userChildChanged, function(){}, this);
     usersRef.on('child_changed', this.userChildChanged, function(){}, this);
-   
 
 }
 

@@ -82,7 +82,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     $scope.http_canceler = $q.defer();
 
-    $scope.notifications = [];
+    $scope.local_notifications = [];
+    $scope.sorted_notifications = [];
 
     $scope.sorted_images = [];
     $scope.sorted_users = [];
@@ -109,7 +110,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             if (user == null) {
                 // login with generated nickname
                 var randomNick = "Guest" + randomNumString(5);
-                $scope.notifications.push("You have been logged in under the default username " + randomNick);
+                $scope.local_notifications.push("You have been logged in under the default username " + randomNick);
                 $scope.perform_login(randomNick);
                 // show login modal
                 //$scope.open_login_modal();
@@ -217,6 +218,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
    
     $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
         $log.info("User " + user.id + " logged in");
+        $scope.self_uid = user.uid;
         
         $scope.initialize_user_bindings(user).then(function() {
             $log.info("bound user bindings");
@@ -356,6 +358,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var sorted_users_array =  $filter('orderObjectByAndInsertId')($scope.conference.users, 'time_added');
         $scope.sorted_users = $filter('filter')(sorted_users_array, {connected: true});
         
+    }, true);
+    
+    $scope.$watch("conference.notifications", function(newValue, oldValue) {
+        var sorted_notifications_array = $filter('orderObjectByAndInsertId')($scope.conference.notifications, 'timestamp');
+        $scope.sorted_notifications = $filter('filter')(sorted_notifications_array, function(elt) {
+            if (elt.user_key != $scope.self_uid) { return true; }
+            return false;
+        });
     }, true);
     
     $scope.start_watch_photo_index = function() {

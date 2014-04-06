@@ -249,20 +249,9 @@
 </div>
 
 <!-- notifications area -->
-<div class="well notifications-container" ng-show="notifications.length > 0">
-    <span ng-repeat="notification in notifications">{{notification}}</span>
+<div class="well notifications-container" ng-show="sorted_notifications.length > 0">
+    <span ng-repeat="notification in sorted_notifications">{{notification}}</span>
 </div>
-<!--
-<div class="container-fluid notifications-container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="well">
-                Notification
-            </div>
-        </div>
-    </div>
-</div>
--->
 
 
 
