@@ -66,3 +66,16 @@ body {
 .nav-tabs a {
     cursor: pointer;
 }
+
+.notifications-container {
+    position: fixed;
+    bottom: 0%;
+    left: 25%;
+    width: 50%;
+    height: 100px;
+    color: #000000;
+}
+
+.notifications-container .row {
+    height: 100%;
+}

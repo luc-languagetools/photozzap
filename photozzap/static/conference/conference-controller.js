@@ -81,7 +81,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.conference_user_object = {}; // will be bound to the user's conference object
     
     $scope.http_canceler = $q.defer();
-    
+
+    $scope.notifications = [];
 
     $scope.sorted_images = [];
     $scope.sorted_users = [];
@@ -108,6 +109,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             if (user == null) {
                 // login with generated nickname
                 var randomNick = "Guest" + randomNumString(5);
+                $scope.notifications.push("You have been logged in under the default username " + randomNick);
                 $scope.perform_login(randomNick);
                 // show login modal
                 //$scope.open_login_modal();
@@ -208,6 +210,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.conference_user_object.page_visible = true;
         $scope.conference_user_object.time_connected = new Date().getTime();
     }
+    
+    $scope.mark_user_disconnected = function() {
+        $scope.conference_user_object.connected = false;
+    }
    
     $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
         $log.info("User " + user.id + " logged in");
@@ -232,6 +238,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     });
     
     $rootScope.$on("$firebaseSimpleLogin:logout", function() {
+        $scope.mark_user_disconnected();
         $scope.logged_in_and_ready = false;
         $scope.status_string = "logged out";
     });

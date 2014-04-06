@@ -33,11 +33,13 @@ def home(request):
     firebase = settings['firebase']
     www_server = settings['www_server']
     www_port = settings['www_port']    
+    server_name = settings['server_name']
     
     new_conf_url = request.route_url('conference', _host=www_server, _port=www_port) + "#/new-conference-template"
     
     return {'tracking_id': tracking_id,
             'firebase': firebase,
+            'server_name': server_name,
             'new_conf_url': new_conf_url}
     
 def sign_request(params, api_key, api_secret):

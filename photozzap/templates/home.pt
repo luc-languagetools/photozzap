@@ -146,6 +146,7 @@
                     var conf_url = "${new_conf_url}".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
+                                 servername: "${server_name}",
                                  owner_uid: owner_uid});
                     $scope.status = "conference " + tentativeConfKey + " created";
                     // $scope.$apply();
