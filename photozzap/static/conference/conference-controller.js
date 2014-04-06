@@ -363,7 +363,12 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.$watch("conference.notifications", function(newValue, oldValue) {
         var sorted_notifications_array = $filter('orderObjectByAndInsertId')($scope.conference.notifications, 'timestamp');
         $scope.sorted_notifications = $filter('filter')(sorted_notifications_array, function(elt) {
-            if (elt.user_key != $scope.self_uid) { return true; }
+            var currentTimestamp = new Date().getTime();
+            if (elt.user_key != $scope.self_uid &&  // don't display notifications for current user
+                elt.timestamp + 10 > currentTimestamp) // don't display notifications older than 10s (in case they didn't get cleared)
+            { 
+                return true; 
+            }
             return false;
         });
     }, true);

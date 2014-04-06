@@ -97,7 +97,8 @@ function ConferenceObject(key, path) {
             }
             
             // user watching different picture ?
-            if (this.user_cache[key].viewing_image_id != user_data.viewing_image_id) {
+            if (user_data.viewing_image_id != undefined &&
+                this.user_cache[key].viewing_image_id != user_data.viewing_image_id) {
                 this.log_user_event(key, "viewing image " + user_data.viewing_image_id);
                 this.addNotification(key, {type: "viewing", image_id: user_data.viewing_image_id});
             }
