@@ -249,14 +249,14 @@
 </div>
 
 <!-- notifications area -->
-<div class="well notifications-container" ng-show="sorted_notifications.length > 0">
+<div class="notifications-container" ng-show="sorted_notifications.length > 0">
     <span ng-repeat="notification in sorted_notifications">
         <span ng-switch on="notification.type">
-            <span ng-switch-when="connected">{{notification.nickname}} connected</span>
-            <span ng-switch-when="disconnected">{{notification.nickname}} disconnected</span>
-            <span ng-switch-when="away">{{notification.nickname}} is away</span>
-            <span ng-switch-when="back">{{notification.nickname}} is back</span>
-            <span ng-switch-when="viewing">{{notification.nickname}} is viewing an image</span>
+            <span ng-switch-when="connected"><span class="icon-user-plus"></span> {{notification.nickname}}</span>
+            <span ng-switch-when="disconnected"><span class="icon-user-minus"></span> {{notification.nickname}}</span>
+            <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
+            <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
+            <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
         </span>
     </span>
 </div>

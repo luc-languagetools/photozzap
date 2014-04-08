@@ -361,6 +361,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }, true);
     
     $scope.$watch("conference.notifications", function(newValue, oldValue) {
+        if ($scope.conference == undefined) {
+            // cannot do anything yet
+            return;
+        }    
         var sorted_notifications_array = $filter('orderObjectByAndInsertId')($scope.conference.notifications, 'timestamp');
         $scope.sorted_notifications = $filter('filter')(sorted_notifications_array, function(elt) {
             var currentTimestamp = new Date().getTime();
@@ -389,6 +393,11 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
         $("html, body").animate({ scrollTop: 0 }, 400);
+    }
+ 
+    $scope.photo_index_from_id = function(image_id) {
+        var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
+        return photo_index;
     }
  
     $scope.$watch("full_params", function(newValue, oldValue) {

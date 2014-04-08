@@ -37,6 +37,7 @@ css_files = [
 "static/bootstrap3/css/bootstrap-theme.min.css",
 "static/conference/default.css",
 "static/angular-carousel/angular-carousel.css",
+"static/icomoon/style.css",
 ]
 
 combined_css_file = "static/combined/all.css"
