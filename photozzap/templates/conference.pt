@@ -250,16 +250,18 @@
 
 <!-- notifications area -->
 <div class="notifications-container" ng-show="sorted_notifications.length > 0">
-    <span ng-repeat="notification in sorted_notifications">
-        <span class="separator"></span>
-        <span ng-switch on="notification.type">
-            <span ng-switch-when="connected"><span class="icon-user-plus"></span> {{notification.nickname}}</span>
-            <span ng-switch-when="disconnected"><span class="icon-user-minus"></span> {{notification.nickname}}</span>
-            <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
-            <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
-            <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
+    <p class="notification-text">
+        <span ng-repeat="notification in sorted_notifications">
+            <span class="separator" ng-show="!$first"></span>
+            <span ng-switch on="notification.type">
+                <span ng-switch-when="connected"><span class="icon-user-plus"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="disconnected"><span class="icon-user-minus"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
+            </span>
         </span>
-    </span>
+    </p>
 </div>
 
 
