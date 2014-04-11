@@ -91,12 +91,12 @@ body {
   bottom: -10%;
 }
 
-/*
+
 .notification-item {
-  -webkit-transition: 1s linear all;
-  transition: 1s linear all;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space:nowrap;  
 }
-*/
 
 
 .notification-item.ng-enter, 
@@ -104,9 +104,6 @@ body {
 .notification-item.ng-move {
   -webkit-transition: 0.5s linear all;
   transition: 0.5s linear all;
-  overflow: hidden;
-  text-overflow: clip;
-  white-space:nowrap;  
 }
 
 .notification-item.ng-enter, .notification-item.ng-leave.ng-leave-active  {
