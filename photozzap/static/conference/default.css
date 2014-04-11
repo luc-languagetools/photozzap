@@ -91,6 +91,34 @@ body {
   bottom: -10%;
 }
 
+/*
+.notification-item {
+  -webkit-transition: 1s linear all;
+  transition: 1s linear all;
+}
+*/
+
+
+.notification-item.ng-enter, 
+.notification-item.ng-leave, 
+.notification-item.ng-move {
+  -webkit-transition: 0.5s linear all;
+  transition: 0.5s linear all;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space:nowrap;  
+}
+
+.notification-item.ng-enter, .notification-item.ng-leave.ng-leave-active  {
+  opacity:0;
+  width: 0px;
+}
+
+
+.notification-item.ng-enter.ng-enter-active, .notification-item.ng-leave {
+  opacity:1;
+  width:auto;
+}
 
 
 .notifications-container .notification-text {

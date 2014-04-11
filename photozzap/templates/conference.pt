@@ -251,8 +251,8 @@
 <!-- notifications area -->
 <div class="notifications-container" ng-show="sorted_notifications.length > 0">
     <p class="notification-text">
-        <span ng-repeat="notification in sorted_notifications">
-            <span class="separator" ng-show="!$first"></span>
+        <span class="notification-item" ng-repeat="notification in sorted_notifications track by notification.id">
+            <span class="separator"></span>
             <span ng-switch on="notification.type">
                 <span ng-switch-when="connected"><span class="icon-user-plus"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="disconnected"><span class="icon-user-minus"></span> {{notification.nickname}}</span>
