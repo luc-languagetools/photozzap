@@ -47,10 +47,13 @@ function ConferenceObject(key, path) {
     };   
 
     this.addNotification = function(user_key, data) {
+        var userNickname = this.user_nickname(user_key);
+        if (userNickname == undefined) // if we don't have a nickname, don't send notification
+            return;
         var newNotificationRef = this.notificationsRef.push();
         data.user_key = user_key;
         data.timestamp = new Date().getTime();
-        data.nickname = this.user_nickname(user_key);
+        data.nickname = userNickname;
         newNotificationRef.set(data);
         var self = this;
         setTimeout(function() {

@@ -216,11 +216,12 @@
                         <i class="glyphicon glyphicon-comment"></i> Chat
                     </tab-heading>
                     <div class="row">
-                        <ul>
-                            <li ng-repeat="comment in sorted_comments track by comment.id">
+                        <div ng-repeat="comment_group in comment_groups track by comment_group.id_list">
+                            image_id: {{comment_group.image_id}}
+                            <div ng-repeat="comment in comment_group.comments track by comment.id">
                                 <b>{{comment.nickname}}:</b> {{comment.text}}
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">

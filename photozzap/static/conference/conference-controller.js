@@ -591,7 +591,39 @@ function ChatCtrl($scope, $log, $filter) {
             // cannot do anything yet
             return;
         }
-        $scope.sorted_comments =  $filter('orderObjectByAndInsertId')($scope.conference.comments, 'time_added');
+        var sorted_comments =  $filter('orderObjectByAndInsertId')($scope.conference.comments, 'time_added');
+        
+        // $scope.sorted_comments
+        
+        // sort in groups
+        var comment_groups = [];
+        var current_image_id = undefined;
+        var current_group = undefined;
+        for(var i in sorted_comments) {
+            var comment = sorted_comments[i];        
+            if (current_image_id != comment.image_id) {
+                // process old group
+                if (current_group != undefined) {
+                    var id_list = $.map(current_group.comments, function(obj, i){ return obj.id; });
+                    var id_list_str =  id_list.join("_");
+                    current_group.id_list = id_list_str;
+                    comment_groups.push(current_group);
+                }
+                // create new group
+                current_group = {image_id: comment.image_id,
+                                 comments: []};   
+                current_image_id = comment.image_id;
+            }
+            current_group.comments.push(comment);
+        }
+        if (current_group.comments.length > 0 ) {
+            var id_list = $.map(current_group.comments, function(obj, i){ return obj.id; });
+            var id_list_str =  id_list.join("_");
+            current_group.id_list = id_list_str;
+            comment_groups.push(current_group);        
+        }
+        
+        $scope.comment_groups = comment_groups;
        
     }, true);    
 }
