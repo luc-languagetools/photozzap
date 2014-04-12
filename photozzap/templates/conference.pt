@@ -217,10 +217,17 @@
                     </tab-heading>
                     <div class="row">
                         <div ng-repeat="comment_group in comment_groups track by comment_group.id_list">
-                            image_id: {{comment_group.image_id}}
-                            <div ng-repeat="comment in comment_group.comments track by comment.id">
-                                <b>{{comment.nickname}}:</b> {{comment.text}}
-                            </div>
+                            <div class="media">
+                              <a class="pull-left" href="#">
+                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}">
+                              </a>
+                              <div class="media-body">
+                                <div ng-repeat="comment in comment_group.comments track by comment.id">
+                                    <h4 class="media-heading">{{comment.nickname}}</h4>
+                                    {{comment.text}}
+                                </div>
+                              </div>
+                            </div>                        
                         </div>
                     </div>
                     <div class="row">
