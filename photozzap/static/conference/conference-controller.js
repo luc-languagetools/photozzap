@@ -130,6 +130,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var firebase_user = $scope.firebase_base + "users/" + inputs.user_uid;
         var conference = $scope.firebase_base + "conferences/" + inputs.conf_key;
         var conference_images = conference + "/images";
+        var conference_comments = conference + "/comments";
         var conference_user = conference + "/users/" + inputs.user_uid;
         var connected = conference_user + "/connected";
         
@@ -138,6 +139,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             conference_user: conference_user,
             conference: conference,
             conference_images: conference_images,
+            conference_comments: conference_comments,            
             connected: connected,
             connection_state: connection_state,
         };
@@ -163,6 +165,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
 
         $scope.conference = $firebase(new Firebase(references.conference));
         $scope.images = $firebase(new Firebase(references.conference_images));
+        $scope.comments = $firebase(new Firebase(references.conference_comments));
        
         $scope.logged_in_and_ready = true;
         
@@ -569,4 +572,26 @@ function ThumbnailsCtrl($scope, $log) {
 }
 
 function ImageCtrl($scope) {
+}
+
+
+function ChatCtrl($scope, $log, $filter) {
+    $scope.submit_comment = function() {
+        $log.info("submit_comment: " + $scope.comment_text);
+        $scope.comments.$add({user_id: $scope.login_obj.user.uid,
+                              nickname: $scope.conference_user_object.nickname,
+                              image_id: $scope.conference_user_object.viewing_image_id,
+                              time_added: new Date().getTime(),
+                              text: $scope.comment_text}); 
+        $scope.comment_text = "";                              
+    }
+    
+    $scope.$watch("conference.comments", function(newValue, OldValue) {
+        if ($scope.conference == undefined) {
+            // cannot do anything yet
+            return;
+        }
+        $scope.sorted_comments =  $filter('orderObjectByAndInsertId')($scope.conference.comments, 'time_added');
+       
+    }, true);    
 }
