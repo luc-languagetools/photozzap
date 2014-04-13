@@ -134,3 +134,7 @@ body {
    overflow: hidden;
    border-right: 1px solid #CCCCCC;
 }
+
+.comment-area {
+    color: #000000;
+}

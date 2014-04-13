@@ -215,20 +215,59 @@
                     <tab-heading>
                         <i class="glyphicon glyphicon-comment"></i> Chat
                     </tab-heading>
-                    <div class="row">
-                        <div ng-repeat="comment_group in comment_groups track by comment_group.id_list">
-                            <div class="media">
-                              <a class="pull-left" href="#">
-                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}">
+                    <div class="row comment-area">
+
+                        <div class="col-md-4">
+                        <div class="panel panel-default" ng-repeat="comment_group in column_groups[0] track by comment_group.id_list">
+                            <div class="media panel-body">
+                              <a class="pull-left" ng-click="show_image(comment_group.image_id)">
+                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
+                                style="width: 150px;">
                               </a>
                               <div class="media-body">
-                                <div ng-repeat="comment in comment_group.comments track by comment.id">
-                                    <h4 class="media-heading">{{comment.nickname}}</h4>
-                                    {{comment.text}}
+                                <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
+                                    <div class="col-md-2">{{comment.nickname}}</div>
+                                    <div class="col-md-10">{{comment.text}}</div>
                                 </div>
                               </div>
                             </div>                        
                         </div>
+                        </div>
+                    
+                        <div class="col-md-4">
+                        <div class="panel panel-default" ng-repeat="comment_group in column_groups[1] track by comment_group.id_list">
+                            <div class="media panel-body">
+                              <a class="pull-left" ng-click="show_image(comment_group.image_id)">
+                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
+                                style="width: 150px;">
+                              </a>
+                              <div class="media-body">
+                                <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
+                                    <div class="col-md-2">{{comment.nickname}}</div>
+                                    <div class="col-md-10">{{comment.text}}</div>
+                                </div>
+                              </div>
+                            </div>                        
+                        </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                        <div class="panel panel-default" ng-repeat="comment_group in column_groups[2] track by comment_group.id_list">
+                            <div class="media panel-body">
+                              <a class="pull-left" ng-click="show_image(comment_group.image_id)">
+                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
+                                style="width: 150px;">
+                              </a>
+                              <div class="media-body">
+                                <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
+                                    <div class="col-md-2">{{comment.nickname}}</div>
+                                    <div class="col-md-10">{{comment.text}}</div>
+                                </div>
+                              </div>
+                            </div>                        
+                        </div>                        
+                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">

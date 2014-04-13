@@ -622,7 +622,15 @@ function ChatCtrl($scope, $log, $filter) {
             process_group(current_group, comment_groups);
         }
         
-        $scope.comment_groups = comment_groups;
+        var num_columns = 3;
+        // $scope.comment_groups = comment_groups;
+        
+        var column_groups = [[], [], []];
+        for(var i in comment_groups) {
+            var comment_group = comment_groups[i];
+            column_groups[i % num_columns].push(comment_group);
+        }
+        $scope.column_groups = column_groups;
        
     }, true);    
 }
