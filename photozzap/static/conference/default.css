@@ -138,3 +138,19 @@ body {
 .comment-area {
     color: #000000;
 }
+
+.comment-columns {
+	-webkit-column-count: 3;
+    -webkit-column-fill: auto;
+	-moz-column-count: 3;
+    -moz-column-fill: auto;
+	column-count: 3;
+    column-fill: auto;
+}
+
+.comment-group {
+    -webkit-column-break-inside:avoid;
+    -moz-column-break-inside:avoid;
+    column-break-inside:avoid;
+    page-break-inside: avoid;
+}

@@ -587,6 +587,7 @@ function ChatCtrl($scope, $log, $filter) {
     }
     
     $scope.$watch("conference.comments", function(newValue, OldValue) {
+        $log.info("watch conference.comments");
         if ($scope.conference == undefined) {
             // cannot do anything yet
             return;
@@ -604,9 +605,11 @@ function ChatCtrl($scope, $log, $filter) {
         var comment_groups = [];
         var current_image_id = undefined;
         var current_group = undefined;
+        var cumulative_comment_length = 0;
+        var cumulative_comment_num = 0;
         for(var i in sorted_comments) {
             var comment = sorted_comments[i];        
-            if (current_image_id != comment.image_id) {
+            if (current_image_id != comment.image_id || cumulative_comment_length > 250 || cumulative_comment_num > 7 ) {
                 // process old group
                 if (current_group != undefined) {
                     process_group(current_group, comment_groups);
@@ -615,13 +618,20 @@ function ChatCtrl($scope, $log, $filter) {
                 current_group = {image_id: comment.image_id,
                                  comments: []};   
                 current_image_id = comment.image_id;
+                cumulative_comment_length = 0;
+                cumulative_comment_num = 0;
             }
             current_group.comments.push(comment);
+            cumulative_comment_length += comment.text.length;
+            cumulative_comment_num += 1;
         }
         if (current_group.comments.length > 0 ) {
             process_group(current_group, comment_groups);
         }
         
+        $scope.comment_groups = comment_groups;
+        
+        /*
         var num_columns = 3;
         // $scope.comment_groups = comment_groups;
         
@@ -630,7 +640,8 @@ function ChatCtrl($scope, $log, $filter) {
             var comment_group = comment_groups[i];
             column_groups[i % num_columns].push(comment_group);
         }
-        $scope.column_groups = column_groups;
+        $scope.column_groups = column_groups;\
+        */
        
     }, true);    
 }

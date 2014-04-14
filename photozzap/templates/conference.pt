@@ -217,55 +217,23 @@
                     </tab-heading>
                     <div class="row comment-area">
 
-                        <div class="col-md-4">
-                        <div class="panel panel-default" ng-repeat="comment_group in column_groups[0] track by comment_group.id_list">
-                            <div class="media panel-body">
-                              <a class="pull-left" ng-click="show_image(comment_group.image_id)">
-                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
-                                style="width: 150px;">
-                              </a>
-                              <div class="media-body">
-                                <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
-                                    <div class="col-md-2">{{comment.nickname}}</div>
-                                    <div class="col-md-10">{{comment.text}}</div>
-                                </div>
-                              </div>
-                            </div>                        
-                        </div>
-                        </div>
-                    
-                        <div class="col-md-4">
-                        <div class="panel panel-default" ng-repeat="comment_group in column_groups[1] track by comment_group.id_list">
-                            <div class="media panel-body">
-                              <a class="pull-left" ng-click="show_image(comment_group.image_id)">
-                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
-                                style="width: 150px;">
-                              </a>
-                              <div class="media-body">
-                                <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
-                                    <div class="col-md-2">{{comment.nickname}}</div>
-                                    <div class="col-md-10">{{comment.text}}</div>
-                                </div>
-                              </div>
-                            </div>                        
-                        </div>
-                        </div>
-                        
-                        <div class="col-md-4">
-                        <div class="panel panel-default" ng-repeat="comment_group in column_groups[2] track by comment_group.id_list">
-                            <div class="media panel-body">
-                              <a class="pull-left" ng-click="show_image(comment_group.image_id)">
-                                <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
-                                style="width: 150px;">
-                              </a>
-                              <div class="media-body">
-                                <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
-                                    <div class="col-md-2">{{comment.nickname}}</div>
-                                    <div class="col-md-10">{{comment.text}}</div>
-                                </div>
-                              </div>
-                            </div>                        
-                        </div>                        
+                        <div class="col-md-12">
+                            <div class="comment-columns" >
+                                <div class="panel panel-default comment-group" ng-repeat="comment_group in comment_groups track by comment_group.id_list">
+                                    <div class="media panel-body">
+                                      <a class="pull-left" ng-click="show_image(comment_group.image_id)">
+                                        <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
+                                        style="width: 150px;">
+                                      </a>
+                                      <div class="media-body">
+                                        <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
+                                            <div class="col-md-2">{{comment.nickname}}</div>
+                                            <div class="col-md-10">{{comment.text | limitTo:160}}</div>
+                                        </div>
+                                      </div>
+                                    </div>                        
+                                </div>                        
+                            </div>
                         </div>
                         
                     </div>
