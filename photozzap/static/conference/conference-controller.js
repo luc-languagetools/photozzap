@@ -607,12 +607,14 @@ function ChatCtrl($scope, $log, $filter) {
         var current_group = undefined;
         var cumulative_comment_length = 0;
         var cumulative_comment_num = 0;
+        var current_nickname = undefined;
         for(var i in sorted_comments) {
             var comment = sorted_comments[i];        
             if (current_image_id != comment.image_id || cumulative_comment_length > 250 || cumulative_comment_num > 7 ) {
                 // process old group
                 if (current_group != undefined) {
                     process_group(current_group, comment_groups);
+                    current_nickname = undefined;
                 }
                 // create new group
                 current_group = {image_id: comment.image_id,
@@ -621,27 +623,47 @@ function ChatCtrl($scope, $log, $filter) {
                 cumulative_comment_length = 0;
                 cumulative_comment_num = 0;
             }
+            if (comment.nickname != current_nickname) {
+                comment.display_nickname = true;
+            } else {
+                comment.display_nickname = false;
+            }
             current_group.comments.push(comment);
             cumulative_comment_length += comment.text.length;
             cumulative_comment_num += 1;
+            current_nickname = comment.nickname;
         }
         if (current_group.comments.length > 0 ) {
             process_group(current_group, comment_groups);
         }
         
-        $scope.comment_groups = comment_groups;
-        
-        /*
-        var num_columns = 3;
         // $scope.comment_groups = comment_groups;
         
-        var column_groups = [[], [], []];
-        for(var i in comment_groups) {
+        var groups_per_page = 6;
+        var comment_pages = [];
+        var current_page_groups = [];
+        // for(var i in comment_groups) {
+        for (var i = 0; i < comment_groups.length; i++) {
             var comment_group = comment_groups[i];
-            column_groups[i % num_columns].push(comment_group);
+            current_page_groups.push(comment_group);
+            var cycle = (i + 1) % groups_per_page;
+            $log.info("cycle: " + cycle);
+            if ((i + 1) % groups_per_page == 0) {
+                var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
+                comment_pages.push({id_list: id_list.join("_"),
+                             objs: current_page_groups});
+                current_page_groups = [];
+            }            
         }
-        $scope.column_groups = column_groups;\
-        */
-       
+        if (current_page_groups.length > 0 ) {
+            var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
+            comment_pages.push({id_list: id_list.join("_"),
+                                objs: current_page_groups});
+        }
+        
+        $scope.comment_pages = comment_pages;
+        
+        $log.info("comment_pages.length: " + comment_pages.length);
+        
     }, true);    
 }
