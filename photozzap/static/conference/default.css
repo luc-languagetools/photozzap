@@ -143,7 +143,9 @@ body {
 	-webkit-column-count: 3;
     -webkit-column-fill: auto;
 	-moz-column-count: 3;
+    /* don't set this one, it breaks firefox
     -moz-column-fill: auto;
+    */
 	column-count: 3;
     column-fill: auto;
 }
