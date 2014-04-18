@@ -1,5 +1,5 @@
 
-var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap']);
+var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap', 'angularMoment']);
 
 
 conferenceModule.filter('orderObjectBy', function(){
@@ -373,11 +373,13 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.sorted_notifications = $filter('filter')(sorted_notifications_array, function(elt) {
             var currentTimestamp = new Date().getTime();
             if (elt.user_key != $scope.self_uid &&  // don't display notifications for current user
-                elt.timestamp + 10 > currentTimestamp) // don't display notifications older than 10s (in case they didn't get cleared)
+                elt.timestamp + 10000 > currentTimestamp) // don't display notifications older than 10s (in case they didn't get cleared)
             { 
                 return true; 
+            } else {
+                $log.info("notification too old, elt.timestamp: " + elt.timestamp + " currentTimestamp: " + currentTimestamp);
+                return false;
             }
-            return false;
         });
     }, true);
     
@@ -628,6 +630,8 @@ function ChatCtrl($scope, $log, $filter) {
             var id_list = $.map(current_group.comments, function(obj, i){ return obj.id; });
             var id_list_str =  id_list.join("_");
             current_group.id_list = id_list_str;
+            // take timestamp from last comment
+            current_group.timestamp = current_group.comments[current_group.comments.length - 1].time_added;
             comment_groups.push(current_group);        
         };
         
@@ -679,8 +683,10 @@ function ChatCtrl($scope, $log, $filter) {
             if ((cycle_counter + 1) % $scope.num_comment_groups == 0) {
                 current_page_groups.reverse();
                 var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
+                var timestamp = current_page_groups[current_page_groups.length - 1].timestamp;
                 comment_pages.push({id_list: id_list.join("_"),
-                             objs: current_page_groups});
+                             objs: current_page_groups,
+                             timestamp: timestamp});
                 current_page_groups = [];
             }
             cycle_counter++;
@@ -688,8 +694,11 @@ function ChatCtrl($scope, $log, $filter) {
         if (current_page_groups.length > 0 ) {
             current_page_groups.reverse();
             var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
+            // take timestamp from last group
+            var timestamp = current_page_groups[current_page_groups.length - 1].timestamp;
             comment_pages.push({id_list: id_list.join("_"),
-                                objs: current_page_groups});        
+                                objs: current_page_groups,
+                                timestamp: timestamp});        
         }
         
         comment_pages.reverse();

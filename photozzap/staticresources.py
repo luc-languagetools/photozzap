@@ -24,6 +24,10 @@ javascript_files = [
 "static/firebase/firebase-simple-login.js",
 "static/firebase/angularfire.min.js",
 
+# angular moment
+"static/angular-moment/moment.min.js",
+"static/angular-moment/angular-moment.min.js",
+
 "static/conference/conference-ui.js",
 "static/conference/conference-controller.js",
 "static/conference/conference-initialize.js",

@@ -25,6 +25,9 @@ function ConferenceObject(key, path) {
     var usersPath = path + "/users";
     var usersRef = new Firebase(usersPath);
     
+    var commentsPath = path + "/comments";
+    var commentsRef = new Firebase(commentsPath);
+    
     var notificationsPath = path + "/notifications";
     this.notificationsRef = new Firebase(notificationsPath);
 
@@ -52,7 +55,7 @@ function ConferenceObject(key, path) {
             return;
         var newNotificationRef = this.notificationsRef.push();
         data.user_key = user_key;
-        data.timestamp = new Date().getTime();
+        data.timestamp = new Date().getTime();            
         data.nickname = userNickname;
         newNotificationRef.set(data);
         var self = this;
@@ -64,6 +67,18 @@ function ConferenceObject(key, path) {
     this.removeNotification = function(notificationRef) {
         this.log_event("removing notification " + notificationRef.name());
         notificationRef.remove();
+    }
+    
+    this.commentChildAdded = function(snapshot) {
+        var comment_data = snapshot.val();
+        var user_key = comment_data.user_id;
+        var current_timestamp =  new Date().getTime();
+        if (current_timestamp - comment_data.time_added < 120000) {
+            // comment less than 60 seconds old
+            this.addNotification(user_key, {type: "comment",
+                                            image_id: comment_data.image_id, 
+                                            text: comment_data.text});
+        }
     }
     
     this.userChildChanged = function(snapshot) {
@@ -113,6 +128,7 @@ function ConferenceObject(key, path) {
     imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
     usersRef.on('child_added', this.userChildChanged, function(){}, this);
     usersRef.on('child_changed', this.userChildChanged, function(){}, this);
+    commentsRef.on('child_added', this.commentChildAdded, function(){}, this);
 
 }
 
