@@ -373,7 +373,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.sorted_notifications = $filter('filter')(sorted_notifications_array, function(elt) {
             var currentTimestamp = new Date().getTime();
             if (elt.user_key != $scope.self_uid &&  // don't display notifications for current user
-                elt.timestamp + 10000 > currentTimestamp) // don't display notifications older than 10s (in case they didn't get cleared)
+                elt.timestamp + 120000 > currentTimestamp) // don't display notifications older than 10s (in case they didn't get cleared)
             { 
                 return true; 
             } else {

@@ -230,7 +230,10 @@
                     <div class="row comment-area">
 
                         <div class="col-md-12" ng-repeat="comment_page in comment_pages | limitTo:-display_num_pages track by comment_page.id_list">
-                            <div class="panel panel-default time-header-large"><span am-time-ago="comment_page.timestamp"></span></div>
+                            <div class="panel panel-default time-header-large">
+                                <span class="icon-clock"></span>
+                                <span am-time-ago="comment_page.timestamp"></span>
+                            </div>
                             <div class="comment-columns">
                                 <div class="panel panel-default comment-group" ng-repeat="comment_group in comment_page.objs track by comment_group.id_list">
                                     <div class="media panel-body">
@@ -240,7 +243,8 @@
                                       </a>
                                       <div class="media-body">
                                         <div class="row">
-                                            <div class="col-md-12 time-header"><span am-time-ago="comment_group.timestamp"></span></div>
+                                            <div class="col-md-12 time-header"><span class="icon-clock"></span>
+                                            <span am-time-ago="comment_group.timestamp"></span></div>
                                         </div>
                                         <div class="row comment" ng-repeat="comment in comment_group.comments track by comment.id">
                                             <div ng-if="comment.display_nickname" class="col-md-12">
@@ -266,7 +270,10 @@
                                     <input ng-model="comment_text" type="text" class="form-control" id="comment" placeholder="Enter Message">
                                 </div>
                                 <div class="form-group col-xs-1 col-sm-1 col-md-2">
-                                    <button type="submit" class="btn btn-default">Send</button>
+                                    <button type="submit" class="btn btn-default">
+                                        <span class="icon-bubble"></span>
+                                        Send
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -314,7 +321,7 @@
                 <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
-                <span ng-switch-when="comment"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}} {{notification.text}}</span>                
+                <span ng-switch-when="comment"><span class="icon-bubble"></span> {{notification.nickname}} {{notification.text}}</span>                
             </span>
             <span class="separator"></span>            
         </span>
