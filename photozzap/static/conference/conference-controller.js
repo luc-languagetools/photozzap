@@ -539,6 +539,10 @@ function ThumbnailsCtrl($scope, $log) {
     
     $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
         $scope.refresh_num_thumbnails();
+    });
+    
+    $scope.$watch("num_thumbnails", function(newValue, oldValue) {
+        // number of shown thumbnails has changed, we must regenerate thumbnail groups
         $scope.refresh_thumbnail_groups();
     });
     
@@ -576,7 +580,6 @@ function ImageCtrl($scope) {
 
 
 function ChatCtrl($scope, $log, $filter) {
-    $scope.num_comment_groups = 9;
 
     $scope.submit_comment = function() {
         $log.info("submit_comment: " + $scope.comment_text);
@@ -588,8 +591,28 @@ function ChatCtrl($scope, $log, $filter) {
         $scope.comment_text = "";                              
     }
     
-    $scope.$watch("conference.comments", function(newValue, OldValue) {
-        $log.info("watch conference.comments");
+    $scope.refresh_all = function() {
+        $scope.refresh_num_comment_groups();
+        $scope.refresh_groups();
+    }
+    
+    $scope.refresh_num_comment_groups = function() {
+        var window_width = $scope.window_dimensions.width;
+    
+        if (window_width > 1200) {
+            $scope.num_comment_groups = 12;
+        } else if (window_width > 992) {
+            $scope.num_comment_groups = 9;
+        } else if (window_width > 768) {
+            $scope.num_comment_groups = 6;
+        } else {
+            $scope.num_comment_groups = 3;
+        }    
+    }
+    
+    $scope.refresh_num_comment_groups();
+    
+    $scope.refresh_groups = function() {
         if ($scope.conference == undefined) {
             // cannot do anything yet
             return;
@@ -639,43 +662,27 @@ function ChatCtrl($scope, $log, $filter) {
             process_group(current_group, comment_groups);
         }
         
-        //$scope.comment_groups = comment_groups;
-        
-        // $scope.num_comment_groups
+        // restrict to last N
         if (comment_groups.length <= $scope.num_comment_groups) {
             $scope.comment_groups = comment_groups;
         } else {
             var start = comment_groups.length - $scope.num_comment_groups;
             $scope.comment_groups = comment_groups.slice(start);
         }
-        
-        /*
-        var groups_per_page = 6;
-        var comment_pages = [];
-        var current_page_groups = [];
-        // for(var i in comment_groups) {
-        for (var i = 0; i < comment_groups.length; i++) {
-            var comment_group = comment_groups[i];
-            current_page_groups.push(comment_group);
-            var cycle = (i + 1) % groups_per_page;
-            $log.info("cycle: " + cycle);
-            if ((i + 1) % groups_per_page == 0) {
-                var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
-                comment_pages.push({id_list: id_list.join("_"),
-                             objs: current_page_groups});
-                current_page_groups = [];
-            }            
-        }
-        if (current_page_groups.length > 0 ) {
-            var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
-            comment_pages.push({id_list: id_list.join("_"),
-                                objs: current_page_groups});
-        }
-        
-        $scope.comment_pages = comment_pages;
-        
-        $log.info("comment_pages.length: " + comment_pages.length);
-        */
-        
+    }
+    
+    $scope.$watch("num_comment_groups", function(newValue, oldValue) {
+        $scope.refresh_groups();
+    }, true);
+    
+    $scope.$watch("conference.comments", function(newValue, OldValue) {
+        $log.info("watch conference.comments");
+        $scope.refresh_groups();
     }, true);    
+    
+    
+    $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
+        $scope.refresh_num_comment_groups();
+    });    
+    
 }

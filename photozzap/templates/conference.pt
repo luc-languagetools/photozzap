@@ -226,7 +226,7 @@
                                         style="width: 150px;">
                                       </a>
                                       <div class="media-body">
-                                        <div class="row" ng-repeat="comment in comment_group.comments track by comment.id">
+                                        <div class="row comment" ng-repeat="comment in comment_group.comments track by comment.id">
                                             <div ng-if="comment.display_nickname" class="col-md-12">
                                                 <span ng-if="comment.display_nickname"><b>{{comment.nickname}}:</b>&nbsp;</span>
                                                 <span ng-if="! comment.display_nickname">&nbsp;&nbsp;</span>
