@@ -1,6 +1,14 @@
 
 var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap']);
 
+
+conferenceModule.filter('lastn', function() {
+  return function(arr, num) {
+    var start = arr.length - num - 1;
+    return arr.slice(start);
+  };
+});
+
 conferenceModule.filter('orderObjectBy', function(){
  return function(input, attribute) {
     if (!angular.isObject(input)) return input;
@@ -580,6 +588,7 @@ function ImageCtrl($scope) {
 
 
 function ChatCtrl($scope, $log, $filter) {
+    $scope.display_num_pages = 1;
 
     $scope.submit_comment = function() {
         $log.info("submit_comment: " + $scope.comment_text);
@@ -662,15 +671,37 @@ function ChatCtrl($scope, $log, $filter) {
             process_group(current_group, comment_groups);
         }
         
-        // restrict to last N
-        if (comment_groups.length <= $scope.num_comment_groups) {
-            $scope.comment_groups = comment_groups;
-        } else {
-            var start = comment_groups.length - $scope.num_comment_groups;
-            $scope.comment_groups = comment_groups.slice(start);
+        // group comments in "pages"
+        
+        var comment_pages = [];
+        var current_page_groups = [];
+        var cycle_counter = 0;
+        for (var i = comment_groups.length - 1; i >= 0; i--) {
+            var comment_group = comment_groups[i];
+            current_page_groups.push(comment_group);
+            var cycle = (cycle_counter + 1) % $scope.num_comment_groups;
+            if ((cycle_counter + 1) % $scope.num_comment_groups == 0) {
+                current_page_groups.reverse();
+                var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
+                comment_pages.push({id_list: id_list.join("_"),
+                             objs: current_page_groups});
+                current_page_groups = [];
+            }
+            cycle_counter++;
         }
+        if (current_page_groups.length > 0 ) {
+            current_page_groups.reverse();
+            var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
+            comment_pages.push({id_list: id_list.join("_"),
+                                objs: current_page_groups});        
+        }
+        
+        comment_pages.reverse();
+        
+        $scope.comment_pages = comment_pages;
     }
     
+   
     $scope.$watch("num_comment_groups", function(newValue, oldValue) {
         $scope.refresh_groups();
     }, true);
