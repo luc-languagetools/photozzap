@@ -218,10 +218,8 @@
                     <div class="row comment-area">
 
                         <div class="col-md-12">
-                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator class="ng-cloak">
-                            <li ng-repeat="page in comment_pages track by page.id_list">                        
                             <div class="comment-columns" >
-                                <div class="panel panel-default comment-group" ng-repeat="comment_group in page.objs track by comment_group.id_list">
+                                <div class="panel panel-default comment-group" ng-repeat="comment_group in comment_groups track by comment_group.id_list">
                                     <div class="media panel-body">
                                       <a class="pull-left" ng-click="show_image(comment_group.image_id)">
                                         <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
@@ -242,8 +240,6 @@
                                     </div>                        
                                 </div>                        
                             </div>
-                            </li>
-                            </ul>
                         </div>
                         
                     </div>

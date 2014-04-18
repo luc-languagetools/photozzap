@@ -576,6 +576,8 @@ function ImageCtrl($scope) {
 
 
 function ChatCtrl($scope, $log, $filter) {
+    $scope.num_comment_groups = 9;
+
     $scope.submit_comment = function() {
         $log.info("submit_comment: " + $scope.comment_text);
         $scope.comments.$add({user_id: $scope.login_obj.user.uid,
@@ -637,8 +639,17 @@ function ChatCtrl($scope, $log, $filter) {
             process_group(current_group, comment_groups);
         }
         
-        // $scope.comment_groups = comment_groups;
+        //$scope.comment_groups = comment_groups;
         
+        // $scope.num_comment_groups
+        if (comment_groups.length <= $scope.num_comment_groups) {
+            $scope.comment_groups = comment_groups;
+        } else {
+            var start = comment_groups.length - $scope.num_comment_groups;
+            $scope.comment_groups = comment_groups.slice(start);
+        }
+        
+        /*
         var groups_per_page = 6;
         var comment_pages = [];
         var current_page_groups = [];
@@ -664,6 +675,7 @@ function ChatCtrl($scope, $log, $filter) {
         $scope.comment_pages = comment_pages;
         
         $log.info("comment_pages.length: " + comment_pages.length);
+        */
         
     }, true);    
 }
