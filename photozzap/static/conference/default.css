@@ -177,7 +177,7 @@ body {
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
     .comment-columns {
         -webkit-column-count: 4;
         -moz-column-count: 4;

@@ -217,13 +217,13 @@
                     </tab-heading>
                     <div class="row">
                         <div class="col-md-6">
-                            <button class="btn btn-default" ng-click="show_more()" ng-show="show_more_available">
-                                Show More
+                            <button class="btn btn-default" ng-click="show_more()" ng-show="comment_pages.length > display_num_pages">
+                                Show Earlier
                             </button>                        
                         </div>
                         <div class="col-md-6">
-                            <button class="btn btn-default" ng-click="show_less()" ng-show="show_less_available">
-                                Show Less
+                            <button class="btn btn-default" ng-click="show_latest_only()" ng-show="display_num_pages > 1">
+                                Show Latest Only
                             </button>                        
                         </div>                        
                     </div>

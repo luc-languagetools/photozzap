@@ -2,13 +2,6 @@
 var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap']);
 
 
-conferenceModule.filter('lastn', function() {
-  return function(arr, num) {
-    var start = arr.length - num - 1;
-    return arr.slice(start);
-  };
-});
-
 conferenceModule.filter('orderObjectBy', function(){
  return function(input, attribute) {
     if (!angular.isObject(input)) return input;
@@ -600,15 +593,18 @@ function ChatCtrl($scope, $log, $filter) {
         $scope.comment_text = "";                              
     }
     
-    $scope.refresh_all = function() {
-        $scope.refresh_num_comment_groups();
-        $scope.refresh_groups();
+    $scope.show_more = function() {
+        $scope.display_num_pages++;
     }
     
+    $scope.show_latest_only = function() {
+        $scope.display_num_pages = 1;
+    }
+   
     $scope.refresh_num_comment_groups = function() {
         var window_width = $scope.window_dimensions.width;
     
-        if (window_width > 1200) {
+        if (window_width > 1400) {
             $scope.num_comment_groups = 12;
         } else if (window_width > 992) {
             $scope.num_comment_groups = 9;
