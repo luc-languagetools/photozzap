@@ -136,7 +136,7 @@ body {
 }
 
 .comment-area {
-    color: #000000;
+    color: #444444;
 }
 
 .comment-columns {
@@ -170,7 +170,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
 }
 
 .time-header, .time-header-large {
-    color: #CCCCCC;
+    color: #AAAAAA;
     font-style: italic;
     text-align: center;    
 }
@@ -186,6 +186,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
     padding-bottom: 3px;
 }
 
+.comment-thumbnail {
+    width: 80px;
+}
+
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     .comment-columns {
@@ -193,6 +197,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
         -moz-column-count: 2;
         column-count: 2;
     }
+    
+    .comment-thumbnail {
+        width: 100px;
+    }    
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -202,6 +210,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
         -moz-column-count: 3;
         column-count: 3;
     }
+    .comment-thumbnail {
+        width: 125px;
+    }        
+    
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -211,4 +223,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
         -moz-column-count: 4;
         column-count: 4;
     }
+    .comment-thumbnail {
+        width: 150px;
+    }        
 }

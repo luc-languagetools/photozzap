@@ -238,8 +238,7 @@
                                 <div class="panel panel-default comment-group" ng-repeat="comment_group in comment_page.objs track by comment_group.id_list">
                                     <div class="media panel-body">
                                       <a class="pull-left" ng-click="show_image(comment_group.image_id)">
-                                        <img class="media-object" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}"
-                                        style="width: 150px;">
+                                        <img class="media-object comment-thumbnail" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}">
                                       </a>
                                       <div class="media-body">
                                         <div class="row">
@@ -270,7 +269,7 @@
                                     <input ng-model="comment_text" type="text" class="form-control" id="comment" placeholder="Enter Message">
                                 </div>
                                 <div class="form-group col-xs-1 col-sm-1 col-md-2">
-                                    <button type="submit" class="btn btn-default">
+                                    <button type="submit" class="btn btn-default" style="margin-left: 5px;">
                                         <span class="icon-bubble"></span>
                                         Send
                                     </button>
