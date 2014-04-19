@@ -194,9 +194,9 @@
                                         <a ng-if="user.viewing_image_id != undefined" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
                                           <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
                                            <br/>
+                                           <span ng-if="user.page_visible == false" class="icon-eye-blocked"></span>
+                                           <span ng-if="user.page_visible == true" class="icon-eye"></span>
                                           {{user.nickname}} 
-                                          <span ng-if="user.page_visible == false" 
-                                          class="label label-default">Away</span>
                                         </a>
                                     </div>
                                 </li>        

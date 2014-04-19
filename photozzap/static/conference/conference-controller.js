@@ -391,6 +391,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             
             // update user object on firebase
             $scope.conference_user_object.viewing_image_id = $scope.sorted_images[newValue].id;
+            if (! $scope.conference_user_object.page_visible ) {
+                // in some cases the browser doesn't properly reset page visibility to true
+                $scope.conference_user_object.page_visible = true;
+            }
             
         });
     }
