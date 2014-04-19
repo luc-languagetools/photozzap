@@ -135,6 +135,11 @@ body {
    border-right: 1px solid #CCCCCC;
 }
 
+.below-tab-spacing {
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
 .comment-area {
     color: #444444;
 }

@@ -606,11 +606,11 @@ function ChatCtrl($scope, $log, $filter) {
     $scope.refresh_num_comment_groups = function() {
         var window_width = $scope.window_dimensions.width;
     
-        if (window_width > 1400) {
+        if (window_width >= 1400) {
             $scope.num_comment_groups = 12;
-        } else if (window_width > 992) {
+        } else if (window_width >= 992) {
             $scope.num_comment_groups = 9;
-        } else if (window_width > 768) {
+        } else if (window_width >= 768) {
             $scope.num_comment_groups = 6;
         } else {
             $scope.num_comment_groups = 3;
