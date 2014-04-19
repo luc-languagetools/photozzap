@@ -215,25 +215,40 @@
                     <tab-heading>
                         <i class="glyphicon glyphicon-comment"></i> Chat
                     </tab-heading>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button class="btn btn-default" ng-click="show_more()" ng-show="comment_pages.length > display_num_pages">
-                                Show Earlier
-                            </button>                        
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-default" ng-click="show_latest_only()" ng-show="display_num_pages > 1">
-                                Show Latest Only
-                            </button>                        
-                        </div>                        
-                    </div>
+
                     <div class="row comment-area">
 
                         <div class="col-md-12" ng-repeat="comment_page in comment_pages | limitTo:-display_num_pages track by comment_page.id_list">
-                            <div class="panel panel-default time-header-large">
-                                <span class="icon-clock"></span>
-                                <span am-time-ago="comment_page.timestamp"></span>
+                            <div ng-if="$first" class="row">
+                                <div class="col-xs-6 col-sm-8 col-md-9">
+                                    <div class="panel panel-default time-header-large">
+                                        <span class="icon-clock"></span>
+                                        <span am-time-ago="comment_page.timestamp"></span>
+                                    </div>
+                                </div>   
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 comment-hold-button-container" style="padding-right: 2px;">
+                                            <button class="btn btn-default" ng-click="show_more()" ng-show="comment_pages.length > display_num_pages">
+                                                Show Earlier
+                                            </button>                                 
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 comment-hold-button-container" style="padding-left: 2px;">
+                                            <button class="btn btn-default" ng-click="show_latest_only()" ng-show="display_num_pages > 1" style="margin-top: 8px; width: 100%;">
+                                                Latest Only
+                                            </button>                        
+                                        </div>                                        
+                                    </div>
+                                </div>
                             </div>
+                            <div ng-if="! $first" class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default time-header-large">
+                                        <span class="icon-clock"></span>
+                                        <span am-time-ago="comment_page.timestamp"></span>
+                                    </div>
+                                </div>                            
+                            </div>                            
                             <div class="comment-columns">
                                 <div class="panel panel-default comment-group" ng-repeat="comment_group in comment_page.objs track by comment_group.id_list">
                                     <div class="media panel-body">

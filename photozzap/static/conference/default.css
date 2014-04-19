@@ -56,7 +56,7 @@
 
 body {
 	background: #FFFFFF;
-    color: #CCCCCC;
+    color: #444444;
     font-family: 'Pathway Gothic One', sans-serif;
     font-size: 18px;
     height: 100%;
@@ -188,6 +188,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
 
 .comment-thumbnail {
     width: 80px;
+}
+
+
+.comment-hold-button-container button{
+    margin-top: 8px; 
+    width: 100%; 
 }
 
 /* Small devices (tablets, 768px and up) */
