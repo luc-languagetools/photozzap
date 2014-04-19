@@ -219,10 +219,14 @@ angular.module('angular-carousel')
                     }
 
                     function updateIndicatorArray() {
+                        console.log("updateIndicatorArray " + carouselId + " slidesCount: " + slidesCount);
                         // generate an array to be used by the indicators
                         var items = [];
-                        for (var i = 0; i < slidesCount; i++) items[i] = i;
+                        for (var i = 0; i < slidesCount; i++) { 
+                            items[i] = i;
+                        }
                         scope.carouselIndicatorArray = items;
+                        console.log("updateIndicatorArray carouselIndicatorArray.length: " + scope.carouselIndicatorArray.length);
                     }
 
                     function getCarouselWidth() {

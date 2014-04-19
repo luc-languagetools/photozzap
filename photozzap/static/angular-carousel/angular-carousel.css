@@ -46,8 +46,6 @@
   bottom: 0;
   cursor: pointer; }
   .rn-carousel-indicator span {
-    -webkit-transition: color .2s ease-out;
-    transition: color .2s ease-out;
     padding: 0 5px;
     color: #333; }
     .rn-carousel-indicator span:before {
@@ -57,8 +55,6 @@
 
 /* controls */
 .rn-carousel-control {
-  -webkit-transition: opacity 0.2s ease-out;
-  transition: opacity 0.2s ease-out;
   font-size: 30px;
   position: absolute;
   top: 50%;
