@@ -231,12 +231,19 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6 comment-hold-button-container" style="padding-right: 2px;">
                                             <button class="btn btn-default" ng-click="show_more()" ng-show="comment_pages.length > display_num_pages">
                                                 Show Earlier
-                                            </button>                                 
+                                            </button>
+                                            <button class="btn btn-default" ng-hide="comment_pages.length > display_num_pages" disabled="disabled">
+                                                Showing All
+                                            </button>                                            
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 comment-hold-button-container" style="padding-left: 2px;">
-                                            <button class="btn btn-default" ng-click="show_latest_only()" ng-show="display_num_pages > 1" style="margin-top: 8px; width: 100%;">
+                                            <button class="btn btn-default" ng-click="show_latest_only()" ng-show="display_num_pages > 1">
                                                 Latest Only
-                                            </button>                        
+                                            </button>
+                                            <button class="btn btn-default" ng-hide="display_num_pages > 1"
+                                            disabled="disabled">
+                                                Latest
+                                            </button>                                            
                                         </div>                                        
                                     </div>
                                 </div>
