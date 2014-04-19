@@ -1,6 +1,6 @@
 /**
  * Angular Carousel - Mobile friendly touch carousel for AngularJS
- * @version v0.2.0 - 2014-02-18
+ * @version v0.2.2 - 2014-04-02
  * @link http://revolunet.github.com/angular-carousel
  * @author Julien Bouquillon <julien@revolunet.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -36,8 +36,8 @@ angular.module('angular-carousel')
       };
     },
     template: '<div class="rn-carousel-controls">' +
-                '<span class="rn-carousel-control rn-carousel-control-prev" ng-click="prev()" ng-if="index > 0"><span class="glyphicon glyphicon-chevron-left"/></span>' +
-                '<span class="rn-carousel-control rn-carousel-control-next" ng-click="next()" ng-if="index < items.length - 1"><span class="glyphicon glyphicon-chevron-right"/></span>' +
+                '<span class="rn-carousel-control rn-carousel-control-prev" ng-click="prev()" ng-if="index > 0"></span>' +
+                '<span class="rn-carousel-control rn-carousel-control-next" ng-click="next()" ng-if="index < items.length - 1"></span>' +
               '</div>'
   };
 }]);
@@ -63,7 +63,7 @@ angular.module('angular-carousel')
 
     angular.module('angular-carousel')
 
-    .directive('rnCarousel', ['$swipe', '$window', '$document', '$parse', '$compile', function($swipe, $window, $document, $parse, $compile) {
+    .directive('rnCarousel', ['$swipe', '$window', '$document', '$parse', '$compile', '$rootScope', function($swipe, $window, $document, $parse, $compile, $rootScope) {
         // internal ids to allow multiple instances
         var carouselId = 0,
             // used to compute the sliding speed
@@ -72,6 +72,8 @@ angular.module('angular-carousel')
             moveTreshold = 0.05,
             // in absolute pixels, at which distance the slide stick to the edge on release
             rubberTreshold = 3;
+
+        var requestAnimationFrame = $window.requestAnimationFrame || $window.webkitRequestAnimationFrame || $window.mozRequestAnimationFrame;
 
         return {
             restrict: 'A',
@@ -221,30 +223,31 @@ angular.module('angular-carousel')
                         var items = [];
                         for (var i = 0; i < slidesCount; i++) items[i] = i;
                         scope.carouselIndicatorArray = items;
-                        console.log("item.length: ", items.length, " slidesCount: ", slidesCount);
                     }
 
                     function getCarouselWidth() {
-                        //container.css('width', 'auto');
+                       // container.css('width', 'auto');
                         var slides = carousel.children();
                         if (slides.length === 0) {
                             containerWidth = carousel[0].getBoundingClientRect().width;
                         } else {
                             containerWidth = slides[0].getBoundingClientRect().width;
                         }
-                        console.log('getCarouselWidth', containerWidth);
-                        return Math.floor(containerWidth);
+                        // console.log('getCarouselWidth', containerWidth);
+                        return containerWidth;
                     }
 
                     function updateContainerWidth() {
                         // force the carousel container width to match the first slide width
                         container.css('width', '100%');
-                        container.css('width', getCarouselWidth() + 'px');
+                        var width = getCarouselWidth();
+                        if (width) {
+                            container.css('width', width + 'px');
+                        }
                     }
 
                     function scroll(x) {
                         // use CSS 3D transform to move the carousel
-                        //console.log('scroll', x, 'index', scope.carouselIndex);
                         if (isNaN(x)) {
                             x = scope.carouselIndex * containerWidth;
                         }
@@ -252,7 +255,12 @@ angular.module('angular-carousel')
                         offset = x;
                         var move = -Math.round(offset);
                         move += (scope.carouselBufferIndex * containerWidth);
-                        carousel[0].style[transformProperty] = 'translate3d(' + move + 'px, 0, 0)';
+
+                        if(!is3dAvailable) {
+                            carousel[0].style[transformProperty] = 'translate(' + move + 'px, 0)';
+                        } else {
+                            carousel[0].style[transformProperty] = 'translate3d(' + move + 'px, 0, 0)';
+                        }
                     }
 
                     function autoScroll() {
@@ -265,6 +273,8 @@ angular.module('angular-carousel')
                             delta = amplitude * Math.exp(-elapsed / timeConstant);
                             if (delta > rubberTreshold || delta < -rubberTreshold) {
                                 scroll(destination - delta);
+                                /* We are using raf.js, a requestAnimationFrame polyfill, so
+                                this will work on IE9 */
                                 requestAnimationFrame(autoScroll);
                             } else {
                                 goToSlide(destination / containerWidth);
@@ -310,7 +320,7 @@ angular.module('angular-carousel')
                         updateBufferIndex();
                         // if outside of angular scope, trigger angular digest cycle
                         // use local digest only for perfs if no index bound
-                        if (scope.$$phase!=='$apply' && scope.$$phase!=='$digest') {
+                        if ($rootScope.$$phase!=='$apply' && $rootScope.$$phase!=='$digest') {
                             if (isIndexBound) {
                                 scope.$apply();
                             } else {
@@ -366,6 +376,9 @@ angular.module('angular-carousel')
                             if (delta > 2 || delta < -2) {
                                 swipeMoved = true;
                                 startX = x;
+
+                                /* We are using raf.js, a requestAnimationFrame polyfill, so
+                                this will work on IE9 */
                                 requestAnimationFrame(function() {
                                     scroll(capPosition(offset + delta));
                                 });
@@ -408,6 +421,8 @@ angular.module('angular-carousel')
                         if (forceAnimation) {
                             amplitude = offset - currentOffset;
                         }
+                        /* We are using raf.js, a requestAnimationFrame polyfill, so
+                        this will work on IE9 */
                         requestAnimationFrame(autoScroll);
 
                         return false;
@@ -446,6 +461,31 @@ angular.module('angular-carousel')
                         }
                         return true;
                     });
+
+                    //Detect support of translate3d
+                    function detect3dSupport(){
+                        var el = document.createElement('p'),
+                        has3d,
+                        transforms = {
+                            'webkitTransform':'-webkit-transform',
+                            'OTransform':'-o-transform',
+                            'msTransform':'-ms-transform',
+                            'MozTransform':'-moz-transform',
+                            'transform':'transform'
+                        };
+                        // Add it to the body to get the computed style
+                        document.body.insertBefore(el, null);
+                        for(var t in transforms){
+                            if( el.style[t] !== undefined ){
+                                el.style[t] = 'translate3d(1px,1px,1px)';
+                                has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+                            }
+                        }
+                        document.body.removeChild(el);
+                        return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
+                    }
+
+                    var is3dAvailable = detect3dSupport();
 
                     function onOrientationChange() {
                         updateContainerWidth();
