@@ -30,10 +30,10 @@ dnspython needed
 how to run:
 ../bin/python -m photozzap.scripts.jabber_muc_bot development.ini hjw32y84 bot01 Luc
 
-concatenate text resources
+deploy a version
 --------------------------
 
-../bin/python -m photozzap.scripts.deploy_static_assets
+../bin/python -m photozzap.scripts.deploy development-vps.ini test-0420-5
 
 
 git help
