@@ -57,6 +57,7 @@ conference_css_files = [
 home_css_files = [
 "static/bootstrap3/css/bootstrap.min.css",
 "static/bootstrap3/css/bootstrap-theme.min.css",
+"static/icomoon/style.css",
 ]
 
 

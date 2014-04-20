@@ -211,7 +211,7 @@
                               ng-minlength="3"
                               ng-maxlength="30"
                               placeholder="Enter your nickname" required>
-                            <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok': form.form.nickname.$valid, 'glyphicon-remove': form.form.nickname.$invalid}" ></span>
+                            <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.nickname.$valid, 'icon-close': form.form.nickname.$invalid}" ></span>
                             </div>
                         </div>
                         <div class="form-group has-feedback" ng-class="{'has-error': form.form.name.$invalid, 'has-success': form.form.name.$valid}">
@@ -225,25 +225,25 @@
                               ng-minlength="3"
                               ng-maxlength="30"
                               placeholder="Enter a description, for example 'my photos'" required>
-                            <span class="glyphicon glyphicon-ok form-control-feedback" ng-class="{'glyphicon-ok': form.form.name.$valid, 'glyphicon-remove': form.form.name.$invalid}" ></span>
+                            <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.name.$valid, 'icon-close': form.form.name.$invalid}" ></span>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-success btn-lg" ng-click="ok()"  ng-disabled="form.form.$invalid || ! form_data.logged_in">
-                        <span class="glyphicon glyphicon-ok"></span> OK</button>
+                        <span class="icon-checkmark"></span> OK</button>
                     <button class="btn btn-default btn-lg" ng-click="cancel()">
-                        <span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                        <span class="icon-close"></span> Cancel</button>
                     <button class="btn btn-default btn-lg" ng-click="logout()">
-                        <span class="glyphicon glyphicon-remove"></span> Logout</button>                        
+                        <span class="icon-close"></span> Logout</button>                        
                 </div>
             </script>        
           <div class="jumbotron">
             <h1>Real-time<br/>Photo Sharing</h1>
             <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
             <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()'>
-            <span class="glyphicon glyphicon-share-alt"></span> Start Conference</a>
+            <span class="icon-redo"></span> Start Conference</a>
             <div class="alert alert-block" style="margin-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
                 <strong>Note:</strong> your conference will stay available for 7 days, after that it will be deleted.
             </div>
