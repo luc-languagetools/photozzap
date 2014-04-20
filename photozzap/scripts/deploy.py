@@ -6,6 +6,11 @@ from pyramid.paster import (
     setup_logging,
     )
 
+def git_commit():
+    # git add photozzap/static/nodejs/*
+    # git add photozzap/static/cdn-files/*
+    
+    
 if __name__ == "__main__":
     argv = sys.argv
     if len(argv) != 3:
