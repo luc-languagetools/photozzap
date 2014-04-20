@@ -6,5 +6,7 @@ cloudinary.config({
   api_secret: 'OxGxJe0f-jGo1BAsmmlDdRPb7NM' 
 });
 
-var signature = cloudinary.utils.sign_request({}, {});
+var params = {timestamp: new Date().getTime().toString()};
+var signature = cloudinary.utils.sign_request(params, {});
+// signature.timestamp = new Date().getTime();            
 console.log(signature);

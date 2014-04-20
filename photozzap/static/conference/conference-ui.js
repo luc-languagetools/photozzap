@@ -1,9 +1,12 @@
 function show_upload_modal() {
-    $.get('/upload_data', function(upload_data) {
+    var upload_data = { timestamp: '1397958241815',
+  signature: '55cf6c584ea48714520beb86673bfdc1d868e271',
+  api_key: '751779366151643' };
+    //$.get('/upload_data', function(upload_data) {
         //log("received upload data: " + upload_data);
 		cloudinary_configure_resize(upload_data);
         $('#upload-modal').modal('show');
-    });
+    //});
 }
 
 function cloudinary_configure(resize) {
