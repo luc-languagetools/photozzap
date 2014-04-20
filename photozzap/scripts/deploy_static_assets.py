@@ -98,7 +98,10 @@ def copy_static_files(settings):
         dir_path = resolver.abspath()
         print("copying " + file_path + " to " + dir_path)
         shutil.copy(file_path, dir_path)
-        
+
+def copy_conference_monitor(settings):
+    pass
+    #source_file = 
         
 def manage_assets(settings):
     config = pyramid.testing.setUp()

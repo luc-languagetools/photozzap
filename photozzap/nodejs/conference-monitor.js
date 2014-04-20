@@ -1,6 +1,6 @@
 var Firebase = require('firebase');
 var cloudinary = require('cloudinary');
-var config = require('./config');
+var config = require('./' + process.argv[2]);
 
 var Globals = {
     conferences: {},
