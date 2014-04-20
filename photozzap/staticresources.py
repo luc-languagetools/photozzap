@@ -73,7 +73,7 @@ combined_home_javascript_file = "static/cdn-files/home-all.min.js"
 combined_home_css_file = "static/cdn-files/home-all.css"
 
 home_file_path = "static/cdn-files/index.html"
-conference_file_path = "static/cdn-files/conference"
+conference_file_path = "static/cdn-files/conference.html"
 
 cdn_asset_list = []
 cdn_asset_list.append(combined_conference_javascript_file)

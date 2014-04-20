@@ -51,7 +51,7 @@ def render_templates(settings):
     firebase = settings['firebase']
     server_name = settings['server_name']
 
-    new_conf_url = 'conference#/new-conference-template'
+    new_conf_url = 'conference.html#/new-conference-template'
     
     home_attributes = {
         'javascript_files': get_file_name(photozzap.staticresources.combined_home_javascript_file),
@@ -62,6 +62,15 @@ def render_templates(settings):
         'new_conf_url': new_conf_url        
     }
     render_template('photozzap:templates/home.pt', home_attributes, photozzap.staticresources.home_file_path)
+    
+    conference_attributes = {
+        'javascript_files': get_file_name(photozzap.staticresources.combined_conference_javascript_file),
+        'css_files': get_file_name(photozzap.staticresources.combined_conference_css_file),
+        'tracking_id': tracking_id,
+        'firebase': firebase,
+        'server_name': server_name
+    }    
+    render_template('photozzap:templates/conference.pt', conference_attributes, photozzap.staticresources.conference_file_path)
 
 
 def copy_static_files(settings):
