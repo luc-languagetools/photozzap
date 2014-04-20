@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="conferenceModule">
+<head>
+<title>Conference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- google fonts -->
+<link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
+<!-- css files -->
+<link rel="stylesheet" media="screen" href="conference-all.css">
+
+<style type="text/css">
+#loading-screen {
+    z-index: 5; 
+    position: fixed;
+    left: 0%;
+    top: 0%;    
+    width: 100%;
+    height: 100%;
+    font-size: 32px; 
+    color: #FFFFFF;
+    background-color: #000000;
+}
+#loading-screen .loading-screen-content {
+    margin-top: 30%;
+    text-align: center;
+}
+#loading-screen .loading-screen-content p {
+    margin-top: 20px;
+}
+#photozzap-title {
+    font-size: 52px;
+}
+</style>
+
+</head>
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://fiery-fire-5557.firebaseio.com/', 'test-0420-5')">
+<script defer src="conference-all.min.js"></script>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-46712284-2', 'photozzap.com');
+  ga('send', 'pageview');
+</script>
+
+
+<div id="upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="upload-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="upload-modal-label">Upload Photo</h4>
+            </div>
+            <div class="modal-body">
+                <div id="upload-controls" style="text-align: center;">
+                    <div id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
+                        <h3 class="upload-header">Drag And Drop photos into this area</h3>
+                        Or
+                        <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
+                    </div>
+                    <div class="resize-controls">
+                        <form>
+                        <label class="radio">
+                        <input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
+                        Resize to 1024x768 (faster upload, lower quality)
+                        </label>
+                        <label class="radio">
+                        <input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
+                        Upload full image (slower upload, faster quality)
+                        </label>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="nick_change_modal.html">
+    <div class="modal-header">
+        <h3>Change Nickname</h3>
+    </div>
+    <div class="modal-body">
+        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        <form name="form.form" class="form-horizontal" role="form">
+            <div class="form-group has-feedback" ng-class="{'has-error': form.form.nickname.$invalid, 'has-success': form.form.nickname.$valid}">
+                <label class="control-label col-sm-4" for="nickname">Nickname
+                    <small ng-show="form.form.nickname.$error.minlength"><br/>Min 3 characters</small>
+                    <small ng-show="form.form.nickname.$error.maxlength"><br/>Max 30 characters</small>
+                </label>
+                <div class="col-sm-8">
+                <input type="text" name="nickname" class="form-control" id="nickname" 
+                  ng-model="temp_data.new_nickname" 
+                  ng-minlength="3"
+                  ng-maxlength="30"
+                  placeholder="Enter your nickname" required>
+                <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.nickname.$valid, 'icon-close': form.form.nickname.$invalid}" ></span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-lg" ng-click="change()"  ng-disabled="form.form.$invalid">
+            <span class="icon-checkmark"></span> OK</button>
+        <button class="btn btn-default btn-lg" ng-click="cancel()">
+            <span class="icon-close"></span> Cancel</button>
+    </div>
+</script>  
+
+<div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak">
+    <div id="displayed_image">
+        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
+            ng-style="{'width': window_dimensions.width,
+                       'height': window_dimensions.height}"
+            ng-if="sorted_images.length > 0">
+            <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
+                <div class="image_layer image_layer_top"
+                ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
+                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
+                </div>
+                <div class="image_layer image_layer_bottom"
+                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
+                </div>                
+            </li>        
+        </ul>
+        <div class="image_layer_container" ng-if="sorted_images.length == 0">
+            <div class="image_layer">
+                <h1>No Photos</h1>
+            </div>
+        </div>            
+    </div>
+</div>
+
+<div id="loading-screen" ng-hide="logged_in_and_ready">
+    <div class="loading-screen-content">
+        <span id="photozzap-title">Photozzap</span>
+        <p id="connection-status-text">Please wait, 
+            <span ng-hide="true">loading</span> <!-- gets displayed before angular kicks in -->
+            <span ng-cloak class="ng-cloak">{{status_string}}</span> <!-- gets displayed after angular kicks in -->
+        </p>
+    </div>
+</div>
+
+<div class="container-fluid" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
+    <div class="row">
+        <div class="col-md-12">
+            <tabset>
+                <tab  ng-controller="ThumbnailsCtrl" ng-init="init('sorted_images')" select="refresh_thumbnail_groups()">
+                    <tab-heading>
+                        <span class="icon-image"></span> Photos
+                    </tab-heading>
+                    <div class="row below-tab-spacing">
+                        <div class="col-md-12">
+                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak">
+                                <li ng-repeat="group in thumbnail_groups track by group.id_list">
+                                    <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
+                                        <a class="thumbnail-tight" ng-click="show_image(image.id)">
+                                          <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
+                                        </a>
+                                    </div>
+                                </li>        
+                            </ul>
+                        </div>
+                    </div>            
+                </tab>
+                <tab ng-controller="ThumbnailsCtrl"  ng-init="init('sorted_images')" select="refresh_thumbnail_groups()">
+                    <tab-heading>
+                        <span class="icon-images"></span> All Photos
+                    </tab-heading>
+                    <div class="row below-tab-spacing">
+                        <div class="col-md-12">
+                            <div ng-repeat="group in thumbnail_groups track by group.id_list">
+                                <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
+                                    <a class="thumbnail-tight" ng-click="show_image(image.id)">
+                                      <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
+                                    </a>
+                                </div>
+                            </div>        
+                        </div>
+                    </div>                
+                </tab>            
+                <tab ng-controller="ThumbnailsCtrl" ng-init="init('sorted_users')" select="refresh_thumbnail_groups()">
+                    <tab-heading>
+                        <span class="icon-users"></span> Users
+                    </tab-heading>
+                    <div class="row below-tab-spacing">
+                        <div class="col-md-12">
+                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
+                                <li ng-repeat="group in thumbnail_groups track by group.id_list">
+                                    <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
+                                        <a ng-if="user.viewing_image_id != undefined" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
+                                          <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
+                                           <br/>
+                                           <span ng-if="user.page_visible == false" class="icon-eye-blocked"></span>
+                                           <span ng-if="user.page_visible == true" class="icon-eye"></span>
+                                          {{user.nickname}} 
+                                        </a>
+                                    </div>
+                                </li>        
+                            </ul>
+                        </div>
+                    </div>  
+                </tab> 
+            </tabset>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <tabset>
+                <tab ng-controller="ChatCtrl">
+                    <tab-heading>
+                        <span class="icon-bubble"></span> Chat
+                    </tab-heading>
+
+                    <div class="row comment-area">
+
+                        <div class="col-md-12" ng-repeat="comment_page in comment_pages | limitTo:-display_num_pages track by comment_page.id_list">
+                            <div ng-if="$first" class="row">
+                                <div class="col-xs-6 col-sm-8 col-md-9">
+                                    <div class="panel panel-default time-header-large">
+                                        <span class="icon-clock"></span>
+                                        <span am-time-ago="comment_page.timestamp"></span>
+                                    </div>
+                                </div>   
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 comment-hold-button-container" style="padding-right: 2px;">
+                                            <button class="btn btn-default" ng-click="show_more()" ng-show="comment_pages.length > display_num_pages">
+                                                Show Earlier
+                                            </button>
+                                            <button class="btn btn-default" ng-hide="comment_pages.length > display_num_pages" disabled="disabled">
+                                                Showing All
+                                            </button>                                            
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 comment-hold-button-container" style="padding-left: 2px;">
+                                            <button class="btn btn-default" ng-click="show_latest_only()" ng-show="display_num_pages > 1">
+                                                Latest Only
+                                            </button>
+                                            <button class="btn btn-default" ng-hide="display_num_pages > 1"
+                                            disabled="disabled">
+                                                Latest
+                                            </button>                                            
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="! $first" class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default time-header-large">
+                                        <span class="icon-clock"></span>
+                                        <span am-time-ago="comment_page.timestamp"></span>
+                                    </div>
+                                </div>                            
+                            </div>                            
+                            <div class="comment-columns">
+                                <div class="panel panel-default comment-group" ng-repeat="comment_group in comment_page.objs track by comment_group.id_list">
+                                    <div class="media panel-body">
+                                      <a class="pull-left" ng-click="show_image(comment_group.image_id)">
+                                        <img class="media-object comment-thumbnail" ng-src="{{cloudinary_thumbnail_url(comment_group.image_id)}}">
+                                      </a>
+                                      <div class="media-body">
+                                        <div class="row">
+                                            <div class="col-md-12 time-header"><span class="icon-clock"></span>
+                                            <span am-time-ago="comment_group.timestamp"></span></div>
+                                        </div>
+                                        <div class="row comment" ng-repeat="comment in comment_group.comments track by comment.id">
+                                            <div ng-if="comment.display_nickname" class="col-md-12">
+                                                <span ng-if="comment.display_nickname"><b>{{comment.nickname}}:</b>&nbsp;</span>
+                                                <span ng-if="! comment.display_nickname">&nbsp;&nbsp;</span>
+                                                {{comment.text | limitTo:160}}
+                                            </div>
+                                            <div ng-if="! comment.display_nickname" class="col-md-11 col-md-offset-1">
+                                                {{comment.text | limitTo:160}}
+                                            </div>                                            
+                                        </div>
+                                      </div>
+                                    </div>                        
+                                </div>                        
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+                            <form class="form-horizontal" role="form" ng-submit="submit_comment()">
+                                <div class="form-group col-xs-11 col-sm-11 col-md-10">
+                                    <input ng-model="comment_text" type="text" class="form-control" id="comment" placeholder="Enter Message">
+                                </div>
+                                <div class="form-group col-xs-1 col-sm-1 col-md-2">
+                                    <button type="submit" class="btn btn-default" style="margin-left: 5px;">
+                                        <span class="icon-bubble"></span>
+                                        Send
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </tab>    
+                <tab>
+                    <tab-heading>
+                        <span class="icon-cog"></span> Options
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-sm-3 col-md-2">
+                            <h3>Upload</h3>
+                            <button class="btn btn-primary"  ng-click="open_upload_modal()">
+                                Upload Photo
+                            </button>                            
+                        </div>
+                        <div class="col-sm-5 col-md-4">
+                            <h3>Change Nickname</h3>
+                            You are logged in as <b>{{conference_user_object.nickname}}</b>&nbsp;&nbsp;
+                            <button class="btn btn-default" ng-click="open_nick_change_modal()">
+                                Change Nickname
+                            </button>                                
+                        </div>
+                        <div class="col-sm-4 col-md-2">
+                            <h3>Logout</h3>
+                            <button class="btn btn-default" ng-click="logout()">
+                                Logout
+                            </button>                            
+                        </div>
+                    </div>
+                </tab> 
+            </tabset>
+        </div>
+    </div>
+
+</div>
+
+<!-- notifications area -->
+<div class="notifications-container" ng-show="sorted_notifications.length > 0">
+    <p class="notification-text">
+        <span class="notification-item" ng-repeat="notification in sorted_notifications track by notification.id">
+            <span ng-switch on="notification.type">
+                <span ng-switch-when="connected"><span class="icon-user-plus"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="disconnected"><span class="icon-user-minus"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
+                <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
+                <span ng-switch-when="comment"><span class="icon-bubble"></span> {{notification.nickname}} {{notification.text}}</span>                
+            </span>
+            <span class="separator"></span>            
+        </span>
+    </p>
+</div>
+
+
+
+</body>
+</html>

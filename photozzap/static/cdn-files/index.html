@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="photozzap-home">
+<head>
+<title>Photozzap - Realtime Photo Sharing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" media="screen" href="home-all.css">
+<script src="home-all.min.js"></script>
+
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 800px;
+      }
+      .container-narrow > hr {
+        margin: 30px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin-top: 5px;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 56px;
+        line-height: 1;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+      .container-narrow hr {
+        margin-top: 3px;
+        margin-bottom: 3px;
+      }
+      .likebox {
+        text-align: center;
+      }
+      
+    </style>
+    
+    <script>
+   
+    function randomString(length) {
+        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+
+        if (! length) {
+            length = Math.floor(Math.random() * chars.length);
+        }
+
+        var str = '';
+        for (var i = 0; i < length; i++) {
+            str += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return str;
+    }   
+   
+    var app = angular.module("photozzap-home", ["firebase", "ui.bootstrap"]);
+    
+    function PhotozzapHomeController($scope, $firebase, $modal, $log) { 
+       
+        $scope.open_add_conf_modal = function() {
+            $log.info("PhotozzapHomeController.open_add_conf_modal");
+            $scope.modalInstance = $modal.open({templateUrl: "create_conf_modal.html",
+                                                controller: PhotozzapNewConfModalController});
+        };
+        
+        $scope.cancel = function() {
+            $log.info("PhotozzapHomeController.cancel");
+        };
+        
+    }
+    
+    function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log, $window) {
+        $scope.form_data = {};
+        $scope.form_data.logged_in = false;
+        var firebaseRef = new Firebase("https://fiery-fire-5557.firebaseio.com/");
+        $scope.loginObj = $firebaseSimpleLogin(firebaseRef);
+        $scope.alerts = [];
+        $scope.user_object = {}; // bound with firebase user object
+   
+        $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
+            $log.info("User " + user.id + " logged in");
+            $scope.form_data.logged_in = true;
+            var user_node = $firebase(new Firebase("https://fiery-fire-5557.firebaseio.com/users/" + user.uid));
+            user_node.$bind($scope, "user_object");
+        });
+        if ($scope.loginObj.user == null) {
+            $scope.loginObj.$login('anonymous');
+        }
+        
+        $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
+            $scope.alerts.push({type: 'danger', msg: "Couldn't log-in: " + error});
+        });
+
+        $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
+            $scope.alerts.push({type: 'info', msg: "Logged out"});
+            $scope.form_data.logged_in = false;
+        });        
+        
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };        
+        
+        $scope.logout = function() {
+            $scope.loginObj.$logout();
+        };
+        
+        $scope.ok = function () {
+            $scope.create_unique_conf_key($scope.form_data.confname, $scope.loginObj.user.uid);
+        };
+        
+        $scope.create_unique_conf_key = function(confName, owner_uid) {
+            var prefix = randomString(6);
+            var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
+            var tentativeConfKey = prefix + "-" + confNameEncoded;
+            var confRef = new Firebase("https://fiery-fire-5557.firebaseio.com/conferences/" + tentativeConfKey);
+            confRef.on('value', function(snapshot) {
+                confRef.off('value');
+                if(snapshot.val() === null) {
+                    $log.info("conference " + tentativeConfKey + " does not exist, creating");
+                    var conferencesRef = new Firebase("https://fiery-fire-5557.firebaseio.com/conferences");
+                    var newConf = conferencesRef.child(tentativeConfKey);
+                    var conf_url = "conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    newConf.set({name: confName,
+                                 url: conf_url,
+                                 servername: "test-0420-5",
+                                 owner_uid: owner_uid});
+                    $scope.status = "conference " + tentativeConfKey + " created";
+                    // $scope.$apply();
+                    // redirect to conference URL
+                    $window.location.href = conf_url;
+                } else {
+                    $log.info("conference " + tentativeConfKey + " already exists, trying again");
+                    $scope.create_unique_conf_key(confName, owner_uid);
+                }
+            });            
+        };
+        
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };        
+    }
+    
+    </script>   
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-46712284-2', 'photozzap.com');
+      ga('send', 'pageview');
+    </script>
+    
+  </head>
+
+  <body>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=230215589885";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>  
+
+   
+    
+    <div class="container">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Contact us</a></li>
+        </ul>
+        <h3 class="muted">Photozzap</h3>
+      </div>
+
+      <hr>
+      <div class="row">
+        <div class="col-md-8" ng-controller="PhotozzapHomeController">
+            <script type="text/ng-template" id="create_conf_modal.html">
+                <div class="modal-header">
+                    <h3>Create new Photozzap Conference</h3>
+                </div>
+                <div class="modal-body">
+                    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                    <form name="form.form" class="form-horizontal" role="form">
+                        <div class="form-group has-feedback" ng-class="{'has-error': form.form.nickname.$invalid, 'has-success': form.form.nickname.$valid}">
+                            <label class="control-label col-sm-4" for="nickname">Nickname
+                                <small ng-show="form.form.nickname.$error.minlength"><br/>Min 3 characters</small>
+                                <small ng-show="form.form.nickname.$error.maxlength"><br/>Max 30 characters</small>
+                            </label>
+                            <div class="col-sm-8">
+                            <input type="text" name="nickname" class="form-control" id="nickname" 
+                              ng-model="user_object.nickname" 
+                              ng-minlength="3"
+                              ng-maxlength="30"
+                              placeholder="Enter your nickname" required>
+                            <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.nickname.$valid, 'icon-close': form.form.nickname.$invalid}" ></span>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback" ng-class="{'has-error': form.form.name.$invalid, 'has-success': form.form.name.$valid}">
+                            <label class="control-label col-sm-4" for="confName">Conference Name
+                                <small ng-show="form.form.name.$error.minlength"><br/>Min 3 characters</small>
+                                <small ng-show="form.form.name.$error.maxlength"><br/>Max 30 characters</small>
+                            </label>
+                            <div class="col-sm-8">
+                            <input type="text" name="name" class="form-control" id="confName" 
+                              ng-model="form_data.confname" 
+                              ng-minlength="3"
+                              ng-maxlength="30"
+                              placeholder="Enter a description, for example 'my photos'" required>
+                            <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.name.$valid, 'icon-close': form.form.name.$invalid}" ></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success btn-lg" ng-click="ok()"  ng-disabled="form.form.$invalid || ! form_data.logged_in">
+                        <span class="icon-checkmark"></span> OK</button>
+                    <button class="btn btn-default btn-lg" ng-click="cancel()">
+                        <span class="icon-close"></span> Cancel</button>
+                    <button class="btn btn-default btn-lg" ng-click="logout()">
+                        <span class="icon-close"></span> Logout</button>                        
+                </div>
+            </script>        
+          <div class="jumbotron">
+            <h1>Real-time<br/>Photo Sharing</h1>
+            <p class="lead">Upload photos. Invite your friends. Talk about photos together.</p>
+            <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()'>
+            <span class="icon-redo"></span> Start Conference</a>
+            <div class="alert alert-block" style="margin-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
+                <strong>Note:</strong> your conference will stay available for 7 days, after that it will be deleted.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 likebox">
+            <div class="fb-like-box" data-href="http://www.facebook.com/photozzap" data-width="280" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+        </div>              
+      </div>
+
+      <hr>
+
+      <div class="row marketing">
+        <div class="col-md-6">
+          <h4>What's special about Photozzap ?</h4>
+          <p>The number one feature is that you can <i>see</i> what photo your friends are looking at and <i>follow</i> them (or they can follow you). This makes it easier to discuss photos together over the Internet.</p>
+          <h4>How do I use Photozzap ?</h4>
+          <p><b>1.</b> Click the <b>Start Conference</b> button above. <b>2.</b> Upload photos. <b>3.</b> Copy/paste the URL and send it to your friends</p>
+          <h4>Who can view my photos ?</h4>
+          <p>Once you start the conference, you can share the URL with your friends. Only people who have this URL can 
+          view your photos.</p>                  
+        </div>
+        <div class="col-md-6">
+          <h4>Why should I use Photozzap instead of Picasa, Facebook, etc ?</h4>
+          <p>Picasa, Facebook, Google+ are more suitable for complete albums with many photos. If you want to show 2 or 3 photos to friends or family right away, and view them together, maybe while having a Skype conference, Photozzap is more convenient.</p>
+          <h4>Why did you make this?</h4>
+          <p>There used to be a similar service called <a href="http://googlesystem.blogspot.hk/2008/05/picasas-hello-discontinued.html" target="_new">Picasa Hello</a>, which is
+          now discontinued. For several years, there were no alternatives available.</p>
+          <h4>I have a problem / suggestion</h4>
+          <p><a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Contact us</a></p>
+        </div>
+        
+
+      </div>
+
+      <hr>
+
+      <div class="footer">
+        <p>&copy; Photozzap 2013</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+</body>
+</html>

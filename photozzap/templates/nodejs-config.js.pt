@@ -1,0 +1,10 @@
+var config = {
+    firebaseRoot: "${firebaseRoot}",
+    serverName: "${serverName}",
+    firebaseSecret: "${firebaseSecret}",
+    cloudinaryName: '${cloudinaryName}', 
+    cloudinaryApiKey: '${cloudinaryApiKey}', 
+    cloudinaryApiSecret: '${cloudinaryApiSecret}'     
+};
+
+module.exports = config;
