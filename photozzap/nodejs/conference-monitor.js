@@ -1,9 +1,16 @@
 var Firebase = require('firebase');
+var cloudinary = require('cloudinary');
 var config = require('./config');
 
 var Globals = {
     conferences: {},
 }
+
+cloudinary.config({ 
+  cloud_name: config.cloudinaryName, 
+  api_key: config.cloudinaryApiKey, 
+  api_secret: config.cloudinaryApiSecret
+});
 
 var conferencesPath = config.firebaseRoot + "/conferences";
 var conferencesRef = new Firebase(conferencesPath);
@@ -141,3 +148,17 @@ conferencesRef.on('child_added', function(snapshot){
     }
     
 });
+
+var serverPath = config.firebaseRoot + "/servers/" + config.serverName;
+var serverRef = new Firebase(serverPath);
+
+// set regular interval to write cloudinary signature
+function writeCloudinarySignature() {
+    console.log("writing cloudinary signature for " + config.serverName);
+    var params = {timestamp: new Date().getTime().toString()};
+    var signature = cloudinary.utils.sign_request(params, {});
+    serverRef.set({cloudinary_signature: signature});
+}
+
+writeCloudinarySignature();
+setInterval(writeCloudinarySignature, 1000 * 60 * 15);
