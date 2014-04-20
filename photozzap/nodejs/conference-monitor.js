@@ -1,15 +1,13 @@
 var Firebase = require('firebase');
+var config = require('./config');
 
 var Globals = {
-    firebaseRoot: "https://fiery-fire-5557.firebaseio.com",
-    serverName: "dev-01",
-    secret: "EcO3bQl1ZvURjixUXhjdDqc0YsJBvh46h1DJxKsq",
     conferences: {},
 }
 
-var conferencesPath = Globals.firebaseRoot + "/conferences";
+var conferencesPath = config.firebaseRoot + "/conferences";
 var conferencesRef = new Firebase(conferencesPath);
-conferencesRef.auth(Globals.secret);
+conferencesRef.auth(config.firebaseSecret);
 
 
 function ConferenceObject(key, path) {
@@ -137,7 +135,7 @@ conferencesRef.on('child_added', function(snapshot){
     var key = snapshot.name();
     var conference_data = snapshot.val();
     
-    if (conference_data.servername == Globals.serverName) {
+    if (conference_data.servername == config.serverName) {
         console.log("monitoring conference ", key, " ", conference_data.name);
         Globals.conferences[key] = new ConferenceObject(key, conferencesPath + "/" + key);
     }
