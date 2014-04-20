@@ -69,11 +69,9 @@ def conference(request):
     firebase = settings['firebase']
     server_name = settings['server_name']
         
-    javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.javascript_files)
-    css_files_abs = get_file_list_abs(request, photozzap.staticresources.css_files)
+    javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.conference_javascript_files)
+    css_files_abs = get_file_list_abs(request, photozzap.staticresources.conference_css_files)
 
-    icon_files_abs = get_icon_file_list_abs(request)
-    
     if False:
         javascript_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_javascript_file])
         css_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_css_file])
@@ -82,13 +80,10 @@ def conference(request):
     if assets_on_cdn == "true":
         javascript_files_abs = [get_cdn_path(cdn_server, photozzap.staticresources.combined_javascript_file)]
         css_files_abs = [get_cdn_path(cdn_server, photozzap.staticresources.combined_css_file)]
-        icon_files_abs = {}
-        for key, file in photozzap.staticresources.icon_files.items():
-            icon_files_abs[key] = get_cdn_path(cdn_server, file)
+
         
     params = {'javascript_files': javascript_files_abs,
               'css_files': css_files_abs,
-              'icon_files': icon_files_abs,
               'tracking_id': tracking_id,
               'firebase': firebase,
               'server_name': server_name}

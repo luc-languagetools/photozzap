@@ -1,5 +1,5 @@
 
-javascript_files = [
+conference_javascript_files = [
 "static/jquery/jquery-1.10.2.min.js",
 "static/bootstrap3/js/bootstrap.min.js",
 "static/angular/angular.min.js",
@@ -33,10 +33,10 @@ javascript_files = [
 "static/conference/conference-initialize.js",
 ]
 
-combined_javascript_file = "static/combined/all.min.js"
+combined_conference_javascript_file = "static/combined/conference-all.min.js"
 
 # files which must be displayed under any media queries
-css_files = [
+conference_css_files = [
 "static/bootstrap3/css/bootstrap.min.css",
 "static/bootstrap3/css/bootstrap-theme.min.css",
 "static/conference/default.css",
@@ -44,34 +44,10 @@ css_files = [
 "static/icomoon/style.css",
 ]
 
-combined_css_file = "static/combined/all.css"
-
-icon_files = {
-'eye_gray': "static/icons/eye_gray.png",
-'upload_gray': "static/icons/upload_gray.png",
-'comment_small_gray': "static/icons/comment_small_gray.png",
-'comment_big_white': "static/icons/comment_big_white.png",
-'comment_medium_darkgray': "static/icons/comment_medium_darkgray.png",
-'gallery_medium_white': "static/icons/gallery_medium_white.png",
-'clock_medium_white': "static/icons/clock_medium_white.png",
-'photozzap_header': "static/icons/photozzap_header.png",
-'upload_photo_white': "static/icons/upload_photo_white.png",
-'users_medium_white': "static/icons/users_medium_white.png",
-'chat_medium_white': "static/icons/chat_medium_white.png",
-'slide_left_white': "static/icons/slide_left_white.png",
-'slide_right_white': "static/icons/slide_right_white.png",
-'slide_down_white': "static/icons/slide_down_white.png",
-'slide_up_white': "static/icons/slide_up_white.png",
-'prev': "static/icons/prev.png",
-'next': "static/icons/next.png",
-'photozzap_logo': "static/icons/photozzap_logo.png",
-'swipe': "static/icons/swipe.png",
-'menu': "static/icons/menu.png",
-'pointer': "static/icons/pointer.png",
-}
+combined_conference_css_file = "static/combined/conference-all.css"
 
 cdn_asset_list = []
-cdn_asset_list.append(combined_javascript_file)
-cdn_asset_list.append(combined_css_file)
-cdn_asset_list.extend(icon_files.values())
+cdn_asset_list.append(combined_conference_javascript_file)
+cdn_asset_list.append(combined_conference_css_file)
+
 
