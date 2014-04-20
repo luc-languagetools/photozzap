@@ -36,8 +36,8 @@ angular.module('angular-carousel')
       };
     },
     template: '<div class="rn-carousel-controls">' +
-                '<span class="rn-carousel-control rn-carousel-control-prev" ng-click="prev()" ng-if="index > 0"><span class="glyphicon glyphicon-chevron-left"/></span>' +
-                '<span class="rn-carousel-control rn-carousel-control-next" ng-click="next()" ng-if="index < items.length - 1"><span class="glyphicon glyphicon-chevron-right"/></span>' +
+                '<span class="rn-carousel-control rn-carousel-control-prev" ng-click="prev()" ng-if="index > 0"><span class="icon-arrow-left"></span></span>' +
+                '<span class="rn-carousel-control rn-carousel-control-next" ng-click="next()" ng-if="index < items.length - 1"><span class="icon-arrow-right"></span></span>' +
               '</div>'
   };
 }]);
