@@ -33,6 +33,16 @@ conference_javascript_files = [
 "static/conference/conference-initialize.js",
 ]
 
+home_javascript_files = [
+"static/jquery/jquery-1.10.2.min.js",
+"static/bootstrap3/js/bootstrap.min.js",
+"static/angular/angular.min.js",
+"static/angular/ui-bootstrap-tpls-0.10.0.min.js",
+"static/firebase/firebase.js",
+"static/firebase/firebase-simple-login.js",
+"static/firebase/angularfire.min.js",
+]
+
 combined_conference_javascript_file = "static/combined/conference-all.min.js"
 
 # files which must be displayed under any media queries
