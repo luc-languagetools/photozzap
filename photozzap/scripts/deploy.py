@@ -16,7 +16,7 @@ def git_commit(server_name):
     
     subprocess.check_call("git add photozzap/static/nodejs/*", shell=True)
     subprocess.check_call("git add photozzap/static/nodejs/*", shell=True)
-    commit_cmd_line = "git commit -a -m 'generated assets for " + server_name + "'"
+    commit_cmd_line = "git commit photozzap/static/* -m 'generated assets for " + server_name + "'"
     subprocess.check_call(commit_cmd_line, shell=True)
     tag_cmd_line = "git tag -a v" + server_name + " -m 'deployed version " + server_name + "'"
     subprocess.check_call(tag_cmd_line, shell=True)
