@@ -43,9 +43,7 @@ home_javascript_files = [
 "static/firebase/angularfire.min.js",
 ]
 
-combined_conference_javascript_file = "static/combined/conference-all.min.js"
 
-# files which must be displayed under any media queries
 conference_css_files = [
 "static/bootstrap3/css/bootstrap.min.css",
 "static/bootstrap3/css/bootstrap-theme.min.css",
@@ -60,8 +58,22 @@ home_css_files = [
 "static/icomoon/style.css",
 ]
 
+# should be copied as-is to CDN directory
+other_static_assets = [
+"static/icomoon/icomoon.eot",
+"static/icomoon/icomoon.svg",
+"static/icomoon/icomoon.ttf",
+"static/icomoon/icomoon.woff"
+]
 
-combined_conference_css_file = "static/combined/conference-all.css"
+combined_conference_javascript_file = "static/cdn-files/conference-all.min.js"
+combined_conference_css_file = "static/cdn-files/conference-all.css"
+
+combined_home_javascript_file = "static/cdn-files/home-all.min.js"
+combined_home_css_file = "static/cdn-files/home-all.css"
+
+home_file_path = "static/cdn-files/index.html"
+conference_file_path = "static/cdn-files/conference"
 
 cdn_asset_list = []
 cdn_asset_list.append(combined_conference_javascript_file)

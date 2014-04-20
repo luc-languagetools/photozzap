@@ -33,7 +33,8 @@ how to run:
 concatenate text resources
 --------------------------
 
-../bin/python -m photozzap.scripts.compress_resources
+../bin/python -m photozzap.scripts.deploy_static_assets
+
 
 git help
 --------
