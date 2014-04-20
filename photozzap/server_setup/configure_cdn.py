@@ -30,6 +30,8 @@ def create_cdn_container(server_name):
     print("cdn_streaming_uri", cont.cdn_streaming_uri)
     print("cdn_ios_uri", cont.cdn_ios_uri)
     
+    cont.set_web_index_page("index.html")
+    
     # add CNAME record
     domain_name = "photozzap.com"
     dns = pyrax.cloud_dns
@@ -56,16 +58,23 @@ def upload_files(cont):
     for file in staticresources.cdn_asset_list:
         full_path = '../' + file
         content_type = None
-        if full_path.endswith('.js'):
-            content_type = "application/javascript"
-        elif full_path.endswith('.css'):
-            content_type = "text/css"
-        elif full_path.endswith('.png'):
-            content_type = "image/png"
+        content_type_map = {'js': "application/javascript",
+                            'css': "text/css",
+                            'html': "text/html",
+                            'png': "image/png",
+                            'eot': "application/vnd.ms-fontobject",
+                            'ttf': "font/ttf",
+                            'svg': "image/svg+xml",
+                            'woff': "font/x-woff",
+                            }
+        
+        extension = full_path.split('.')[-1]
+        content_type = content_type_map[extension]
+
         print("uploading %s as %s" %(full_path, content_type))
         cf.upload_file(cont, full_path, content_type=content_type)
     
     
 if __name__ == "__main__":
     set_credentials()
-    create_cdn_container("photozzap-dev-test7")
+    create_cdn_container("test-0420-2")

@@ -78,5 +78,11 @@ conference_file_path = "static/cdn-files/conference.html"
 cdn_asset_list = []
 cdn_asset_list.append(combined_conference_javascript_file)
 cdn_asset_list.append(combined_conference_css_file)
+cdn_asset_list.append(combined_home_javascript_file)
+cdn_asset_list.append(combined_home_css_file)
+cdn_asset_list.extend(other_static_assets)
+cdn_asset_list.append(home_file_path)
+cdn_asset_list.append(conference_file_path)
+
 
 
