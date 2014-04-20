@@ -3,10 +3,8 @@
 <head>
 <title>Photozzap - Realtime Photo Sharing</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Bootstrap -->
-<link href="${request.static_url('photozzap:static/bootstrap3/css/bootstrap.min.css')}" rel="stylesheet" media="screen">
-<link href="${request.static_url('photozzap:static/bootstrap3/css/bootstrap-theme.min.css')}" rel="stylesheet" media="screen">
 
+<link tal:repeat="file css_files" tal:attributes="href file" rel="stylesheet" media="screen">
 <script tal:repeat="file javascript_files" tal:attributes="src file"></script>
 
     <style type="text/css">

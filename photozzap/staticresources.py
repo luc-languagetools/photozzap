@@ -54,6 +54,12 @@ conference_css_files = [
 "static/icomoon/style.css",
 ]
 
+home_css_files = [
+"static/bootstrap3/css/bootstrap.min.css",
+"static/bootstrap3/css/bootstrap-theme.min.css",
+]
+
+
 combined_conference_css_file = "static/combined/conference-all.css"
 
 cdn_asset_list = []

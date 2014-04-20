@@ -38,9 +38,10 @@ def home(request):
     new_conf_url = request.route_url('conference', _host=www_server, _port=www_port) + "#/new-conference-template"
     
     javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.home_javascript_files)
-    
+    css_files_abs = get_file_list_abs(request, photozzap.staticresources.home_css_files)
     
     return {'javascript_files': javascript_files_abs,
+            'css_files': css_files_abs,
             'tracking_id': tracking_id,
             'firebase': firebase,
             'server_name': server_name,
