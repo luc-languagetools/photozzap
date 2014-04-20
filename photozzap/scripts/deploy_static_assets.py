@@ -100,8 +100,15 @@ def copy_static_files(settings):
         shutil.copy(file_path, dir_path)
 
 def copy_conference_monitor(settings):
-    pass
-    #source_file = 
+    source_file = "photozzap:nodejs/conference-monitor.js"
+    target_file = "photozzap:static/nodejs/conference-monitor-" + settings['server_name'] + ".js"
+    resolver = a.resolve(source_file)
+    abs_source_file = resolver.abspath()
+    resolver = a.resolve(target_file)
+    abs_target_file = resolver.abspath()
+    print("copying " + abs_source_file + " to " + abs_target_file)
+    shutil.copy(abs_source_file, abs_target_file)    
+    
         
 def manage_assets(settings):
     config = pyramid.testing.setUp()
@@ -114,6 +121,7 @@ def manage_assets(settings):
 
     render_templates(settings)
     copy_static_files(settings)    
+    copy_conference_monitor(settings)
     
 if __name__ == "__main__":
     argv = sys.argv
