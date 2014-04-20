@@ -49,8 +49,13 @@ def render_template(template, attributes, output_file):
 def render_templates(settings):
     tracking_id = settings['analytics_tracking_id'] 
     firebase = settings['firebase']
+    firebase_secret = settings['firebase_secret']
     server_name = settings['server_name']
 
+    cloudinary_name = settings['cloudinary_name']
+    cloudinary_api_key = settings['cloudinary_api_key']
+    cloudinary_api_secret = settings['cloudinary_api_secret']
+    
     new_conf_url = 'conference.html#/new-conference-template'
     
     home_attributes = {
@@ -72,6 +77,17 @@ def render_templates(settings):
     }    
     render_template('photozzap:templates/conference.pt', conference_attributes, photozzap.staticresources.conference_file_path)
 
+    
+    node_config_attributes = {
+        'firebaseRoot': firebase,
+        'serverName': server_name,
+        'firebaseSecret': firebase_secret,
+        'cloudinaryName': cloudinary_name,
+        'cloudinaryApiKey': cloudinary_api_key, 
+        'cloudinaryApiSecret': cloudinary_api_secret,
+    }
+    render_template('photozzap:templates/nodejs-config.js.pt', node_config_attributes, 
+                    "static/nodejs/config-" + server_name + ".js")
 
 def copy_static_files(settings):
     for asset in photozzap.staticresources.other_static_assets:
@@ -83,15 +99,8 @@ def copy_static_files(settings):
         print("copying " + file_path + " to " + dir_path)
         shutil.copy(file_path, dir_path)
         
-    
-if __name__ == "__main__":
-    argv = sys.argv
-    if len(argv) != 2:
-        print("incorrect parameters")
-        sys.exit(1)
-    config_uri = argv[1]
-    settings = get_appsettings(config_uri)
-    
+        
+def manage_assets(settings):
     config = pyramid.testing.setUp()
     config.include('pyramid_chameleon')    
 
@@ -101,6 +110,19 @@ if __name__ == "__main__":
     concatenate(photozzap.staticresources.home_css_files, photozzap.staticresources.combined_home_css_file)   
 
     render_templates(settings)
-    copy_static_files(settings)
+    copy_static_files(settings)    
+    
+if __name__ == "__main__":
+    argv = sys.argv
+    if len(argv) != 3:
+        print("incorrect parameters")
+        sys.exit(1)
+    config_uri = argv[1]
+    server_name = argv[2]
+    settings = get_appsettings(config_uri)
+    settings['server_name'] = server_name
+    
+    manage_assets(settings)
+    
     
     
