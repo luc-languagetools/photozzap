@@ -1,23 +1,19 @@
-function show_upload_modal() {
-    var upload_data = { timestamp: '1397958241815',
-  signature: '55cf6c584ea48714520beb86673bfdc1d868e271',
-  api_key: '751779366151643' };
-    //$.get('/upload_data', function(upload_data) {
-        //log("received upload data: " + upload_data);
-		cloudinary_configure_resize(upload_data);
-        $('#upload-modal').modal('show');
-    //});
+var CloudinaryGlobal = {
+};
+
+function show_upload_modal(cloudinary_signature) {
+    CloudinaryGlobal.signature = cloudinary_signature;
+    console.log("using cloudinary_signature: ", CloudinaryGlobal.signature);
+	cloudinary_configure_resize(CloudinaryGlobal.signature);
+    $('#upload-modal').modal('show');
 }
 
 function cloudinary_configure(resize) {
-    $.get('/upload_data', function(upload_data) {
-        //log("received upload data: " + upload_data);
-		if (resize) {
-			cloudinary_configure_resize(upload_data);
-		} else {
-			cloudinary_configure_no_resize(upload_data);
-		}
-    });	
+    if (resize) {
+        cloudinary_configure_resize(CloudinaryGlobal.signature);
+    } else {
+        cloudinary_configure_no_resize(CloudinaryGlobal.signature);
+    }
 }
 
 function cloudinary_configure_resize(upload_data) {
