@@ -20,7 +20,10 @@ def git_commit(server_name):
     subprocess.check_call(commit_cmd_line, shell=True)
     tag_cmd_line = "git tag -a v" + server_name + " -m 'deployed version " + server_name + "'"
     subprocess.check_call(tag_cmd_line, shell=True)
-    
+
+def upload_to_cdn(server_name):
+    upload_cmd_line = "python2.7 configure_cdn.py " + server_name
+    subprocess.check_call(upload_cmd_line, shell=True, cwd="photozzap/server_setup")
     
 if __name__ == "__main__":
     argv = sys.argv
@@ -34,3 +37,4 @@ if __name__ == "__main__":
     
     photozzap.scripts.deploy_static_assets.manage_assets(settings)
     git_commit(server_name)
+    upload_to_cdn(server_name)

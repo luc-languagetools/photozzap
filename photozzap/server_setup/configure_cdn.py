@@ -77,4 +77,9 @@ def upload_files(cont):
     
 if __name__ == "__main__":
     set_credentials()
-    create_cdn_container("test-0420-2")
+    argv = sys.argv
+    if len(argv) != 2:
+        print("incorrect parameters")
+        sys.exit(1)
+    server_name = argv[1]
+    create_cdn_container(server_name)
