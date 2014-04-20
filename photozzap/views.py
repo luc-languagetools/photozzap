@@ -42,32 +42,6 @@ def home(request):
             'server_name': server_name,
             'new_conf_url': new_conf_url}
     
-def sign_request(params, api_key, api_secret):
-    params = dict( [ (k,v) for (k,v) in params.items() if v] )
-    params["signature"] = api_sign_request(params, api_secret)
-    params["api_key"] = api_key
-    
-    return params
-  
-def api_sign_request(params_to_sign, api_secret):
-
-    to_sign = "&".join(sorted([(k+"="+(",".join(v) if isinstance(v, list) else str(v))) for k, v in params_to_sign.items() if v]))
-    return sha1((to_sign + api_secret).encode('utf-8')).hexdigest()
-    
-@view_config(route_name='upload_data',renderer='json')
-def upload_data(request):
-    settings = request.registry.settings
-    api_key = settings['cloudinary_api_key']
-    api_secret = settings['cloudinary_api_secret']
-
-    params = {'timestamp': str(int(time.time())), 'callback':   request.static_url('photozzap:static/cloudinary/cloudinary_cors.html')}
-    
-    final_request = sign_request(params, api_key, api_secret)
-    #params['api_key'] = api_key
-    #params['signature'] = signature
-
-    return final_request
-
     
 def get_file_list_abs(request, files):
     # build absolute paths for static resource files
