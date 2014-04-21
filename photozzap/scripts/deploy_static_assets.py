@@ -59,7 +59,7 @@ def render_templates(settings):
     pushover_token = settings['pushover_token']
     pushover_user = settings['pushover_user']
     
-    new_conf_url = 'conference.html#/new-conference-template'
+    new_conf_url = 'http://' + server_name + ".photozzap.com/" + 'conference.html#/new-conference-template'
     
     home_attributes = {
         'javascript_files': get_file_name(photozzap.staticresources.combined_home_javascript_file),
