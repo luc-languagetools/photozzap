@@ -320,8 +320,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.full_params.width = $scope.round_dimension(new_width * pixelRatio);
         $scope.full_params.height = $scope.round_dimension(new_height * pixelRatio);
         
-        if (new_width == $scope.window_width && 
-            new_height - $scope.window_height < 60) {
+        if (new_width == $scope.window_dimensions.width && 
+            Math.abs(new_height - $scope.window_dimensions.height) < 60) {
             // don't do anything, window resize is due to user scrolling down
         } else {
             $scope.window_dimensions.width = $(window).width();
