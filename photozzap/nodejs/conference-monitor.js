@@ -1,6 +1,12 @@
 var Firebase = require('firebase');
 var cloudinary = require('cloudinary');
+var push = require( 'pushover-notifications' );
 var config = require('./' + process.argv[2]);
+
+var p = new push( {
+    user: config.pushoverUser,
+    token: config.pushoverToken,
+});
 
 var Globals = {
     conferences: {},
@@ -17,10 +23,12 @@ var conferencesRef = new Firebase(conferencesPath);
 conferencesRef.auth(config.firebaseSecret);
 
 
-function ConferenceObject(key, path) {
+function ConferenceObject(key, path, name, url) {
     console.log("ConferenceObject path: ", path);
     this.key = key;
     this.path = path;
+    this.conference_name = name;
+    this.conference_url = url;
     
     this.user_cache = {};
     
@@ -67,6 +75,34 @@ function ConferenceObject(key, path) {
         setTimeout(function() {
             self.removeNotification(newNotificationRef);
         }, 5000);
+        
+        // send pushover notification
+        var sendPushoverNotification = false;
+        var notification_message = undefined;
+        var notification_title = undefined;
+        if (data.type == "connected") {
+            sendPushoverNotification = true;
+            notification_message = userNickname + " connected to conference " + this.conference_name;
+            notification_title = this.conference_name + ": user connected";
+        } else if (data.type == "comment") {
+            sendPushoverNotification = true;
+            notification_message = userNickname + " commented on " + this.conference_name + ": " +
+            data.text;
+            notification_title = this.conference_name + ": new comment";        
+        }
+        if (sendPushoverNotification) {
+            var msg = {
+                message: notification_message,
+                title: notification_title,
+            };
+            p.send( msg, function( err, result ) {
+                if ( err ) {
+                    console.log("error pushing notification ", err);
+                }
+                console.log("pushing notification ", result);
+            });                    
+        }
+        
     };
     
     this.removeNotification = function(notificationRef) {
@@ -144,7 +180,10 @@ conferencesRef.on('child_added', function(snapshot){
     
     if (conference_data.servername == config.serverName) {
         console.log("monitoring conference ", key, " ", conference_data.name);
-        Globals.conferences[key] = new ConferenceObject(key, conferencesPath + "/" + key);
+        Globals.conferences[key] = new ConferenceObject(key, 
+                                                        conferencesPath + "/" + key,
+                                                        conference_data.name,
+                                                        conference_data.url);
     }
     
 });
