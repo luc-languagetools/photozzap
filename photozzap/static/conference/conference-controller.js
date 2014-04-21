@@ -64,7 +64,7 @@ function PhotozzapNickChangeModalCtrl($scope, $rootScope, $modalInstance, $log) 
     }
 }
 
-function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, conferenceService) {
+function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -83,7 +83,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     $scope.http_canceler = $q.defer();
 
-    $scope.local_notifications = [];
+    $scope.show_default_nickname_notification = false;
     $scope.sorted_notifications = [];
 
     $scope.sorted_images = [];
@@ -112,10 +112,11 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             if (user == null) {
                 // login with generated nickname
                 var randomNick = "Guest" + randomNumString(5);
-                $scope.local_notifications.push("You have been logged in under the default username " + randomNick);
                 $scope.perform_login(randomNick);
-                // show login modal
-                //$scope.open_login_modal();
+                $scope.show_default_nickname_notification = true;
+                $timeout(function() {
+                    $scope.show_default_nickname_notification = false;
+                }, 20000);
             }        
         });        
     }
@@ -257,6 +258,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
    
     $scope.open_nick_change_modal = function() {
+        $scope.show_default_nickname_notification = false;
         $scope.modalInstance = $modal.open({templateUrl: "nick_change_modal.html",
                                             controller: PhotozzapNickChangeModalCtrl,
                                             scope: $scope
@@ -374,7 +376,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
     }, true);
     
-    $scope.$watch("conference.notifications", function(newValue, oldValue) {
+    $scope.rebuild_notifications = function() {
         if ($scope.conference == undefined) {
             // cannot do anything yet
             return;
@@ -391,6 +393,21 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                 return false;
             }
         });
+        if ($scope.show_default_nickname_notification) {
+            if ($scope.sorted_notifications == undefined) {
+                $scope.sorted_notifications = [];
+            }
+            $scope.sorted_notifications.push({ id:   "default_nickname_notification",
+                                               type: "default_nickname"});
+        }
+    }
+    
+    $scope.$watch("show_default_nickname_notification", function(newValue, oldValue) {
+        $scope.rebuild_notifications();
+    });
+    
+    $scope.$watch("conference.notifications", function(newValue, oldValue) {
+        $scope.rebuild_notifications();
     }, true);
     
     $scope.start_watch_photo_index = function() {
