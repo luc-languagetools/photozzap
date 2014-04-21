@@ -4,7 +4,9 @@ var config = {
     firebaseSecret: "${firebaseSecret}",
     cloudinaryName: '${cloudinaryName}', 
     cloudinaryApiKey: '${cloudinaryApiKey}', 
-    cloudinaryApiSecret: '${cloudinaryApiSecret}'     
+    cloudinaryApiSecret: '${cloudinaryApiSecret}',
+    pushoverToken: '${pushoverToken}',
+    pushoverUser: '${pushoverUser}', 
 };
 
 module.exports = config;

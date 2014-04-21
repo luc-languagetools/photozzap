@@ -56,6 +56,9 @@ def render_templates(settings):
     cloudinary_api_key = settings['cloudinary_api_key']
     cloudinary_api_secret = settings['cloudinary_api_secret']
     
+    pushover_token = settings['pushover_token']
+    pushover_user = settings['pushover_user']
+    
     new_conf_url = 'conference.html#/new-conference-template'
     
     home_attributes = {
@@ -85,6 +88,9 @@ def render_templates(settings):
         'cloudinaryName': cloudinary_name,
         'cloudinaryApiKey': cloudinary_api_key, 
         'cloudinaryApiSecret': cloudinary_api_secret,
+        'pushoverToken', pushover_token,
+        'pushoverUser', pushover_user,
+        
     }
     render_template('photozzap:templates/nodejs-config.js.pt', node_config_attributes, 
                     "static/nodejs/config-" + server_name + ".js")
