@@ -94,6 +94,8 @@ function ConferenceObject(key, path, name, url) {
             var msg = {
                 message: notification_message,
                 title: notification_title,
+                url: this.conference_url,
+                url_title: "view " + this.conference_name,
             };
             p.send( msg, function( err, result ) {
                 if ( err ) {
