@@ -64,8 +64,8 @@ function ConferenceObject(key, path, name, url) {
 
     this.addNotification = function(user_key, data) {
         var userNickname = this.user_nickname(user_key);
-        if (userNickname == undefined) // if we don't have a nickname, don't send notification
-            return;
+        if (userNickname == undefined) // default nickname if not available
+            userNickname = "guest";
         var newNotificationRef = this.notificationsRef.push();
         data.user_key = user_key;
         data.timestamp = new Date().getTime();            
@@ -129,7 +129,10 @@ function ConferenceObject(key, path, name, url) {
         var user_data = snapshot.val();
         if (this.user_cache[key] == undefined) {
             // new entry
-            console.log("new user: ", key, " nickname: ", user_data.nickname);
+            if( user_data.connected ) {
+                this.log_user_event(key, "connected");
+                this.addNotification(key, {type: "connected"});            
+            }
         } else {
             // look at what changed
             
