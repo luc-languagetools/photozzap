@@ -135,10 +135,10 @@
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
                     var conferencesRef = new Firebase("https://fiery-fire-5557.firebaseio.com/conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
-                    var conf_url = "conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var conf_url = "http://test-20140421-pushover.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
-                                 servername: "test-20140420-1",
+                                 servername: "test-20140421-pushover",
                                  owner_uid: owner_uid});
                     $scope.status = "conference " + tentativeConfKey + " created";
                     // $scope.$apply();

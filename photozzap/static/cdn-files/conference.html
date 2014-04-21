@@ -33,7 +33,7 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://fiery-fire-5557.firebaseio.com/', 'test-20140420-1')">
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://fiery-fire-5557.firebaseio.com/', 'test-20140421-pushover')">
 <script defer src="conference-all.min.js"></script>
 
 
@@ -342,7 +342,11 @@
                 <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
-                <span ng-switch-when="comment"><span class="icon-bubble"></span> {{notification.nickname}} {{notification.text}}</span>                
+                <span ng-switch-when="comment"><span class="icon-bubble"></span> {{notification.nickname}} {{notification.text}}</span>
+                <span ng-switch-when="default_nickname"><span class="icon-info"></span>
+                You are connected as {{conference_user_object.nickname}} 
+                <a ng-click="open_nick_change_modal()"> - Change Nickname</a></span>
+                
             </span>
             <span class="separator"></span>            
         </span>
