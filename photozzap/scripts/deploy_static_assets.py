@@ -88,8 +88,8 @@ def render_templates(settings):
         'cloudinaryName': cloudinary_name,
         'cloudinaryApiKey': cloudinary_api_key, 
         'cloudinaryApiSecret': cloudinary_api_secret,
-        'pushoverToken', pushover_token,
-        'pushoverUser', pushover_user,
+        'pushoverToken': pushover_token,
+        'pushoverUser': pushover_user,
         
     }
     render_template('photozzap:templates/nodejs-config.js.pt', node_config_attributes, 
