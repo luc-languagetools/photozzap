@@ -98,8 +98,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.watching_photo_index = false;
     $scope.load_new_url_promise = undefined;
     
-    $scope.show_image_for_follow = false;
     $scope.watch_followed_user_handle = undefined;
+    $scope.followed_user_image_id = undefined;
    
     $scope.init = function(firebase_base, server_name) {
         $scope.conf_key = $location.path().substring(1);
@@ -410,6 +410,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $scope.watch_followed_user_handle = $scope.$watch(watch_path, function(newValue, oldValue) {
                 $log.info("followed user viewing_image_id changed: ", newValue, " oldValue: ", oldValue);
                 $scope.show_image_following(newValue);
+                $scope.followed_user_image_id = newValue;
             });
         }
     }
@@ -454,17 +455,17 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             // do we need to load a new photo ?
             $scope.check_and_load_new_url(newValue);
             
-            if( $scope.show_image_for_follow == false ) {
-                // were we previously following a user ?
-                if ($scope.watch_followed_user_handle != undefined) {
-                    // stop watching that, not following anymore
-                    $scope.watch_followed_user_handle();
-                }            
-            }
-            $scope.show_image_for_follow = false;
-            
             // update user object on firebase
             $scope.conference_user_object.viewing_image_id = $scope.sorted_images[newValue].id;
+            
+            if ($scope.watch_followed_user_handle != undefined  &&
+                $scope.followed_user_image_id != $scope.conference_user_object.viewing_image_id) {
+                // stop following user, as we've switched to another image
+                $scope.watch_followed_user_handle();
+                $scope.watch_followed_user_handle = undefined;
+                $scope.followed_user_image_id = undefined;
+            }
+            
             if (! $scope.conference_user_object.page_visible ) {
                 // in some cases the browser doesn't properly reset page visibility to true
                 $scope.conference_user_object.page_visible = true;
@@ -474,7 +475,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }
  
     $scope.show_image_following = function(image_id) {
-        $scope.show_image_for_follow = true;
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
         $("html, body").animate({ scrollTop: 0 }, 400);
