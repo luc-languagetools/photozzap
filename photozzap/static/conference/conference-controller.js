@@ -407,6 +407,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             var user_id = request_data.user_id;
             var watch_path = "conference.users['" + user_id + "'].viewing_image_id";
             $log.info("watch_path: ", watch_path, " ", $scope.$eval(watch_path));
+            
+            if ($scope.watch_followed_user_handle != undefined) {
+                // stop watching previous expression
+                $scope.watch_followed_user_handle();
+                $scope.watch_followed_user_handle = undefined;
+                $scope.followed_user_image_id = undefined;
+            }
+            
             $scope.watch_followed_user_handle = $scope.$watch(watch_path, function(newValue, oldValue) {
                 $log.info("followed user viewing_image_id changed: ", newValue, " oldValue: ", oldValue);
                 $scope.show_image_following(newValue);
@@ -461,6 +469,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             if ($scope.watch_followed_user_handle != undefined  &&
                 $scope.followed_user_image_id != $scope.conference_user_object.viewing_image_id) {
                 // stop following user, as we've switched to another image
+                $log.info("stop following user");
                 $scope.watch_followed_user_handle();
                 $scope.watch_followed_user_handle = undefined;
                 $scope.followed_user_image_id = undefined;
