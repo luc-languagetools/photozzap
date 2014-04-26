@@ -33,7 +33,7 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://fiery-fire-5557.firebaseio.com/', 'test-20140421-3')">
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://fiery-fire-5557.firebaseio.com/', 'test-20140426-1')">
 <script defer src="conference-all.min.js"></script>
 
 
@@ -187,7 +187,7 @@
                         <span class="icon-users"></span> Users
                     </tab-heading>
                     <div class="row below-tab-spacing">
-                        <div class="col-md-12">
+                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
                             <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
                                 <li ng-repeat="group in thumbnail_groups track by group.id_list">
                                     <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
@@ -201,6 +201,23 @@
                                     </div>
                                 </li>        
                             </ul>
+                        </div>
+                        <div ng-controller="FollowCtrl" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-lg-12 col-lg-offset-0
+                                            col-md-12 col-md-offset-0
+                                            col-sm-3 col-sm-offset-3 
+                                            col-xs-5 col-xs-offset-1">
+                                    <button class="btn btn-primary btn-lg follow-action-btn" ng-click="look_here()">
+                                        <span class="icon-eye"></span> Look Here
+                                    </button>                        
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-3 col-xs-5">
+                                    <button class="btn btn-primary btn-lg follow-action-btn" ng-click="follow_me()">
+                                        <span class="icon-users2"></span> Follow Me
+                                    </button>                            
+                                </div>                                
+                            </div>
                         </div>
                     </div>  
                 </tab> 
@@ -346,6 +363,12 @@
                 <span ng-switch-when="default_nickname"><span class="icon-info"></span>
                 You are connected as {{conference_user_object.nickname}} 
                 <a ng-click="open_nick_change_modal()"> - Change Nickname</a></span>
+                <span ng-switch-when="look_here"><span class="icon-info"></span>
+                {{notification.nickname}} is showing you <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}
+                </span>
+                <span ng-switch-when="follow_me"><span class="icon-info"></span>
+                You are now following {{notification.nickname}}
+                </span>
                 
             </span>
             <span class="separator"></span>            
