@@ -136,6 +136,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var conference = $scope.firebase_base + "conferences/" + inputs.conf_key;
         var conference_images = conference + "/images";
         var conference_comments = conference + "/comments";
+        var requests = conference + "/requests";
         var conference_user = conference + "/users/" + inputs.user_uid;
         var connected = conference_user + "/connected";
         
@@ -145,7 +146,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             conference_user: conference_user,
             conference: conference,
             conference_images: conference_images,
-            conference_comments: conference_comments,            
+            conference_comments: conference_comments,
+            requests: requests,
             connected: connected,
             connection_state: connection_state,
         };
@@ -175,6 +177,9 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $log.info("references.server: ", references.server);
         $scope.server_node = $firebase(new Firebase(references.server));
        
+        $scope.requests_ref = new Firebase(references.requests);
+        $scope.requests_ref.on('child_added', $scope.request_added);
+        
         $scope.logged_in_and_ready = true;
         
     }
@@ -375,6 +380,22 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.sorted_users = $filter('filter')(sorted_users_array, {connected: true});
         
     }, true);
+    
+    $scope.request_added = function(snapshot) {
+        var request_data = snapshot.val();
+        $log.info("request_added: ", request_data);
+        var currentTimestamp = new Date().getTime();
+        if (request_data.timestamp + 120000 < currentTimestamp) {
+            // request too old
+            return;
+        }
+        
+        if (request_data.type == "look_here") {
+            // switch to that image
+            $log.info("look_here request");
+            $scope.show_image(request_data.image_id);
+        }
+    }
     
     $scope.rebuild_notifications = function() {
         if ($scope.conference == undefined) {
@@ -610,6 +631,41 @@ function ThumbnailsCtrl($scope, $log) {
 }
 
 function ImageCtrl($scope) {
+}
+
+
+function FollowCtrl($scope, $log, $timeout) {
+
+    $scope.follow_me = function() {
+        $log.info("follow_me");
+        var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
+                                                   nickname: $scope.conference_user_object.nickname,
+                                                   timestamp: new Date().getTime(),
+                                                   type: "follow_me"});
+        $timeout(function() {
+                    $scope.remove_request(requestRef)
+                 }, 5000);
+        
+    }
+    
+    $scope.look_here = function() {
+        $log.info("look_here");
+        var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
+                                                   nickname: $scope.conference_user_object.nickname,
+                                                   image_id: $scope.conference_user_object.viewing_image_id,
+                                                   timestamp: new Date().getTime(),
+                                                   type: "look_here"});
+        $timeout(function() {
+                    $scope.remove_request(requestRef)
+                 }, 5000);
+        
+    }
+    
+    $scope.remove_request = function(requestRef) {
+        $log.info("removing request: ", requestRef);
+        requestRef.remove();
+    }
+    
 }
 
 
