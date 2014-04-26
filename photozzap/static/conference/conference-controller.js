@@ -97,6 +97,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
    
     $scope.watching_photo_index = false;
     $scope.load_new_url_promise = undefined;
+    
+    $scope.watch_followed_user_handle = undefined;
    
     $scope.init = function(firebase_base, server_name) {
         $scope.conf_key = $location.path().substring(1);
@@ -390,10 +392,24 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             return;
         }
         
+        if ($scope.login_obj.user.uid == request_data.user_id) {
+            // ignore self requests
+            return;
+        }
+        
         if (request_data.type == "look_here") {
             // switch to that image
             $log.info("look_here request");
             $scope.show_image(request_data.image_id);
+        } else if (request_data.type == "follow_me") {
+            $log.info("follow_me request");
+            var user_id = request_data.user_id;
+            var watch_path = "conference.users['" + user_id + "'].viewing_image_id";
+            $log.info("watch_path: ", watch_path, " ", $scope.$eval(watch_path));
+            $scope.watch_followed_user_handle = $scope.$watch(watch_path, function(newValue, oldValue) {
+                $log.info("followed user viewing_image_id changed: ", newValue, " oldValue: ", oldValue);
+                $scope.show_image(newValue);
+            });
         }
     }
     
