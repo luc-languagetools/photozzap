@@ -98,6 +98,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.watching_photo_index = false;
     $scope.load_new_url_promise = undefined;
     
+    $scope.show_image_for_follow = false;
     $scope.watch_followed_user_handle = undefined;
    
     $scope.init = function(firebase_base, server_name) {
@@ -453,6 +454,15 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             // do we need to load a new photo ?
             $scope.check_and_load_new_url(newValue);
             
+            if( $scope.show_image_for_follow == false ) {
+                // were we previously following a user ?
+                if ($scope.watch_followed_user_handle != undefined) {
+                    // stop watching that, not following anymore
+                    $scope.watch_followed_user_handle();
+                }            
+            }
+            $scope.show_image_for_follow = false;
+            
             // update user object on firebase
             $scope.conference_user_object.viewing_image_id = $scope.sorted_images[newValue].id;
             if (! $scope.conference_user_object.page_visible ) {
@@ -464,18 +474,13 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }
  
     $scope.show_image_following = function(image_id) {
+        $scope.show_image_for_follow = true;
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
         $("html, body").animate({ scrollTop: 0 }, 400);
     }
  
     $scope.show_image = function(image_id) {
-        // were we previously following a user ?
-        if ($scope.watch_followed_user_handle != undefined) {
-            // stop watching that, not following anymore
-            $scope.watch_followed_user_handle();
-        }
-    
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
         $("html, body").animate({ scrollTop: 0 }, 400);
