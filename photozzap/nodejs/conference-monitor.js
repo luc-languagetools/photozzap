@@ -43,6 +43,9 @@ function ConferenceObject(key, path, name, url) {
     
     var notificationsPath = path + "/notifications";
     this.notificationsRef = new Firebase(notificationsPath);
+    
+    var requestsPath = path + "/requests";
+    this.requestsRef = new Firebase(requestsPath);
 
     this.log_event = function(message) {
         console.log((new Date()).toUTCString(), ": [", this.key ,"] ", message);
@@ -171,10 +174,25 @@ function ConferenceObject(key, path, name, url) {
         this.user_cache[key] = user_data;
     };
 
+    this.requestChildAdded = function(snapshot) {
+        var request_data = snapshot.val();
+        var user_key = request_data.user_id;
+        
+        if (request_data.type == "look_here") {
+            this.addNotification(user_key, {type: "look_here", image_id: request_data.image_id});
+        } else if (request_data.type == "follow_me") {
+            this.addNotification(user_key, {type: "follow_me"});
+        }
+        
+        
+    }
+    
+    
     imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
     usersRef.on('child_added', this.userChildChanged, function(){}, this);
     usersRef.on('child_changed', this.userChildChanged, function(){}, this);
     commentsRef.on('child_added', this.commentChildAdded, function(){}, this);
+    this.requestsRef.on('child_added', this.requestChildAdded, function(){}, this);
 
 }
 

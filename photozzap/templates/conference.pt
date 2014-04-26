@@ -363,6 +363,12 @@
                 <span ng-switch-when="default_nickname"><span class="icon-info"></span>
                 You are connected as {{conference_user_object.nickname}} 
                 <a ng-click="open_nick_change_modal()"> - Change Nickname</a></span>
+                <span ng-switch-when="look_here"><span class="icon-info"></span>
+                {{notification.nickname}} is showing you <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}
+                </span>
+                <span ng-switch-when="follow_me"><span class="icon-info"></span>
+                You are now following {{notification.nickname}}
+                </span>
                 
             </span>
             <span class="separator"></span>            
