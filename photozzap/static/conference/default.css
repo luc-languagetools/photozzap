@@ -231,6 +231,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
         width: 125px;
     }        
     
+    .follow-action-btn {
+        margin-top: 10px;
+    }
+    
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -243,4 +247,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
     .comment-thumbnail {
         width: 150px;
     }        
+    .follow-action-btn {
+        margin-top: 10px;
+    }    
 }
