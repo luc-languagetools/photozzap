@@ -408,7 +408,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $log.info("watch_path: ", watch_path, " ", $scope.$eval(watch_path));
             $scope.watch_followed_user_handle = $scope.$watch(watch_path, function(newValue, oldValue) {
                 $log.info("followed user viewing_image_id changed: ", newValue, " oldValue: ", oldValue);
-                $scope.show_image(newValue);
+                $scope.show_image_following(newValue);
             });
         }
     }
@@ -463,7 +463,19 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         });
     }
  
+    $scope.show_image_following = function(image_id) {
+        var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
+        $scope.global_data.photo_index = photo_index;
+        $("html, body").animate({ scrollTop: 0 }, 400);
+    }
+ 
     $scope.show_image = function(image_id) {
+        // were we previously following a user ?
+        if ($scope.watch_followed_user_handle != undefined) {
+            // stop watching that, not following anymore
+            $scope.watch_followed_user_handle();
+        }
+    
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
         $("html, body").animate({ scrollTop: 0 }, 400);
