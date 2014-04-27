@@ -196,13 +196,7 @@ function ConferenceObject(key, path, name, url) {
         var params = {timestamp: new Date().getTime().toString(),
                       tags: this.key};
         var signature = cloudinary.utils.sign_request(params, {});
-        this.cloudinarySignatureRef.set(signature, function(error) {
-          if (error) {
-            console.log('Data could not be saved.' + error);
-          } else {
-            console.log('Data saved successfully.');
-          }
-        });
+        this.cloudinarySignatureRef.set(signature);
     }    
     
     imagesRef.on('child_added', this.imageChildAdded, function(){}, this);

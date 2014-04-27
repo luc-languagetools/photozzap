@@ -341,6 +341,12 @@
                                 Logout
                             </button>                            
                         </div>
+                        <div class="col-sm-4 col-md-4" ng-show="login_obj.user.uid == conference.owner_uid">
+                            <h3>Close Conference</h3>
+                            <button class="btn btn-default" ng-click="close_conference()">
+                                Close
+                            </button>                            
+                        </div>                        
                     </div>
                 </tab> 
             </tabset>

@@ -290,6 +290,13 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.login_obj.$logout();
     }
    
+    $scope.close_conference = function() {
+    }
+    
+    $scope.is_conference_admin = function() {
+        return $scope.login_obj.user.uid == $scope.conference.owner_uid;
+    }
+   
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,
