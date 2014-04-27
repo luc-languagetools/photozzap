@@ -46,6 +46,9 @@ function ConferenceObject(key, path, name, url) {
     
     var requestsPath = path + "/requests";
     this.requestsRef = new Firebase(requestsPath);
+    
+    var cloudinarySignaturePath = path + "/cloudinary_signature";
+    this.cloudinarySignatureRef = new Firebase(cloudinarySignaturePath);
 
     this.log_event = function(message) {
         console.log((new Date()).toUTCString(), ": [", this.key ,"] ", message);
@@ -186,7 +189,21 @@ function ConferenceObject(key, path, name, url) {
         
         
     }
-    
+
+    // set regular interval to write cloudinary signature
+    this.writeCloudinarySignature = function() {
+        console.log("writing cloudinary signature for " + this.key);
+        var params = {timestamp: new Date().getTime().toString(),
+                      tags: this.key};
+        var signature = cloudinary.utils.sign_request(params, {});
+        this.cloudinarySignatureRef.set(signature, function(error) {
+          if (error) {
+            console.log('Data could not be saved.' + error);
+          } else {
+            console.log('Data saved successfully.');
+          }
+        });
+    }    
     
     imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
     usersRef.on('child_added', this.userChildChanged, function(){}, this);
@@ -194,6 +211,9 @@ function ConferenceObject(key, path, name, url) {
     commentsRef.on('child_added', this.commentChildAdded, function(){}, this);
     this.requestsRef.on('child_added', this.requestChildAdded, function(){}, this);
 
+    this.writeCloudinarySignature();
+    setInterval(this.writeCloudinarySignature, 1000 * 60 * 15);    
+    
 }
 
 
@@ -213,14 +233,3 @@ conferencesRef.on('child_added', function(snapshot){
 
 var serverPath = config.firebaseRoot + "/servers/" + config.serverName;
 var serverRef = new Firebase(serverPath);
-
-// set regular interval to write cloudinary signature
-function writeCloudinarySignature() {
-    console.log("writing cloudinary signature for " + config.serverName);
-    var params = {timestamp: new Date().getTime().toString()};
-    var signature = cloudinary.utils.sign_request(params, {});
-    serverRef.set({cloudinary_signature: signature});
-}
-
-writeCloudinarySignature();
-setInterval(writeCloudinarySignature, 1000 * 60 * 15);

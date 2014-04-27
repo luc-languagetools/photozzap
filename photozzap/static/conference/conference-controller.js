@@ -135,7 +135,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         var connection_state = $scope.firebase_base + "/.info/connected";
         var firebase_user = $scope.firebase_base + "users/" + inputs.user_uid;
-        var server = $scope.firebase_base + "servers/" + inputs.server_name;
         var conference = $scope.firebase_base + "conferences/" + inputs.conf_key;
         var conference_images = conference + "/images";
         var conference_comments = conference + "/comments";
@@ -145,7 +144,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         return {
             firebase_user: firebase_user,
-            server: server,
             conference_user: conference_user,
             conference: conference,
             conference_images: conference_images,
@@ -177,8 +175,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.conference = $firebase(new Firebase(references.conference));
         $scope.images = $firebase(new Firebase(references.conference_images));
         $scope.comments = $firebase(new Firebase(references.conference_comments));
-        $log.info("references.server: ", references.server);
-        $scope.server_node = $firebase(new Firebase(references.server));
        
         $scope.requests_ref = new Firebase(references.requests);
         $scope.requests_ref.on('child_added', $scope.request_added);
@@ -274,7 +270,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     };    
     
     $scope.open_upload_modal = function() {
-        show_upload_modal($scope.server_node.cloudinary_signature);
+        show_upload_modal($scope.conference.cloudinary_signature);
     };
    
     $scope.nickname_change = function(nickname) {
