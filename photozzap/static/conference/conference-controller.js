@@ -78,8 +78,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.global_data.photo_index = 0;     
     $scope.global_data.photo_state_by_id = {};
 
-    $scope.global_user_object = {}; // will be bound to the user's global object
-    $scope.conference_user_object = {}; // will be bound to the user's conference object
+    // $scope.global_user_object = {}; // will be bound to the user's global object
+    // $scope.conference_user_object = {}; // will be bound to the user's conference object
     
     $scope.http_canceler = $q.defer();
 
@@ -160,13 +160,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var global_user_node = $firebase(new Firebase(references.firebase_user));
         var conference_user_node = $firebase(new Firebase(references.conference_user));
         
-        var binding_done_promise = global_user_node.$bind($scope, "global_user_object").
-        then(function(unbind) {
-            $log.info("bound global_user_object");
-            return conference_user_node.$bind($scope, "conference_user_object");
-        });
-
-        return binding_done_promise;
+        var promise1 = global_user_node.$bind($scope, "global_user_object");
+        var promise2 = conference_user_node.$bind($scope, "conference_user_object");
+        
+        return [promise1, promise2];
     }
    
     $scope.initialize_bindings = function() {
@@ -235,21 +232,27 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $log.info("User " + user.id + " logged in");
         $scope.self_uid = user.uid;
         
-        $scope.initialize_user_bindings(user).then(function() {
-            $log.info("bound user bindings");
-            $scope.watch_connection_state();
-            $scope.watch_page_visibility();
-    
-            if($scope.perform_setup_on_login) {
-                $scope.global_user_object.nickname = $scope.new_nickname;
-                $scope.conference_user_object.nickname = $scope.new_nickname;
-            } else {
-                // see what the user has in his global object, and copy from there
-                // $log.info("global_user_object.nickname is: ", $scope.global_user_object.nickname);
-                $scope.conference_user_object.nickname = $scope.global_user_object.nickname;
-            }
-            
-            $scope.initialize_bindings();            
+        var promises = $scope.initialize_user_bindings(user);
+              
+        
+        promises[0].then(function() {
+            promises[1].then(function() {
+        
+                $log.info("bound user bindings");
+                $scope.watch_connection_state();
+                $scope.watch_page_visibility();
+        
+                if($scope.perform_setup_on_login) {
+                    $scope.global_user_object.nickname = $scope.new_nickname;
+                    $scope.conference_user_object.nickname = $scope.new_nickname;
+                } else {
+                    // see what the user has in his global object, and copy from there
+                    // $log.info("global_user_object.nickname is: ", $scope.global_user_object.nickname);
+                    $scope.conference_user_object.nickname = $scope.global_user_object.nickname;
+                }
+                
+                $scope.initialize_bindings();     
+            });
         });
 
     });
@@ -291,12 +294,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }
    
     $scope.close_conference = function() {
+        $log.info("setting status to close_requested");
+        $scope.conference.$update({status: "close_requested"});
     }
     
-    $scope.is_conference_admin = function() {
-        return $scope.login_obj.user.uid == $scope.conference.owner_uid;
-    }
-   
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,

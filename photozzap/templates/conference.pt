@@ -110,7 +110,7 @@
     </div>
 </script>  
 
-<div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak">
+<div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
     <div id="displayed_image">
         <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
             ng-style="{'width': window_dimensions.width,
@@ -134,17 +134,20 @@
     </div>
 </div>
 
-<div id="loading-screen" ng-hide="logged_in_and_ready">
+<div id="loading-screen" ng-hide="logged_in_and_ready && conference.status != 'closed'">
     <div class="loading-screen-content">
         <span id="photozzap-title">Photozzap</span>
-        <p id="connection-status-text">Please wait, 
+        <p id="connection-status-text" ng-if="conference.status != 'closed'">Please wait, 
             <span ng-hide="true">loading</span> <!-- gets displayed before angular kicks in -->
             <span ng-cloak class="ng-cloak">{{status_string}}</span> <!-- gets displayed after angular kicks in -->
+        </p>
+        <p id="connection-status-text" ng-if="conference.status == 'closed'" ng-cloak class="ng-cloak">
+            Conference {{conference.status}}
         </p>
     </div>
 </div>
 
-<div class="container-fluid" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
+<div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
     <div class="row">
         <div class="col-md-12">
             <tabset>

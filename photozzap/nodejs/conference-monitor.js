@@ -33,13 +33,13 @@ function ConferenceObject(key, path, name, url) {
     this.user_cache = {};
     
     var imagesPath = path + "/images";
-    var imagesRef = new Firebase(imagesPath);
+    this.imagesRef = new Firebase(imagesPath);
     
     var usersPath = path + "/users";
-    var usersRef = new Firebase(usersPath);
+    this.usersRef = new Firebase(usersPath);
     
     var commentsPath = path + "/comments";
-    var commentsRef = new Firebase(commentsPath);
+    this.commentsRef = new Firebase(commentsPath);
     
     var notificationsPath = path + "/notifications";
     this.notificationsRef = new Firebase(notificationsPath);
@@ -50,6 +50,9 @@ function ConferenceObject(key, path, name, url) {
     var cloudinarySignaturePath = path + "/cloudinary_signature";
     this.cloudinarySignatureRef = new Firebase(cloudinarySignaturePath);
 
+    var statusPath = path + "/status";
+    this.statusRef = new Firebase(statusPath);
+    
     this.log_event = function(message) {
         console.log((new Date()).toUTCString(), ": [", this.key ,"] ", message);
     };
@@ -189,24 +192,74 @@ function ConferenceObject(key, path, name, url) {
         
         
     }
+    
+   this.statusChanged = function(snapshot) {
+      if(snapshot.val() === null) {
+        return;
+      } else {
+        var status = snapshot.val();
+        this.log_event("status for " + this.key + ": " + status);
+        if (status == "close_requested") {
+            this.closeConference();
+        }
+      }
+    }
+    
+    this.closeConference = function() {
+        // close conference
+        var self = this;
+        cloudinary.api.delete_resources_by_tag(this.key, function(result){
+            self.log_event("cloudinary delete result: " + result);
+        });
+        // remove callbacks
+        this.removeCallbacks();
+        // remove users, images, comments, requests, notifications
+        this.imagesRef.remove();
+        this.usersRef.remove();
+        this.commentsRef.remove();
+        this.requestsRef.remove();
+        this.cloudinarySignatureRef.remove();
+        
+        // finally, mark conference closed
+        this.statusRef.set("closed");
+        
+    }
 
     // set regular interval to write cloudinary signature
-    this.writeCloudinarySignature = function() {
-        console.log("writing cloudinary signature for " + this.key);
+    this.writeCloudinarySignature = function(self) {
+        self.log_event("writing cloudinary signature for " + this.key);
         var params = {timestamp: new Date().getTime().toString(),
-                      tags: this.key};
+                      tags: self.key};
         var signature = cloudinary.utils.sign_request(params, {});
-        this.cloudinarySignatureRef.set(signature);
+        self.cloudinarySignatureRef.set(signature);
     }    
     
-    imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
-    usersRef.on('child_added', this.userChildChanged, function(){}, this);
-    usersRef.on('child_changed', this.userChildChanged, function(){}, this);
-    commentsRef.on('child_added', this.commentChildAdded, function(){}, this);
-    this.requestsRef.on('child_added', this.requestChildAdded, function(){}, this);
+    this.addCallbacks = function() {
+        this.log_event("adding callbacks");    
+        this.imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
+        this.usersRef.on('child_added', this.userChildChanged, function(){}, this);
+        this.usersRef.on('child_changed', this.userChildChanged, function(){}, this);
+        this.commentsRef.on('child_added', this.commentChildAdded, function(){}, this);
+        this.requestsRef.on('child_added', this.requestChildAdded, function(){}, this);
+        this.statusRef.on('value', this.statusChanged, function(){}, this);
+    }
+    
+    this.removeCallbacks = function() {
+        this.log_event("removing callbacks");
+        this.imagesRef.off('child_added');
+        this.usersRef.off('child_added');
+        this.usersRef.off('child_changed');
+        this.commentsRef.off('child_added');
+        this.requestsRef.off('child_added');
+        this.statusRef.off('value');
+    }        
 
-    this.writeCloudinarySignature();
-    setInterval(this.writeCloudinarySignature, 1000 * 60 * 15);    
+    this.addCallbacks();    
+    this.writeCloudinarySignature(this);
+    var self = this;
+    setInterval(function() {
+        self.writeCloudinarySignature(self);
+    }, 1000 * 60 * 15);    
     
 }
 

@@ -144,7 +144,9 @@
                     newConf.set({name: confName,
                                  url: conf_url,
                                  servername: "${server_name}",
-                                 owner_uid: owner_uid});
+                                 owner_uid: owner_uid,
+                                 status: "open",
+                                 create_time: new Date().getTime()});
                     $scope.status = "conference " + tentativeConfKey + " created";
                     // $scope.$apply();
                     // redirect to conference URL
