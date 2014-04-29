@@ -223,6 +223,9 @@ function ConferenceObject(key, path, name, url) {
         // finally, mark conference closed
         this.statusRef.set("closed");
         
+        // delete conference entry
+        deleteConferenceEntry(this.key);
+        
     }
 
     // set regular interval to write cloudinary signature
@@ -252,23 +255,29 @@ function ConferenceObject(key, path, name, url) {
         this.commentsRef.off('child_added');
         this.requestsRef.off('child_added');
         this.statusRef.off('value');
+        clearInterval(this.cloudinarySignatureTimer);
     }        
 
     this.addCallbacks();    
     var self = this;
     this.writeCloudinarySignature(self);
-    setInterval(function() {
+    this.cloudinarySignatureTimer = setInterval(function() {
         self.writeCloudinarySignature(self);
     }, 1000 * 60 * 15);    
     
 }
 
+function deleteConferenceEntry(key) {
+    console.log("deleteConferenceEntry: " + key);
+    delete Globals.conferences[key];
+}
 
 conferencesRef.on('child_added', function(snapshot){
     var key = snapshot.name();
     var conference_data = snapshot.val();
     
-    if (conference_data.servername == config.serverName) {
+    if (conference_data.servername == config.serverName &&
+        conference_data.status != "closed") {
         console.log("monitoring conference ", key, " ", conference_data.name);
         Globals.conferences[key] = new ConferenceObject(key, 
                                                         conferencesPath + "/" + key,
