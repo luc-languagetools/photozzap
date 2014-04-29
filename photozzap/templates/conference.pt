@@ -132,7 +132,7 @@
             <div class="no_image_container">
                 <h1>No Photos</h1>
                 <button class="btn btn-primary btn-lg"  ng-click="open_upload_modal()">
-                    Upload Photos
+                    <span class="icon-upload"></span> Upload Photos
                 </button>                
             </div>
         </div>            
