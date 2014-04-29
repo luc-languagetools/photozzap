@@ -126,9 +126,14 @@
                 </div>                
             </li>        
         </ul>
-        <div class="image_layer_container" ng-if="sorted_images.length == 0">
-            <div class="image_layer">
+        <div class="no_image_outer_container" ng-if="sorted_images.length == 0" 
+             ng-style="{'width': window_dimensions.width,
+                       'height': window_dimensions.height}">
+            <div class="no_image_container">
                 <h1>No Photos</h1>
+                <button class="btn btn-primary btn-lg"  ng-click="open_upload_modal()">
+                    Upload Photos
+                </button>                
             </div>
         </div>            
     </div>
@@ -329,7 +334,7 @@
                             <h3>Upload</h3>
                             <button class="btn btn-primary"  ng-click="open_upload_modal()">
                                 Upload Photo
-                            </button>                            
+                            </button>
                         </div>
                         <div class="col-sm-5 col-md-4">
                             <h3>Change Nickname</h3>

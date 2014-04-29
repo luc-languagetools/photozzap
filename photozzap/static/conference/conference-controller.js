@@ -795,7 +795,7 @@ function ChatCtrl($scope, $log, $filter) {
             cumulative_comment_num += 1;
             current_nickname = comment.nickname;
         }
-        if (current_group.comments.length > 0 ) {
+        if (current_group != undefined && current_group.comments.length > 0 ) {
             process_group(current_group, comment_groups);
         }
         

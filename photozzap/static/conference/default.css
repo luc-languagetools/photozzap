@@ -26,6 +26,29 @@
     height: 100%;
 }
 
+.no_image_outer_container {
+    padding: 6%;
+}
+
+.no_image_container {
+    border-style: dashed;
+    border-width: 10px;
+    border-color: #DDDDDD;
+    border-radius: 20px;
+    color: #DDDDDD;
+    left: 0%;
+    top: 0%;    
+    width: 100%;
+    height: 100%;    
+    text-align: center;
+}
+
+.no_image_container h1 { 
+    padding-top: 10%;
+    padding-bottom: 5%;
+    font-size: 500%;
+}
+
 .image_layer_top {
     z-index: 2;
 }
