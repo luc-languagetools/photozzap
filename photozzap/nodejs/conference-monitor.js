@@ -23,7 +23,7 @@ var conferencesRef = new Firebase(conferencesPath);
 conferencesRef.auth(config.firebaseSecret);
 
 
-function ConferenceObject(key, path, name, url) {
+function ConferenceObject(key, path, name, url, create_time, close_after_time) {
     console.log("ConferenceObject path: ", path);
     this.key = key;
     this.path = path;
@@ -206,6 +206,8 @@ function ConferenceObject(key, path, name, url) {
     }
     
     this.closeConference = function() {
+        this.log_event("closing");
+    
         // close conference
         var self = this;
         cloudinary.api.delete_resources_by_tag(this.key, function(result){
@@ -256,6 +258,7 @@ function ConferenceObject(key, path, name, url) {
         this.requestsRef.off('child_added');
         this.statusRef.off('value');
         clearInterval(this.cloudinarySignatureTimer);
+        clearTimeout(this.closeTimeout);
     }        
 
     this.addCallbacks();    
@@ -264,6 +267,14 @@ function ConferenceObject(key, path, name, url) {
     this.cloudinarySignatureTimer = setInterval(function() {
         self.writeCloudinarySignature(self);
     }, 1000 * 60 * 15);    
+    
+    // call shutdown method
+    var closeDelay = close_after_time - new Date().getTime();
+    this.log_event("Will close after " + closeDelay + " milliseconds");
+    this.closeTimeout = setTimeout(function() {
+        self.closeConference();
+    }, closeDelay);
+    
     
 }
 
@@ -282,7 +293,9 @@ conferencesRef.on('child_added', function(snapshot){
         Globals.conferences[key] = new ConferenceObject(key, 
                                                         conferencesPath + "/" + key,
                                                         conference_data.name,
-                                                        conference_data.url);
+                                                        conference_data.url,
+                                                        conference_data.create_time,
+                                                        conference_data.close_after_time);
     }
     
 });
