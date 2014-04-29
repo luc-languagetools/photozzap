@@ -255,8 +255,8 @@ function ConferenceObject(key, path, name, url) {
     }        
 
     this.addCallbacks();    
-    this.writeCloudinarySignature(this);
     var self = this;
+    this.writeCloudinarySignature(self);
     setInterval(function() {
         self.writeCloudinarySignature(self);
     }, 1000 * 60 * 15);    

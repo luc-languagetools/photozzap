@@ -78,9 +78,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.global_data.photo_index = 0;     
     $scope.global_data.photo_state_by_id = {};
 
-    // $scope.global_user_object = {}; // will be bound to the user's global object
-    // $scope.conference_user_object = {}; // will be bound to the user's conference object
-    
     $scope.http_canceler = $q.defer();
 
     $scope.show_default_nickname_notification = false;
@@ -139,12 +136,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var conference_images = conference + "/images";
         var conference_comments = conference + "/comments";
         var requests = conference + "/requests";
+        var conference_users = conference + "/users";
         var conference_user = conference + "/users/" + inputs.user_uid;
         var connected = conference_user + "/connected";
         
         return {
             firebase_user: firebase_user,
             conference_user: conference_user,
+            conference_users: conference_users,
             conference: conference,
             conference_images: conference_images,
             conference_comments: conference_comments,
@@ -157,13 +156,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.initialize_user_bindings = function(user) {
         var references = $scope.firebase_references();
    
-        var global_user_node = $firebase(new Firebase(references.firebase_user));
-        var conference_user_node = $firebase(new Firebase(references.conference_user));
-        
-        var promise1 = global_user_node.$bind($scope, "global_user_object");
-        var promise2 = conference_user_node.$bind($scope, "conference_user_object");
-        
-        return [promise1, promise2];
+        $scope.global_user_object = $firebase(new Firebase(references.firebase_user));
+        $scope.conference_user_object = $firebase(new Firebase(references.conference_user));
     }
    
     $scope.initialize_bindings = function() {
@@ -199,12 +193,12 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $(document).on({
                 'show.visibility': function() {
                     $log.info("page visible");
-                    $scope.conference_user_object.page_visible = true;
+                    $scope.conference_user_object.$update({page_visible: true});
                     $scope.$apply();
                 },
                 'hide.visibility': function() {
                     $log.info("page not visible");
-                    $scope.conference_user_object.page_visible = false;
+                    $scope.conference_user_object.$update({page_visible: false});
                     $scope.$apply();
                 }
             });            
@@ -219,49 +213,50 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var connected_ref = new Firebase(references.connected);
         connected_ref.onDisconnect().set(false);        
     
-        $scope.conference_user_object.connected = true;
-        $scope.conference_user_object.page_visible = true;
-        $scope.conference_user_object.time_connected = new Date().getTime();
+        $scope.conference_user_object.$update({connected: true,
+                                               page_visible: true,
+                                               time_connected:new Date().getTime()});
     }
     
     $scope.mark_user_disconnected = function() {
-        $scope.conference_user_object.connected = false;
+        $scope.conference_user_object.$update({connected: false});
     }
    
     $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
         $log.info("User " + user.id + " logged in");
         $scope.self_uid = user.uid;
         
-        var promises = $scope.initialize_user_bindings(user);
-              
+        $scope.initialize_user_bindings(user);
         
-        promises[0].then(function() {
-            promises[1].then(function() {
-        
-                $log.info("bound user bindings");
-                $scope.watch_connection_state();
-                $scope.watch_page_visibility();
-        
-                if($scope.perform_setup_on_login) {
-                    $scope.global_user_object.nickname = $scope.new_nickname;
-                    $scope.conference_user_object.nickname = $scope.new_nickname;
-                } else {
-                    // see what the user has in his global object, and copy from there
-                    // $log.info("global_user_object.nickname is: ", $scope.global_user_object.nickname);
-                    $scope.conference_user_object.nickname = $scope.global_user_object.nickname;
-                }
-                
-                $scope.initialize_bindings();     
+        $log.info("bound user bindings");
+        $scope.watch_connection_state();
+        $scope.watch_page_visibility();
+
+        if($scope.perform_setup_on_login) {
+            $log.info("perform_setup_on_login");
+            $scope.global_user_object.$update({nickname: $scope.new_nickname});
+            $scope.conference_user_object.$update({nickname: $scope.new_nickname});
+        } else {
+            // see what the user has in his global object, and copy from there
+            $scope.global_user_object.$on('loaded', function(){
+                $scope.conference_user_object.$update({nickname: $scope.global_user_object.nickname})                
             });
-        });
+        }
+        
+        $scope.initialize_bindings();     
+        $scope.setup_logout_handler();
+
 
     });
     
-    $rootScope.$on("$firebaseSimpleLogin:logout", function() {
-        $scope.mark_user_disconnected();
-        $scope.logged_in_and_ready = false;
-        $scope.status_string = "logged out";
-    });
+    $scope.setup_logout_handler = function() {
+        $rootScope.$on("$firebaseSimpleLogin:logout", function() {
+            $log.info("logout");
+            $scope.mark_user_disconnected();
+            $scope.logged_in_and_ready = false;
+            $scope.status_string = "logged out";
+        });
+    }
     
    
     $scope.open_nick_change_modal = function() {
@@ -277,8 +272,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     };
    
     $scope.nickname_change = function(nickname) {
-        $scope.global_user_object.nickname = nickname;
-        $scope.conference_user_object.nickname = nickname;
+        $scope.global_user_object.$update({nickname: nickname});
+        $scope.conference_user_object.$update({nickname: nickname});
     }
    
     $scope.perform_login = function(nickname) {
@@ -468,7 +463,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $scope.check_and_load_new_url(newValue);
             
             // update user object on firebase
-            $scope.conference_user_object.viewing_image_id = $scope.sorted_images[newValue].id;
+            $scope.conference_user_object.$update({viewing_image_id: $scope.sorted_images[newValue].id});
             
             if ($scope.watch_followed_user_handle != undefined  &&
                 $scope.followed_user_image_id != $scope.conference_user_object.viewing_image_id) {
@@ -481,7 +476,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             
             if (! $scope.conference_user_object.page_visible ) {
                 // in some cases the browser doesn't properly reset page visibility to true
-                $scope.conference_user_object.page_visible = true;
+                $scope.conference_user_object.$update({page_visible: true});
             }
             
         });
