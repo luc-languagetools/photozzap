@@ -56,23 +56,6 @@
             </div>
             <div class="modal-body">
                 <div id="upload-controls" style="text-align: center;">
-                    <div id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
-                        <h3 class="upload-header">Drag And Drop photos into this area</h3>
-                        Or
-                        <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
-                    </div>
-                    <div class="resize-controls">
-                        <form>
-                        <label class="radio">
-                        <input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
-                        Resize to 1024x768 (faster upload, lower quality)
-                        </label>
-                        <label class="radio">
-                        <input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
-                        Upload full image (slower upload, faster quality)
-                        </label>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
@@ -325,6 +308,30 @@
                         </div>
                     </div>
                 </tab>    
+                <tab>
+                    <tab-heading>
+                        <span class="icon-upload"></span> Upload
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-md-6" id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
+                            <h3 class="upload-header">Drag And Drop photos into this area</h3>
+                            Or
+                            <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
+                        </div>
+                        <div class="resize-controls">
+                            <form>
+                            <label class="radio">
+                            <input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
+                            Resize to 1024x768 (faster upload, lower quality)
+                            </label>
+                            <label class="radio">
+                            <input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
+                            Upload full image (slower upload, faster quality)
+                            </label>
+                            </form>
+                        </div>                    
+                    </div>
+                </tab> 
                 <tab>
                     <tab-heading>
                         <span class="icon-cog"></span> Options

@@ -71,8 +71,6 @@ def get_cdn_path(cdn_server, file_path):
 def conference(request):
 
     settings = request.registry.settings
-    assets_on_cdn = settings['assets_on_cdn']
-    cdn_server = settings['cdn_server']
     tracking_id = settings['analytics_tracking_id']
     firebase = settings['firebase']
     server_name = settings['server_name']
@@ -80,16 +78,6 @@ def conference(request):
     javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.conference_javascript_files)
     css_files_abs = get_file_list_abs(request, photozzap.staticresources.conference_css_files)
 
-    if False:
-        javascript_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_javascript_file])
-        css_files_abs = get_file_list_abs(request, [photozzap.staticresources.combined_css_file])
-    
-    # build CDN paths
-    if assets_on_cdn == "true":
-        javascript_files_abs = [get_cdn_path(cdn_server, photozzap.staticresources.combined_javascript_file)]
-        css_files_abs = [get_cdn_path(cdn_server, photozzap.staticresources.combined_css_file)]
-
-        
     params = {'javascript_files': javascript_files_abs,
               'css_files': css_files_abs,
               'tracking_id': tracking_id,
