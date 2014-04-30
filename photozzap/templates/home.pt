@@ -142,8 +142,10 @@
                     var conferencesRef = new Firebase("${firebase}conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
                     var conf_url = "${new_conf_url}".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "${permanent_conf_url}".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
+                                 permanent_url: permanent_conf_url,
                                  servername: "${server_name}",
                                  owner_uid: owner_uid,
                                  status: "open",

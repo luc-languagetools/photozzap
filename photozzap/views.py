@@ -31,11 +31,13 @@ def home(request):
     settings = request.registry.settings
     tracking_id = settings['analytics_tracking_id'] 
     firebase = settings['firebase']
-    www_server = settings['www_server']
     www_port = settings['www_port']    
     server_name = settings['server_name']
+    default_server_name = settings['default_server_name']
     
-    new_conf_url = request.route_url('conference', _host=www_server, _port=www_port) + "#/new-conference-template"
+    new_conf_url = request.route_url('conference', _host=default_server_name + ".photozzap.com", _port=www_port) + "#/new-conference-template"
+    
+    permanent_conf_url = request.route_url('conference', _host=server_name + ".photozzap.com", _port=www_port) + "#/new-conference-template"
     
     javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.home_javascript_files)
     css_files_abs = get_file_list_abs(request, photozzap.staticresources.home_css_files)
@@ -45,7 +47,8 @@ def home(request):
             'tracking_id': tracking_id,
             'firebase': firebase,
             'server_name': server_name,
-            'new_conf_url': new_conf_url}
+            'new_conf_url': new_conf_url,
+            'permanent_conf_url': permanent_conf_url}
     
     
 def get_file_list_abs(request, files):

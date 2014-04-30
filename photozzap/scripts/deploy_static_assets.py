@@ -51,6 +51,7 @@ def render_templates(settings):
     firebase = settings['firebase']
     firebase_secret = settings['firebase_secret']
     server_name = settings['server_name']
+    default_server_name = settings['default_server_name']
 
     cloudinary_name = settings['cloudinary_name']
     cloudinary_api_key = settings['cloudinary_api_key']
@@ -59,7 +60,9 @@ def render_templates(settings):
     pushover_token = settings['pushover_token']
     pushover_user = settings['pushover_user']
     
-    new_conf_url = 'http://' + server_name + ".photozzap.com/" + 'conference.html#/new-conference-template'
+    new_conf_url = 'http://' + default_server_name + ".photozzap.com/" + 'conference.html#/new-conference-template'
+    
+    permanent_conf_url = 'http://' + server_name + ".photozzap.com/" + 'conference.html#/new-conference-template'
     
     home_attributes = {
         'javascript_files': get_file_name(photozzap.staticresources.combined_home_javascript_file),
@@ -67,7 +70,8 @@ def render_templates(settings):
         'tracking_id': tracking_id,
         'firebase': firebase,
         'server_name': server_name,
-        'new_conf_url': new_conf_url        
+        'new_conf_url': new_conf_url,
+        'permanent_conf_url': permanent_conf_url
     }
     render_template('photozzap:templates/home.pt', home_attributes, photozzap.staticresources.home_file_path)
     

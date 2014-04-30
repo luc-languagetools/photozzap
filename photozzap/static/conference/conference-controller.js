@@ -103,22 +103,46 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
-        var firebaseRef = new Firebase($scope.firebase_base);    
-        $scope.login_obj = $firebaseSimpleLogin(firebaseRef);       
+        
+        
+        var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
+                                                                  server_name: $scope.server_name});
+        // look at the conference, is it closed ?
+        var conference_node = $firebase(new Firebase(temp_references.conference));
+        conference_node.$on('loaded', function() {
+            // is it closed ?
+            if (conference_node.status == "closed") {
+                // no need to load any more data
+                $scope.conference = {status: "closed"};
+            } else {
+                if (conference_node.servername != $scope.server_name) {
+                    // redirect to other server
+                    $log.info("need to redirect to other server: ", conference_node.permanent_url);
+                    $window.location.href = conference_node.permanent_url;
+                    
+                } else {
+                    // proceed to rest of initialization
+                    var firebaseRef = new Firebase($scope.firebase_base);    
+                    $scope.login_obj = $firebaseSimpleLogin(firebaseRef);       
 
-        $scope.login_obj.$getCurrentUser().then(function(user){
-            $scope.status_string = "logging in";
-            $log.info("getCurrentUser: ", user);
-            if (user == null) {
-                // login with generated nickname
-                var randomNick = "Guest" + randomNumString(5);
-                $scope.perform_login(randomNick);
-                $scope.show_default_nickname_notification = true;
-                $timeout(function() {
-                    $scope.show_default_nickname_notification = false;
-                }, 20000);
-            }        
-        });        
+                    $scope.login_obj.$getCurrentUser().then(function(user){
+                        $scope.status_string = "logging in";
+                        $log.info("getCurrentUser: ", user);
+                        if (user == null) {
+                            // login with generated nickname
+                            var randomNick = "Guest" + randomNumString(5);
+                            $scope.perform_login(randomNick);
+                            $scope.show_default_nickname_notification = true;
+                            $timeout(function() {
+                                $scope.show_default_nickname_notification = false;
+                            }, 20000);
+                        }        
+                    });                       
+                }
+            }
+        });
+        
+    
     }
     
     $scope.firebase_references = function() {

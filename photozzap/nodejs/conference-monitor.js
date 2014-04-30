@@ -249,7 +249,13 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
         var params = {timestamp: new Date().getTime().toString(),
                       tags: self.key};
         var signature = cloudinary.utils.sign_request(params, {});
-        self.cloudinarySignatureRef.set(signature);
+        self.cloudinarySignatureRef.set(signature, function(error) {
+          if (error) {
+            self.log_event("ERROR could not write cloudinary signature: " + error);
+          } else {
+            self.log_event("successfully wrote cloudinary signature");
+          }
+        });
     }    
     
     this.addCallbacks = function() {
