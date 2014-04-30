@@ -17,8 +17,8 @@
     width: 100%;
     height: 100%;
     font-size: 32px; 
-    color: #FFFFFF;
-    background-color: #000000;
+    color: #444444;
+    background-color: #FFFFFF;
 }
 #loading-screen .loading-screen-content {
     margin-top: 30%;
@@ -33,7 +33,7 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://fiery-fire-5557.firebaseio.com/', 'test-20140426-1')">
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140430-1')">
 <script defer src="conference-all.min.js"></script>
 
 
@@ -110,7 +110,7 @@
     </div>
 </script>  
 
-<div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak">
+<div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
     <div id="displayed_image">
         <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
             ng-style="{'width': window_dimensions.width,
@@ -126,25 +126,33 @@
                 </div>                
             </li>        
         </ul>
-        <div class="image_layer_container" ng-if="sorted_images.length == 0">
-            <div class="image_layer">
+        <div class="no_image_outer_container" ng-if="sorted_images.length == 0" 
+             ng-style="{'width': window_dimensions.width,
+                       'height': window_dimensions.height}">
+            <div class="no_image_container">
                 <h1>No Photos</h1>
+                <button class="btn btn-primary btn-lg"  ng-click="open_upload_modal()">
+                    <span class="icon-upload"></span> Upload Photos
+                </button>                
             </div>
         </div>            
     </div>
 </div>
 
-<div id="loading-screen" ng-hide="logged_in_and_ready">
+<div id="loading-screen" ng-hide="logged_in_and_ready && conference.status != 'closed'">
     <div class="loading-screen-content">
         <span id="photozzap-title">Photozzap</span>
-        <p id="connection-status-text">Please wait, 
+        <p id="connection-status-text" ng-if="conference.status != 'closed'">Please wait, 
             <span ng-hide="true">loading</span> <!-- gets displayed before angular kicks in -->
             <span ng-cloak class="ng-cloak">{{status_string}}</span> <!-- gets displayed after angular kicks in -->
+        </p>
+        <p id="connection-status-text" ng-if="conference.status == 'closed'" ng-cloak class="ng-cloak">
+            Conference {{conference.status}}
         </p>
     </div>
 </div>
 
-<div class="container-fluid" ng-show="logged_in_and_ready" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
+<div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
     <div class="row">
         <div class="col-md-12">
             <tabset>
@@ -326,7 +334,7 @@
                             <h3>Upload</h3>
                             <button class="btn btn-primary"  ng-click="open_upload_modal()">
                                 Upload Photo
-                            </button>                            
+                            </button>
                         </div>
                         <div class="col-sm-5 col-md-4">
                             <h3>Change Nickname</h3>
@@ -335,6 +343,13 @@
                                 Change Nickname
                             </button>                                
                         </div>
+                        <div class="col-sm-4 col-md-4" ng-show="login_obj.user.uid == conference.owner_uid">
+                            <h3>Close Conference</h3>
+                            Remove all photos, disconnect all users.
+                            <button class="btn btn-default" ng-click="close_conference()">
+                                Close
+                            </button>                            
+                        </div>                        
                         <div class="col-sm-4 col-md-2">
                             <h3>Logout</h3>
                             <button class="btn btn-default" ng-click="logout()">

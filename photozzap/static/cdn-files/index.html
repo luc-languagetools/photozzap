@@ -88,58 +88,70 @@
     function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log, $window) {
         $scope.form_data = {};
         $scope.form_data.logged_in = false;
-        var firebaseRef = new Firebase("https://fiery-fire-5557.firebaseio.com/");
-        $scope.loginObj = $firebaseSimpleLogin(firebaseRef);
+        var firebaseRef = new Firebase("https://photozzap-test.firebaseio.com/");
         $scope.alerts = [];
-        $scope.user_object = {}; // bound with firebase user object
+   
+        $scope.init = function() {
+            $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
+            $scope.login_obj.$getCurrentUser().then(function(user){
+                $log.info("getCurrentUser: ", user);
+                if (user == null) {
+                    // need to login
+                    $scope.login_obj.$login('anonymous');
+                }
+            });
+        }
    
         $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
             $log.info("User " + user.id + " logged in");
             $scope.form_data.logged_in = true;
-            var user_node = $firebase(new Firebase("https://fiery-fire-5557.firebaseio.com/users/" + user.uid));
-            user_node.$bind($scope, "user_object");
+            $scope.global_user_object = $firebase(new Firebase("https://photozzap-test.firebaseio.com/users/" + user.uid));
         });
-        if ($scope.loginObj.user == null) {
-            $scope.loginObj.$login('anonymous');
-        }
         
-        $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
-            $scope.alerts.push({type: 'danger', msg: "Couldn't log-in: " + error});
-        });
-
         $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
             $scope.alerts.push({type: 'info', msg: "Logged out"});
             $scope.form_data.logged_in = false;
         });        
+        
+        $scope.init();
         
         $scope.closeAlert = function(index) {
             $scope.alerts.splice(index, 1);
         };        
         
         $scope.logout = function() {
-            $scope.loginObj.$logout();
+            $scope.login_obj.$logout();
         };
         
         $scope.ok = function () {
-            $scope.create_unique_conf_key($scope.form_data.confname, $scope.loginObj.user.uid);
+            $scope.create_unique_conf_key($scope.form_data.confname, $scope.login_obj.user.uid);
         };
         
         $scope.create_unique_conf_key = function(confName, owner_uid) {
+            // set owner nickname
+            $scope.global_user_object.$update({nickname: $scope.global_user_object.nickname});
+        
             var prefix = randomString(6);
             var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
             var tentativeConfKey = prefix + "-" + confNameEncoded;
-            var confRef = new Firebase("https://fiery-fire-5557.firebaseio.com/conferences/" + tentativeConfKey);
+            var confRef = new Firebase("https://photozzap-test.firebaseio.com/conferences/" + tentativeConfKey);
             confRef.on('value', function(snapshot) {
                 confRef.off('value');
                 if(snapshot.val() === null) {
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
-                    var conferencesRef = new Firebase("https://fiery-fire-5557.firebaseio.com/conferences");
+                    var conferencesRef = new Firebase("https://photozzap-test.firebaseio.com/conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
-                    var conf_url = "http://test-20140426-1.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://test-20140430-1.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
-                                 servername: "test-20140426-1",
-                                 owner_uid: owner_uid});
+                                 permanent_url: permanent_conf_url,
+                                 servername: "test-20140430-1",
+                                 owner_uid: owner_uid,
+                                 status: "open",
+                                 notify_pushover: false,
+                                 create_time: new Date().getTime(),
+                                 close_after_time: new Date().getTime() + 7 * 24 * 60 * 60 * 1000}); // shutdown after 7 days
                     $scope.status = "conference " + tentativeConfKey + " created";
                     // $scope.$apply();
                     // redirect to conference URL
@@ -207,7 +219,7 @@
                             </label>
                             <div class="col-sm-8">
                             <input type="text" name="nickname" class="form-control" id="nickname" 
-                              ng-model="user_object.nickname" 
+                              ng-model="global_user_object.nickname" 
                               ng-minlength="3"
                               ng-maxlength="30"
                               placeholder="Enter your nickname" required>
