@@ -30,6 +30,8 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
     this.conference_name = name;
     this.conference_url = url;
     
+    this.notify_pushover = false;
+    
     this.user_cache = {};
     
     var imagesPath = path + "/images";
@@ -52,6 +54,9 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
 
     var statusPath = path + "/status";
     this.statusRef = new Firebase(statusPath);
+    
+    var notifyPushoverPath = path + "/notify_pushover";
+    this.notifyPushoverRef = new Firebase(notifyPushoverPath);
     
     this.log_event = function(message) {
         console.log((new Date()).toUTCString(), ": [", this.key ,"] ", message);
@@ -99,7 +104,7 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
             data.text;
             notification_title = this.conference_name + ": new comment";        
         }
-        if (sendPushoverNotification) {
+        if (sendPushoverNotification && this.notify_pushover) {
             var msg = {
                 message: notification_message,
                 title: notification_title,
@@ -204,6 +209,14 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
         }
       }
     }
+
+   this.notifyPushoverChanged = function(snapshot) {
+      if(snapshot.val() === null) {
+        return;
+      } else {
+        this.notify_pushover = snapshot.val();
+      }
+    }
     
     this.closeConference = function() {
         this.log_event("closing");
@@ -247,6 +260,7 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
         this.commentsRef.on('child_added', this.commentChildAdded, function(){}, this);
         this.requestsRef.on('child_added', this.requestChildAdded, function(){}, this);
         this.statusRef.on('value', this.statusChanged, function(){}, this);
+        this.notifyPushoverRef.on('value', this.notifyPushoverChanged, function(){}, this);
     }
     
     this.removeCallbacks = function() {
@@ -257,6 +271,7 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
         this.commentsRef.off('child_added');
         this.requestsRef.off('child_added');
         this.statusRef.off('value');
+        this.notifyPushoverRef.off('value');
         clearInterval(this.cloudinarySignatureTimer);
         clearTimeout(this.closeTimeout);
     }        

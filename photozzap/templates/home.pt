@@ -90,7 +90,6 @@
         $scope.form_data.logged_in = false;
         var firebaseRef = new Firebase("${firebase}");
         $scope.alerts = [];
-        $scope.user_object = {}; // bound with firebase user object
    
         $scope.init = function() {
             $scope.login_obj = $firebaseSimpleLogin(firebaseRef);
@@ -106,8 +105,7 @@
         $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
             $log.info("User " + user.id + " logged in");
             $scope.form_data.logged_in = true;
-            var user_node = $firebase(new Firebase("${firebase}users/" + user.uid));
-            user_node.$bind($scope, "user_object");
+            $scope.global_user_object = $firebase(new Firebase("${firebase}users/" + user.uid));
         });
         
         $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
@@ -130,6 +128,9 @@
         };
         
         $scope.create_unique_conf_key = function(confName, owner_uid) {
+            // set owner nickname
+            $scope.global_user_object.$update({nickname: $scope.global_user_object.nickname});
+        
             var prefix = randomString(6);
             var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
             var tentativeConfKey = prefix + "-" + confNameEncoded;
@@ -146,6 +147,7 @@
                                  servername: "${server_name}",
                                  owner_uid: owner_uid,
                                  status: "open",
+                                 notify_pushover: false,
                                  create_time: new Date().getTime(),
                                  close_after_time: new Date().getTime() + 7 * 24 * 60 * 60 * 1000}); // shutdown after 7 days
                     $scope.status = "conference " + tentativeConfKey + " created";
@@ -215,7 +217,7 @@
                             </label>
                             <div class="col-sm-8">
                             <input type="text" name="nickname" class="form-control" id="nickname" 
-                              ng-model="user_object.nickname" 
+                              ng-model="global_user_object.nickname" 
                               ng-minlength="3"
                               ng-maxlength="30"
                               placeholder="Enter your nickname" required>
