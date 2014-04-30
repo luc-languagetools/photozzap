@@ -142,11 +142,11 @@
                     var conferencesRef = new Firebase("https://photozzap-test.firebaseio.com/conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
                     var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://test-20140430-2.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://test-20140430-3.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "test-20140430-2",
+                                 servername: "test-20140430-3",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
