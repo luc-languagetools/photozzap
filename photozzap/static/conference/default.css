@@ -26,16 +26,20 @@
     height: 100%;
 }
 
-.no_image_outer_container {
+.outer_empty_container {
     padding: 6%;
 }
 
-.no_image_container {
+.less_bottom_padding {
+    padding-bottom: 1%;
+}
+
+.empty_container {
     border-style: dashed;
     border-width: 10px;
-    border-color: #DDDDDD;
+    border-color: #BBBBBB;
     border-radius: 20px;
-    color: #DDDDDD;
+    color: #BBBBBB;
     left: 0%;
     top: 0%;    
     width: 100%;
@@ -43,7 +47,7 @@
     text-align: center;
 }
 
-.no_image_container h1 { 
+.empty_container h1 { 
     padding-top: 10%;
     padding-bottom: 5%;
     font-size: 400%;
@@ -228,6 +232,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
 .comment-hold-button-container button{
     margin-top: 8px; 
     width: 100%; 
+}
+
+.upload_drop_container {
+    padding: 4%;
+}
+
+.cloudinary-input-style-override {
+    border-width: 0px;
+    box-shadow: none;
+    height: auto;
 }
 
 /* Small devices (tablets, 768px and up) */

@@ -109,10 +109,10 @@
                 </div>                
             </li>        
         </ul>
-        <div class="no_image_outer_container" ng-if="sorted_images.length == 0" 
+        <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
              ng-style="{'width': window_dimensions.width,
                        'height': window_dimensions.height}">
-            <div class="no_image_container">
+            <div class="empty_container">
                 <h1>No Photos</h1>
                 <button class="btn btn-primary btn-lg"  ng-click="open_upload_modal()">
                     <span class="icon-upload"></span> Upload Photos
@@ -313,23 +313,44 @@
                         <span class="icon-upload"></span> Upload
                     </tab-heading>
                     <div class="row">
-                        <div class="col-md-6" id="dragdrop_area" style="height: 150px; background-color: #DDDDDD; border-style: dashed; border-width: 3px;">
-                            <h3 class="upload-header">Drag And Drop photos into this area</h3>
-                            Or
-                            <input name="file" type="file" class="cloudinary-fileupload" data-cloudinary-field="image_id"></input>
+                        <div class="col-md-8">
+                            <!-- upload controls here -->
+                            <div class="row">
+                                <div class="col-md-12 outer_empty_container less_bottom_padding" id="dragdrop_area">
+                                    <div class="empty_container">
+                                        <form class="form-horizontal upload_drop_container" role="form">
+                                            <div class="form-group">
+                                                <label for="cloudinary_input" class="col-md-6 control-label" style="font-size: 150%;"><span class="icon-download"></span> Drop Photos Here, or</label>
+                                                <div class="col-md-6">
+                                                  <input name="file" type="file" id="cloudinary_input" class="form-control cloudinary-fileupload cloudinary-input-style-override" data-cloudinary-field="image_id"></input>
+                                                </div>                                        
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-2">
+                                    <span style="font-size: 110%; font-weight: bold;">Resize Options</span>
+                                </div>
+                                <div class="col-md-6 resize-controls">
+                                    <form>
+                                        <div class="radio">
+                                            <label>
+                                            <input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
+                                            <b>Resize to 1024x768</b> (faster upload, lower quality)
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                            <input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
+                                            <b>Upload full image</b> (slower upload, higher quality)
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="resize-controls">
-                            <form>
-                            <label class="radio">
-                            <input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
-                            Resize to 1024x768 (faster upload, lower quality)
-                            </label>
-                            <label class="radio">
-                            <input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
-                            Upload full image (slower upload, faster quality)
-                            </label>
-                            </form>
-                        </div>                    
                     </div>
                 </tab> 
                 <tab>
