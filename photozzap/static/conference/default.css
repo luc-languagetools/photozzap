@@ -30,13 +30,25 @@
     padding: 6%;
 }
 
+.tab_outer_empty_container {
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.empty_container_inner {
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
 .less_bottom_padding {
     padding-bottom: 1%;
 }
 
 .empty_container {
     border-style: dashed;
-    border-width: 10px;
+    border-width: 8px;
     border-color: #BBBBBB;
     border-radius: 20px;
     color: #BBBBBB;

@@ -732,15 +732,17 @@ function FollowCtrl($scope, $log, $timeout) {
 
 function ChatCtrl($scope, $log, $filter) {
     $scope.display_num_pages = 1;
+    $scope.comment_pages = [];
+    $scope.comment_data = {};
 
     $scope.submit_comment = function() {
-        $log.info("submit_comment: " + $scope.comment_text);
+        $log.info("submit_comment: " + $scope.comment_data.text);
         $scope.comments.$add({user_id: $scope.login_obj.user.uid,
                               nickname: $scope.conference_user_object.nickname,
                               image_id: $scope.conference_user_object.viewing_image_id,
                               time_added: new Date().getTime(),
-                              text: $scope.comment_text}); 
-        $scope.comment_text = "";                              
+                              text: $scope.comment_data.text}); 
+        $scope.comment_data.text = "";
     }
     
     $scope.show_more = function() {

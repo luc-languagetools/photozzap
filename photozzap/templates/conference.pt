@@ -128,7 +128,8 @@
                     </tab-heading>
                     <div class="row below-tab-spacing">
                         <div class="col-md-12">
-                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak">
+                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak"
+                            ng-if="sorted_images.length > 0">
                                 <li ng-repeat="group in thumbnail_groups track by group.id_list">
                                     <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
                                         <a class="thumbnail-tight" ng-click="show_image(image.id)">
@@ -137,6 +138,18 @@
                                     </div>
                                 </li>        
                             </ul>
+                            <div class="tab_outer_empty_container" ng-if="sorted_images.length == 0">
+                                <div class="empty_container">
+                                    <div class="row empty_container_inner">
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <h2>No Photos</h2>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>                                
                         </div>
                     </div>            
                 </tab>
@@ -152,7 +165,19 @@
                                       <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
                                     </a>
                                 </div>
-                            </div>        
+                            </div>     
+                            <div class="tab_outer_empty_container" ng-if="sorted_images.length == 0">
+                                <div class="empty_container">
+                                    <div class="row empty_container_inner">
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <h2>No Photos</h2>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>                                
                         </div>
                     </div>                
                 </tab>            
@@ -273,13 +298,32 @@
                                 </div>                        
                             </div>
                         </div>
-                        
+           
                     </div>
-                    <div class="row">
+                    
+                    <div class="row" ng-if="comment_pages.length == 0">
+                        <div class="col-md-12">
+                            <div class="tab_outer_empty_container">
+                                <div class="empty_container">
+                                    <div class="row empty_container_inner">
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <h2>No Comments</h2>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <h3 ng-if="sorted_images.length == 0"><span class="icon-upload"></span> Upload Photos to post comments.</h3>
+                                            <h3 ng-if="sorted_images.length > 0">Type comment below and click <span class="icon-bubble"></span> Send.</h3>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>                        
+                         </div> 
+                    </div>
+                    
+                    <div class="row" ng-if="sorted_images.length > 0">
                         <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
                             <form class="form-horizontal" role="form" ng-submit="submit_comment()">
                                 <div class="form-group col-xs-11 col-sm-11 col-md-10">
-                                    <input ng-model="comment_text" type="text" class="form-control" id="comment" placeholder="Enter Message">
+                                    <input ng-model="comment_data.text" type="text" class="form-control" id="comment" placeholder="Enter Message">
                                 </div>
                                 <div class="form-group col-xs-1 col-sm-1 col-md-2">
                                     <button type="submit" class="btn btn-default" style="margin-left: 5px;">
