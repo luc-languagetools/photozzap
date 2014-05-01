@@ -68,7 +68,6 @@ $(document).ready(function() {
     
     $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
        //log("fileuploadstart");
-       hide_upload_modal();
        show_progress_bar();
      });    
     

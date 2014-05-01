@@ -47,21 +47,6 @@
 </script>
 
 
-<div id="upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="upload-modal-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="upload-modal-label">Upload Photo</h4>
-            </div>
-            <div class="modal-body">
-                <div id="upload-controls" style="text-align: center;">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script type="text/ng-template" id="nick_change_modal.html">
     <div class="modal-header">
         <h3>Change Nickname</h3>
@@ -308,7 +293,7 @@
                         </div>
                     </div>
                 </tab>    
-                <tab>
+                <tab ng-controller="UploadCtrl">
                     <tab-heading>
                         <span class="icon-upload"></span> Upload
                     </tab-heading>
@@ -337,13 +322,13 @@
                                     <form>
                                         <div class="radio">
                                             <label>
-                                            <input type="radio" name="resizeOptions" value="option1" onclick="cloudinary_configure(true)" checked="checked">
+                                            <input type="radio" name="resizeOptions" ng-model="resize" ng-value="true">
                                             <b>Resize to 1024x768</b> (faster upload, lower quality)
                                             </label>
                                         </div>
                                         <div class="radio">
                                             <label>
-                                            <input type="radio" name="resizeOptions" value="option2" onclick="cloudinary_configure(false)">
+                                            <input type="radio" name="resizeOptions" ng-model="resize" ng-value="false">
                                             <b>Upload full image</b> (slower upload, higher quality)
                                             </label>
                                         </div>

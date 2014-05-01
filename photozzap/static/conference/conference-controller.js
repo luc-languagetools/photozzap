@@ -874,3 +874,52 @@ function ChatCtrl($scope, $log, $filter) {
     });    
     
 }
+
+function UploadCtrl($scope, $log) {
+    $scope.resize = true;
+    
+    $scope.$watch("resize", function(newValue,oldValue) {
+        $log.info("UploadCtrl resize: ", $scope.resize);
+        $scope.cloudinary_configure($scope.resize);
+    });
+    
+    $scope.$watch("conference.cloudinary_signature", function(newValue,oldValue) {
+        $log.info("cloudinary signature updated");
+        $scope.cloudinary_configure($scope.resize);
+    }, true);
+    
+    $scope.cloudinary_configure = function(resize) {
+        if (resize) {
+            $scope.cloudinary_configure_resize();
+        } else {
+            $scope.cloudinary_configure_no_resize();
+        }
+    }
+    
+    
+    $scope.cloudinary_configure_resize = function() {
+        if ($scope.conference == undefined)
+            return;
+    
+        //log("configuring cloudinary for resize on upload");
+        $("input.cloudinary-fileupload[type=file]").fileupload({formData: $scope.conference.cloudinary_signature,
+                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
+                                                                disableImageResize: false,
+                                                                imageMaxWidth: 1024,
+                                                                imageMaxHeight: 1024,
+                                                                imageOrientation: true,
+                                                                });    
+    }
+    
+    $scope.cloudinary_configure_no_resize = function() {
+        if ($scope.conference == undefined)
+            return;    
+    
+        //log("configuring cloudinary for no resize on upload");
+        $("input.cloudinary-fileupload[type=file]").fileupload({formData: $scope.conference.cloudinary_signature,
+                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
+                                                                disableImageResize: true,
+                                                                imageOrientation: true,
+                                                                });    
+    }
+}
