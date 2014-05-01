@@ -294,7 +294,7 @@
       <hr>
 
       <div class="footer">
-        <p>&copy; Photozzap 2013</p>
+        <p>&copy; Photozzap 2014 - running on ${server_name}</p>
       </div>
 
     </div> <!-- /container -->
