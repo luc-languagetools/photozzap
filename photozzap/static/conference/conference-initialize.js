@@ -55,32 +55,5 @@ function randomNumString(length) {
 }   
 
 $(document).ready(function() {
-
-    $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
-    
-    $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
-        var image = {id: data.result.public_id,
-                     width: data.result.width,
-                     height: data.result.height};
-       
-        $(document).trigger('upload_image', image);
-    });
-    
-    $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
-       //log("fileuploadstart");
-       hide_upload_modal();
-       show_progress_bar();
-     });    
-    
-    $(".cloudinary-fileupload").bind('fileuploadprogressall', update_progress_bar);
-    
-    $(".cloudinary-fileupload").bind('cloudinarydone', function(e){ 
-        hide_progress_bar();
-    });
-    
-    $("#upload-cloudinary").on('click', function(){
-        //log("starting cloudinary file upload");
-        $(".cloudinary-fileupload").fileupload();
-    });
-    
+   
 });
