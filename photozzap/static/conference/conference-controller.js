@@ -291,10 +291,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                             });
     };    
     
-    $scope.open_upload_modal = function() {
-        show_upload_modal($scope.conference.cloudinary_signature);
-    };
-   
     $scope.nickname_change = function(nickname) {
         $scope.global_user_object.$update({nickname: nickname});
         $scope.conference_user_object.$update({nickname: nickname});
@@ -877,6 +873,44 @@ function ChatCtrl($scope, $log, $filter) {
 
 function UploadCtrl($scope, $log) {
     $scope.resize = true;
+    
+    $scope.init = function() {
+    
+        $(document).ready(function() {
+            $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
+            
+            $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
+                var image = {id: data.result.public_id,
+                             width: data.result.width,
+                             height: data.result.height};
+               
+                $(document).trigger('upload_image', image);
+            });
+            
+            $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
+               //log("fileuploadstart");
+               // show_progress_bar();
+               //console.log("UPLOAD EVENT fileuploadstart");
+                $("#upload-progress-bar").css("width", "0%");
+                $("#progress-bar-container").fadeIn();               
+             });    
+            
+            $(".cloudinary-fileupload").bind('fileuploadprogressall', function(e, data) {
+                // console.log("UPLOAD EVENT fileuploadprogressall ", data);
+                $("#upload-progress-bar").css('width', Math.round((data.loaded * 100.0) / data.total) + '%'); 
+                
+            });
+            
+            $(".cloudinary-fileupload").bind('cloudinarydone', function(e){ 
+                //console.log("UPLOAD EVENT cloudinarydone");
+                $("#progress-bar-container").fadeOut();
+            });
+            
+            $log.info("cloudinary events binding done");
+        });
+    }
+    
+    $scope.init();
     
     $scope.$watch("resize", function(newValue,oldValue) {
         $log.info("UploadCtrl resize: ", $scope.resize);
