@@ -397,12 +397,6 @@
                         <span class="icon-cog"></span> Options
                     </tab-heading>
                     <div class="row">
-                        <div class="col-sm-3 col-md-2">
-                            <h3>Upload</h3>
-                            <button class="btn btn-primary"  ng-click="open_upload_modal()">
-                                Upload Photo
-                            </button>
-                        </div>
                         <div class="col-sm-5 col-md-4">
                             <h3>Change Nickname</h3>
                             You are logged in as <b>{{conference_user_object.nickname}}</b>&nbsp;&nbsp;

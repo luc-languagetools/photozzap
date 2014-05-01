@@ -243,17 +243,33 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
         
     }
 
+    this.getCloudinarySignature = function() {
+        var params = {timestamp: new Date().getTime().toString(),
+                      tags: this.key};
+        var signature = cloudinary.utils.sign_request(params, {});
+        return signature;
+    }
+    
     // set regular interval to write cloudinary signature
     this.writeCloudinarySignature = function(self) {
         self.log_event("writing cloudinary signature for " + this.key);
-        var params = {timestamp: new Date().getTime().toString(),
-                      tags: self.key};
-        var signature = cloudinary.utils.sign_request(params, {});
+        var signature = self.getCloudinarySignature();
         self.cloudinarySignatureRef.set(signature, function(error) {
           if (error) {
             self.log_event("ERROR could not write cloudinary signature: " + error);
           } else {
-            self.log_event("successfully wrote cloudinary signature");
+            self.log_event("successfully wrote cloudinary signature, checking data");
+            // check the value
+            self.cloudinarySignatureRef.on('value', function(snapshot) {
+                self.cloudinarySignatureRef.off('value');
+                if (Object.keys(snapshot.val()).length == 0) {
+                    self.log_event("cloudinary signature empty, re-writing");
+                    var signature = self.getCloudinarySignature();
+                    self.cloudinarySignatureRef.set(signature);
+                } else {
+                    self.log_event("cloudinary signature looks ok: " + snapshot.val().signature);
+                }
+            });
           }
         });
     }    
