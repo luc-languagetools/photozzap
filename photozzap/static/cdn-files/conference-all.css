@@ -40,16 +40,32 @@
     height: 100%;
 }
 
-.no_image_outer_container {
+.outer_empty_container {
     padding: 6%;
 }
 
-.no_image_container {
+.tab_outer_empty_container {
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.empty_container_inner {
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.less_bottom_padding {
+    padding-bottom: 1%;
+}
+
+.empty_container {
     border-style: dashed;
-    border-width: 10px;
-    border-color: #DDDDDD;
+    border-width: 8px;
+    border-color: #BBBBBB;
     border-radius: 20px;
-    color: #DDDDDD;
+    color: #BBBBBB;
     left: 0%;
     top: 0%;    
     width: 100%;
@@ -57,7 +73,7 @@
     text-align: center;
 }
 
-.no_image_container h1 { 
+.empty_container h1 { 
     padding-top: 10%;
     padding-bottom: 5%;
     font-size: 400%;
@@ -244,6 +260,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
     width: 100%; 
 }
 
+.upload_drop_container {
+    padding: 4%;
+}
+
+.cloudinary-input-style-override {
+    border-width: 0px;
+    box-shadow: none;
+    height: auto;
+}
+
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     .comment-columns {
@@ -361,11 +387,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
 
 @font-face {
 	font-family: 'icomoon';
-	src:url('icomoon.eot?-6e6xbt');
-	src:url('icomoon.eot?#iefix-6e6xbt') format('embedded-opentype'),
-		url('icomoon.woff?-6e6xbt') format('woff'),
-		url('icomoon.ttf?-6e6xbt') format('truetype'),
-		url('icomoon.svg?-6e6xbt#icomoon') format('svg');
+	src:url('icomoon.eot?-q82mgd');
+	src:url('icomoon.eot?#iefix-q82mgd') format('embedded-opentype'),
+		url('icomoon.woff?-q82mgd') format('woff'),
+		url('icomoon.ttf?-q82mgd') format('truetype'),
+		url('icomoon.svg?-q82mgd#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -419,6 +445,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f7fd', end
 }
 .icon-upload:before {
 	content: "\e2c1";
+}
+.icon-download:before {
+	content: "\e2c2";
 }
 .icon-eye:before {
 	content: "\e2d9";
