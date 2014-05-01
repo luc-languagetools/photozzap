@@ -99,9 +99,9 @@
                        'height': window_dimensions.height}">
             <div class="empty_container">
                 <h1>No Photos</h1>
-                <button class="btn btn-primary btn-lg"  ng-click="open_upload_modal()">
-                    <span class="icon-upload"></span> Upload Photos
-                </button>                
+                <h3>Upload Photos using <span class="label label-default" style="font-weight: normal;">
+                  <span class="icon-upload"></span> Upload</span>
+                tab below.</h3>
             </div>
         </div>            
     </div>
@@ -298,7 +298,7 @@
                         <span class="icon-upload"></span> Upload
                     </tab-heading>
                     <div class="row">
-                        <div class="col-md-7">
+                        <div class="col-xs-12 col-sm-8 col-md-7">
                             <!-- upload controls here -->
                             <div class="row">
                                 <div class="col-md-12 outer_empty_container less_bottom_padding" id="dragdrop_area">
@@ -315,10 +315,13 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-2 col-md-offset-2">
+                                <div class="col-xs-3 col-sm-3 col-xs-offset-0 col-sm-offset-0 
+                                            col-md-3 col-md-offset-1">
                                     <span style="font-size: 110%; font-weight: bold;">Resize Options</span>
                                 </div>
-                                <div class="col-md-6 resize-controls">
+                                <div class="col-xs-9 col-sm-9 
+                                            col-md-8 
+                                            resize-controls">
                                     <form>
                                         <div class="radio">
                                             <label>
@@ -336,7 +339,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-xs-12 col-sm-4 col-md-5">
                             <div id="progress-bar-container" style="display: none;">
                                 <h2 style="padding-top: 6%;">Upload Progress</h2>
                                 <div class="progress progress-striped active">
