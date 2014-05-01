@@ -141,12 +141,12 @@
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
                     var conferencesRef = new Firebase("https://photozzap-prod.firebaseio.com/conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
-                    var conf_url = "http://prod-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://www-02.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var conf_url = "http://www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://www-03.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "www-02",
+                                 servername: "www-03",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
