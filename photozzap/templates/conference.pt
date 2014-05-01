@@ -99,9 +99,7 @@
                        'height': window_dimensions.height}">
             <div class="empty_container">
                 <h1>No Photos</h1>
-                <h3>Upload Photos using <span class="label label-default" style="font-weight: normal;">
-                  <span class="icon-upload"></span> Upload</span>
-                tab below.</h3>
+                <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
             </div>
         </div>            
     </div>
