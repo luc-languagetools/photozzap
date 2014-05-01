@@ -251,27 +251,10 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
     }
     
     // set regular interval to write cloudinary signature
-    this.writeCloudinarySignature = function(self) {
-        self.log_event("writing cloudinary signature for " + this.key);
-        var signature = self.getCloudinarySignature();
-        self.cloudinarySignatureRef.set(signature, function(error) {
-          if (error) {
-            self.log_event("ERROR could not write cloudinary signature: " + error);
-          } else {
-            self.log_event("successfully wrote cloudinary signature, checking data");
-            // check the value
-            self.cloudinarySignatureRef.on('value', function(snapshot) {
-                self.cloudinarySignatureRef.off('value');
-                if (Object.keys(snapshot.val()).length == 0) {
-                    self.log_event("cloudinary signature empty, re-writing");
-                    var signature = self.getCloudinarySignature();
-                    self.cloudinarySignatureRef.set(signature);
-                } else {
-                    self.log_event("cloudinary signature looks ok: " + snapshot.val().signature);
-                }
-            });
-          }
-        });
+    this.writeCloudinarySignature = function() {
+        this.log_event("writing cloudinary signature for " + this.key);
+        var signature = this.getCloudinarySignature();
+        this.cloudinarySignatureRef.set(signature);
     }    
     
     this.addCallbacks = function() {
@@ -300,9 +283,9 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
 
     this.addCallbacks();    
     var self = this;
-    this.writeCloudinarySignature(self);
+    this.writeCloudinarySignature();
     this.cloudinarySignatureTimer = setInterval(function() {
-        self.writeCloudinarySignature(self);
+        self.writeCloudinarySignature();
     }, 1000 * 60 * 15);    
     
     // call shutdown method
