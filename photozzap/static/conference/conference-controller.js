@@ -116,6 +116,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                 $scope.conference = {status: "closed"};
             } else {
                 if ($scope.temp_conference_node.servername != $scope.server_name) {
+                    alert("temp_conference_node.servername is: [" + $scope.temp_conference_node.servername + "] " +
+                          "scope.server_name is: [" + $scope.server_name + "], redirecting");
+                          
+               
                     // redirect to other server
                     $log.info("need to redirect to other server: ", $scope.temp_conference_node.permanent_url);
                     $window.location.href = $scope.temp_conference_node.permanent_url;
