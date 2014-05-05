@@ -43,11 +43,6 @@ def create_cdn_container(server_name, default_server_name):
         print("deleting default server record")
         default_server_record.delete()
         
-        if default_server_name == "www":
-            default_server_record_prod = dom.find_record('CNAME', name=domain_name)
-            print("deleting default server record (prod)")
-            default_server_record_prod.delete()        
-        
         
     except Exception as inst:
         print(inst)
@@ -64,13 +59,7 @@ def create_cdn_container(server_name, default_server_name):
                 "data": target_domain,
                 "ttl": 300}]
             
-    if default_server_name == "www":
-        # updating production - update root record as well
-        records.append({"type": "CNAME",
-                "name": domain_name,
-                "data": target_domain,
-                "ttl": 300})
-            
+           
     recs = dom.add_records(records)
     print recs
 
