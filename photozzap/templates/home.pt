@@ -139,11 +139,11 @@
                 confRef.off('value');
                 if(snapshot.val() === null) {
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
-                    var conferencesRef = new Firebase("${firebase}conferences");
-                    var newConf = conferencesRef.child(tentativeConfKey);
+                    var conferences_node = $firebase(new Firebase("${firebase}conferences"));
+                    var conference_node = conferences_node.$child(tentativeConfKey);
                     var conf_url = "${new_conf_url}".replace("new-conference-template", tentativeConfKey);
                     var permanent_conf_url = "${permanent_conf_url}".replace("new-conference-template", tentativeConfKey);
-                    newConf.set({name: confName,
+                    var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
                                  servername: "${server_name}",
@@ -151,11 +151,15 @@
                                  status: "open",
                                  notify_pushover: false,
                                  create_time: new Date().getTime(),
-                                 close_after_time: new Date().getTime() + 7 * 24 * 60 * 60 * 1000}); // shutdown after 7 days
-                    $scope.status = "conference " + tentativeConfKey + " created";
+                                 close_after_time: new Date().getTime() + 7 * 24 * 60 * 60 * 1000}; // shutdown after 7 days
+                    // alert("setting conference data: " + JSON.stringify(conference_data));
+                    conference_node.$update(conference_data).then(function(ref) {
+                        $scope.status = "conference " + tentativeConfKey + " created";
+                        $window.location.href = conf_url;
+                    });
+
                     // $scope.$apply();
                     // redirect to conference URL
-                    $window.location.href = conf_url;
                 } else {
                     $log.info("conference " + tentativeConfKey + " already exists, trying again");
                     $scope.create_unique_conf_key(confName, owner_uid);
