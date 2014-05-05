@@ -139,23 +139,27 @@
                 confRef.off('value');
                 if(snapshot.val() === null) {
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
-                    var conferencesRef = new Firebase("https://photozzap-test.firebaseio.com/conferences");
-                    var newConf = conferencesRef.child(tentativeConfKey);
+                    var conferences_node = $firebase(new Firebase("https://photozzap-test.firebaseio.com/conferences"));
+                    var conference_node = conferences_node.$child(tentativeConfKey);
                     var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://test-20140505-4.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    newConf.set({name: confName,
+                    var permanent_conf_url = "http://test-20140505-5.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "test-20140505-4",
+                                 servername: "test-20140505-5",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
                                  create_time: new Date().getTime(),
-                                 close_after_time: new Date().getTime() + 7 * 24 * 60 * 60 * 1000}); // shutdown after 7 days
-                    $scope.status = "conference " + tentativeConfKey + " created";
+                                 close_after_time: new Date().getTime() + 7 * 24 * 60 * 60 * 1000}; // shutdown after 7 days
+                    // alert("setting conference data: " + JSON.stringify(conference_data));
+                    conference_node.$update(conference_data).then(function(ref) {
+                        $scope.status = "conference " + tentativeConfKey + " created";
+                        $window.location.href = conf_url;
+                    });
+
                     // $scope.$apply();
                     // redirect to conference URL
-                    $window.location.href = conf_url;
                 } else {
                     $log.info("conference " + tentativeConfKey + " already exists, trying again");
                     $scope.create_unique_conf_key(confName, owner_uid);
@@ -294,7 +298,7 @@
       <hr>
 
       <div class="footer">
-        <p>&copy; Photozzap 2014 - running on test-20140505-4</p>
+        <p>&copy; Photozzap 2014 - running on test-20140505-5</p>
       </div>
 
     </div> <!-- /container -->
