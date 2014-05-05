@@ -124,7 +124,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                
                     // redirect to other server
                     $log.info("need to redirect to other server: ", $scope.temp_conference_node.permanent_url);
-                    $window.location.href = $scope.temp_conference_node.permanent_url;
+                    // $window.location.href = $scope.temp_conference_node.permanent_url;
                     
                 } else {
                     $scope.temp_conference_node.$off('loaded');
