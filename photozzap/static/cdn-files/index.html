@@ -88,7 +88,7 @@
     function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log, $window) {
         $scope.form_data = {};
         $scope.form_data.logged_in = false;
-        var firebaseRef = new Firebase("https://photozzap-prod.firebaseio.com/");
+        var firebaseRef = new Firebase("https://photozzap-test.firebaseio.com/");
         $scope.alerts = [];
    
         $scope.init = function() {
@@ -105,7 +105,7 @@
         $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
             $log.info("User " + user.id + " logged in");
             $scope.form_data.logged_in = true;
-            $scope.global_user_object = $firebase(new Firebase("https://photozzap-prod.firebaseio.com/users/" + user.uid));
+            $scope.global_user_object = $firebase(new Firebase("https://photozzap-test.firebaseio.com/users/" + user.uid));
         });
         
         $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
@@ -134,19 +134,19 @@
             var prefix = randomString(6);
             var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
             var tentativeConfKey = prefix + "-" + confNameEncoded;
-            var confRef = new Firebase("https://photozzap-prod.firebaseio.com/conferences/" + tentativeConfKey);
+            var confRef = new Firebase("https://photozzap-test.firebaseio.com/conferences/" + tentativeConfKey);
             confRef.on('value', function(snapshot) {
                 confRef.off('value');
                 if(snapshot.val() === null) {
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
-                    var conferencesRef = new Firebase("https://photozzap-prod.firebaseio.com/conferences");
+                    var conferencesRef = new Firebase("https://photozzap-test.firebaseio.com/conferences");
                     var newConf = conferencesRef.child(tentativeConfKey);
-                    var conf_url = "http://www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://www-05.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://test-20140505-2.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     newConf.set({name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "www-05",
+                                 servername: "test-20140505-2",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
@@ -175,7 +175,7 @@
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-46712284-1', 'photozzap.com');
+      ga('create', 'UA-46712284-2', 'photozzap.com');
       ga('send', 'pageview');
     </script>
     
@@ -294,7 +294,7 @@
       <hr>
 
       <div class="footer">
-        <p>&copy; Photozzap 2014 - running on www-05</p>
+        <p>&copy; Photozzap 2014 - running on test-20140505-2</p>
       </div>
 
     </div> <!-- /container -->
