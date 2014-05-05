@@ -108,19 +108,22 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
         // look at the conference, is it closed ?
-        var conference_node = $firebase(new Firebase(temp_references.conference));
-        conference_node.$on('loaded', function() {
+        $scope.temp_conference_node = $firebase(new Firebase(temp_references.conference));
+        $scope.temp_conference_node.$on('loaded', function() {
             // is it closed ?
-            if (conference_node.status == "closed") {
+            if ($scope.temp_conference_node.status == "closed") {
                 // no need to load any more data
                 $scope.conference = {status: "closed"};
             } else {
-                if (conference_node.servername != $scope.server_name) {
+                if ($scope.temp_conference_node.servername != $scope.server_name) {
                     // redirect to other server
-                    $log.info("need to redirect to other server: ", conference_node.permanent_url);
-                    $window.location.href = conference_node.permanent_url;
+                    $log.info("need to redirect to other server: ", $scope.temp_conference_node.permanent_url);
+                    $window.location.href = $scope.temp_conference_node.permanent_url;
                     
                 } else {
+                    $scope.temp_conference_node.$off('loaded');
+                    $scope.temp_conference_node = undefined;
+                
                     // proceed to rest of initialization
                     var firebaseRef = new Firebase($scope.firebase_base);    
                     $scope.login_obj = $firebaseSimpleLogin(firebaseRef);       
