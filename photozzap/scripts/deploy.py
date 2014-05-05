@@ -34,8 +34,8 @@ def git_commit(server_name, deploy_server_name):
     subprocess.check_call(start_node_cmd_line, shell=True)
     
 
-def upload_to_cdn(server_name):
-    upload_cmd_line = "python2.7 configure_cdn.py " + server_name
+def upload_to_cdn(server_name, default_server_name):
+    upload_cmd_line = "python2.7 configure_cdn.py " + server_name + " " + default_server_name
     subprocess.check_call(upload_cmd_line, shell=True, cwd="photozzap/server_setup")
     
 if __name__ == "__main__":
@@ -48,7 +48,8 @@ if __name__ == "__main__":
     settings = get_appsettings(config_uri)
     settings['server_name'] = server_name
     deploy_server_name = settings['deploy_server_name']
+    default_server_name = settings['default_server_name']
     
     photozzap.scripts.deploy_static_assets.manage_assets(settings)
     git_commit(server_name, deploy_server_name)
-    upload_to_cdn(server_name)
+    upload_to_cdn(server_name, default_server_name)
