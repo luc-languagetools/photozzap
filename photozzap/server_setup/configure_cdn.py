@@ -66,7 +66,7 @@ def create_cdn_container(server_name, default_server_name):
             
     if default_server_name == "www":
         # updating production - update root record as well
-        records.push({"type": "CNAME",
+        records.append({"type": "CNAME",
                 "name": domain_name,
                 "data": target_domain,
                 "ttl": 300})
