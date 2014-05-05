@@ -142,11 +142,11 @@
                     var conferences_node = $firebase(new Firebase("https://photozzap-prod.firebaseio.com/conferences"));
                     var conference_node = conferences_node.$child(tentativeConfKey);
                     var conf_url = "http://www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://www-07.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://www-08.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "www-07",
+                                 servername: "www-08",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
@@ -298,7 +298,7 @@
       <hr>
 
       <div class="footer">
-        <p>&copy; Photozzap 2014 - running on www-07</p>
+        <p>&copy; Photozzap 2014 - running on www-08</p>
       </div>
 
     </div> <!-- /container -->
