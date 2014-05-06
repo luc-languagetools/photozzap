@@ -28,7 +28,7 @@ def delete_cdn_container(server_name):
     # delete the server record
     searched_record_name = server_name + "." + domain_name
     default_server_record = dom.find_record('CNAME', name=searched_record_name)
-    print("deleting default server record")
+    print("deleting server record")
     retval = default_server_record.delete()
     print("deletion of ", searched_record_name, ": ", retval)
     
