@@ -158,7 +158,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
     function PhotozzapNewConfModalController($scope, $rootScope, $modalInstance, $firebase, $firebaseSimpleLogin, $log, $window) {
         $scope.form_data = {};
         $scope.form_data.logged_in = false;
-        var firebaseRef = new Firebase("https://photozzap-test.firebaseio.com/");
+        var firebaseRef = new Firebase("https://photozzap-prod.firebaseio.com/");
         $scope.alerts = [];
    
         $scope.init = function() {
@@ -175,7 +175,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
         $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
             $log.info("User " + user.id + " logged in");
             $scope.form_data.logged_in = true;
-            $scope.global_user_object = $firebase(new Firebase("https://photozzap-test.firebaseio.com/users/" + user.uid));
+            $scope.global_user_object = $firebase(new Firebase("https://photozzap-prod.firebaseio.com/users/" + user.uid));
         });
         
         $rootScope.$on("$firebaseSimpleLogin:error", function(e, error) {
@@ -204,19 +204,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
             var prefix = randomString(6);
             var confNameEncoded = confName.replace(/[^a-zA-Z0-9]/g, "-");
             var tentativeConfKey = prefix + "-" + confNameEncoded;
-            var confRef = new Firebase("https://photozzap-test.firebaseio.com/conferences/" + tentativeConfKey);
+            var confRef = new Firebase("https://photozzap-prod.firebaseio.com/conferences/" + tentativeConfKey);
             confRef.on('value', function(snapshot) {
                 confRef.off('value');
                 if(snapshot.val() === null) {
                     $log.info("conference " + tentativeConfKey + " does not exist, creating");
-                    var conferences_node = $firebase(new Firebase("https://photozzap-test.firebaseio.com/conferences"));
+                    var conferences_node = $firebase(new Firebase("https://photozzap-prod.firebaseio.com/conferences"));
                     var conference_node = conferences_node.$child(tentativeConfKey);
-                    var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://test-20140506-4.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var conf_url = "http://www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://www-09.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "test-20140506-4",
+                                 servername: "www-09",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
@@ -249,7 +249,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-46712284-2', 'photozzap.com');
+      ga('create', 'UA-46712284-1', 'photozzap.com');
       ga('send', 'pageview');
     </script>
     
@@ -395,7 +395,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
               </div>
              <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                &copy; Photozzap 2014 - running on test-20140506-4
+                &copy; Photozzap 2014 - running on www-09
                 </div>
              </div>
           </div>
