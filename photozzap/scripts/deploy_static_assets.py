@@ -32,8 +32,8 @@ def concatenate(file_list, output_file):
     
     print("wrote combined code to %s" % output_path)
 
-def get_file_name(path):
-    return [path.split('/')[-1]]
+def get_file_name(path, server_name):
+    return ['http://' + server_name + ".photozzap.com/" + path.split('/')[-1]]
     
 def render_template(template, attributes, output_file):
     output = pyramid.renderers.render(template, attributes)
@@ -66,8 +66,8 @@ def render_templates(settings):
     permanent_conf_url = 'http://' + server_name + ".photozzap.com/" + 'conference.html#/new-conference-template'
     
     home_attributes = {
-        'javascript_files': get_file_name(photozzap.staticresources.combined_home_javascript_file),
-        'css_files': get_file_name(photozzap.staticresources.combined_home_css_file),
+        'javascript_files': get_file_name(photozzap.staticresources.combined_home_javascript_file, server_name),
+        'css_files': get_file_name(photozzap.staticresources.combined_home_css_file, server_name),
         'tracking_id': tracking_id,
         'firebase': firebase,
         'server_name': server_name,
@@ -77,8 +77,8 @@ def render_templates(settings):
     render_template('photozzap:templates/home.pt', home_attributes, photozzap.staticresources.home_file_path)
     
     conference_attributes = {
-        'javascript_files': get_file_name(photozzap.staticresources.combined_conference_javascript_file),
-        'css_files': get_file_name(photozzap.staticresources.combined_conference_css_file),
+        'javascript_files': get_file_name(photozzap.staticresources.combined_conference_javascript_file, server_name),
+        'css_files': get_file_name(photozzap.staticresources.combined_conference_css_file, server_name),
         'tracking_id': tracking_id,
         'firebase': firebase,
         'server_name': server_name
