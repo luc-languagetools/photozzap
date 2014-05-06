@@ -104,6 +104,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
         
+        // call the resize method once after initialization
+        $timeout($scope.resize_handler, 3000);
         
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
@@ -344,6 +346,9 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var new_width = $(window).width();
         var new_height = $(window).height();
 
+        $log.info("resize_handler: new dimensions: ", new_width, "x", new_height,
+                  " current dimensions: ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height );
+        
         var pixelRatio = 1;
         if( window.devicePixelRatio != undefined ) {
             pixelRatio = window.devicePixelRatio;
@@ -358,6 +363,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         } else {
             $scope.window_dimensions.width = $(window).width();
             $scope.window_dimensions.height = $(window).height();   
+            $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
             $scope.$apply();
         }
     }
