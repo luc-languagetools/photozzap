@@ -74,6 +74,29 @@
         padding-bottom: 3%;
       }
       
+      .section2 {
+      }
+      
+      .section3 {
+        margin-top: 10%;
+        background-color: #CCCCCC;
+        box-shadow: 0px 0px 8px 3px #222222;
+        
+background: rgb(251,239,252); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(251,239,252,1) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(251,239,252,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(251,239,252,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(251,239,252,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(251,239,252,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(251,239,252,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+
+
+
+        padding-top: 3%;
+        padding-bottom: 3%;      
+      }
+      
       .feature-icon-container {
         padding-top: 10%;
         text-align: center;
@@ -86,8 +109,8 @@
         border-color: #444444;
         border-style: solid;
         border-width: 2px;
-        height: 65px;
-        width: 65px;
+        height: 60px;
+        width: 60px;
       }
       
       .container-narrow hr {
@@ -340,15 +363,41 @@
         </div>                
       </div>
       
-      <div class="row">
-        <div class="col-md-4 likebox">
-        <div class="fb-like-box" data-href="http://www.facebook.com/photozzap" data-width="280" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
-        </div>              
-      </div>
- 
-      <div class="footer">
-        <p>&copy; Photozzap 2014 - running on ${server_name}</p>
-      </div>
+      <div class="row section3">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                    <h1>Stay in Touch</h1>
+                    <h3>What we've been up to recently, and how to contact us.</h3>
+                </div>
+            </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-radio"></span></div></div>
+                    <h3>Recent Changes</h3>
+                    <h4>2014-05-06</h4>
+                    Official launch of Photozzap 2.0
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-envelop"></span></div></div>
+                    <h3>Questions ?</h3>
+                    Do you have any questions or suggestions regarding Photozzap ? You can use our Facebook page, or 
+                    <a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Email Us</a>.
+                    We'd love to hear your feedback.
+                </div>                
+                <div class="col-xs-12 col-sm-12 col-md-4 likebox">
+                    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-facebook"></span></div></div>
+                    <h3>Facebook</h3>
+                    <div class="fb-like-box" data-href="http://www.facebook.com/photozzap" data-width="280" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+                </div>                
+              </div>
+             <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                &copy; Photozzap 2014 - running on ${server_name}
+                </div>
+             </div>
+          </div>
+       </div>
 
     </div> <!-- /container -->
 

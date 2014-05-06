@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'icomoon';
-	src:url('icomoon.eot?no4fqh');
-	src:url('icomoon.eot?#iefixno4fqh') format('embedded-opentype'),
-		url('icomoon.woff?no4fqh') format('woff'),
-		url('icomoon.ttf?no4fqh') format('truetype'),
-		url('icomoon.svg?no4fqh#icomoon') format('svg');
+	src:url('icomoon.eot?-vr9oi2');
+	src:url('icomoon.eot?#iefix-vr9oi2') format('embedded-opentype'),
+		url('icomoon.woff?-vr9oi2') format('woff'),
+		url('icomoon.ttf?-vr9oi2') format('truetype'),
+		url('icomoon.svg?-vr9oi2#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -28,6 +28,12 @@
 }
 .icon-images:before {
 	content: "\e02e";
+}
+.icon-radio:before {
+	content: "\e065";
+}
+.icon-envelop:before {
+	content: "\e0ec";
 }
 .icon-clock:before {
 	content: "\e107";
@@ -91,4 +97,7 @@
 }
 .icon-arrow-left:before {
 	content: "\e3b3";
+}
+.icon-facebook:before {
+	content: "\e499";
 }
