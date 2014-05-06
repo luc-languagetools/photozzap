@@ -6,8 +6,8 @@
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
 
-<link rel="stylesheet" media="screen" href="http://test-20140506-3.photozzap.com/home-all.css">
-<script src="http://test-20140506-3.photozzap.com/home-all.min.js"></script>
+<link rel="stylesheet" media="screen" href="home-all.css">
+<script src="home-all.min.js"></script>
 
     <style type="text/css">
       body {
@@ -212,11 +212,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
                     var conferences_node = $firebase(new Firebase("https://photozzap-test.firebaseio.com/conferences"));
                     var conference_node = conferences_node.$child(tentativeConfKey);
                     var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://test-20140506-3.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://test-20140506-4.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "test-20140506-3",
+                                 servername: "test-20140506-4",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
@@ -395,7 +395,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
               </div>
              <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                &copy; Photozzap 2014 - running on test-20140506-3
+                &copy; Photozzap 2014 - running on test-20140506-4
                 </div>
              </div>
           </div>
