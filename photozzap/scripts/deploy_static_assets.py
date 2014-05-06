@@ -33,7 +33,7 @@ def concatenate(file_list, output_file):
     print("wrote combined code to %s" % output_path)
 
 def get_file_name(path, server_name):
-    return ['http://' + server_name + ".photozzap.com/" + path.split('/')[-1]]
+    return [path.split('/')[-1]]
     
 def render_template(template, attributes, output_file):
     output = pyramid.renderers.render(template, attributes)
