@@ -47,35 +47,31 @@
       }
       
       .intro .btn {
-        font-size: 21px;
+        margin-top: 3%;
+        margin-bottom: 0%;
+        font-size: 150%;
         padding: 14px 24px;
       }
 
+      .small-print {
+        font-size: 90%;
+      }
       
       .section1 {
         background-color: #CCCCCC;
         box-shadow: 0px 0px 8px 3px #222222;
 
-background: rgb(211,231,255); /* Old browsers */
-background: -moz-linear-gradient(top,  rgba(211,231,255,1) 0%, rgba(232,232,247,1) 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(211,231,255,1)), color-stop(100%,rgba(232,232,247,1))); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  rgba(211,231,255,1) 0%,rgba(232,232,247,1) 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  rgba(211,231,255,1) 0%,rgba(232,232,247,1) 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  rgba(211,231,255,1) 0%,rgba(232,232,247,1) 100%); /* IE10+ */
-background: linear-gradient(to bottom,  rgba(211,231,255,1) 0%,rgba(232,232,247,1) 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d3e7ff', endColorstr='#e8e8f7',GradientType=0 ); /* IE6-9 */
+        background: rgb(244,250,255); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(244,250,255,1) 0%, rgba(149,186,216,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(244,250,255,1)), color-stop(100%,rgba(149,186,216,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4faff', endColorstr='#95bad8',GradientType=0 ); /* IE6-9 */
 
-
-background: rgb(244,250,255); /* Old browsers */
-background: -moz-linear-gradient(top,  rgba(244,250,255,1) 0%, rgba(149,186,216,1) 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(244,250,255,1)), color-stop(100%,rgba(149,186,216,1))); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* IE10+ */
-background: linear-gradient(to bottom,  rgba(244,250,255,1) 0%,rgba(149,186,216,1) 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4faff', endColorstr='#95bad8',GradientType=0 ); /* IE6-9 */
-
-        
+        padding-top: 3%;
+        padding-bottom: 3%;
       }
       
       .feature-icon-container {
@@ -250,7 +246,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4faff', end
     <div class="container">
 
       <div class="row section1">
-        <div class="col-md-6" ng-controller="PhotozzapHomeController">
+        <div class="col-md-5 col-lg-6" ng-controller="PhotozzapHomeController">
             <script type="text/ng-template" id="create_conf_modal.html">
                 <div class="modal-header">
                     <h3>Create new Photozzap Conference</h3>
@@ -300,15 +296,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4faff', end
           <div class="intro">
             <h3><span class="icon-image"></span> Photozzap</h3>
             <h1>Share and Browse Photos in Real Time</h1>
-            <h2>Want to show a few photos to friends or family online ? You could use Skype, Facebook, Picasa or Whatsapp. Or you could use <b><span class="icon-image"></span> Photozzap</b>, and have a more interactive experience, see what photos your friends are looking at, take turns in controlling the slideshow.</h2>
+            <h2>Want to show a few photos to friends or family online ? <b><span class="icon-image"></span> Photozzap</b> is a web app which turns photo viewing into an interactive experience, allowing you to see what photos your friends are looking at, and take turns in controlling the slideshow.</h2>
             <div style="text-align: center;">
                 <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()'>
                 <span class="icon-redo"></span> Start Conference</a>
+                <p class="small-print">Free, no registration.</p>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-            screenshot here
+        <div class="col-md-7 col-lg-6">
+            <img class="img-responsive" src="http://res.cloudinary.com/photozzap/image/upload/c_scale,w_800/v1399380199/photozzap_header_n4snin.png"/>
         </div>
       </div>
 
