@@ -274,6 +274,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
             <script type="text/ng-template" id="create_conf_modal.html">
                 <div class="modal-header">
                     <h3>Create new Photozzap Conference</h3>
+                    <p>Your conference and photos will stay online for 7 days, after which they will be
+                    automatically deleted.</p>                    
                 </div>
                 <div class="modal-body">
                     <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
