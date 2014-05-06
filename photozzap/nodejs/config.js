@@ -7,6 +7,7 @@ var config = {
     cloudinaryApiSecret: 'OxGxJe0f-jGo1BAsmmlDdRPb7NM',
     pushoverToken: 'a75ZiiZaRDuCs7mbfPJdmbuD11vS6x',
     pushoverUser: 'us6it2T5Ecf6gS3DAiogJqU5rzNHjS',
+    env: 'dev'
 };
 
 module.exports = config;

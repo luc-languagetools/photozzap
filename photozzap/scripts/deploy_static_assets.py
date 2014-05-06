@@ -59,6 +59,7 @@ def render_templates(settings):
     
     pushover_token = settings['pushover_token']
     pushover_user = settings['pushover_user']
+    server_env = settings['server_env']
     
     new_conf_url = 'http://' + default_server_name + ".photozzap.com/" + 'conference.html#/new-conference-template'
     
@@ -94,6 +95,7 @@ def render_templates(settings):
         'cloudinaryApiSecret': cloudinary_api_secret,
         'pushoverToken': pushover_token,
         'pushoverUser': pushover_user,
+        'serverEnv': server_env,
         
     }
     render_template('photozzap:templates/nodejs-config.js.pt', node_config_attributes, 

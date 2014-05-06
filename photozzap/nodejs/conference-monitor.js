@@ -23,12 +23,14 @@ var conferencesRef = new Firebase(conferencesPath);
 conferencesRef.auth(config.firebaseSecret);
 
 
-function ConferenceObject(key, path, name, url, create_time, close_after_time) {
+function ConferenceObject(key, path, name, url, create_time, close_after_time, server_name, env) {
     console.log("ConferenceObject path: ", path);
     this.key = key;
     this.path = path;
     this.conference_name = name;
     this.conference_url = url;
+    this.server_name = server_name;
+    this.env = env;
     
     this.notify_pushover = false;
     
@@ -245,7 +247,7 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time) {
 
     this.getCloudinarySignature = function() {
         var params = {timestamp: new Date().getTime().toString(),
-                      tags: this.key};
+                      tags: this.key + "," + this.env + "," + this.server_name };
         var signature = cloudinary.utils.sign_request(params, {});
         return signature;
     }
@@ -315,7 +317,9 @@ conferencesRef.on('child_added', function(snapshot){
                                                         conference_data.name,
                                                         conference_data.url,
                                                         conference_data.create_time,
-                                                        conference_data.close_after_time);
+                                                        conference_data.close_after_time,
+                                                        config.env,
+                                                        config.serverName);
     }
     
 });
