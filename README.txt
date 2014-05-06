@@ -1,56 +1,25 @@
 photozzap README
 
-hostnames:
-desktop.dev.jabber.photozzap.com
-
-ejabberd config:
-----------------
-
-{hosts, ["luc-laptop.dev.jabber.photozzap.com"]}.
-
-on cygwin, configure auth access this way:
-{auth_method, external}.
-{extauth_program, "d:/storage/dev/photozzap/env/bin/python3.2m.exe -m photozzap.scripts.jabber_auth_sqlalchemy /cygdrive/d/storage/dev/photozzap/env/photozzap/development.ini"}.
-
-make sure mod_muc is configured this way:
-          {history_size, 100000},
-          {default_room_options,
-          [
-               {persistent, true},
-               {logging, true}
-          ]}     
-          
-
-		  
-       
-bot configuration       
------------------
-dnspython needed
-
-how to run:
-../bin/python -m photozzap.scripts.jabber_muc_bot development.ini hjw32y84 bot01 Luc
-
 deploy a version
 --------------------------
 
-../bin/python -m photozzap.scripts.deploy development-vps.ini test-0420-5
+# deploy in TEST environment
+../bin/python -m photozzap.scripts.deploy test-vps.ini test-20140506-1
+# shutdown in TEST environment 
+ ../bin/python -m photozzap.scripts.shutdown test-vps.ini test-20140420-1
+ 
+# deploy in PROD environment
+../bin/python -m photozzap.scripts.deploy prod-vps.ini www-08
+# shutdown in TEST environment (MAKE SURE TO LIST OPEN CONFERENCES FIRST)
+../bin/python -m photozzap.scripts.shutdown prod-vps.ini www-01
+  
+
 
 
 git help
 --------
 
 branching
-#create new branch
-git checkout -b marys-feature master
-
-
-tagging:
-#list tags
-git tag
-#create annotated tag
-git tag -a v1.4 -m 'my version 1.4'
-#push tags
-git push origin --tags
-#or
-git push origin v1.5
+#create new branch (usually create off of develop branch)
+git checkout -b 20140506-feature-1 develop
 
