@@ -84,7 +84,7 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
             userNickname = "guest";
         var newNotificationRef = this.notificationsRef.push();
         data.user_key = user_key;
-        data.timestamp = new Date().getTime();            
+        data.timestamp = Firebase.ServerValue.TIMESTAMP;            
         data.nickname = userNickname;
         newNotificationRef.set(data);
         var self = this;

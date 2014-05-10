@@ -244,7 +244,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
         $scope.conference_user_object.$update({connected: true,
                                                page_visible: true,
-                                               time_connected:new Date().getTime()});
+                                               time_connected:Firebase.ServerValue.TIMESTAMP});
     }
     
     $scope.mark_user_disconnected = function() {
@@ -321,7 +321,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,
-                            time_added: new Date().getTime()});
+                            time_added: Firebase.ServerValue.TIMESTAMP});
     });
     
     angular.element($window).bind('resize', function () {
@@ -710,7 +710,7 @@ function FollowCtrl($scope, $log, $timeout) {
         $log.info("follow_me");
         var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
                                                    nickname: $scope.conference_user_object.nickname,
-                                                   timestamp: new Date().getTime(),
+                                                   timestamp: Firebase.ServerValue.TIMESTAMP,
                                                    type: "follow_me"});
         $timeout(function() {
                     $scope.remove_request(requestRef)
@@ -723,7 +723,7 @@ function FollowCtrl($scope, $log, $timeout) {
         var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
                                                    nickname: $scope.conference_user_object.nickname,
                                                    image_id: $scope.conference_user_object.viewing_image_id,
-                                                   timestamp: new Date().getTime(),
+                                                   timestamp: Firebase.ServerValue.TIMESTAMP,
                                                    type: "look_here"});
         $timeout(function() {
                     $scope.remove_request(requestRef)
@@ -749,7 +749,7 @@ function ChatCtrl($scope, $log, $filter) {
         $scope.comments.$add({user_id: $scope.login_obj.user.uid,
                               nickname: $scope.conference_user_object.nickname,
                               image_id: $scope.conference_user_object.viewing_image_id,
-                              time_added: new Date().getTime(),
+                              time_added: Firebase.ServerValue.TIMESTAMP,
                               text: $scope.comment_data.text}); 
         $scope.comment_data.text = "";
     }
