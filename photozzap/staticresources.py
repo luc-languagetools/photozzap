@@ -36,7 +36,6 @@ conference_javascript_files = [
 "static/conference/conference-controller-follow.js",
 "static/conference/conference-controller-chat.js",
 "static/conference/conference-controller-upload.js",
-"static/conference/conference-controller.js",
 "static/conference/conference-initialize.js",
 ]
 
