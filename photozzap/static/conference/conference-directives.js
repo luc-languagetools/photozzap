@@ -7,7 +7,8 @@ conferenceModule.directive('thumbnails', function() {
       templateUrl: 'thumbnails.html',
       link: function (scope, elem, attrs) {
         console.log("thumbnails directive link");
-        scope.init("sorted_images");
+        console.log("elem: ", elem);
+        scope.init("sorted_images", elem);
       }
   };
 });

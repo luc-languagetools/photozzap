@@ -154,6 +154,7 @@
     <div class="row">
         <div class="col-md-12">
             <tabset>
+                <!--
                 <tab select="refresh_thumbnail_groups()">
                     <tab-heading>
                         <span class="icon-image"></span> Photos
@@ -162,6 +163,8 @@
                         <thumbnails></thumbnails>
                     </div>            
                 </tab>
+                -->
+                <!--
                 <tab ng-controller="ThumbnailsCtrl"  ng-init="init('sorted_images')" select="refresh_thumbnail_groups()">
                     <tab-heading>
                         <span class="icon-images"></span> All Photos
@@ -229,6 +232,7 @@
                         </div>
                     </div>  
                 </tab> 
+                -->
             </tabset>
         </div>
     </div>
