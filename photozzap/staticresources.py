@@ -29,7 +29,13 @@ conference_javascript_files = [
 "static/angular-moment/angular-moment.min.js",
 
 "static/conference/conference-ui.js",
-"static/conference/conference-controller.js",
+"static/conference/conference-init-services.js",
+"static/conference/conference-controller-nick-change.js",
+"static/conference/conference-controller-photozzap.js",
+"static/conference/conference-controller-thumbnails.js",
+"static/conference/conference-controller-follow.js",
+"static/conference/conference-controller-chat.js",
+"static/conference/conference-controller-upload.js",
 "static/conference/conference-initialize.js",
 ]
 

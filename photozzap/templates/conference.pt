@@ -78,7 +78,7 @@
     </div>
 </script>  
 
-<div id="main_image" ng-controller="ImageCtrl" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
+<div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
     <div id="displayed_image">
         <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
             ng-style="{'width': window_dimensions.width,
