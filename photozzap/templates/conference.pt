@@ -47,6 +47,33 @@
 </script>
 
 
+<script type="text/ng-template" id="thumbnails.html">
+<div class="col-md-12">
+    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak"
+    ng-if="sorted_images.length > 0">
+        <li ng-repeat="group in thumbnail_groups track by group.id_list">
+            <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
+                <a class="thumbnail-tight" ng-click="show_image(image.id)">
+                  <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
+                </a>
+            </div>
+        </li>
+    </ul>
+    <div class="tab_outer_empty_container" ng-if="sorted_images.length == 0">
+        <div class="empty_container">
+            <div class="row empty_container_inner">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h2>No Photos</h2>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+
 <script type="text/ng-template" id="nick_change_modal.html">
     <div class="modal-header">
         <h3>Change Nickname</h3>
@@ -78,32 +105,37 @@
     </div>
 </script>  
 
-<div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
-    <div id="displayed_image">
-        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
-            ng-style="{'width': window_dimensions.width,
-                       'height': window_dimensions.height}"
-            ng-if="sorted_images.length > 0">
-            <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
-                <div class="image_layer image_layer_top"
-                ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
-                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
+<div id='top_container' class="row">
+    <div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak col-md-9">
+        <div id="displayed_image">
+            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
+              ng-style="{'width': window_dimensions.width,
+                        'height': window_dimensions.height}"
+                ng-if="sorted_images.length > 0">
+                <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
+                    <div class="image_layer image_layer_top"
+                    ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
+                    ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
+                    </div>
+                    <div class="image_layer image_layer_bottom"
+                    ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
+                    </div>                
+                </li>        
+            </ul>
+            <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
+                 ng-style="{'width': window_dimensions.width,
+                           'height': window_dimensions.height}">
+                <div class="empty_container">
+                    <h1>No Photos</h1>
+                    <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
                 </div>
-                <div class="image_layer image_layer_bottom"
-                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
-                </div>                
-            </li>        
-        </ul>
-        <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
-             ng-style="{'width': window_dimensions.width,
-                       'height': window_dimensions.height}">
-            <div class="empty_container">
-                <h1>No Photos</h1>
-                <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
-            </div>
-        </div>            
+            </div>            
+        </div>
     </div>
-</div>
+    <div class="col-md-3">
+        <thumbnails></thumbnails>
+    </div>    
+</div> <!-- /row -->
 
 <div id="loading-screen" ng-hide="logged_in_and_ready && conference.status != 'closed'">
     <div class="loading-screen-content">

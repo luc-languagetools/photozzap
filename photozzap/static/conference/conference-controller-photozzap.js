@@ -269,6 +269,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.window_dimensions = {width: $(window).width(),
                                 height: $(window).height()};
     
+    $scope.group_view = true;
+    
     $scope.default_params = {width: DEFAULT_DIMENSION,
                              height: DEFAULT_DIMENSION,
                              quality: DEFAULT_COMPRESSION};
@@ -279,6 +281,11 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.resize_handler = function() {
         var new_width = $(window).width();
         var new_height = $(window).height();
+        
+        if( $scope.group_view ) {
+            new_width = $("#main_image").width();
+            // new_height = $("#main_image").height();
+        }
 
         $log.info("resize_handler: new dimensions: ", new_width, "x", new_height,
                   " current dimensions: ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height );
@@ -295,8 +302,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             Math.abs(new_height - $scope.window_dimensions.height) < 60) {
             // don't do anything, window resize is due to user scrolling down
         } else {
-            $scope.window_dimensions.width = $(window).width();
-            $scope.window_dimensions.height = $(window).height();   
+            $scope.window_dimensions.width = new_width;
+            $scope.window_dimensions.height = new_height;   
             $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
             $scope.$apply();
         }
