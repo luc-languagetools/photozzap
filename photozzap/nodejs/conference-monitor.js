@@ -132,7 +132,8 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
         var comment_data = snapshot.val();
         var user_key = comment_data.user_id;
         var current_timestamp =  new Date().getTime();
-        if (current_timestamp - comment_data.time_added < 120000) {
+        if (current_timestamp - comment_data.time_added < 120000 &&
+            comment_data.text != undefined) {
             // comment less than 60 seconds old
             this.addNotification(user_key, {type: "comment",
                                             image_id: comment_data.image_id, 
