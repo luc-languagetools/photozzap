@@ -1,4 +1,5 @@
-function ThumbnailsCtrl($scope, $log) {
+
+function ThumbnailsCtrl($scope, $log, $element) {
     $scope.thumbnail_groups = [];
     $scope.num_thumbnails = 3;
     $scope.thumbnails_width = 33;
@@ -6,6 +7,7 @@ function ThumbnailsCtrl($scope, $log) {
 
     $scope.init = function(watch_expression)
     {    
+        $log.info("init ThumbnailsCtrl with " + watch_expression);
         $scope.watch_expression = watch_expression;
         $scope.$watch($scope.watch_expression, $scope.watch_handler, true); 
     }
