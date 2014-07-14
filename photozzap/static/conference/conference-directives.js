@@ -12,3 +12,16 @@ conferenceModule.directive('photothumbnails', function() {
       }
   };
 });
+
+
+conferenceModule.directive('usersthumbnails', function() {
+  return {
+      restrict: 'AE',
+      replace: 'true',
+      controller: ThumbnailsCtrl,
+      templateUrl: 'users-thumbnails.html',
+      link: function (scope, elem, attrs) {
+        scope.init("sorted_users", elem);
+      }
+  };
+});

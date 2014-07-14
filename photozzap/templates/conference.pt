@@ -74,6 +74,24 @@
 </div>
 </script>
 
+<script type="text/ng-template" id="users-thumbnails.html">
+<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
+        <li ng-repeat="group in thumbnail_groups track by group.id_list">
+            <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
+                <a ng-if="user.viewing_image_id != undefined" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
+                  <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
+                   <br/>
+                   <span ng-if="user.page_visible == false" class="icon-eye-blocked"></span>
+                   <span ng-if="user.page_visible == true" class="icon-eye"></span>
+                  {{user.nickname}} 
+                </a>
+            </div>
+        </li>        
+    </ul>
+</div>
+</script>
+
 <script type="text/ng-template" id="nick_change_modal.html">
     <div class="modal-header">
         <h3>Change Nickname</h3>
@@ -162,23 +180,7 @@
                         <span class="icon-users"></span> Users
                     </tab-heading>
                     <div class="row below-tab-spacing">
-                        <!--
-                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
-                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
-                                <li ng-repeat="group in thumbnail_groups track by group.id_list">
-                                    <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
-                                        <a ng-if="user.viewing_image_id != undefined" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
-                                          <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
-                                           <br/>
-                                           <span ng-if="user.page_visible == false" class="icon-eye-blocked"></span>
-                                           <span ng-if="user.page_visible == true" class="icon-eye"></span>
-                                          {{user.nickname}} 
-                                        </a>
-                                    </div>
-                                </li>        
-                            </ul>
-                        </div>
-                        -->
+                        <usersthumbnails/>
                         <div ng-controller="FollowCtrl" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
                             <div class="row">
                                 <div class="col-lg-12 col-lg-offset-0
