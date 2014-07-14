@@ -92,6 +92,62 @@
 </div>
 </script>
 
+<script type="text/ng-template" id="upload.html">
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-7">
+        <!-- upload controls here -->
+        <div class="row">
+            <div class="col-md-12 outer_empty_container less_bottom_padding" id="dragdrop_area">
+                <div class="empty_container">
+                    <form class="form-horizontal upload_drop_container" role="form">
+                        <div class="form-group">
+                            <label for="cloudinary_input" class="col-md-6 control-label" style="font-size: 150%;"><span class="icon-download"></span> Drop Photos Here, or</label>
+                            <div class="col-md-6">
+                              <input name="file" type="file" id="cloudinary_input" class="form-control cloudinary-fileupload cloudinary-input-style-override" data-cloudinary-field="image_id"></input>
+                            </div>                                        
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 col-sm-3 col-xs-offset-0 col-sm-offset-0 
+                        col-md-3 col-md-offset-1">
+                <span style="font-size: 110%; font-weight: bold;">Resize Options</span>
+            </div>
+            <div class="col-xs-9 col-sm-9 
+                        col-md-8 
+                        resize-controls">
+                <form>
+                    <div class="radio">
+                        <label>
+                        <input type="radio" name="resizeOptions" ng-model="resize" ng-value="true">
+                        <b>Resize to 1024x768</b> (faster upload, lower quality)
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                        <input type="radio" name="resizeOptions" ng-model="resize" ng-value="false">
+                        <b>Upload full image</b> (slower upload, higher quality)
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-5">
+        <div id="progress-bar-container" style="display: none;">
+            <h2 style="padding-top: 6%;">Upload Progress</h2>
+            <div class="progress progress-striped active">
+              <div id="upload-progress-bar" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+              </div>
+            </div>
+        </div>
+    </div>                        
+</div>
+</script>
+
+
 <script type="text/ng-template" id="nick_change_modal.html">
     <div class="modal-header">
         <h3>Change Nickname</h3>
@@ -124,89 +180,6 @@
 </script>  
 
 <div id='top_container' class="row">
-    <div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak col-md-8">
-        <div id="displayed_image">
-            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
-              ng-style="{'width': window_dimensions.width,
-                        'height': window_dimensions.height}"
-                ng-if="sorted_images.length > 0">
-                <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
-                    <div class="image_layer image_layer_top"
-                    ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
-                    ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
-                    </div>
-                    <div class="image_layer image_layer_bottom"
-                    ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
-                    </div>                
-                </li>        
-            </ul>
-            <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
-                 ng-style="{'width': window_dimensions.width,
-                           'height': window_dimensions.height}">
-                <div class="empty_container">
-                    <h1>No Photos</h1>
-                    <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
-                </div>
-            </div>            
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="row">
-            <tabset>
-                <tab>
-                    <tab-heading>
-                        <span class="icon-image"></span> Photos
-                    </tab-heading>
-                    <div class="row below-tab-spacing">
-                        <photothumbnails/>
-                    </div>
-                </tab>
-                <tab>
-                    <tab-heading>
-                        <span class="icon-images"></span> Test Tab
-                    </tab-heading>
-                    <div class="row below-tab-spacing">
-                        <div class="col-md-12">
-                            Test tab contents
-                        </div>
-                    </div>                
-                </tab>                
-            </tabset>
-        </div>
-        <div class="row">
-            <tabset>
-                <tab>
-                    <tab-heading>
-                        <span class="icon-users"></span> Users
-                    </tab-heading>
-                    <div class="row below-tab-spacing">
-                        <div class="row col-md-12">
-                            <usersthumbnails/>
-                        </div>
-                        <div class="row col-md-12">
-                            <div ng-controller="FollowCtrl" class="col-md-12">
-                                <div class="row">
-                                    <div class="col-lg-12 col-lg-offset-0
-                                                col-md-12 col-md-offset-0
-                                                col-sm-3 col-sm-offset-3 
-                                                col-xs-5 col-xs-offset-1">
-                                        <button class="btn btn-primary btn-lg follow-action-btn" ng-click="look_here()">
-                                            <span class="icon-eye"></span> Look Here
-                                        </button>                        
-                                    </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-3 col-xs-5">
-                                        <button class="btn btn-primary btn-lg follow-action-btn" ng-click="follow_me()">
-                                            <span class="icon-users2"></span> Follow Me
-                                        </button>                            
-                                    </div>                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>  
-                </tab>
-            </tabset>
-        </div>
-    </div>    
 </div> <!-- /row -->
 
 <div id="loading-screen" ng-hide="logged_in_and_ready && conference.status != 'closed'">
@@ -224,88 +197,87 @@
 
 <div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
     <div class="row">
-        <div class="col-md-12">
-            <tabset>
-                <!--
-                <tab select="refresh_thumbnail_groups()">
-                    <tab-heading>
-                        <span class="icon-image"></span> Photos
-                    </tab-heading>
-                    <div class="row below-tab-spacing">
-                        <thumbnails></thumbnails>
-                    </div>            
-                </tab>
-                -->
-                <!--
-                <tab ng-controller="ThumbnailsCtrl"  ng-init="init('sorted_images')" select="refresh_thumbnail_groups()">
-                    <tab-heading>
-                        <span class="icon-images"></span> All Photos
-                    </tab-heading>
-                    <div class="row below-tab-spacing">
-                        <div class="col-md-12">
-                            <div ng-repeat="group in thumbnail_groups track by group.id_list">
-                                <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
-                                    <a class="thumbnail-tight" ng-click="show_image(image.id)">
-                                      <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
-                                    </a>
-                                </div>
-                            </div>     
-                            <div class="tab_outer_empty_container" ng-if="sorted_images.length == 0">
-                                <div class="empty_container">
-                                    <div class="row empty_container_inner">
-                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                            <h2>No Photos</h2>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                            <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
-                                        </div>                                        
-                                    </div>
-                                </div>
-                            </div>                                
+        <div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak col-md-8">
+            <div id="displayed_image">
+                <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
+                  ng-style="{'width': window_dimensions.width,
+                            'height': window_dimensions.height}"
+                    ng-if="sorted_images.length > 0">
+                    <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
+                        <div class="image_layer image_layer_top"
+                        ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
+                        ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
                         </div>
-                    </div>                
-                </tab>            
-                <tab ng-controller="ThumbnailsCtrl" ng-init="init('sorted_users')" select="refresh_thumbnail_groups()">
-                    <tab-heading>
-                        <span class="icon-users"></span> Users
-                    </tab-heading>
-                    <div class="row below-tab-spacing">
-                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
-                            <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
-                                <li ng-repeat="group in thumbnail_groups track by group.id_list">
-                                    <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
-                                        <a ng-if="user.viewing_image_id != undefined" class="thumbnail-tight" ng-click="show_image(user.viewing_image_id)">
-                                          <img ng-src="{{cloudinary_thumbnail_url(user.viewing_image_id)}}">
-                                           <br/>
-                                           <span ng-if="user.page_visible == false" class="icon-eye-blocked"></span>
-                                           <span ng-if="user.page_visible == true" class="icon-eye"></span>
-                                          {{user.nickname}} 
-                                        </a>
-                                    </div>
-                                </li>        
-                            </ul>
+                        <div class="image_layer image_layer_bottom"
+                        ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
+                        </div>                
+                    </li>        
+                </ul>
+                <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
+                     ng-style="{'width': window_dimensions.width,
+                               'height': window_dimensions.height}">
+                    <div class="empty_container">
+                        <h1>No Photos</h1>
+                        <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
+                    </div>
+                </div>            
+            </div>
+        </div> <!-- main_image -->
+        <div class="col-md-4">
+            <div class="row">
+                <tabset>
+                    <tab>
+                        <tab-heading>
+                            <span class="icon-image"></span> Photos
+                        </tab-heading>
+                        <div class="row below-tab-spacing">
+                            <photothumbnails/>
                         </div>
-                        <div ng-controller="FollowCtrl" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-                            <div class="row">
-                                <div class="col-lg-12 col-lg-offset-0
-                                            col-md-12 col-md-offset-0
-                                            col-sm-3 col-sm-offset-3 
-                                            col-xs-5 col-xs-offset-1">
-                                    <button class="btn btn-primary btn-lg follow-action-btn" ng-click="look_here()">
-                                        <span class="icon-eye"></span> Look Here
-                                    </button>                        
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-3 col-xs-5">
-                                    <button class="btn btn-primary btn-lg follow-action-btn" ng-click="follow_me()">
-                                        <span class="icon-users2"></span> Follow Me
-                                    </button>                            
-                                </div>                                
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            <span class="icon-upload"></span> Upload
+                        </tab-heading>
+                        <upload/>
+                    </tab>                     
+                </tabset>
+            </div>
+            <div class="row">
+                <tabset>
+                    <tab>
+                        <tab-heading>
+                            <span class="icon-users"></span> Users
+                        </tab-heading>
+                        <div class="row below-tab-spacing">
+                            <div class="row col-md-12">
+                                <usersthumbnails/>
                             </div>
-                        </div>
-                    </div>  
-                </tab> 
-                -->
-            </tabset>
+                            <div class="row col-md-12">
+                                <div ng-controller="FollowCtrl" class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-lg-offset-0
+                                                    col-md-12 col-md-offset-0
+                                                    col-sm-3 col-sm-offset-3 
+                                                    col-xs-5 col-xs-offset-1">
+                                            <button class="btn btn-primary btn-lg follow-action-btn" ng-click="look_here()">
+                                                <span class="icon-eye"></span> Look Here
+                                            </button>                        
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-3 col-xs-5">
+                                            <button class="btn btn-primary btn-lg follow-action-btn" ng-click="follow_me()">
+                                                <span class="icon-users2"></span> Follow Me
+                                            </button>                            
+                                        </div>                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </tab>
+                </tabset>
+            </div>
+        </div>        
+    
+        <div class="col-md-12">
         </div>
     </div>
     
@@ -420,63 +392,6 @@
                         </div>
                     </div>
                 </tab>    
-                <tab ng-controller="UploadCtrl">
-                    <tab-heading>
-                        <span class="icon-upload"></span> Upload
-                    </tab-heading>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-8 col-md-7">
-                            <!-- upload controls here -->
-                            <div class="row">
-                                <div class="col-md-12 outer_empty_container less_bottom_padding" id="dragdrop_area">
-                                    <div class="empty_container">
-                                        <form class="form-horizontal upload_drop_container" role="form">
-                                            <div class="form-group">
-                                                <label for="cloudinary_input" class="col-md-6 control-label" style="font-size: 150%;"><span class="icon-download"></span> Drop Photos Here, or</label>
-                                                <div class="col-md-6">
-                                                  <input name="file" type="file" id="cloudinary_input" class="form-control cloudinary-fileupload cloudinary-input-style-override" data-cloudinary-field="image_id"></input>
-                                                </div>                                        
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 col-sm-3 col-xs-offset-0 col-sm-offset-0 
-                                            col-md-3 col-md-offset-1">
-                                    <span style="font-size: 110%; font-weight: bold;">Resize Options</span>
-                                </div>
-                                <div class="col-xs-9 col-sm-9 
-                                            col-md-8 
-                                            resize-controls">
-                                    <form>
-                                        <div class="radio">
-                                            <label>
-                                            <input type="radio" name="resizeOptions" ng-model="resize" ng-value="true">
-                                            <b>Resize to 1024x768</b> (faster upload, lower quality)
-                                            </label>
-                                        </div>
-                                        <div class="radio">
-                                            <label>
-                                            <input type="radio" name="resizeOptions" ng-model="resize" ng-value="false">
-                                            <b>Upload full image</b> (slower upload, higher quality)
-                                            </label>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-4 col-md-5">
-                            <div id="progress-bar-container" style="display: none;">
-                                <h2 style="padding-top: 6%;">Upload Progress</h2>
-                                <div class="progress progress-striped active">
-                                  <div id="upload-progress-bar" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                                  </div>
-                                </div>
-                            </div>
-                        </div>                        
-                    </div>
-                </tab> 
                 <tab>
                     <tab-heading>
                         <span class="icon-cog"></span> Options

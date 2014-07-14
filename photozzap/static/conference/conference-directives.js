@@ -25,3 +25,14 @@ conferenceModule.directive('usersthumbnails', function() {
       }
   };
 });
+
+conferenceModule.directive('upload', function() {
+  return {
+      restrict: 'AE',
+      replace: 'true',
+      controller: UploadCtrl,
+      templateUrl: 'upload.html',
+      link: function (scope, elem, attrs) {
+      }
+  };
+});
