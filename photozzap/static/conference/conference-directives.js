@@ -1,10 +1,10 @@
 
-conferenceModule.directive('thumbnails', function() {
+conferenceModule.directive('photothumbnails', function() {
   return {
       restrict: 'AE',
       replace: 'true',
       controller: ThumbnailsCtrl,
-      templateUrl: 'thumbnails.html',
+      templateUrl: 'photos-thumbnails.html',
       link: function (scope, elem, attrs) {
         console.log("thumbnails directive link");
         console.log("elem: ", elem);
