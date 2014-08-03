@@ -303,7 +303,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             // don't do anything, window resize is due to user scrolling down
         } else {
             $scope.window_dimensions.width = new_width;
-            $scope.window_dimensions.height = new_height;   
+            $scope.window_dimensions.height = new_height;
             $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
             $scope.$apply();
         }

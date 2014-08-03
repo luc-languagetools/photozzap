@@ -32,12 +32,10 @@ function ThumbnailsCtrl($scope, $log, $element) {
     $scope.refresh_num_thumbnails = function() {
     
         var available_width = $scope.elem.width();
-        var available_height = $scope.window_dimensions.height;
         
         $scope.num_cols = Math.floor(available_width / 130);
         
         var actual_thumbnail_size = available_width / $scope.num_cols;
-        $scope.num_rows = Math.floor((available_height / 2)/ actual_thumbnail_size);
 
         var temp_width = (100 / $scope.num_cols) * 10.0;
         var int_width = Math.floor(temp_width);
@@ -52,10 +50,6 @@ function ThumbnailsCtrl($scope, $log, $element) {
     $scope.watch_handler = function(newValue, OldValue) {
         $scope.refresh_thumbnail_groups();
     };
-    
-    $scope.$watch("window_dimensions.height", function(newValue, oldValue) {
-        $scope.refresh_num_thumbnails();
-    });    
     
     $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
         $scope.refresh_num_thumbnails();
