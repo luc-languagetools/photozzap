@@ -2,6 +2,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
+    var DEFAULT_THUMBNAIL_SHORT_DIMENSION = 200;
     var DEFAULT_DIMENSION = 500;
     var DEFAULT_COMPRESSION = 75;
     var FULL_COMPRESSION = 90;
@@ -574,4 +575,16 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          quality: DEFAULT_COMPRESSION,
                                                          sharpen: 400});
     };    
+    
+    $scope.cloudinary_thumbnail_short_url = function(image_id) {
+        if (image_id == undefined) {
+            return "holder.js/100x100/text:na";
+        }
+        return $.cloudinary.url(image_id + ".jpg", {crop: 'fill', 
+                                                         width: DEFAULT_THUMBNAIL_DIMENSION, 
+                                                         height: DEFAULT_THUMBNAIL_SHORT_DIMENSION,
+                                                         quality: DEFAULT_COMPRESSION,
+                                                         sharpen: 400});
+    };        
+    
 }
