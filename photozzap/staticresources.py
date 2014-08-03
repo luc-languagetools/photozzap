@@ -8,7 +8,7 @@ conference_javascript_files = [
 "static/angular/ui-bootstrap-tpls-0.10.0.min.js",
 "static/angular-carousel/angular-carousel.js",
 "static/jquery-libs/jquery-visibility.js",
-"static/jquery-libs/holder.js",
+
 # cloudinary files
 "static/cloudinary/jquery.ui.widget.js",
 "static/cloudinary/jquery.iframe-transport.js",
