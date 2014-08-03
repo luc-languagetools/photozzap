@@ -93,22 +93,9 @@
 </script>
 
 <script type="text/ng-template" id="follow-controls.html">
-<div ng-controller="FollowCtrl" class="col-md-12">
-    <div class="row">
-        <div class="col-lg-12 col-lg-offset-0
-                    col-md-12 col-md-offset-0
-                    col-sm-3 col-sm-offset-3 
-                    col-xs-5 col-xs-offset-1">
-            <button class="btn btn-primary btn-md follow-action-btn" ng-click="look_here()">
-                <span class="icon-eye"></span> Look Here
-            </button>                        
-        </div>
-        <div class="col-lg-12 col-md-12 col-sm-3 col-xs-5">
-            <button class="btn btn-primary btn-md follow-action-btn" ng-click="follow_me()">
-                <span class="icon-users2"></span> Follow Me
-            </button>                            
-        </div>                                
-    </div>
+<div ng-controller="FollowCtrl" class="col-md-4">
+    <a ng-click="look_here()"><span class="icon-eye"></span> Look Here</a> |
+    <a ng-click="follow_me()"><span class="icon-users2"></span> Follow Me</a>
 </div>
 </script>
 
@@ -246,8 +233,12 @@
     <div class="row">
         <div id="photo-thumbnails" class="col-xs-12 col-sm-12 col-md-6">
             <div class="row">
-                <div class="col-md-12">
-                    <span class="icon-image"></span> Photos | <a ng-click="toggle_fullscreen()">Full screen</a>
+                <div class="col-md-9">
+                    <span class="icon-image"></span> Photos
+                </div>
+                <div class="col-md-3">
+                    <a ng-click="toggle_fullscreen()" ng-show="display_controls"><span class="icon-expand"></span> Full Screen Photo</a>
+                    <a ng-click="toggle_fullscreen()" ng-show="! display_controls"><span class="icon-contract"></span> Small Photo</a>
                 </div>
             </div>
             <div class="row">
@@ -256,17 +247,13 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <span class="icon-users"></span> Users
                 </div>
+                <follow/>
             </div>        
             <div class="row">
                 <usersthumbnails/>
-                <!--
-                <div class="row col-md-2">
-                    <follow/>
-                </div>
-                -->
             </div>
         </div>
     </div>
