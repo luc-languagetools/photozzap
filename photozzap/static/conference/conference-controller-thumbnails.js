@@ -13,10 +13,18 @@ function ThumbnailsCtrl($scope, $log, $element) {
         $scope.$watch($scope.watch_expression, $scope.watch_handler, true); 
         
         $scope.elem = elem;
+        
         $log.info("elem width: ", elem.width());
-        $scope.refresh_num_thumbnails();
+        if (elem.width() == 0) {
+            // wait before refreshing num thumbnails
+            $timeout($scope.refresh_num_thumbnails, 3000);
+        } else {
+            // refresh right away
+            $scope.refresh_num_thumbnails();
+        }
+        
     }
-    
+   
     $scope.refresh_thumbnail_groups = function() {
         $log.info("change in ", $scope.watch_expression , " generating thumbnail groups");
         $scope.thumbnail_groups = $scope.generate_thumbnail_groups();
