@@ -338,7 +338,9 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.full_params.width = $scope.round_dimension(new_width * pixelRatio);
         $scope.full_params.height = $scope.round_dimension(new_height * pixelRatio);
 
-        if( $scope.display_controls && new_height > 0 ) {
+        if( $scope.display_controls && new_height > 400) { 
+            // substract space required to show photo thumbnails
+            // don't do this on mobile devices in landscape mode
             new_height = new_height - $scope.photo_thumbnails_height;
         }
         
