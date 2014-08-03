@@ -1,73 +1,8 @@
-
-var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap', 'angularMoment']);
-
-
-conferenceModule.filter('orderObjectBy', function(){
- return function(input, attribute) {
-    if (!angular.isObject(input)) return input;
-
-    var array = [];
-    for(var objectKey in input) {
-        array.push(input[objectKey]);
-    }
-
-    array.sort(function(a, b){
-        a = parseInt(a[attribute]);
-        b = parseInt(b[attribute]);
-        return a - b;
-    });
-    return array;
- }
-});
-
-
-conferenceModule.filter('orderObjectByAndInsertId', function(){
- return function(input, attribute) {
-    if (!angular.isObject(input)) return input;
-
-    var array = [];
-    for(var objectKey in input) {
-        input[objectKey].id = objectKey;
-        array.push(input[objectKey]);
-    }
-
-    array.sort(function(a, b){
-        a = parseInt(a[attribute]);
-        b = parseInt(b[attribute]);
-        return a - b;
-    });
-    return array;
- }
-});
-
-conferenceModule.factory('conferenceService', function ($rootScope, $log) {
-    var service = {};
-    
-    $(document).bind('upload_image', function(ev, image_data) {
-        $log.info("conferenceService: received upload_image event");
-        $rootScope.$broadcast('upload_image_data', image_data);
-    });
-    
-    return service;
-});
-
-function PhotozzapNickChangeModalCtrl($scope, $rootScope, $modalInstance, $log) {
-    $scope.user_object = {};
-    
-    $scope.change = function() {
-        $scope.nickname_change($scope.temp_data.new_nickname);
-        $modalInstance.dismiss('close');
-    }
-    
-    $scope.cancel = function() {
-        $modalInstance.dismiss('close');
-    }
-}
-
 function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
+    var DEFAULT_THUMBNAIL_SHORT_DIMENSION = 200;
     var DEFAULT_DIMENSION = 500;
     var DEFAULT_COMPRESSION = 75;
     var FULL_COMPRESSION = 90;
@@ -105,7 +40,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.server_name = server_name;
         
         // call the resize method once after initialization
-        $timeout($scope.resize_handler, 3000);
+        $timeout($scope.retrieve_window_dimensions, 3000);
         
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
@@ -244,7 +179,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
         $scope.conference_user_object.$update({connected: true,
                                                page_visible: true,
-                                               time_connected:new Date().getTime()});
+                                               time_connected:Firebase.ServerValue.TIMESTAMP});
     }
     
     $scope.mark_user_disconnected = function() {
@@ -321,12 +256,43 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,
-                            time_added: new Date().getTime()});
+                            time_added: Firebase.ServerValue.TIMESTAMP});
     });
     
+    
+    
+    
+    // watch window size    
+    $scope.retrieve_window_dimensions = function() {
+        $scope.window_width = $(window).width();
+        $scope.window_height = $(window).height();
+        $scope.$apply();    
+    }
+    
     angular.element($window).bind('resize', function () {
-        $scope.resize_handler();
+        $scope.retrieve_window_dimensions();
     });
+    
+    // watch height of photo-thumbnails element, we may need to adjust our image height
+    // to allow this element to be displayed
+    var photo_thumbnails_element = $("#photo-thumbnails");
+    $scope.photo_thumbnails_height = 0;
+    
+    // whether to display controls at the expense of full screen height or not
+    $scope.display_controls = true;
+    
+    $scope.$watch
+    (
+        function () {
+            return photo_thumbnails_element.height();
+        },
+        function (newValue, oldValue) {
+            if (newValue != oldValue) {
+                $log.info("photo-thumbnails height: ", newValue);
+                $scope.photo_thumbnails_height = newValue;
+            }
+        }
+    );       
     
     $scope.round_dimension = function(real_dimension) {
         return Math.ceil(real_dimension / DIMENSION_INCREMENT) * DIMENSION_INCREMENT;
@@ -342,10 +308,25 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                           height: $scope.round_dimension($(window).height()),
                           quality: FULL_COMPRESSION};
     
-    $scope.resize_handler = function() {
-        var new_width = $(window).width();
-        var new_height = $(window).height();
 
+    $scope.toggle_fullscreen = function() {
+        if ($scope.display_controls == true) {
+            $scope.display_controls = false;
+        } else {
+            $scope.display_controls = true;
+        }
+    }
+    
+    // watch variables which may cause us to resize window
+    $scope.$watchCollection('[window_width, window_height, photo_thumbnails_height, display_controls]', 
+                            function(newValues, oldValues) {
+        $scope.resize_handler();
+    });    
+    
+    $scope.resize_handler = function() {
+        var new_width = $scope.window_width;
+        var new_height = $scope.window_height;
+        
         $log.info("resize_handler: new dimensions: ", new_width, "x", new_height,
                   " current dimensions: ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height );
         
@@ -356,15 +337,29 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         $scope.full_params.width = $scope.round_dimension(new_width * pixelRatio);
         $scope.full_params.height = $scope.round_dimension(new_height * pixelRatio);
+
+        if( $scope.display_controls && new_height > 400) { 
+            // substract space required to show photo thumbnails
+            // don't do this on mobile devices in landscape mode
+            
+            // special hack for ipad,: it seems the height of photo thumbnails
+            // is inaccurate in landscape mode, so add a few pixels
+            var ipad_hack_extra_height = 0;
+            if (new_width == 1024 && pixelRatio == 2) {
+                ipad_hack_extra_height = 20;
+            }
+            
+            new_height = new_height - $scope.photo_thumbnails_height - ipad_hack_extra_height;
+        }
         
         if (new_width == $scope.window_dimensions.width && 
             Math.abs(new_height - $scope.window_dimensions.height) < 60) {
             // don't do anything, window resize is due to user scrolling down
         } else {
-            $scope.window_dimensions.width = $(window).width();
-            $scope.window_dimensions.height = $(window).height();   
+        
+            $scope.window_dimensions.width = new_width;
+            $scope.window_dimensions.height = new_height;
             $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
-            $scope.$apply();
         }
     }
     
@@ -408,7 +403,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         }
 
         var sorted_users_array =  $filter('orderObjectByAndInsertId')($scope.conference.users, 'time_added');
-        $scope.sorted_users = $filter('filter')(sorted_users_array, {connected: true});
+        sorted_users_array = $filter('filter')(sorted_users_array, {connected: true});
+        $scope.sorted_users = $filter('filter')(sorted_users_array, function(value) { return value.viewing_image_id != undefined; });
         
     }, true);
     
@@ -599,372 +595,16 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          quality: DEFAULT_COMPRESSION,
                                                          sharpen: 400});
     };    
-}
-
-
-function ThumbnailsCtrl($scope, $log) {
-    $scope.thumbnail_groups = [];
-    $scope.num_thumbnails = 3;
-    $scope.thumbnails_width = 33;
-    $scope.thumbnail_group_index = 0;
-
-    $scope.init = function(watch_expression)
-    {    
-        $scope.watch_expression = watch_expression;
-        $scope.$watch($scope.watch_expression, $scope.watch_handler, true); 
-    }
     
-    $scope.refresh_thumbnail_groups = function() {
-        $log.info("change in ", $scope.watch_expression , " generating thumbnail groups");
-        $scope.thumbnail_groups = $scope.generate_thumbnail_groups();
-        $log.info("thumbnail_groups: ", $scope.thumbnail_groups);
-        if ($scope.thumbnail_group_index >= $scope.thumbnail_groups.length &&
-            $scope.thumbnail_group_index > 0) {
-            // the index is too far ahead, there aren't enough groups
-            $log.info("changing thumbnail_group_index as there aren't enough groups");
-            $scope.thumbnail_group_index = $scope.thumbnail_groups.length - 1;
+    $scope.cloudinary_thumbnail_short_url = function(image_id) {
+        if (image_id == undefined) {
+            return "holder.js/100x100/text:na";
         }
-    };
+        return $.cloudinary.url(image_id + ".jpg", {crop: 'fill', 
+                                                         width: DEFAULT_THUMBNAIL_DIMENSION, 
+                                                         height: DEFAULT_THUMBNAIL_SHORT_DIMENSION,
+                                                         quality: DEFAULT_COMPRESSION,
+                                                         sharpen: 400});
+    };        
     
-    $scope.refresh_num_thumbnails = function() {
-        var window_width = $scope.window_dimensions.width;
-    
-        if (window_width > 1500) {
-            $scope.num_thumbnails = 10;
-        } else if (window_width > 1300) {
-            $scope.num_thumbnails = 9;
-        } else if (window_width > 1100) {
-            $scope.num_thumbnails = 8;            
-        } else if (window_width > 1024) {
-            $scope.num_thumbnails = 7;            
-        } else if (window_width > 770) {
-            $scope.num_thumbnails = 6;
-        } else if (window_width > 500) {
-            $scope.num_thumbnails = 5;
-        } else if (window_width > 400) {
-            // iphone4 landscape
-            $scope.num_thumbnails = 4;
-        } else if (window_width >= 320) {
-            // iphone4 portrait
-            $scope.num_thumbnails = 3;
-        } else {
-            $scope.num_thumbnails = 2;
-        }
-        var temp_width = (100 / $scope.num_thumbnails) * 10.0;
-        var int_width = Math.floor(temp_width);
-        $scope.thumbnails_width = int_width / 10.0;
-        $log.info("refresh_num_thumbnails: num_thumbnails: " + $scope.num_thumbnails +
-                  " thumbnails_width: " + $scope.thumbnails_width);
-    };
-    $scope.refresh_num_thumbnails();
-
-    $scope.watch_handler = function(newValue, OldValue) {
-        $scope.refresh_thumbnail_groups();
-    };
-    
-    $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
-        $scope.refresh_num_thumbnails();
-    });
-    
-    $scope.$watch("num_thumbnails", function(newValue, oldValue) {
-        // number of shown thumbnails has changed, we must regenerate thumbnail groups
-        $scope.refresh_thumbnail_groups();
-    });
-    
-    // return thumbnail groups which can be used with angular-carousel
-    $scope.generate_thumbnail_groups = function() {
-        var result = [];
-        var obj_array = $scope[$scope.watch_expression];
-        if (obj_array == undefined) {
-            return [];
-        }
-        var current_group = [];
-        for (var i = 0; i < obj_array.length; i++) {
-            current_group.push(obj_array[i]);
-            if ((i + 1) % $scope.num_thumbnails == 0) {
-                var id_list = $.map(current_group, function(obj, i){ return obj.id; });
-                result.push({id_list: id_list.join("_"),
-                             objs: current_group});
-                current_group = [];
-            }
-        }
-        if (current_group.length > 0 ) {
-            var id_list = $.map(current_group, function(obj, i){ return obj.id; });
-            result.push({id_list: id_list.join("_"),
-                         objs: current_group});
-        }
-        
-        $log.info("num groups: " + result.length);
-        
-        return result;
-    };
-}
-
-function ImageCtrl($scope) {
-}
-
-
-function FollowCtrl($scope, $log, $timeout) {
-
-    $scope.follow_me = function() {
-        $log.info("follow_me");
-        var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
-                                                   nickname: $scope.conference_user_object.nickname,
-                                                   timestamp: new Date().getTime(),
-                                                   type: "follow_me"});
-        $timeout(function() {
-                    $scope.remove_request(requestRef)
-                 }, 5000);
-        
-    }
-    
-    $scope.look_here = function() {
-        $log.info("look_here");
-        var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
-                                                   nickname: $scope.conference_user_object.nickname,
-                                                   image_id: $scope.conference_user_object.viewing_image_id,
-                                                   timestamp: new Date().getTime(),
-                                                   type: "look_here"});
-        $timeout(function() {
-                    $scope.remove_request(requestRef)
-                 }, 5000);
-        
-    }
-    
-    $scope.remove_request = function(requestRef) {
-        $log.info("removing request: ", requestRef);
-        requestRef.remove();
-    }
-    
-}
-
-
-function ChatCtrl($scope, $log, $filter) {
-    $scope.display_num_pages = 1;
-    $scope.comment_pages = [];
-    $scope.comment_data = {};
-
-    $scope.submit_comment = function() {
-        $log.info("submit_comment: " + $scope.comment_data.text);
-        $scope.comments.$add({user_id: $scope.login_obj.user.uid,
-                              nickname: $scope.conference_user_object.nickname,
-                              image_id: $scope.conference_user_object.viewing_image_id,
-                              time_added: new Date().getTime(),
-                              text: $scope.comment_data.text}); 
-        $scope.comment_data.text = "";
-    }
-    
-    $scope.show_more = function() {
-        $scope.display_num_pages++;
-    }
-    
-    $scope.show_latest_only = function() {
-        $scope.display_num_pages = 1;
-    }
-   
-    $scope.refresh_num_comment_groups = function() {
-        var window_width = $scope.window_dimensions.width;
-    
-        if (window_width >= 1400) {
-            $scope.num_comment_groups = 12;
-        } else if (window_width >= 992) {
-            $scope.num_comment_groups = 9;
-        } else if (window_width >= 768) {
-            $scope.num_comment_groups = 6;
-        } else {
-            $scope.num_comment_groups = 3;
-        }    
-    }
-    
-    $scope.refresh_num_comment_groups();
-    
-    $scope.refresh_groups = function() {
-        if ($scope.conference == undefined) {
-            // cannot do anything yet
-            return;
-        }
-        var sorted_comments =  $filter('orderObjectByAndInsertId')($scope.conference.comments, 'time_added');
-        
-        var process_group = function(current_group, comment_groups) {
-            var id_list = $.map(current_group.comments, function(obj, i){ return obj.id; });
-            var id_list_str =  id_list.join("_");
-            current_group.id_list = id_list_str;
-            // take timestamp from last comment
-            current_group.timestamp = current_group.comments[current_group.comments.length - 1].time_added;
-            comment_groups.push(current_group);        
-        };
-        
-        // sort in groups
-        var comment_groups = [];
-        var current_image_id = undefined;
-        var current_group = undefined;
-        var cumulative_comment_length = 0;
-        var cumulative_comment_num = 0;
-        var current_nickname = undefined;
-        for(var i in sorted_comments) {
-            var comment = sorted_comments[i];        
-            if (current_image_id != comment.image_id || cumulative_comment_length > 250 || cumulative_comment_num > 7 ) {
-                // process old group
-                if (current_group != undefined) {
-                    process_group(current_group, comment_groups);
-                    current_nickname = undefined;
-                }
-                // create new group
-                current_group = {image_id: comment.image_id,
-                                 comments: []};   
-                current_image_id = comment.image_id;
-                cumulative_comment_length = 0;
-                cumulative_comment_num = 0;
-            }
-            if (comment.nickname != current_nickname) {
-                comment.display_nickname = true;
-            } else {
-                comment.display_nickname = false;
-            }
-            current_group.comments.push(comment);
-            cumulative_comment_length += comment.text.length;
-            cumulative_comment_num += 1;
-            current_nickname = comment.nickname;
-        }
-        if (current_group != undefined && current_group.comments.length > 0 ) {
-            process_group(current_group, comment_groups);
-        }
-        
-        // group comments in "pages"
-        
-        var comment_pages = [];
-        var current_page_groups = [];
-        var cycle_counter = 0;
-        for (var i = comment_groups.length - 1; i >= 0; i--) {
-            var comment_group = comment_groups[i];
-            current_page_groups.push(comment_group);
-            var cycle = (cycle_counter + 1) % $scope.num_comment_groups;
-            if ((cycle_counter + 1) % $scope.num_comment_groups == 0) {
-                current_page_groups.reverse();
-                var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
-                var timestamp = current_page_groups[current_page_groups.length - 1].timestamp;
-                comment_pages.push({id_list: id_list.join("_"),
-                             objs: current_page_groups,
-                             timestamp: timestamp});
-                current_page_groups = [];
-            }
-            cycle_counter++;
-        }
-        if (current_page_groups.length > 0 ) {
-            current_page_groups.reverse();
-            var id_list = $.map(current_page_groups, function(obj, j){ return obj.id_list; });
-            // take timestamp from last group
-            var timestamp = current_page_groups[current_page_groups.length - 1].timestamp;
-            comment_pages.push({id_list: id_list.join("_"),
-                                objs: current_page_groups,
-                                timestamp: timestamp});        
-        }
-        
-        comment_pages.reverse();
-        
-        $scope.comment_pages = comment_pages;
-    }
-    
-   
-    $scope.$watch("num_comment_groups", function(newValue, oldValue) {
-        $scope.refresh_groups();
-    }, true);
-    
-    $scope.$watch("conference.comments", function(newValue, OldValue) {
-        $log.info("watch conference.comments");
-        $scope.refresh_groups();
-    }, true);    
-    
-    
-    $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
-        $scope.refresh_num_comment_groups();
-    });    
-    
-}
-
-function UploadCtrl($scope, $log) {
-    $scope.resize = true;
-    
-    $scope.init = function() {
-    
-        $(document).ready(function() {
-            $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
-            
-            $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
-                var image = {id: data.result.public_id,
-                             width: data.result.width,
-                             height: data.result.height};
-               
-                $(document).trigger('upload_image', image);
-            });
-            
-            $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
-               //log("fileuploadstart");
-               // show_progress_bar();
-               //console.log("UPLOAD EVENT fileuploadstart");
-                $("#upload-progress-bar").css("width", "0%");
-                $("#progress-bar-container").fadeIn();               
-             });    
-            
-            $(".cloudinary-fileupload").bind('fileuploadprogressall', function(e, data) {
-                // console.log("UPLOAD EVENT fileuploadprogressall ", data);
-                $("#upload-progress-bar").css('width', Math.round((data.loaded * 100.0) / data.total) + '%'); 
-                
-            });
-            
-            $(".cloudinary-fileupload").bind('cloudinarydone', function(e){ 
-                //console.log("UPLOAD EVENT cloudinarydone");
-                $("#progress-bar-container").fadeOut();
-            });
-            
-            $log.info("cloudinary events binding done");
-        });
-    }
-    
-    $scope.init();
-    
-    $scope.$watch("resize", function(newValue,oldValue) {
-        $log.info("UploadCtrl resize: ", $scope.resize);
-        $scope.cloudinary_configure($scope.resize);
-    });
-    
-    $scope.$watch("conference.cloudinary_signature", function(newValue,oldValue) {
-        $log.info("cloudinary signature updated");
-        $scope.cloudinary_configure($scope.resize);
-    }, true);
-    
-    $scope.cloudinary_configure = function(resize) {
-        if (resize) {
-            $scope.cloudinary_configure_resize();
-        } else {
-            $scope.cloudinary_configure_no_resize();
-        }
-    }
-    
-    
-    $scope.cloudinary_configure_resize = function() {
-        if ($scope.conference == undefined)
-            return;
-    
-        //log("configuring cloudinary for resize on upload");
-        $("input.cloudinary-fileupload[type=file]").fileupload({formData: $scope.conference.cloudinary_signature,
-                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
-                                                                disableImageResize: false,
-                                                                imageMaxWidth: 1024,
-                                                                imageMaxHeight: 1024,
-                                                                imageOrientation: true,
-                                                                });    
-    }
-    
-    $scope.cloudinary_configure_no_resize = function() {
-        if ($scope.conference == undefined)
-            return;    
-    
-        //log("configuring cloudinary for no resize on upload");
-        $("input.cloudinary-fileupload[type=file]").fileupload({formData: $scope.conference.cloudinary_signature,
-                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
-                                                                disableImageResize: true,
-                                                                imageOrientation: true,
-                                                                });    
-    }
 }

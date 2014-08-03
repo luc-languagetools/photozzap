@@ -8,6 +8,7 @@ conference_javascript_files = [
 "static/angular/ui-bootstrap-tpls-0.10.0.min.js",
 "static/angular-carousel/angular-carousel.js",
 "static/jquery-libs/jquery-visibility.js",
+
 # cloudinary files
 "static/cloudinary/jquery.ui.widget.js",
 "static/cloudinary/jquery.iframe-transport.js",
@@ -29,7 +30,14 @@ conference_javascript_files = [
 "static/angular-moment/angular-moment.min.js",
 
 "static/conference/conference-ui.js",
-"static/conference/conference-controller.js",
+"static/conference/conference-init-services.js",
+"static/conference/conference-controller-nick-change.js",
+"static/conference/conference-controller-photozzap.js",
+"static/conference/conference-controller-thumbnails.js",
+"static/conference/conference-controller-follow.js",
+"static/conference/conference-controller-chat.js",
+"static/conference/conference-controller-upload.js",
+"static/conference/conference-directives.js",
 "static/conference/conference-initialize.js",
 ]
 
