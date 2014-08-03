@@ -90,6 +90,16 @@ function ThumbnailsCtrl($scope, $log, $element) {
             }
         }
         if (current_group.length > 0 ) {
+            if (current_group.length < $scope.num_cols ) {
+                // pad current group with empty thumbnails
+                var num_padding = $scope.num_cols - current_group.length;
+                for (var i = 0; i < num_padding; i++) {
+                    var padding_obj = {padding: true,
+                               id: "padding_" + i};
+                    current_group.push(padding_obj);
+                }
+            }
+        
             var id_list = $.map(current_group, function(obj, i){ return obj.id; });
             result.push({id_list: id_list.join("_"),
                          objs: current_group});
