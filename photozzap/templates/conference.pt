@@ -99,12 +99,12 @@
                     col-md-12 col-md-offset-0
                     col-sm-3 col-sm-offset-3 
                     col-xs-5 col-xs-offset-1">
-            <button class="btn btn-primary btn-lg follow-action-btn" ng-click="look_here()">
+            <button class="btn btn-primary btn-md follow-action-btn" ng-click="look_here()">
                 <span class="icon-eye"></span> Look Here
             </button>                        
         </div>
         <div class="col-lg-12 col-md-12 col-sm-3 col-xs-5">
-            <button class="btn btn-primary btn-lg follow-action-btn" ng-click="follow_me()">
+            <button class="btn btn-primary btn-md follow-action-btn" ng-click="follow_me()">
                 <span class="icon-users2"></span> Follow Me
             </button>                            
         </div>                                
@@ -244,29 +244,29 @@
 
 <div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
     <div class="row">
-        <div id="photo-thumbnails" class="col-md-6">
+        <div id="photo-thumbnails" class="col-xs-12 col-sm-12 col-md-6">
             <div class="row">
                 <div class="col-md-12">
-                    <span class="icon-image"></span> Photos
+                    <span class="icon-image"></span> Photos | <a ng-click="toggle_fullscreen()">Full screen</a>
                 </div>
             </div>
             <div class="row">
                 <photothumbnails/>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-xs-12 col-sm-12 col-md-6">
             <div class="row">
                 <div class="col-md-12">
                     <span class="icon-users"></span> Users
                 </div>
             </div>        
             <div class="row">
-                <div class="row col-md-10">
-                    <usersthumbnails/>
-                </div>
+                <usersthumbnails/>
+                <!--
                 <div class="row col-md-2">
                     <follow/>
-                </div>            
+                </div>
+                -->
             </div>
         </div>
     </div>

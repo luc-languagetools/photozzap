@@ -309,6 +309,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                           quality: FULL_COMPRESSION};
     
 
+    $scope.toggle_fullscreen = function() {
+        if ($scope.display_controls == true) {
+            $scope.display_controls = false;
+        } else {
+            $scope.display_controls = true;
+        }
+    }
+    
     // watch variables which may cause us to resize window
     $scope.$watchCollection('[window_width, window_height, photo_thumbnails_height, display_controls]', 
                             function(newValues, oldValues) {
@@ -329,14 +337,15 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         $scope.full_params.width = $scope.round_dimension(new_width * pixelRatio);
         $scope.full_params.height = $scope.round_dimension(new_height * pixelRatio);
+
+        if( $scope.display_controls && new_height > 0 ) {
+            new_height = new_height - $scope.photo_thumbnails_height;
+        }
         
         if (new_width == $scope.window_dimensions.width && 
             Math.abs(new_height - $scope.window_dimensions.height) < 60) {
             // don't do anything, window resize is due to user scrolling down
         } else {
-            if( $scope.display_controls && new_height > 0 ) {
-                new_height = new_height - $scope.photo_thumbnails_height;
-            }
         
             $scope.window_dimensions.width = new_width;
             $scope.window_dimensions.height = new_height;
