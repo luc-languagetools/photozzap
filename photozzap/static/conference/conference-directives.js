@@ -38,3 +38,14 @@ conferenceModule.directive('upload', function() {
       }
   };
 });
+
+
+conferenceModule.directive('follow', function() {
+  return {
+      restrict: 'AE',
+      replace: 'true',
+      controller: FollowCtrl,
+      scope: true,
+      templateUrl: 'follow-controls.html',
+  };
+});
