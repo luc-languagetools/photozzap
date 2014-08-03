@@ -39,7 +39,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.server_name = server_name;
         
         // call the resize method once after initialization
-        $timeout($scope.resize_handler, 3000);
+        $timeout($scope.retrieve_window_dimensions, 3000);
         
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
@@ -258,9 +258,40 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                             time_added: Firebase.ServerValue.TIMESTAMP});
     });
     
+    
+    
+    
+    // watch window size    
+    $scope.retrieve_window_dimensions = function() {
+        $scope.window_width = $(window).width();
+        $scope.window_height = $(window).height();
+        $scope.$apply();    
+    }
+    
     angular.element($window).bind('resize', function () {
-        $scope.resize_handler();
+        $scope.retrieve_window_dimensions();
     });
+    
+    // watch height of photo-thumbnails element, we may need to adjust our image height
+    // to allow this element to be displayed
+    var photo_thumbnails_element = $("#photo-thumbnails");
+    $scope.photo_thumbnails_height = 0;
+    
+    // whether to display controls at the expense of full screen height or not
+    $scope.display_controls = true;
+    
+    $scope.$watch
+    (
+        function () {
+            return photo_thumbnails_element.height();
+        },
+        function (newValue, oldValue) {
+            if (newValue != oldValue) {
+                $log.info("photo-thumbnails height: ", newValue);
+                $scope.photo_thumbnails_height = newValue;
+            }
+        }
+    );       
     
     $scope.round_dimension = function(real_dimension) {
         return Math.ceil(real_dimension / DIMENSION_INCREMENT) * DIMENSION_INCREMENT;
@@ -276,9 +307,16 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                           height: $scope.round_dimension($(window).height()),
                           quality: FULL_COMPRESSION};
     
+
+    // watch variables which may cause us to resize window
+    $scope.$watchCollection('[window_width, window_height, photo_thumbnails_height, display_controls]', 
+                            function(newValues, oldValues) {
+        $scope.resize_handler();
+    });    
+    
     $scope.resize_handler = function() {
-        var new_width = $(window).width();
-        var new_height = $(window).height();
+        var new_width = $scope.window_width;
+        var new_height = $scope.window_height;
         
         $log.info("resize_handler: new dimensions: ", new_width, "x", new_height,
                   " current dimensions: ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height );
@@ -295,10 +333,13 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             Math.abs(new_height - $scope.window_dimensions.height) < 60) {
             // don't do anything, window resize is due to user scrolling down
         } else {
+            if( $scope.display_controls && new_height > 0 ) {
+                new_height = new_height - $scope.photo_thumbnails_height;
+            }
+        
             $scope.window_dimensions.width = new_width;
             $scope.window_dimensions.height = new_height;
             $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
-            $scope.$apply();
         }
     }
     
