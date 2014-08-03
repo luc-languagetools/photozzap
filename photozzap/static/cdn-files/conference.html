@@ -33,7 +33,7 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140803-3')">
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140803-4')">
 <script defer src="conference-all.min.js"></script>
 
 
@@ -81,7 +81,7 @@
 
 <script type="text/ng-template" id="users-thumbnails.html">
 <div class="col-md-12">
-    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak">
+    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator  rn-carousel-index="thumbnail_group_index" class="ng-cloak" ng-if="sorted_users.length > 0">
         <li ng-repeat="group in thumbnail_groups track by group.id_list">
             <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="user in group.objs track by user.id">
                 <div ng-if="user.padding == undefined">
@@ -99,6 +99,18 @@
             </div>
         </li>        
     </ul>
+    <div class="tab_outer_empty_container" ng-if="sorted_users.length == 0">
+        <div class="empty_container">
+            <div class="row empty_container_inner">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h2>No Photos</h2>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h3>Upload Photos to see users connected.</h3>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>
 </script>
 
