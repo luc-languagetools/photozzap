@@ -4,6 +4,7 @@ conferenceModule.directive('photothumbnails', function() {
       restrict: 'AE',
       replace: 'true',
       controller: ThumbnailsCtrl,
+      scope: true,
       templateUrl: 'photos-thumbnails.html',
       link: function (scope, elem, attrs) {
         console.log("thumbnails directive link");
@@ -19,6 +20,7 @@ conferenceModule.directive('usersthumbnails', function() {
       restrict: 'AE',
       replace: 'true',
       controller: ThumbnailsCtrl,
+      scope: true,
       templateUrl: 'users-thumbnails.html',
       link: function (scope, elem, attrs) {
         scope.init("sorted_users", elem);
