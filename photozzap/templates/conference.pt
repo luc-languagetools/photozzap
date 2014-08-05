@@ -6,7 +6,7 @@
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
 <!-- favicon -->
-<link rel="shortcut icon" type="image/png" href="/static/letter_p.png"/>
+<link rel="shortcut icon" type="image/png" href="${icon_path}"/>
 <!-- css files -->
 <link tal:repeat="file css_files" tal:attributes="href file" rel="stylesheet" media="screen">
 
