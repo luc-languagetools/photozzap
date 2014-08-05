@@ -55,6 +55,8 @@ function ThumbnailsCtrl($scope, $log, $element) {
 
     $scope.watch_handler = function(newValue, OldValue) {
         $scope.refresh_thumbnail_groups();
+        // also refresh num thumbnails, in case there was an initialization issue
+        $scope.refresh_num_thumbnails();
     };
     
     $scope.$watch("window_dimensions.width", function(newValue, oldValue) {
