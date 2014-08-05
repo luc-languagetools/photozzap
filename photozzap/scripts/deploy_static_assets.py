@@ -73,7 +73,8 @@ def render_templates(settings):
         'firebase': firebase,
         'server_name': server_name,
         'new_conf_url': new_conf_url,
-        'permanent_conf_url': permanent_conf_url
+        'permanent_conf_url': permanent_conf_url,
+        'icon_path': icon_path,
     }
     render_template('photozzap:templates/home.pt', home_attributes, photozzap.staticresources.home_file_path)
     
