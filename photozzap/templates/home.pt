@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
+<!-- favicon -->
+<link rel="shortcut icon" type="image/png" href="${icon_path}"/>
 
 <link tal:repeat="file css_files" tal:attributes="href file" rel="stylesheet" media="screen">
 <script tal:repeat="file javascript_files" tal:attributes="src file"></script>

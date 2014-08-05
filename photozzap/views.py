@@ -34,6 +34,7 @@ def home(request):
     www_port = settings['www_port']    
     server_name = settings['server_name']
     default_server_name = settings['default_server_name']
+    icon_path = settings['icon_path']
     
     new_conf_url = request.route_url('conference', _host=default_server_name + ".photozzap.com", _port=www_port) + "#/new-conference-template"
     
@@ -48,7 +49,8 @@ def home(request):
             'firebase': firebase,
             'server_name': server_name,
             'new_conf_url': new_conf_url,
-            'permanent_conf_url': permanent_conf_url}
+            'permanent_conf_url': permanent_conf_url,
+            'icon_path': icon_path}
     
     
 def get_file_list_abs(request, files):
