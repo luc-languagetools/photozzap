@@ -71,7 +71,8 @@ other_static_assets = [
 "static/icomoon/icomoon.eot",
 "static/icomoon/icomoon.svg",
 "static/icomoon/icomoon.ttf",
-"static/icomoon/icomoon.woff"
+"static/icomoon/icomoon.woff",
+"static/letter_p.png",
 ]
 
 combined_conference_javascript_file = "static/cdn-files/conference-all.min.js"
