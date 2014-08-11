@@ -25,14 +25,6 @@ cloudinary.api.resources(function(result)  {
 			
 			image_ids_to_delete.push(entry.public_id);
 			
-			var delete_old_images = true;
-			if (delete_old_images) {
-				cloudinary.api.delete_resources([entry.public_id], function(result){
-					console.log(result);
-				});
-			}
-			
-			
 		} else {
 			console.log("image doesn't match criteria: ", entry.public_id, " created_at: ", entry.created_at,
 			" time_diff: ", time_diff, " min_diff: ", min_diff, " entry: ", entry);
