@@ -11,6 +11,8 @@ var current_timestamp =  new Date().getTime();
 //        if (current_timestamp - comment_data.time_added < 120000 &&
 var min_diff = 24*60*60 * 30 * 3;
 
+var image_ids_to_delete = [];
+
 cloudinary.api.resources(function(result)  { 
 	// console.log(result);
 	var results = result.resources;
@@ -21,7 +23,9 @@ cloudinary.api.resources(function(result)  {
 		if (time_diff > min_diff && entry.tags.length == 0) {
 			console.log("public_id: ", entry.public_id, " created_at: ", entry.created_at, " tags: ", entry.tags);
 			
-			var delete_old_images = false;
+			image_ids_to_delete.push(entry.public_id);
+			
+			var delete_old_images = true;
 			if (delete_old_images) {
 				cloudinary.api.delete_resources([entry.public_id], function(result){
 					console.log(result);
@@ -35,5 +39,14 @@ cloudinary.api.resources(function(result)  {
 		}
 		//console.log(entry);
 	}
-}, {tags: true, direction: "asc", max_results: 100});
+}, {tags: true, direction: "asc", max_results: 500});
+
+
+var delete_old_images = false;
+if (delete_old_images) {
+	cloudinary.api.delete_resources(image_ids_to_delete, function(result){
+		console.log(result);
+	});
+}
+			
 
