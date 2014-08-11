@@ -22,7 +22,7 @@ cloudinary.api.resources(function(result)  {
 			console.log("public_id: ", entry.public_id, " created_at: ", entry.created_at, " tags: ", entry.tags);
 			
 			var delete_old_images = false;
-			if (delete_old_images) {}
+			if (delete_old_images) {
 				cloudinary.api.delete_resources([entry.public_id], function(result){
 					console.log(result);
 				});
@@ -35,5 +35,5 @@ cloudinary.api.resources(function(result)  {
 		}
 		//console.log(entry);
 	}
-}, {tags: true, direction: "asc", max_results: 1});
+}, {tags: true, direction: "asc", max_results: 100});
 
