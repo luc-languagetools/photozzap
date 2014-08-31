@@ -406,6 +406,10 @@
                         <span class="icon-cog"></span> Options
                     </tab-heading>
                     <div class="row">
+                        <div class="col-sm-4 col-md-2">
+                            <h3>Views</h3>
+                            <b>{{conference.views}}</b> views
+                        </div>
                         <div class="col-sm-5 col-md-4">
                             <h3>Change Nickname</h3>
                             You are logged in as <b>{{conference_user_object.nickname}}</b>&nbsp;&nbsp;

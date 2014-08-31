@@ -207,6 +207,15 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             });
         }
         
+        // get user fingerprint
+        var fingerprint = $.fingerprint();
+        $scope.conference_user_object.$update({fingerprint: fingerprint});
+        // get user ip
+        $http({method: 'GET', url: 'http://api.hostip.info/get_json.php'}).
+            success(function(data, status, headers, config) {
+                $scope.conference_user_object.$update({user_ip: data.ip, ip_info: data});
+            });        
+        
         $scope.initialize_bindings();     
         $scope.setup_logout_handler();
 

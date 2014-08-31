@@ -31,6 +31,7 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
     this.conference_url = url;
     this.server_name = server_name;
     this.env = env;
+    this.ip_map = {};
     
     this.notify_pushover = false;
     
@@ -56,6 +57,9 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
 
     var statusPath = path + "/status";
     this.statusRef = new Firebase(statusPath);
+    
+    var viewsPath = path + "/views";
+    this.viewsRef = new Firebase(viewsPath);
     
     var notifyPushoverPath = path + "/notify_pushover";
     this.notifyPushoverRef = new Firebase(notifyPushoverPath);
@@ -183,6 +187,12 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
                 this.log_user_event(key, "viewing image " + user_data.viewing_image_id);
                 this.addNotification(key, {type: "viewing", image_id: user_data.viewing_image_id});
             }
+        }
+        
+        if (user_data.user_ip != undefined) {
+            this.ip_map[user_data.user_ip] = true;
+            var num_ips = Object.keys(this.ip_map).length;
+            this.viewsRef.set(num_ips);
         }
         
         this.user_cache[key] = user_data;
