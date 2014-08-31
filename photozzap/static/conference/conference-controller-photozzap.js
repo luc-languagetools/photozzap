@@ -615,5 +615,19 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          quality: DEFAULT_COMPRESSION,
                                                          sharpen: 400});
     };        
+ 
+
+    $scope.bitcoin_address_edit_mode = false;
+ 
+    // bitcoin support
+    $scope.set_bitcoin_address = function() {
+        $log.info("set_bitcoin_address: ", $scope.temp_data.bitcoin_address);
+        $scope.conference.$update({bitcoin_address: $scope.temp_data.bitcoin_address});
+        $scope.bitcoin_address_edit_mode = false;
+    }
     
+    $scope.set_bitcoin_address_edit_mode = function() {
+        $scope.bitcoin_address_edit_mode = true;
+    }
+ 
 }
