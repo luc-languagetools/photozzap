@@ -18,8 +18,6 @@ conferencesRef.on('child_added', function(snapshot){
                     conference_data.bitcoin_address,
                     "] views [",
                     conference_data.views,
-                    "] bitcoin status [",
-                    conference_data.bitcoin_status,
                     "]");
         // console.log(conference_data.users);
         for (var user_key in conference_data.users) {
