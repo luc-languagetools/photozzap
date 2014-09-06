@@ -1,7 +1,12 @@
 
 function DownloadCtrl($scope, $log, $timeout) {
     $scope.awaiting_download = false;
+    $scope.current_image_download_url = undefined;
 
+    $scope.$watch("conference_user_object.viewing_image_id", function(newValue, oldValue) {
+        $scope.current_image_download_url = $scope.cloudinary_photo_download_url({id: $scope.conference_user_object.viewing_image_id});
+    });
+    
     $scope.$watch("conference.download_zip_url", function(newValue, OldValue) {
         if( $scope.conference.download_zip_url != undefined && $scope.awaiting_download ) {
             $scope.awaiting_download = false;
@@ -9,12 +14,6 @@ function DownloadCtrl($scope, $log, $timeout) {
         }
     });
     
-    $scope.download_current_photo = function() {
-        // $scope.conference_user_object.viewing_image_id
-        var photo_url = $scope.cloudinary_photo_download_url({id: $scope.conference_user_object.viewing_image_id});
-        $scope.download_url(photo_url);
-    };
-
     $scope.download_all_photos = function() {
         if ($scope.conference.download_zip_url == undefined) {
 
