@@ -40,7 +40,7 @@ function ThumbnailsCtrl($scope, $log, $element) {
     $scope.refresh_num_thumbnails = function() {
     
         var available_width = $scope.elem.width();
-        $scope.num_cols = Math.floor(available_width / 110);
+        $scope.num_cols = Math.max(3, Math.floor(available_width / 110))
         var actual_thumbnail_size = available_width / $scope.num_cols;
 
         var temp_width = (100 / $scope.num_cols) * 10.0;
