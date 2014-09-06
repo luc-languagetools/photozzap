@@ -580,14 +580,6 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
 
     }
     
-    $scope.download_current_photo = function() {
-        // $scope.conference_user_object.viewing_image_id
-        var photo_url = $scope.cloudinary_photo_download_url({id: $scope.conference_user_object.viewing_image_id});
-        var ifrm = document.getElementById('download_frame');
-        ifrm.src = photo_url;
-    };
-    
-    
     $scope.cloudinary_photo_full_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
                                                          width: $scope.full_params.width, 

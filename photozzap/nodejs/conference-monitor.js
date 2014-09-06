@@ -61,6 +61,10 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
     var viewsPath = path + "/views";
     this.viewsRef = new Firebase(viewsPath);
     
+    var zipUrlPath = path + "/download_zip_url";
+    this.zipUrlRef = new Firebase(zipUrlPath);
+    
+    
     var notifyPushoverPath = path + "/notify_pushover";
     this.notifyPushoverRef = new Firebase(notifyPushoverPath);
     
@@ -80,6 +84,8 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
     
     this.imageChildAdded = function(snapshot) {
         console.log("conference ", this.key, ": image added");
+        // invalidate download zip url, if any
+        this.zipUrlRef.remove();
     };   
 
     this.addNotification = function(user_key, data) {
@@ -206,6 +212,15 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
             this.addNotification(user_key, {type: "look_here", image_id: request_data.image_id});
         } else if (request_data.type == "follow_me") {
             this.addNotification(user_key, {type: "follow_me"});
+        } else if (request_data.type == "download_all") {
+            // create download link for all photos
+            this.log_user_event(user_key, "creating download zip");
+            var self = this;
+            cloudinary.uploader.multi(this.key, function(result){
+                self.log_event("created download link: " + result.url);
+                var download_link = result.url;
+                self.zipUrlRef.set(download_link)
+            }, {format: "zip", tags: this.key + "," + this.env + "," + this.server_name});
         }
         
         
