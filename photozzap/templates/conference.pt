@@ -410,6 +410,12 @@
                             <h3>Views</h3>
                             <b>{{conference.views}}</b> views
                         </div>
+                        <div class="col-sm-4 col-md-2">
+                            <h3>Download</h3>
+                            <button class="btn btn-default" ng-click="download_current_photo()">
+                                Download Current Photo
+                            </button>                                                            
+                        </div>
                         <div class="col-sm-5 col-md-4">
                             <h3>Change Nickname</h3>
                             You are logged in as <b>{{conference_user_object.nickname}}</b>&nbsp;&nbsp;
@@ -465,7 +471,6 @@
     </p>
 </div>
 
-
-
+<iframe id="download_frame" style="display:none"></iframe>
 </body>
 </html>
