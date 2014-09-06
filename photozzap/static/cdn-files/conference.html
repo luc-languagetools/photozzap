@@ -35,7 +35,7 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140906-1')">
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140906-2')">
 <script defer src="conference-all.min.js"></script>
 
 
@@ -438,9 +438,11 @@
     
     <div class="row" ng-controller="DownloadCtrl" ng-if="sorted_images.length > 0">
         <div class="col-md-12" style="text-align: center;">
-            <a ng-click="download_current_photo()"><span class="icon-file-download"></span> Download This Photo</a> | 
-            <span ng-show="awaiting_download" style="font-weight: italic;">Please Wait...</span>
+            <a ng-href="{{current_image_download_url}}" target="_blank"><span class="icon-file-download"></span> Download This Photo</a> 
+            <span class="hidden-xs">
+            | <span ng-show="awaiting_download" style="font-weight: italic;">Please Wait...</span>
             <a ng-hide="awaiting_download" ng-click="download_all_photos()"><span class="icon-folder-download"></span> Download All Photos (zip)</a>
+            </span>
         </div>
     </div>
 
