@@ -1,10 +1,10 @@
 
 function DownloadCtrl($scope, $log, $timeout) {
-    $scope.download_on_change = false;
+    $scope.awaiting_download = false;
 
     $scope.$watch("conference.download_zip_url", function(newValue, OldValue) {
-        if( $scope.conference.download_zip_url != undefined && $scope.download_on_change ) {
-            $scope.download_on_change = false;
+        if( $scope.conference.download_zip_url != undefined && $scope.awaiting_download ) {
+            $scope.awaiting_download = false;
             $scope.download_url($scope.conference.download_zip_url);
         }
     });
@@ -19,7 +19,7 @@ function DownloadCtrl($scope, $log, $timeout) {
         if ($scope.conference.download_zip_url == undefined) {
 
             // let the download fire when the url is set
-            $scope.download_on_change = true;
+            $scope.awaiting_download = true;
         
             // request download
             var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
