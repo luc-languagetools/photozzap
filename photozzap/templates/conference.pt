@@ -406,6 +406,10 @@
                         <span class="icon-cog"></span> Options
                     </tab-heading>
                     <div class="row">
+                        <div class="col-sm-4 col-md-2">
+                            <h3>Views</h3>
+                            <b>{{conference.views}}</b> views
+                        </div>
                         <div class="col-sm-5 col-md-4">
                             <h3>Change Nickname</h3>
                             You are logged in as <b>{{conference_user_object.nickname}}</b>&nbsp;&nbsp;
@@ -429,6 +433,16 @@
                     </div>
                 </tab> 
             </tabset>
+        </div>
+    </div>
+    
+    <div class="row" ng-controller="DownloadCtrl" ng-if="sorted_images.length > 0">
+        <div class="col-md-12" style="text-align: center;">
+            <a ng-href="{{current_image_download_url}}" target="_blank"><span class="icon-file-download"></span> Download This Photo</a> 
+            <span class="hidden-xs">
+            | <span ng-show="awaiting_download" style="font-weight: italic;">Please Wait...</span>
+            <a ng-hide="awaiting_download" ng-click="download_all_photos()"><span class="icon-folder-download"></span> Download All Photos (zip)</a>
+            </span>
         </div>
     </div>
 
@@ -461,7 +475,6 @@
     </p>
 </div>
 
-
-
+<iframe id="download_frame" style="display:none"></iframe>
 </body>
 </html>

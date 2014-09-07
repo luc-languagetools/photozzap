@@ -2,34 +2,15 @@
 improvements
 ============
 
-- server maintenance
- - make conferences unavailable after 7 days
- - give users option to delete conference
- - delete uploaded photos
- - make sure all uploaded photos for a conference are in the same directory
- - prevent listing of conferences on ejabberd
- - use nginx for reverse proxying of BOSH channel
-- when using angular and ng-src, we see a new get request when display new images
-- show loading indicator when processing messages
-- pushover.net notifications (will require a custom xmpp bot)
-- create load testing python bot
-- report client latency to google analytics 
-  - jabber message latency
-  - ajax image load times
-  - other ajax queries time
-- show when user is away using Page Visibility API
- - find a way to do notifications when page not visible
-- handle disconnection better
- - reconnect and request missing history
+- improve loading speed of high res photo. This need to be smart otherwise quick browsing will generate 
+huge amounts of http requests. maybe slow down the requests if user is browsing quickly.
+- make photo carousel follow currently viewed photo, and highlight currently shown
+- provide option to show all photos for rapid jumping, maybe left of "full screen"
+- show photo number briefly
 
 bugs
 ====
 
-- when chatting, prevent side notification from appearing
-- disable completion in comment input field
-- don't let user refresh without a warning
-- improve upload UI, right now too easy to drag a photo into the browser window
-- when chatting, don't show chat notifications when chat window is open if same image
 
 paid version features
 =====================

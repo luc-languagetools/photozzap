@@ -29,19 +29,23 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
    
     $scope.watching_photo_index = false;
     $scope.load_new_url_promise = undefined;
+    $scope.last_load_hires_timestamp = 0;
     
     $scope.watch_followed_user_handle = undefined;
     $scope.followed_user_image_id = undefined;
-   
+  
     $scope.init = function(firebase_base, server_name) {
         $scope.conf_key = $location.path().substring(1);
     
+        // call the resize method once after images loaded
+        $scope.retrieve_window_dimensions_internal();
+        if( $scope.sorted_images.length == 0 ){
+            $timeout($scope.retrieve_window_dimensions_internal, 10000);
+        }    
+    
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
-        
-        // call the resize method once after initialization
-        $timeout($scope.retrieve_window_dimensions, 3000);
-        
+       
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
         // look at the conference, is it closed ?
@@ -207,6 +211,15 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             });
         }
         
+        // get user fingerprint
+        var fingerprint = $.fingerprint();
+        $scope.conference_user_object.$update({fingerprint: fingerprint});
+        // get user ip
+        $http({method: 'GET', url: 'http://api.hostip.info/get_json.php'}).
+            success(function(data, status, headers, config) {
+                $scope.conference_user_object.$update({user_ip: data.ip, ip_info: data});
+            });        
+        
         $scope.initialize_bindings();     
         $scope.setup_logout_handler();
 
@@ -264,10 +277,16 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     // watch window size    
     $scope.retrieve_window_dimensions = function() {
-        $scope.window_width = $(window).width();
-        $scope.window_height = $(window).height();
+        $scope.retrieve_window_dimensions_internal();
         $scope.$apply();    
     }
+
+    $scope.retrieve_window_dimensions_internal = function() {
+        $scope.window_width = $(window).width();
+        $scope.window_height = $(window).height();
+        $log.info("retrieved window dimensions: ", $scope.window_width, "x", $scope.window_height);
+    }
+    
     
     angular.element($window).bind('resize', function () {
         $scope.retrieve_window_dimensions();
@@ -378,6 +397,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             // cannot do anything yet
             return;
         }
+        
         $log.info("change in images, sorting");
         $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
         angular.forEach($scope.sorted_images, function(image, index){
@@ -540,6 +560,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                         $scope.load_new_url_promise = undefined;
                     }
             
+                    var delay_load = 2000;
+                    if (new Date().getTime() - $scope.last_load_hires_timestamp > 2000) {
+                        // last load hires time was over two seconds ago, load this one instantly
+                        delay_load = 0;
+                    }
+                    $log.info("loading hires photo with delay ", delay_load);
+                    $scope.last_load_hires_timestamp = new Date().getTime();
+            
                     $scope.load_new_url_promise = $timeout(function() {
                             $log.info("loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
                     
@@ -547,7 +575,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                             $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params = clone($scope.full_params);
                             $scope.global_data.photo_state_by_id[image_data.id].photo_hires_url = $scope.cloudinary_photo_full_url(image_data);
                             $scope.load_new_url_promise = undefined;
-                        }, 2000);
+                        }, delay_load);
             
                 } else {
                     $log.info("not loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
@@ -583,6 +611,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          width: $scope.default_params.width, 
                                                          height: $scope.default_params.height,
                                                          quality: $scope.default_params.quality});
+    };
+    
+    $scope.cloudinary_photo_download_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {flags: 'attachment'});
     };
     
     $scope.cloudinary_thumbnail_url = function(image_id) {
