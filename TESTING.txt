@@ -15,9 +15,10 @@ for each platform
 6. use prev/next buttons
 7. for touch platforms, swipe left/right
 8. resize/re-orient and make sure image resizes properly as well as UI
-   make sure expanded sidebars resize properly when open
-9. try chat on image1, then on image 2. Make sure switching between two images adjusts chat contents
-10. try history sidebar, make sure it allows switching between images
-11. try users sidebar, make sure it allows following a user
-12. make sure unfollowing users works.
-13. upload portrait picture on ipad, make sure image is diplayed properly on both orientations on ipad and PC.
+9. try full-screen photo and go back to small photo
+10. try chat on image1, then on image 2.
+11. try "look here"
+12. try "follow me"
+13. hide browser window, ensure other users see him as away
+14. upload portrait picture on ipad, make sure image is diplayed properly on both orientations on ipad and PC.
+15. change nickname
