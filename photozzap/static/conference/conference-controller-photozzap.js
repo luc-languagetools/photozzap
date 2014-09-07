@@ -36,12 +36,15 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.init = function(firebase_base, server_name) {
         $scope.conf_key = $location.path().substring(1);
     
+        // call the resize method once after images loaded
+        $scope.retrieve_window_dimensions();
+        if( $scope.sorted_images.length == 0 ){
+            $timeout($scope.retrieve_window_dimensions, 10000);
+        }    
+    
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
-        
-        // call the resize method once after initialization
-        $timeout($scope.retrieve_window_dimensions, 3000);
-        
+       
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
         // look at the conference, is it closed ?
@@ -275,6 +278,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.retrieve_window_dimensions = function() {
         $scope.window_width = $(window).width();
         $scope.window_height = $(window).height();
+        $log.info("retrieved window dimensions: ", $scope.window_width, "x", $scope.window_height);
         $scope.$apply();    
     }
     
@@ -387,6 +391,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             // cannot do anything yet
             return;
         }
+        
         $log.info("change in images, sorting");
         $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
         angular.forEach($scope.sorted_images, function(image, index){
