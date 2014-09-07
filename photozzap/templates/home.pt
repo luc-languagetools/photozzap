@@ -379,13 +379,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
                 <div class="col-xs-12 col-sm-6 col-md-4">
                     <div class="feature-icon-container"><div class="feature-icon"><span class="icon-radio"></span></div></div>
                     <h3>Recent Changes</h3>
+                    <h4>2014-09-07</h4>
+                    Speeded up loading of high-res images. Added download links for current photo or all photos.
                     <h4>2014-05-06</h4>
                     Official launch of Photozzap 2.0
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4">
                     <div class="feature-icon-container"><div class="feature-icon"><span class="icon-envelop"></span></div></div>
                     <h3>Questions ?</h3>
-                    Do you have any questions or suggestions regarding Photozzap ? You can use our Facebook page, or 
+                    Do you have any questions or suggestions regarding Photozzap ? You can use our <a href="https://www.facebook.com/photozzap" target="_blank">Facebook page</a>, <a href="https://twitter.com/Photozzap" target="_blank">Twitter</a>, or 
                     <a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Email Us</a>.
                     We'd love to hear your feedback.
                 </div>                
