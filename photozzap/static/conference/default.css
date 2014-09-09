@@ -26,6 +26,16 @@
     height: 100%;
 }
 
+#displayed_counter {
+    position: absolute;
+    right: 200px;
+    top: 100px;
+    color: #FFFFFF;
+    font-size: 600%;
+    text-shadow: 2px 2px 4px #000000;
+    z-index: 2;
+}
+
 .outer_empty_container {
     padding: 6%;
 }
