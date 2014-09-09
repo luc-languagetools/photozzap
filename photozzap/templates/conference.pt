@@ -227,7 +227,7 @@
 </div>
 
 <div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
-    <div id="displayed_counter" class="photo-counter" ng-show="show_photo_counter">
+    <div class="photo-counter" ng-show="show_photo_counter">
         {{global_data.photo_index + 1}}/{{sorted_images.length}}
     </div>
     <div id="displayed_image">
