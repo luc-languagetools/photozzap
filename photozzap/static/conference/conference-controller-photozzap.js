@@ -35,6 +35,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.followed_user_image_id = undefined;
   
     $scope.show_photo_counter = false;
+    $scope.show_photo_timeout = undefined;
   
     $scope.init = function(firebase_base, server_name) {
         $scope.conf_key = $location.path().substring(1);
@@ -527,7 +528,10 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             }
             
             $scope.show_photo_counter = true;
-            $timeout(function(){ $scope.show_photo_counter = false; }, 1000);
+            if ($scope.show_photo_timeout != undefined) {
+                $timeout.cancel($scope.show_photo_timeout);
+            }
+            $scope.show_photo_timeout = $timeout(function(){ $scope.show_photo_counter = false; }, 1000);
             
         });
     }

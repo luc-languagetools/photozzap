@@ -37,19 +37,6 @@
     z-index: 2;
 }
 
-.photo-counter.ng-hide-add,
-.photo-counter.ng-hide-remove {
-  -webkit-transition:0.3s linear opacity;
-  transition:0.3s linear opacity;
-
-  /* remember to add this */
-  display:block!important;
-  opacity: 0.75;
-}
-.photo-counter.ng-hide {
-  opacity: 0;
-}
-
 .outer_empty_container {
     padding: 6%;
 }
