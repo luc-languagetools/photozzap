@@ -4,7 +4,8 @@ function ThumbnailsCtrl($scope, $log, $element) {
     $scope.num_rows = 1;
     $scope.num_cols = 3;
     $scope.thumbnails_width = 33;
-    $scope.thumbnail_group_index = 0;
+    $scope.shared_data = {thumbnail_group_index: 0};
+    $scope.obj_id_to_group_index_map = {};
 
     $scope.init = function(watch_expression, elem, highlight_current)
     {    
@@ -23,17 +24,32 @@ function ThumbnailsCtrl($scope, $log, $element) {
             $scope.refresh_num_thumbnails();
         }
         
+        if (highlight_current) {
+            $scope.start_watch_viewed_image();
+        }
+        
     }
+   
+   
+    $scope.start_watch_viewed_image = function() {
+        $scope.$watch("conference_user_object.viewing_image_id", function(new_value, old_value) {
+            var in_group_index = $scope.obj_id_to_group_index_map[new_value];
+            $log.info("in_group_index: ", in_group_index);
+            if( in_group_index != undefined ) {
+                $scope.shared_data.thumbnail_group_index = in_group_index;
+            }
+        });
+    };
    
     $scope.refresh_thumbnail_groups = function() {
         $log.info("change in ", $scope.watch_expression , " generating thumbnail groups");
         $scope.thumbnail_groups = $scope.generate_thumbnail_groups();
         $log.info("thumbnail_groups: ", $scope.thumbnail_groups);
-        if ($scope.thumbnail_group_index >= $scope.thumbnail_groups.length &&
-            $scope.thumbnail_group_index > 0) {
+        if ($scope.shared_data.thumbnail_group_index >= $scope.thumbnail_groups.length &&
+            $scope.shared_data.thumbnail_group_index > 0) {
             // the index is too far ahead, there aren't enough groups
             $log.info("changing thumbnail_group_index as there aren't enough groups");
-            $scope.thumbnail_group_index = $scope.thumbnail_groups.length - 1;
+            $scope.shared_data.thumbnail_group_index = $scope.thumbnail_groups.length - 1;
         }
     };
     
@@ -77,6 +93,8 @@ function ThumbnailsCtrl($scope, $log, $element) {
     // return thumbnail groups which can be used with angular-carousel
     $scope.generate_thumbnail_groups = function() {
         var result = [];
+        $scope.obj_id_to_group_index_map = {};
+        
         var obj_array = $scope[$scope.watch_expression];
         if (obj_array == undefined) {
             return [];
@@ -84,6 +102,7 @@ function ThumbnailsCtrl($scope, $log, $element) {
         var current_group = [];
         for (var i = 0; i < obj_array.length; i++) {
             current_group.push(obj_array[i]);
+            $scope.obj_id_to_group_index_map[obj_array[i].id] = result.length;
             if ((i + 1) % ($scope.num_cols * $scope.num_rows) == 0) {
                 var id_list = $.map(current_group, function(obj, i){ return obj.id; });
                 result.push({id_list: id_list.join("_"),

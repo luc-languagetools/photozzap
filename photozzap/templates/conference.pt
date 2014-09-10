@@ -51,7 +51,7 @@
 
 <script type="text/ng-template" id="photos-thumbnails.html">
 <div class="col-md-12">
-    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak"
+    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="shared_data.thumbnail_group_index" class="ng-cloak"
     ng-if="sorted_images.length > 0">
         <li ng-repeat="group in thumbnail_groups track by group.id_list">
             <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
