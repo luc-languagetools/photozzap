@@ -57,7 +57,7 @@
             <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
                 <div ng-if="image.padding == undefined">
                     <a class="thumbnail-tight" ng-click="show_image(image.id)">
-                      <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
+                      <img ng-src="{{cloudinary_thumbnail_url(image.id)}}" ng-class="{highlight: conference_user_object.viewing_image_id == image.id}" />
                     </a>
                 </div>
                 <div ng-if="image.padding != undefined">

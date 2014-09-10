@@ -9,7 +9,7 @@ conferenceModule.directive('photothumbnails', function() {
       link: function (scope, elem, attrs) {
         console.log("thumbnails directive link");
         console.log("elem: ", elem);
-        scope.init("sorted_images", elem);
+        scope.init("sorted_images", elem, true);
       }
   };
 });
@@ -23,7 +23,7 @@ conferenceModule.directive('usersthumbnails', function() {
       scope: true,
       templateUrl: 'users-thumbnails.html',
       link: function (scope, elem, attrs) {
-        scope.init("sorted_users", elem);
+        scope.init("sorted_users", elem, false);
       }
   };
 });
