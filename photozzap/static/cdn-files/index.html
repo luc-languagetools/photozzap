@@ -2,6 +2,8 @@
 <html lang="en" ng-app="photozzap-home">
 <head>
 <title>Photozzap - Realtime Photo Sharing</title>
+<meta name="description" content="Share Photos In Realtime - Synchronized Slideshow With your Friends">
+<meta name="keywords" content="share, photos, pictures, skype, realtime, slideshow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
@@ -214,11 +216,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
                     var conferences_node = $firebase(new Firebase("https://photozzap-test.firebaseio.com/conferences"));
                     var conference_node = conferences_node.$child(tentativeConfKey);
                     var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://test-20140907-2.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://test-20140922-1.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "test-20140907-2",
+                                 servername: "test-20140922-1",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
@@ -347,7 +349,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
             <div class="feature-icon-container"><div class="feature-icon"><span class="icon-users3"></span></div></div>
             <h3>Interactive Photo Viewing</h3>
-            View photos together. Use the Look Here or Follow Me buttons to show friends the photo you are currently looking at.
+            View photos together, in realtime. Use the Look Here or Follow Me buttons to show friends the photo you are currently looking at.
             You can see which photo they are looking at in the Users tab.
         </div>
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
@@ -399,7 +401,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
               </div>
              <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                &copy; Photozzap 2014 - running on test-20140907-2
+                &copy; Photozzap 2014 - running on test-20140922-1
                 </div>
              </div>
           </div>

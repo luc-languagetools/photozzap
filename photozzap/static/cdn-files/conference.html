@@ -35,7 +35,7 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140907-2')">
+<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20140922-1')">
 <script defer src="conference-all.min.js"></script>
 
 
@@ -51,13 +51,13 @@
 
 <script type="text/ng-template" id="photos-thumbnails.html">
 <div class="col-md-12">
-    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="thumbnail_group_index" class="ng-cloak"
+    <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-indicator rn-carousel-index="shared_data.thumbnail_group_index" class="ng-cloak"
     ng-if="sorted_images.length > 0">
         <li ng-repeat="group in thumbnail_groups track by group.id_list">
             <div class="thumbnail-container-tight" ng-style="{width: thumbnails_width + '%'}" ng-repeat="image in group.objs track by image.id">
                 <div ng-if="image.padding == undefined">
                     <a class="thumbnail-tight" ng-click="show_image(image.id)">
-                      <img ng-src="{{cloudinary_thumbnail_url(image.id)}}">
+                      <img ng-src="{{cloudinary_thumbnail_url(image.id)}}" ng-class="{highlight: conference_user_object.viewing_image_id == image.id}" />
                     </a>
                 </div>
                 <div ng-if="image.padding != undefined">
@@ -227,6 +227,9 @@
 </div>
 
 <div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
+    <div class="photo-counter" ng-show="show_photo_counter">
+        {{global_data.photo_index + 1}}/{{sorted_images.length}}
+    </div>
     <div id="displayed_image">
         <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
           ng-style="{'width': window_dimensions.width,
