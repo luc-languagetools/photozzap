@@ -14,6 +14,7 @@ huge amounts of http requests. maybe slow down the requests if user is browsing 
 
 bugs
 ====
+- resize broken on galaxy note 3
 
 
 paid version features

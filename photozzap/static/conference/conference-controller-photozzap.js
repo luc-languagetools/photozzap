@@ -280,9 +280,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
     // watch window size    
     $scope.retrieve_window_dimensions = function() {
-        $timeout(function() {
-            $scope.retrieve_window_dimensions_internal();
-        }, 0);
+        $scope.retrieve_window_dimensions_internal();
+        $scope.$apply();
     }
 
     $scope.retrieve_window_dimensions_internal = function() {
