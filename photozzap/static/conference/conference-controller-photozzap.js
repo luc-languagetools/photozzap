@@ -34,6 +34,9 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.watch_followed_user_handle = undefined;
     $scope.followed_user_image_id = undefined;
   
+    $scope.show_photo_counter = false;
+    $scope.show_photo_timeout = undefined;
+  
     $scope.init = function(firebase_base, server_name) {
         $scope.conf_key = $location.path().substring(1);
     
@@ -278,7 +281,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     // watch window size    
     $scope.retrieve_window_dimensions = function() {
         $scope.retrieve_window_dimensions_internal();
-        $scope.$apply();    
+        $scope.$apply();
     }
 
     $scope.retrieve_window_dimensions_internal = function() {
@@ -523,6 +526,12 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                 // in some cases the browser doesn't properly reset page visibility to true
                 $scope.conference_user_object.$update({page_visible: true});
             }
+            
+            $scope.show_photo_counter = true;
+            if ($scope.show_photo_timeout != undefined) {
+                $timeout.cancel($scope.show_photo_timeout);
+            }
+            $scope.show_photo_timeout = $timeout(function(){ $scope.show_photo_counter = false; }, 1000);
             
         });
     }

@@ -2,6 +2,10 @@
 improvements
 ============
 
+- show explanation for first-time users
+ - URL of conference
+ - improve indication of how to load photos
+ - follow / look here buttons
 - improve loading speed of high res photo. This need to be smart otherwise quick browsing will generate 
 huge amounts of http requests. maybe slow down the requests if user is browsing quickly.
 - make photo carousel follow currently viewed photo, and highlight currently shown
@@ -10,6 +14,7 @@ huge amounts of http requests. maybe slow down the requests if user is browsing 
 
 bugs
 ====
+- resize broken on galaxy note 3
 
 
 paid version features
