@@ -77,6 +77,7 @@ def conference(request):
     firebase = settings['firebase']
     server_name = settings['server_name']
     icon_path = settings['icon_path']
+    preloader_path = settings['preloader_path']
         
     javascript_files_abs = get_file_list_abs(request, photozzap.staticresources.conference_javascript_files)
     css_files_abs = get_file_list_abs(request, photozzap.staticresources.conference_css_files)
@@ -86,7 +87,8 @@ def conference(request):
               'tracking_id': tracking_id,
               'firebase': firebase,
               'server_name': server_name,
-              'icon_path': icon_path}
+              'icon_path': icon_path,
+              'preloader_path': preloader_path}
                   
     return params
 

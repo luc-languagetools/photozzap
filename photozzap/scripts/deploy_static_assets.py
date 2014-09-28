@@ -53,6 +53,7 @@ def render_templates(settings):
     server_name = settings['server_name']
     default_server_name = settings['default_server_name']
     icon_path = settings['icon_path']
+    preloader_path = settings['preloader_path']
 
     cloudinary_name = settings['cloudinary_name']
     cloudinary_api_key = settings['cloudinary_api_key']
@@ -85,6 +86,7 @@ def render_templates(settings):
         'firebase': firebase,
         'server_name': server_name,
         'icon_path': icon_path,
+        'preloader_path': preloader_path,
     }    
     render_template('photozzap:templates/conference.pt', conference_attributes, photozzap.staticresources.conference_file_path)
 
