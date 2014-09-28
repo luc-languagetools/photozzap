@@ -81,6 +81,7 @@ def upload_files(cont):
                             'css': "text/css",
                             'html': "text/html",
                             'png': "image/png",
+                            'gif': "image/gif",
                             'eot': "application/vnd.ms-fontobject",
                             'ttf': "font/ttf",
                             'svg': "image/svg+xml",
