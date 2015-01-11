@@ -72,9 +72,19 @@ conferenceRef.once('value', function(snapshot) {
     
     console.log("images: ", images_array);
     
+    var calls_to_action = [
+        "Want to see more ?",
+        "More pics:",
+        "Liked it ?",
+        "More like that:",
+        "More photos:",
+        "Ready for more ?",        
+    ];
+    
     // now post all images to buffer
     _.each(images_array, function(image_data) {
-        var update_text = image_data.text + ". Click for HD Pics: " + conference_url;
+        var call_to_action = _.shuffle(calls_to_action)[0];
+        var update_text = image_data.text + ". " + call_to_action + " " + conference_url;
         user.createStatus(update_text, [config.bufferProfileId], true, false, false, 
                           {picture: image_data.picture, thumbnail: image_data.thumbnail}, null, 
         function(error, new_status) {
