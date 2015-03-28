@@ -36,7 +36,7 @@
 
 </head>
 <body ng-controller="PhotozzapCtrl" ng-init="init('${firebase}', '${server_name}', '${server_env}')">
-<script tal:repeat="file javascript_files" tal:attributes="src file" defer></script>
+<script charset="utf-8" tal:repeat="file javascript_files" tal:attributes="src file" defer></script>
 
 
 <script>
