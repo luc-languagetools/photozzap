@@ -129,15 +129,15 @@
         <!-- upload controls here -->
         <div class="row" style="margin-top: 10px;">
             <!-- upload panel 1, resized -->
-            <div class="col-xs-12 col-sm-6 col-md-5 col-md-offset-1">
+            <div class="col-xs-12 col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-8">
+                            <div class="col-xs-12 col-sm-6">
                                 <b><span class="icon-contract"></span> Resize to 1024x768</b>
                                 <br/>(faster upload, lower quality)
                             </div>
-                            <div class="col-xs-6 col-xs-offset-6 col-sm-4 col-sm-offset-0">
+                            <div class="col-xs-12 col-sm-6">
                                 <input type="hidden" name="picture" role="uploadcare-uploader" 
                                        data-public-key="071cc18cd47faf518850"
                                        data-multiple
@@ -151,15 +151,15 @@
                 </div>
             </div>
             <!-- upload panel 2, full size -->            
-            <div class="col-xs-12 col-sm-6 col-md-5">
+            <div class="col-xs-12 col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-xs-12 col-sm-8">
+                            <div class="col-xs-12 col-sm-6">
                                 <b><span class="icon-expand"></span> Upload full picture</b>
                                 <br/>(slower upload, higher quality)
                             </div>
-                            <div class="col-xs-6 col-xs-offset-6 col-sm-4 col-sm-offset-0">
+                            <div class="col-xs-12 col-sm-6">
                                 <input type="hidden" name="picture" role="uploadcare-uploader" 
                                 data-public-key="071cc18cd47faf518850"
                                 data-multiple
