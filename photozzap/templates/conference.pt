@@ -118,8 +118,8 @@
 
 <script type="text/ng-template" id="follow-controls.html">
 <div ng-controller="FollowCtrl" class="col-xs-9 col-sm-9 col-md-9" style="text-align: right;">
-    <a ng-click="look_here()"><span class="icon-eye"></span> Look Here</a> |
-    <a ng-click="follow_me()"><span class="icon-users2"></span> Follow Me</a>
+    <a ng-click="look_here()" tooltip-placement="bottom" tooltip="Make everyone look at this photo"><span class="icon-eye"></span> Look Here</a> |
+    <a ng-click="follow_me()" tooltip-placement="bottom" tooltip="Make everyone follow you as you look at photos"><span class="icon-users2"></span> Follow Me</a>
 </div>
 </script>
 
@@ -263,8 +263,8 @@
                     <span class="icon-image"></span> Photos
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6" style="text-align: right;">
-                    <a ng-click="toggle_fullscreen()" ng-show="display_controls"><span class="icon-expand"></span> Full Screen Photo</a>
-                    <a ng-click="toggle_fullscreen()" ng-show="! display_controls"><span class="icon-contract"></span> Small Photo</a>
+                    <a ng-click="toggle_fullscreen()" ng-show="display_controls" tooltip-placement="bottom" tooltip="Show photo in fullscreen"><span class="icon-expand"></span> Full Screen Photo</a>
+                    <a ng-click="toggle_fullscreen()" ng-show="! display_controls" tooltip-placement="bottom" tooltip="Show photo smaller to see thumbnails and users"><span class="icon-contract"></span> Small Photo</a>
                 </div>
             </div>
             <div class="row">
