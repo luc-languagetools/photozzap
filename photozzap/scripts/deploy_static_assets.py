@@ -85,6 +85,7 @@ def render_templates(settings):
         'tracking_id': tracking_id,
         'firebase': firebase,
         'server_name': server_name,
+        'server_env': server_env,
         'icon_path': icon_path,
         'preloader_path': preloader_path,
     }    

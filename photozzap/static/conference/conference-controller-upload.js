@@ -3,7 +3,7 @@ function UploadCtrl($scope, $log) {
     $scope.resize = true;
     
     $scope.init = function() {
-    
+   
         $(document).ready(function() {
             UPLOADCARE_PUBLIC_KEY = '071cc18cd47faf518850';
             
@@ -43,104 +43,16 @@ function UploadCtrl($scope, $log) {
 
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
-                        { cloud_name: 'photozzap', tags: 'unsigned_upload_test' },
+                        { cloud_name: 'photozzap', tags: [$scope.conf_key, $scope.server_name, $scope.server_env] },
                         {dropZone: $("#cloudinary_drop_zone")})
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
                         })
             );            
-            
-            /*
-            $(".cloudinary_unsigned_upload_form").unsigned_cloudinary_upload("photozzap_unsigned", 
-              { cloud_name: 'photozzap', tags: 'unsigned_upload_test' }, 
-              { multiple: true }
-            ).bind('cloudinarydone', function(e, data) {            
-                $log.info("cloudinary upload data: ", data);
-            }).bind("fileuploaddone", function(e, data) {
-                $log.info("cloudinary fileuploaddone, data: ", data);
-            });
-            */
-            
-            
-            
-            /*
 
-            $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
-                $log.info("cloudinary upload data: ", data);
-            
-                var image = {id: data.result.public_id,
-                             width: data.result.width,
-                             height: data.result.height};
-               
-                $(document).trigger('upload_image', image);
-            });
-            
-           
-            $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
-                $("#upload-progress-bar").css("width", "0%");
-                $("#progress-bar-container").fadeIn();               
-             });    
-            
-            $(".cloudinary-fileupload").bind('fileuploadprogressall', function(e, data) {
-                $("#upload-progress-bar").css('width', Math.round((data.loaded * 100.0) / data.total) + '%'); 
-                
-            });
-            
-            $(".cloudinary-fileupload").bind('cloudinarydone', function(e){ 
-                $("#progress-bar-container").fadeOut();
-            });
-            
-            $log.info("cloudinary events binding done");
-            */
         });
     }
     
     $scope.init();
-    
-    /*
-    $scope.$watch("resize", function(newValue,oldValue) {
-        $log.info("UploadCtrl resize: ", $scope.resize);
-        $scope.cloudinary_configure($scope.resize);
-    });
-    
-    $scope.$watch("conference.cloudinary_signature", function(newValue,oldValue) {
-        $log.info("cloudinary signature updated");
-        $scope.cloudinary_configure($scope.resize);
-    }, true);
-    
-    $scope.cloudinary_configure = function(resize) {
-        if (resize) {
-            $scope.cloudinary_configure_resize();
-        } else {
-            $scope.cloudinary_configure_no_resize();
-        }
-    }
-    
-    
-    $scope.cloudinary_configure_resize = function() {
-        if ($scope.conference == undefined)
-            return;
-    
-        //log("configuring cloudinary for resize on upload");
-        $("input.cloudinary-fileupload[type=file]").fileupload({formData: $scope.conference.cloudinary_signature,
-                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
-                                                                disableImageResize: false,
-                                                                imageMaxWidth: 1024,
-                                                                imageMaxHeight: 1024,
-                                                                imageOrientation: true,
-                                                                });    
-    }
-    
-    $scope.cloudinary_configure_no_resize = function() {
-        if ($scope.conference == undefined)
-            return;    
-    
-        //log("configuring cloudinary for no resize on upload");
-        $("input.cloudinary-fileupload[type=file]").fileupload({formData: $scope.conference.cloudinary_signature,
-                                                                url: 'https://api.cloudinary.com/v1_1/photozzap/image/upload',
-                                                                disableImageResize: true,
-                                                                imageOrientation: true,
-                                                                });    
-    }
-    */
+
 }

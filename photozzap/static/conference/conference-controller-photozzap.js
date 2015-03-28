@@ -37,7 +37,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.show_photo_counter = false;
     $scope.show_photo_timeout = undefined;
   
-    $scope.init = function(firebase_base, server_name) {
+    $scope.init = function(firebase_base, server_name, server_env) {
         $scope.conf_key = $location.path().substring(1);
     
         // call the resize method once after images loaded
@@ -48,6 +48,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
+        $scope.server_env = server_env;
        
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
