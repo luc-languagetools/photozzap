@@ -270,20 +270,6 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
         deleteConferenceEntry(this.key);
         
     }
-
-    this.getCloudinarySignature = function() {
-        var params = {timestamp: new Date().getTime().toString(),
-                      tags: this.key + "," + this.env + "," + this.server_name };
-        var signature = cloudinary.utils.sign_request(params, {});
-        return signature;
-    }
-    
-    // set regular interval to write cloudinary signature
-    this.writeCloudinarySignature = function() {
-        this.log_event("writing cloudinary signature for " + this.key);
-        var signature = this.getCloudinarySignature();
-        this.cloudinarySignatureRef.set(signature);
-    }    
     
     this.addCallbacks = function() {
         this.log_event("adding callbacks");    
@@ -311,10 +297,6 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
 
     this.addCallbacks();    
     var self = this;
-    this.writeCloudinarySignature();
-    this.cloudinarySignatureTimer = setInterval(function() {
-        self.writeCloudinarySignature();
-    }, 1000 * 60 * 15);    
     
     // call shutdown method
     var closeDelay = close_after_time - new Date().getTime();
