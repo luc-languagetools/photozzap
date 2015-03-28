@@ -81,6 +81,16 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
     
     this.imageChildAdded = function(snapshot) {
         console.log("conference ", this.key, ": image added");
+        
+        var image_data = snapshot.val();
+        var user_key = image_data.user_id;
+        var current_timestamp =  new Date().getTime();
+        if (current_timestamp - image_data.time_added < 60000) {
+            // upload less than 60 seconds old
+            this.addNotification(user_key, {type: "upload",
+                                            image_id: image_data.id});
+        }        
+        
         // invalidate download zip url, if any
         this.zipUrlRef.remove();
     };   
@@ -95,9 +105,13 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
         data.nickname = userNickname;
         newNotificationRef.set(data);
         var self = this;
+        var notification_duration = 5000;
+        if (data.type == "upload") {
+            notification_duration = 10000;
+        }
         setTimeout(function() {
             self.removeNotification(newNotificationRef);
-        }, 5000);
+        }, notification_duration);
         
         // send pushover notification
         var sendPushoverNotification = false;
