@@ -23,6 +23,9 @@ conference_javascript_files = [
 "static/cloudinary/jquery.fileupload-image.js",
 "static/cloudinary/jquery.fileupload-validate.js",
 
+# upload care
+"static/uploadcare/uploadcare.full.min.js",
+
 # firebase
 "static/firebase/firebase.js",
 "static/firebase/firebase-simple-login.js",

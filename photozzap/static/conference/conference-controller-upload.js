@@ -5,7 +5,41 @@ function UploadCtrl($scope, $log) {
     $scope.init = function() {
     
         $(document).ready(function() {
+            UPLOADCARE_PUBLIC_KEY = '071cc18cd47faf518850';
+            
+            var multiWidget = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple]');
+            multiWidget.onUploadComplete(function(info) {
+                $log.info("UploadCtrl, onUploadComplete: ", info);
+                
+                uploadcare.loadFileGroup(info.cdnUrl)
+                .done(function(fileGroup) {
+                    $log.info("UploadCtrl, loadFileGroup: ", fileGroup);
+                    var arrayOfFiles = fileGroup.files();
+                    $.each(arrayOfFiles, function(i, file) {
+                        file.done(function(fileInfo) {
+                            // i is file positon in group.
+                            // console.log(i, fileInfo);
+                            $log.info("UploadCtrl, file: ", fileInfo);
+                        });
+                    });                    
+                })
+                .fail(function() {
+                    $log.error("couldn't load file group");
+                });
+            });
+            
+        
+            /*
+            uploadcare.openDialog(null, {
+                publicKey: "071cc18cd47faf518850",
+                imagesOnly: true,
+                multiple: true
+            });
+            */
+
             $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
+            /*
+
             
             $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
                 var image = {id: data.result.public_id,
@@ -16,30 +50,27 @@ function UploadCtrl($scope, $log) {
             });
             
             $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
-               //log("fileuploadstart");
-               // show_progress_bar();
-               //console.log("UPLOAD EVENT fileuploadstart");
                 $("#upload-progress-bar").css("width", "0%");
                 $("#progress-bar-container").fadeIn();               
              });    
             
             $(".cloudinary-fileupload").bind('fileuploadprogressall', function(e, data) {
-                // console.log("UPLOAD EVENT fileuploadprogressall ", data);
                 $("#upload-progress-bar").css('width', Math.round((data.loaded * 100.0) / data.total) + '%'); 
                 
             });
             
             $(".cloudinary-fileupload").bind('cloudinarydone', function(e){ 
-                //console.log("UPLOAD EVENT cloudinarydone");
                 $("#progress-bar-container").fadeOut();
             });
             
             $log.info("cloudinary events binding done");
+            */
         });
     }
     
     $scope.init();
     
+    /*
     $scope.$watch("resize", function(newValue,oldValue) {
         $log.info("UploadCtrl resize: ", $scope.resize);
         $scope.cloudinary_configure($scope.resize);
@@ -84,4 +115,5 @@ function UploadCtrl($scope, $log) {
                                                                 imageOrientation: true,
                                                                 });    
     }
+    */
 }
