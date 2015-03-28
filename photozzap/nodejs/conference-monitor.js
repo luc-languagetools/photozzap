@@ -52,9 +52,6 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
     var requestsPath = path + "/requests";
     this.requestsRef = new Firebase(requestsPath);
     
-    var cloudinarySignaturePath = path + "/cloudinary_signature";
-    this.cloudinarySignatureRef = new Firebase(cloudinarySignaturePath);
-
     var statusPath = path + "/status";
     this.statusRef = new Firebase(statusPath);
     
@@ -261,7 +258,6 @@ function ConferenceObject(key, path, name, url, create_time, close_after_time, s
         this.usersRef.remove();
         this.commentsRef.remove();
         this.requestsRef.remove();
-        this.cloudinarySignatureRef.remove();
         
         // finally, mark conference closed
         this.statusRef.set("closed");
