@@ -17,11 +17,9 @@ conference_javascript_files = [
 "static/cloudinary/jquery.iframe-transport.js",
 "static/cloudinary/jquery.fileupload.js",
 "static/cloudinary/jquery.cloudinary.js",
-"static/cloudinary/load-image.min.js",
-"static/cloudinary/canvas-to-blob.min.js",
-"static/cloudinary/jquery.fileupload-process.js",
-"static/cloudinary/jquery.fileupload-image.js",
-"static/cloudinary/jquery.fileupload-validate.js",
+
+# upload care
+"static/uploadcare/uploadcare.full.min.js",
 
 # firebase
 "static/firebase/firebase.js",

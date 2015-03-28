@@ -35,8 +35,8 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('${firebase}', '${server_name}')">
-<script tal:repeat="file javascript_files" tal:attributes="src file" defer></script>
+<body ng-controller="PhotozzapCtrl" ng-init="init('${firebase}', '${server_name}', '${server_env}')">
+<script charset="utf-8" tal:repeat="file javascript_files" tal:attributes="src file" defer></script>
 
 
 <script>
@@ -118,65 +118,65 @@
 
 <script type="text/ng-template" id="follow-controls.html">
 <div ng-controller="FollowCtrl" class="col-xs-9 col-sm-9 col-md-9" style="text-align: right;">
-    <a ng-click="look_here()"><span class="icon-eye"></span> Look Here</a> |
-    <a ng-click="follow_me()"><span class="icon-users2"></span> Follow Me</a>
+    <a ng-click="look_here()" tooltip-placement="bottom" tooltip="Make everyone look at this photo"><span class="icon-eye"></span> Look Here</a> |
+    <a ng-click="follow_me()" tooltip-placement="bottom" tooltip="Make everyone follow you as you look at photos"><span class="icon-users2"></span> Follow Me</a>
 </div>
 </script>
 
 
 <script type="text/ng-template" id="upload.html">
-<div class="row">
-    <div class="col-xs-12 col-sm-8 col-md-7">
+    <div>
         <!-- upload controls here -->
-        <div class="row">
-            <div class="col-md-12 outer_empty_container less_bottom_padding" id="dragdrop_area">
-                <div class="empty_container">
-                    <form class="form-horizontal upload_drop_container" role="form">
-                        <div class="form-group">
-                            <label for="cloudinary_input" class="col-md-6 control-label" style="font-size: 150%;"><span class="icon-download"></span> Drop Photos Here, or</label>
-                            <div class="col-md-6">
-                              <input name="file" type="file" id="cloudinary_input" class="form-control cloudinary-fileupload cloudinary-input-style-override" data-cloudinary-field="image_id"></input>
-                            </div>                                        
+        <div class="row" style="margin-top: 10px;">
+            <!-- upload panel 1, resized -->
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <b><span class="icon-contract"></span> Resize to 1024x768</b>
+                                <br/>(faster upload, lower quality)
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <input type="hidden" name="picture" role="uploadcare-uploader" 
+                                       data-public-key="071cc18cd47faf518850"
+                                       data-multiple
+                                       data-images-only
+                                       data-image-shrink="1024x768"
+                                       data-widget-1
+                                />                            
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-3 col-sm-3 col-xs-offset-0 col-sm-offset-0 
-                        col-md-3 col-md-offset-1">
-                <span style="font-size: 110%; font-weight: bold;">Resize Options</span>
-            </div>
-            <div class="col-xs-9 col-sm-9 
-                        col-md-8 
-                        resize-controls">
-                <form>
-                    <div class="radio">
-                        <label>
-                        <input type="radio" name="resizeOptions" ng-model="resize" ng-value="true">
-                        <b>Resize to 1024x768</b> (faster upload, lower quality)
-                        </label>
+            <!-- upload panel 2, full size -->            
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <b><span class="icon-expand"></span> Upload full picture</b>
+                                <br/>(slower upload, higher quality)
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <input type="hidden" name="picture" role="uploadcare-uploader" 
+                                data-public-key="071cc18cd47faf518850"
+                                data-multiple
+                                data-images-only
+                                data-widget-2
+                                />               
+                            </div>
+                        </div>                
                     </div>
-                    <div class="radio">
-                        <label>
-                        <input type="radio" name="resizeOptions" ng-model="resize" ng-value="false">
-                        <b>Upload full image</b> (slower upload, higher quality)
-                        </label>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </div>            
         </div>
+        <div class="row" style="display: none;">
+            <div id="cloudinary_unsigned_upload_form"></div>
+            <div id="cloudinary_drop_zone">CLOUDINARY DROP ZONE</div>
+        </div>        
     </div>
-    <div class="col-xs-12 col-sm-4 col-md-5">
-        <div id="progress-bar-container" style="display: none;">
-            <h2 style="padding-top: 6%;">Upload Progress</h2>
-            <div class="progress progress-striped active">
-              <div id="upload-progress-bar" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-              </div>
-            </div>
-        </div>
-    </div>                        
-</div>
 </script>
 
 
@@ -263,8 +263,8 @@
                     <span class="icon-image"></span> Photos
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6" style="text-align: right;">
-                    <a ng-click="toggle_fullscreen()" ng-show="display_controls"><span class="icon-expand"></span> Full Screen Photo</a>
-                    <a ng-click="toggle_fullscreen()" ng-show="! display_controls"><span class="icon-contract"></span> Small Photo</a>
+                    <a ng-click="toggle_fullscreen()" ng-show="display_controls" tooltip-placement="bottom" tooltip="Show photo in fullscreen"><span class="icon-expand"></span> Full Screen Photo</a>
+                    <a ng-click="toggle_fullscreen()" ng-show="! display_controls" tooltip-placement="bottom" tooltip="Show photo smaller to see thumbnails and users"><span class="icon-contract"></span> Small Photo</a>
                 </div>
             </div>
             <div class="row">
@@ -460,6 +460,14 @@
                 <span ng-switch-when="away"><span class="icon-eye-blocked"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="back"><span class="icon-eye"></span> {{notification.nickname}}</span>
                 <span ng-switch-when="viewing"><span class="icon-eye"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}</span>
+                <span ng-switch-when="upload">
+                    <span ng-click="show_image(notification.image_id)" ng-if="notification.user_key != self_uid">
+                        <span class="icon-upload"></span> {{notification.nickname}} <span class="icon-image"></span> {{photo_index_from_id(notification.image_id)}}
+                    </span>
+                    <a href="javascript:" ng-click="show_image(notification.image_id)" ng-if="notification.user_key == self_uid">
+                        <span class="icon-upload"></span> Photo uploaded. Click to see it.
+                    </a>
+                </span>
                 <span ng-switch-when="comment"><span class="icon-bubble"></span> {{notification.nickname}} {{notification.text}}</span>
                 <span ng-switch-when="default_nickname"><span class="icon-info"></span>
                 You are connected as {{conference_user_object.nickname}} 

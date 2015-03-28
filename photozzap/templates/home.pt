@@ -355,7 +355,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
             <div class="feature-icon-container"><div class="feature-icon"><span class="icon-lightning"></span></div></div>
             <h3>Instant Photo Gallery</h3>
-            Create a photo gallery faster than any other site out there. Just type your nickname, the gallery name, click OK and start uploading pictures. No registration needed.
+            Create a photo gallery faster than any other site out there. Just type your nickname, the gallery name, click OK and start uploading pictures. Upload from Dropbox, Flickr, Facebook and Instagram. No login needed.
         </div>        
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
             <div class="feature-icon-container"><div class="feature-icon"><span class="icon-mobile"></span></div></div>
@@ -365,7 +365,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
             <div class="feature-icon-container"><div class="feature-icon"><span class="icon-lock"></span></div></div>
             <h3>Privacy Oriented</h3>
-            No registration needed, no social media integration. Only people who have the URL can access your pictures. Pictures don't stay online forever, you can remove them immediately, or they get deleted after 7 days.
+            No registration needed. Private by default. Only people who have the URL can access your pictures. Pictures don't stay online forever, you can remove them immediately, or they get deleted after 7 days.
         </div>                
       </div>
       
@@ -381,10 +381,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
                 <div class="col-xs-12 col-sm-6 col-md-4">
                     <div class="feature-icon-container"><div class="feature-icon"><span class="icon-radio"></span></div></div>
                     <h3>Recent Changes</h3>
+                    <h4>2015-03-28</h4>
+                    Added uploading from Dropbox, Flickr, Facebook, Instagram and others. Added notification when photos are uploaded.
                     <h4>2014-09-07</h4>
                     Speeded up loading of high-res images. Added download links for current photo or all photos.
-                    <h4>2014-05-06</h4>
-                    Official launch of Photozzap 2.0
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4">
                     <div class="feature-icon-container"><div class="feature-icon"><span class="icon-envelop"></span></div></div>
@@ -401,7 +401,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
               </div>
              <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                &copy; Photozzap 2014 - running on ${server_name}
+                &copy; Photozzap 2015 - running on ${server_name}
                 </div>
              </div>
           </div>

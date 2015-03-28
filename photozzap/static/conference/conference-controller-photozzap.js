@@ -37,7 +37,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.show_photo_counter = false;
     $scope.show_photo_timeout = undefined;
   
-    $scope.init = function(firebase_base, server_name) {
+    $scope.init = function(firebase_base, server_name, server_env) {
         $scope.conf_key = $location.path().substring(1);
     
         // call the resize method once after images loaded
@@ -48,6 +48,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
+        $scope.server_env = server_env;
        
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
@@ -272,7 +273,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,
-                            time_added: Firebase.ServerValue.TIMESTAMP});
+                            time_added: Firebase.ServerValue.TIMESTAMP,
+                            user_id: $scope.login_obj.user.uid});
     });
     
     
@@ -478,7 +480,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         var sorted_notifications_array = $filter('orderObjectByAndInsertId')($scope.conference.notifications, 'timestamp');
         $scope.sorted_notifications = $filter('filter')(sorted_notifications_array, function(elt) {
             var currentTimestamp = new Date().getTime();
-            if (elt.user_key != $scope.self_uid &&  // don't display notifications for current user
+            if ((elt.user_key != $scope.self_uid || elt.type == "upload") &&  // don't display notifications for current user
                 elt.timestamp + 120000 > currentTimestamp) // don't display notifications older than 10s (in case they didn't get cleared)
             { 
                 return true; 

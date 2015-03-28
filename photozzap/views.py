@@ -76,6 +76,7 @@ def conference(request):
     tracking_id = settings['analytics_tracking_id']
     firebase = settings['firebase']
     server_name = settings['server_name']
+    server_env = settings['server_env']
     icon_path = settings['icon_path']
     preloader_path = settings['preloader_path']
         
@@ -87,6 +88,7 @@ def conference(request):
               'tracking_id': tracking_id,
               'firebase': firebase,
               'server_name': server_name,
+              'server_env': server_env,
               'icon_path': icon_path,
               'preloader_path': preloader_path}
                   
