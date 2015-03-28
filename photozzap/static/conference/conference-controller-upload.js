@@ -36,6 +36,13 @@ function UploadCtrl($scope, $log) {
                         {dropZone: $("#cloudinary_drop_zone")})
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
+                            
+                            var image = {id: data.result.public_id,
+                                         width: data.result.width,
+                                         height: data.result.height};
+
+                            $(document).trigger('upload_image', image);
+                            
                         })
             );            
 
