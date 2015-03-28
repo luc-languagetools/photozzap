@@ -20,6 +20,8 @@ function UploadCtrl($scope, $log) {
                             // i is file positon in group.
                             // console.log(i, fileInfo);
                             $log.info("UploadCtrl, file: ", fileInfo);
+                            
+                            $(".cloudinary_unsigned_upload_form").cloudinary_upload_url(fileInfo.cdnUrl);
                         });
                     });                    
                 })
@@ -37,11 +39,34 @@ function UploadCtrl($scope, $log) {
             });
             */
 
-            $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'})
+            $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'});
+
+            $('#cloudinary_unsigned_upload_form').append(
+                    $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
+                        { cloud_name: 'photozzap', tags: 'unsigned_upload_test' })
+                        .bind('cloudinarydone', function(e, data) {            
+                            $log.info("cloudinary upload data: ", data);
+                        })
+            );            
+            
+            /*
+            $(".cloudinary_unsigned_upload_form").unsigned_cloudinary_upload("photozzap_unsigned", 
+              { cloud_name: 'photozzap', tags: 'unsigned_upload_test' }, 
+              { multiple: true }
+            ).bind('cloudinarydone', function(e, data) {            
+                $log.info("cloudinary upload data: ", data);
+            }).bind("fileuploaddone", function(e, data) {
+                $log.info("cloudinary fileuploaddone, data: ", data);
+            });
+            */
+            
+            
+            
             /*
 
-            
             $(".cloudinary-fileupload").bind("fileuploaddone", function(e, data) {
+                $log.info("cloudinary upload data: ", data);
+            
                 var image = {id: data.result.public_id,
                              width: data.result.width,
                              height: data.result.height};
@@ -49,6 +74,7 @@ function UploadCtrl($scope, $log) {
                 $(document).trigger('upload_image', image);
             });
             
+           
             $(".cloudinary-fileupload").bind("fileuploadstart", function(e){
                 $("#upload-progress-bar").css("width", "0%");
                 $("#progress-bar-container").fadeIn();               

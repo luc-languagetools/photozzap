@@ -136,6 +136,7 @@
                 data-images-only
                 data-image-shrink="1024x768"
                 />
+                <div id="cloudinary_unsigned_upload_form"></div>
             </div>
         </div>
         <div class="row">
