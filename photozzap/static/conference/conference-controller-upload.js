@@ -17,10 +17,7 @@ function UploadCtrl($scope, $log) {
                     var arrayOfFiles = fileGroup.files();
                     $.each(arrayOfFiles, function(i, file) {
                         file.done(function(fileInfo) {
-                            // i is file positon in group.
-                            // console.log(i, fileInfo);
                             $log.info("UploadCtrl, file: ", fileInfo);
-                            
                             $(".cloudinary_fileupload").cloudinary_upload_url(fileInfo.cdnUrl);
                         });
                     });                    
@@ -30,17 +27,9 @@ function UploadCtrl($scope, $log) {
                 });
             });
             
-        
-            /*
-            uploadcare.openDialog(null, {
-                publicKey: "071cc18cd47faf518850",
-                imagesOnly: true,
-                multiple: true
-            });
-            */
-
             $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'});
 
+            // setup cloudinary unsigned upload
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
                         { cloud_name: 'photozzap', tags: [$scope.conf_key, $scope.server_name, $scope.server_env] },
