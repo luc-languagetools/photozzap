@@ -20,7 +20,11 @@ function UploadCtrl($scope, $log) {
                             $log.info("UploadCtrl, file: ", fileInfo);
                             $(".cloudinary_fileupload").cloudinary_upload_url(fileInfo.cdnUrl);
                         });
-                    });                    
+                    });  
+
+                    // clear file list
+                    var multiWidget = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple]');
+                    multiWidget.value(null);
                 })
                 .fail(function() {
                     $log.error("couldn't load file group");
