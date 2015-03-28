@@ -21,7 +21,7 @@ function UploadCtrl($scope, $log) {
                             // console.log(i, fileInfo);
                             $log.info("UploadCtrl, file: ", fileInfo);
                             
-                            $(".cloudinary_unsigned_upload_form").cloudinary_upload_url(fileInfo.cdnUrl);
+                            $(".cloudinary_fileupload").cloudinary_upload_url(fileInfo.cdnUrl);
                         });
                     });                    
                 })
@@ -43,7 +43,8 @@ function UploadCtrl($scope, $log) {
 
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
-                        { cloud_name: 'photozzap', tags: 'unsigned_upload_test' })
+                        { cloud_name: 'photozzap', tags: 'unsigned_upload_test' },
+                        {dropZone: $("#cloudinary_drop_zone")})
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
                         })
