@@ -216,11 +216,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
                     var conferences_node = $firebase(new Firebase("https://photozzap-test.firebaseio.com/conferences"));
                     var conference_node = conferences_node.$child(tentativeConfKey);
                     var conf_url = "http://test-www.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
-                    var permanent_conf_url = "http://test-20150328-2.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
+                    var permanent_conf_url = "http://test-20150328-3.photozzap.com/conference.html#/new-conference-template".replace("new-conference-template", tentativeConfKey);
                     var conference_data = {name: confName,
                                  url: conf_url,
                                  permanent_url: permanent_conf_url,
-                                 servername: "test-20150328-2",
+                                 servername: "test-20150328-3",
                                  owner_uid: owner_uid,
                                  status: "open",
                                  notify_pushover: false,
@@ -401,7 +401,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
               </div>
              <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                &copy; Photozzap 2014 - running on test-20150328-2
+                &copy; Photozzap 2014 - running on test-20150328-3
                 </div>
              </div>
           </div>
