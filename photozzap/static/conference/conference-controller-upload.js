@@ -2,34 +2,44 @@
 function UploadCtrl($scope, $log) {
     $scope.resize = true;
     
+    $scope.uploadcare_on_upload_complete = function(info) {
+        $log.info("UploadCtrl, onUploadComplete: ", info);
+        
+        uploadcare.loadFileGroup(info.cdnUrl)
+        .done(function(fileGroup) {
+            $log.info("UploadCtrl, loadFileGroup: ", fileGroup);
+            var arrayOfFiles = fileGroup.files();
+            $.each(arrayOfFiles, function(i, file) {
+                file.done(function(fileInfo) {
+                    $log.info("UploadCtrl, file: ", fileInfo);
+                    $(".cloudinary_fileupload").cloudinary_upload_url(fileInfo.cdnUrl);
+                });
+            });  
+
+            // clear file list
+            var multiWidget1 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-1]');
+            var multiWidget2 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-2]');
+            multiWidget1.value(null);
+            multiWidget2.value(null);
+        })
+        .fail(function() {
+            $log.error("couldn't load file group");
+        });    
+    };
+    
     $scope.init = function() {
    
         $(document).ready(function() {
             UPLOADCARE_PUBLIC_KEY = '071cc18cd47faf518850';
             
-            var multiWidget = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple]');
-            multiWidget.onUploadComplete(function(info) {
-                $log.info("UploadCtrl, onUploadComplete: ", info);
-                
-                uploadcare.loadFileGroup(info.cdnUrl)
-                .done(function(fileGroup) {
-                    $log.info("UploadCtrl, loadFileGroup: ", fileGroup);
-                    var arrayOfFiles = fileGroup.files();
-                    $.each(arrayOfFiles, function(i, file) {
-                        file.done(function(fileInfo) {
-                            $log.info("UploadCtrl, file: ", fileInfo);
-                            $(".cloudinary_fileupload").cloudinary_upload_url(fileInfo.cdnUrl);
-                        });
-                    });  
-
-                    // clear file list
-                    var multiWidget = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple]');
-                    multiWidget.value(null);
-                })
-                .fail(function() {
-                    $log.error("couldn't load file group");
-                });
+            var multiWidget1 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-1]');
+            var multiWidget2 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-2]');
+            multiWidget1.onUploadComplete(function(info) {
+                $scope.uploadcare_on_upload_complete(info);
             });
+            multiWidget2.onUploadComplete(function(info) {
+                $scope.uploadcare_on_upload_complete(info);
+            });            
             
             $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'});
 

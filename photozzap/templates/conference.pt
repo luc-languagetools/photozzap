@@ -125,58 +125,58 @@
 
 
 <script type="text/ng-template" id="upload.html">
-<div class="row">
-    <div class="col-xs-12 col-sm-8 col-md-7">
+    <div>
         <!-- upload controls here -->
-        <div class="row">
-            <div class="col-md-12">
-                <input type="hidden" name="picture" role="uploadcare-uploader" 
-                data-public-key="071cc18cd47faf518850"
-                data-multiple
-                data-images-only
-                data-image-shrink="1024x768"
-                />
-                <div style="display: none;">
-                    <div id="cloudinary_unsigned_upload_form"></div>
-                    <div id="cloudinary_drop_zone">CLOUDINARY DROP ZONE</div>
+        <div class="row" style="margin-top: 10px;">
+            <!-- upload panel 1, resized -->
+            <div class="col-xs-12 col-sm-6 col-md-5 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-8">
+                                <b><span class="icon-contract"></span> Resize to 1024x768</b>
+                                <br/>(faster upload, lower quality)
+                            </div>
+                            <div class="col-xs-6 col-xs-offset-6 col-sm-4 col-sm-offset-0">
+                                <input type="hidden" name="picture" role="uploadcare-uploader" 
+                                       data-public-key="071cc18cd47faf518850"
+                                       data-multiple
+                                       data-images-only
+                                       data-image-shrink="1024x768"
+                                       data-widget-1
+                                />                            
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-3 col-sm-3 col-xs-offset-0 col-sm-offset-0 
-                        col-md-3 col-md-offset-1">
-                <span style="font-size: 110%; font-weight: bold;">Resize Options</span>
-            </div>
-            <div class="col-xs-9 col-sm-9 
-                        col-md-8 
-                        resize-controls">
-                <form>
-                    <div class="radio">
-                        <label>
-                        <input type="radio" name="resizeOptions" ng-model="resize" ng-value="true">
-                        <b>Resize to 1024x768</b> (faster upload, lower quality)
-                        </label>
+            <!-- upload panel 2, full size -->            
+            <div class="col-xs-12 col-sm-6 col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-8">
+                                <b><span class="icon-expand"></span> Upload full picture</b>
+                                <br/>(slower upload, higher quality)
+                            </div>
+                            <div class="col-xs-6 col-xs-offset-6 col-sm-4 col-sm-offset-0">
+                                <input type="hidden" name="picture" role="uploadcare-uploader" 
+                                data-public-key="071cc18cd47faf518850"
+                                data-multiple
+                                data-images-only
+                                data-widget-2
+                                />               
+                            </div>
+                        </div>                
                     </div>
-                    <div class="radio">
-                        <label>
-                        <input type="radio" name="resizeOptions" ng-model="resize" ng-value="false">
-                        <b>Upload full image</b> (slower upload, higher quality)
-                        </label>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </div>            
         </div>
+        <div class="row" style="display: none;">
+            <div id="cloudinary_unsigned_upload_form"></div>
+            <div id="cloudinary_drop_zone">CLOUDINARY DROP ZONE</div>
+        </div>        
     </div>
-    <div class="col-xs-12 col-sm-4 col-md-5">
-        <div id="progress-bar-container" style="display: none;">
-            <h2 style="padding-top: 6%;">Upload Progress</h2>
-            <div class="progress progress-striped active">
-              <div id="upload-progress-bar" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-              </div>
-            </div>
-        </div>
-    </div>                        
-</div>
 </script>
 
 
