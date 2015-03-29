@@ -104,7 +104,7 @@ def upload_files(cont):
         cf.upload_file(cont, full_path, content_type=content_type)
         
         # special case handling for conference.html
-        if file == "conference.html":
+        if file == "static/cdn-files/conference.html":
             cf.upload_file(cont, full_path, obj_name="c", content_type="text/html")
     
     
