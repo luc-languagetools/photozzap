@@ -102,6 +102,10 @@ def upload_files(cont):
 
         print("uploading %s as %s" %(full_path, content_type))
         cf.upload_file(cont, full_path, content_type=content_type)
+        
+        # special case handling for conference.html
+        if file == "conference.html":
+            cf.upload_file(cont, full_path, obj_name="c", content_type="text/html")
     
     
 if __name__ == "__main__":
