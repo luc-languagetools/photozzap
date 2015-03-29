@@ -10,6 +10,42 @@ def set_credentials():
     creds_file = os.path.expanduser("~/.rackspace_cloud_credentials")
     pyrax.set_credential_file(creds_file)
 
+def setup_dns(domain_name, default_server_name, cont):
+    # add CNAME record
+    dns = pyrax.cloud_dns
+    dom = dns.find(name=domain_name)    
+    
+    # delete the default server record
+    try:
+        default_server_record = dom.find_record('CNAME', name=default_server_name + "." + domain_name)
+        print("deleting default server record")
+        default_server_record.delete()
+        
+        
+    except Exception as inst:
+        print(inst)
+    
+    
+    target_domain = cont.cdn_uri.replace('http://', '')
+    
+    web_name = default_server_name
+    if web_name == "www" and domain_name == "zzap.co":
+        web_name = "photo" # to get that nice alias photo.zzap.co
+    
+    records = [{"type": "CNAME",
+                "name": cont_name + "." + domain_name,
+                "data": target_domain,
+                "ttl": 6000},
+               {"type": "CNAME",
+                "name": web_name + "." + domain_name,
+                "data": target_domain,
+                "ttl": 300}]
+            
+           
+    recs = dom.add_records(records)
+    print recs
+    
+    
 def create_cdn_container(server_name, default_server_name):
     cf = pyrax.cloudfiles
 
@@ -32,36 +68,9 @@ def create_cdn_container(server_name, default_server_name):
     
     cont.set_web_index_page("index.html")
     
-    # add CNAME record
-    domain_name = "photozzap.com"
-    dns = pyrax.cloud_dns
-    dom = dns.find(name=domain_name)    
+    setup_dns("photozzap.com", default_server_name, cont)
+    setup_dns("zzap.co", default_server_name, cont)
     
-    # delete the default server record
-    try:
-        default_server_record = dom.find_record('CNAME', name=default_server_name + "." + domain_name)
-        print("deleting default server record")
-        default_server_record.delete()
-        
-        
-    except Exception as inst:
-        print(inst)
-    
-    
-    target_domain = cont.cdn_uri.replace('http://', '')
-    
-    records = [{"type": "CNAME",
-                "name": cont_name + "." + domain_name,
-                "data": target_domain,
-                "ttl": 6000},
-               {"type": "CNAME",
-                "name": default_server_name + "." + domain_name,
-                "data": target_domain,
-                "ttl": 300}]
-            
-           
-    recs = dom.add_records(records)
-    print recs
 
     # update the default server name record
     #dom.find_record(
