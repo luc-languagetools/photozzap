@@ -10,14 +10,18 @@ def set_credentials():
     creds_file = os.path.expanduser("~/.rackspace_cloud_credentials")
     pyrax.set_credential_file(creds_file)
 
-def setup_dns(domain_name, default_server_name, cont):
+def setup_dns(domain_name, default_server_name, cont, cont_name):
     # add CNAME record
     dns = pyrax.cloud_dns
     dom = dns.find(name=domain_name)    
+
+    web_name = default_server_name
+    if web_name == "www" and domain_name == "zzap.co":
+        web_name = "photo" # to get that nice alias photo.zzap.co
     
     # delete the default server record
     try:
-        default_server_record = dom.find_record('CNAME', name=default_server_name + "." + domain_name)
+        default_server_record = dom.find_record('CNAME', name=web_name + "." + domain_name)
         print("deleting default server record")
         default_server_record.delete()
         
@@ -27,10 +31,6 @@ def setup_dns(domain_name, default_server_name, cont):
     
     
     target_domain = cont.cdn_uri.replace('http://', '')
-    
-    web_name = default_server_name
-    if web_name == "www" and domain_name == "zzap.co":
-        web_name = "photo" # to get that nice alias photo.zzap.co
     
     records = [{"type": "CNAME",
                 "name": cont_name + "." + domain_name,
@@ -68,8 +68,8 @@ def create_cdn_container(server_name, default_server_name):
     
     cont.set_web_index_page("index.html")
     
-    setup_dns("photozzap.com", default_server_name, cont)
-    setup_dns("zzap.co", default_server_name, cont)
+    setup_dns("photozzap.com", default_server_name, cont, cont_name)
+    setup_dns("zzap.co", default_server_name, cont, cont_name)
     
 
     # update the default server name record
