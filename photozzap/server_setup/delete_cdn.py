@@ -10,6 +10,18 @@ def set_credentials():
     creds_file = os.path.expanduser("~/.rackspace_cloud_credentials")
     pyrax.set_credential_file(creds_file)
 
+def delete_dns_record(domain_name, server_name):
+    # DNS cleanup
+    dns = pyrax.cloud_dns
+    dom = dns.find(name=domain_name)    
+    
+    # delete the server record
+    searched_record_name = server_name + "." + domain_name
+    default_server_record = dom.find_record('CNAME', name=searched_record_name)
+    print("deleting server record")
+    retval = default_server_record.delete()
+    print("deletion of ", searched_record_name, ": ", retval)
+    
 def delete_cdn_container(server_name):
     cf = pyrax.cloudfiles
 
@@ -20,17 +32,8 @@ def delete_cdn_container(server_name):
     retval = cont.delete(del_objects=True)
     print("deletion: ", retval)
 
-    # DNS cleanup
-    domain_name = "photozzap.com"
-    dns = pyrax.cloud_dns
-    dom = dns.find(name=domain_name)    
-    
-    # delete the server record
-    searched_record_name = server_name + "." + domain_name
-    default_server_record = dom.find_record('CNAME', name=searched_record_name)
-    print("deleting server record")
-    retval = default_server_record.delete()
-    print("deletion of ", searched_record_name, ": ", retval)
+    delete_dns_record("photozzap.com", server_name)
+    delete_dns_record("zzap.co", server_name)
     
     
 if __name__ == "__main__":
