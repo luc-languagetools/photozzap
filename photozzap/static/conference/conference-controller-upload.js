@@ -11,7 +11,13 @@ function UploadCtrl($scope, $log) {
             var arrayOfFiles = fileGroup.files();
             $.each(arrayOfFiles, function(i, file) {
                 file.done(function(fileInfo) {
-                    $log.info("UploadCtrl, file: ", fileInfo);
+                    // $log.info("UploadCtrl, file: ", fileInfo);
+                    
+                    $log.info("Uploadcare upload done, dimensions: width: ",
+                              fileInfo.originalImageInfo.width,
+                              "height:",
+                              fileInfo.originalImageInfo.height);
+                    
                     $(".cloudinary_fileupload").cloudinary_upload_url(fileInfo.cdnUrl);
                 });
             });  
@@ -50,6 +56,13 @@ function UploadCtrl($scope, $log) {
                         {dropZone: $("#cloudinary_drop_zone")})
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
+                            
+                            // $log.info("cloudinary upload done, data: ", data);                            
+                            
+                            $log.info("cloudinary upload done, dimensions: width: ",
+                                      data.result.width,
+                                      "height",
+                                      data.result.height);
                             
                             var image = {id: data.result.public_id,
                                          width: data.result.width,

@@ -1,4 +1,4 @@
-var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap', 'angularMoment']);
+var conferenceModule = angular.module('conferenceModule', ['ngAnimate', "firebase", 'angular-carousel', 'ui.bootstrap', 'angularMoment', 'ngPhotoSwipe']);
 
 conferenceModule.filter('orderObjectBy', function(){
  return function(input, attribute) {

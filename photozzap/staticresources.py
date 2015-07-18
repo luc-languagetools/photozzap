@@ -10,6 +10,7 @@ conference_javascript_files = [
 "static/jquery-libs/jquery-visibility.js",
 "static/jquery-libs/md5.js",
 "static/jquery-libs/jquery.browser-fingerprint-1.1.js",
+"static/jquery-libs/underscore-min.js",
 
 # photoswipe
 "static/photoswipe/photoswipe.js",

@@ -20,6 +20,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
 
     $scope.sorted_images = [];
     $scope.sorted_users = [];
+
+    $scope.photoswipe_images = [];
     
     $scope.logged_in_and_ready = false;
     $scope.status_string = "loading";
@@ -40,11 +42,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.init = function(firebase_base, server_name, server_env) {
         $scope.conf_key = $location.path().substring(1);
     
+        // disable resize handler for photoswipe
+        /*
         // call the resize method once after images loaded
         $scope.retrieve_window_dimensions_internal();
         if( $scope.sorted_images.length == 0 ){
             $timeout($scope.retrieve_window_dimensions_internal, 10000);
-        }    
+        } 
+        */
     
         $scope.firebase_base = firebase_base;
         $scope.server_name = server_name;
@@ -274,6 +279,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     $scope.$on('upload_image_data', function(event, data){ 
         $log.info("upload_image_data, cloudinary id: " + data.id);
         $scope.images.$add({id: data.id,
+                            width: data.width,
+                            height: data.height,
                             time_added: Firebase.ServerValue.TIMESTAMP,
                             user_id: $scope.login_obj.user.uid});
     });
@@ -294,9 +301,12 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }
     
     
+    // disable resize handler for photoswipe
+    /*
     angular.element($window).bind('resize', function () {
         $scope.retrieve_window_dimensions();
     });
+    */
     
     // watch height of photo-thumbnails element, we may need to adjust our image height
     // to allow this element to be displayed
@@ -406,6 +416,16 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         $log.info("change in images, sorting");
         $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
+        
+        $scope.photoswipe_images = _.map($scope.sorted_images, function(image) {
+            return {src:   $scope.cloudinary_photoswipe_original_url(image),
+                    thumb: $scope.cloudinary_photoswipe_thumbnail_url(image),
+                    type: 'image',
+                    size: image.width + 'x' + image.height}
+        });
+        
+        $log.info("photoswipe_images: ", $scope.photoswipe_images);
+        
         angular.forEach($scope.sorted_images, function(image, index){
             if (this[image.id] == undefined) {
                 this[image.id] = {photo_loaded_params: clone($scope.default_params),
@@ -610,6 +630,20 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     
 
     }
+    
+    
+    $scope.cloudinary_photoswipe_original_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg");
+    };    
+
+    $scope.cloudinary_photoswipe_thumbnail_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
+                                                         width: 500, 
+                                                         height: 500,
+                                                         quality: DEFAULT_COMPRESSION,
+                                                         sharpen: 400});
+    };
+
     
     $scope.cloudinary_photo_full_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
