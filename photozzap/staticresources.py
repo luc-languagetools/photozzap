@@ -11,6 +11,10 @@ conference_javascript_files = [
 "static/jquery-libs/md5.js",
 "static/jquery-libs/jquery.browser-fingerprint-1.1.js",
 
+# photoswipe
+"static/photoswipe/photoswipe.js",
+"static/photoswipe/photoswipe-ui-default.js",
+"static/photoswipe/angular-photoswipe.js",
 
 # cloudinary files
 "static/cloudinary/jquery.ui.widget.js",
@@ -60,6 +64,8 @@ conference_css_files = [
 "static/conference/default.css",
 "static/angular-carousel/angular-carousel.css",
 "static/icomoon/style.css",
+"static/photoswipe/photoswipe.css",
+"static/photoswipe/angular-photoswipe.css",
 ]
 
 home_css_files = [
