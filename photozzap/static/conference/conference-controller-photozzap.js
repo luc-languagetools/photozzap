@@ -353,11 +353,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     }
     
     // watch variables which may cause us to resize window
+    /*
     $scope.$watchCollection('[window_width, window_height, photo_thumbnails_height, display_controls]', 
                             function(newValues, oldValues) {
         $scope.resize_handler();
     });    
+    */
     
+    /*
     $scope.resize_handler = function() {
         var new_width = $scope.window_width;
         var new_height = $scope.window_height;
@@ -397,6 +400,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
             $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
         }
     }
+    */
     
     // return true if new params have at least one dimension greater
     $scope.params_greater = function(old_params, new_params) {

@@ -66,6 +66,7 @@ conference_css_files = [
 "static/angular-carousel/angular-carousel.css",
 "static/icomoon/style.css",
 "static/photoswipe/photoswipe.css",
+"static/photoswipe/default-skin.css",
 "static/photoswipe/angular-photoswipe.css",
 ]
 

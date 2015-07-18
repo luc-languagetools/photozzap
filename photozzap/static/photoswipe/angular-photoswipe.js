@@ -48,6 +48,9 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
 				items.push(item);
 			}
 
+            console.log("photoswipe angular items ", items);
+            // $log.info("photoswipe angular items ", items);
+            
 			return items;
 		};
 
