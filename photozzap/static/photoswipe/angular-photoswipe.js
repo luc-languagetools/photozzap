@@ -144,6 +144,7 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
             options = {
                 index: index,
                 history: false,
+                showHideOpacity:true,
                 galleryUID: galleryElement.getAttribute('data-pswp-uid'),
                 getThumbBoundsFn: function(index) {
                     // See Options -> getThumbBoundsFn section of docs for more info
