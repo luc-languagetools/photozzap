@@ -41,7 +41,8 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
      
                 if(linkEl.children.length > 0) {
                     // <img> thumbnail element, retrieving thumbnail url
-                    item.msrc = linkEl.children[0].getAttribute('src');
+                    // item.msrc = linkEl.children[0].getAttribute('src');
+                    item.msrc = linkEl.children[0].getAttribute('data-orig-src');
                 } 
                
                 item.el = figureEl; // save link to element for getThumbBoundsFn
@@ -284,7 +285,7 @@ ngPhotoSwipe.directive('photoGallery', [ function () {
                 '</div>' +
                 '<div ng-switch-default>' +
                     '<a href="{{img.src}}" itemprop="contentUrl" data-size="{{img.size}}">' +
-                        '<img ng-src="{{img.thumb}}" itemprop="thumbnail" alt="{{img.caption}}" />' +
+                        '<img ng-src="{{img.square_thumb}}" data-orig-src="{{img.thumb}}" itemprop="thumbnail" alt="{{img.caption}}" />' +
                     '</a>' +
                 '</div>' +
             '</div>' +
