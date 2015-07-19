@@ -226,40 +226,6 @@
 </div>
 
 
-
-<!--
-<div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
-    <div class="photo-counter" ng-show="show_photo_counter">
-        {{global_data.photo_index + 1}}/{{sorted_images.length}}
-    </div>
-    <div id="displayed_image">
-        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
-          ng-style="{'width': window_dimensions.width,
-                    'height': window_dimensions.height}"
-            ng-if="sorted_images.length > 0">
-            <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
-                <div class="image_layer image_layer_top"
-                ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
-                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
-                </div>
-                <div class="image_layer image_layer_bottom"
-                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
-                </div>                
-            </li>        
-        </ul>
-        <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
-             ng-style="{'width': window_dimensions.width,
-                       'height': window_dimensions.height}">
-            <div class="empty_container">
-                <h1>No Photos</h1>
-                <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
-            </div>
-        </div>            
-    </div>
-</div> 
--->
-<!-- main_image -->
-
 <div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
 
     <div class="row">
@@ -278,6 +244,7 @@
         </div>
     </div>
 
+    <!--
     <div class="row">
         <div id="photo-thumbnails" class="col-xs-12 col-sm-12 col-md-6">
             <div class="row">
@@ -305,6 +272,7 @@
             </div>
         </div>
     </div>
+    -->
     
     <div class="row">
         <div class="col-md-12">
@@ -473,6 +441,7 @@
 </div>
 
 <!-- notifications area -->
+<!--
 <div class="notifications-container" ng-show="sorted_notifications.length > 0">
     <p class="notification-text">
         <span class="notification-item" ng-repeat="notification in sorted_notifications track by notification.id">
@@ -506,6 +475,7 @@
         </span>
     </p>
 </div>
+-->
 
 <iframe id="download_frame" style="display:none"></iframe>
 </body>

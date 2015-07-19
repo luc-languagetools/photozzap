@@ -143,6 +143,7 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
 			// define options (if needed)
 			options = {
 				index: index,
+                history: false,
 				galleryUID: galleryElement.getAttribute('data-pswp-uid'),
 				getThumbBoundsFn: function(index) {
 					// See Options -> getThumbBoundsFn section of docs for more info
@@ -185,6 +186,10 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
 			// Pass data to PhotoSwipe and initialize it
 			gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
 			gallery.init();
+            
+            console.log("photoswipe viewport size: ", gallery.viewportSize);
+            
+            GLOBAL_PHOTOSWIPE = gallery;
 		};
 
 		// loop through all gallery elements and bind events

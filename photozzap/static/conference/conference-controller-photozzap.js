@@ -316,6 +316,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
     // whether to display controls at the expense of full screen height or not
     $scope.display_controls = true;
     
+    /*
     $scope.$watch
     (
         function () {
@@ -327,7 +328,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                 $scope.photo_thumbnails_height = newValue;
             }
         }
-    );       
+    );
+        */
     
     $scope.round_dimension = function(real_dimension) {
         return Math.ceil(real_dimension / DIMENSION_INCREMENT) * DIMENSION_INCREMENT;
