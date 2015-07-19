@@ -212,6 +212,14 @@
 </script>  
 
 
+<script type="text/ng-template" id="photoswipe_thumbnails.html">
+  <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="img in images">
+    <a href="{{img.src}}" class="thumbnail" data-size="{{img.size}}">
+      <img ng-src="{{img.square_thumb}}" data-orig-src="{{img.thumb}}" />
+    </a>
+  </div>
+</script>
+
 
 <div id="loading-screen" ng-hide="logged_in_and_ready && conference.status != 'closed'">
     <div class="loading-screen-content">

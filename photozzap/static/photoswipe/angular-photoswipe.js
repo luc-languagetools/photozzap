@@ -61,13 +61,15 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
 
         // triggers when user clicks on thumbnail
         var onThumbnailsClick = function(e) {
+            console.log("angular photoswipe onThumbnailsClick");
+        
             e = e || window.event;
             e.preventDefault ? e.preventDefault() : e.returnValue = false;
 
             var eTarget = e.target || e.srcElement;
 
             var clickedListItem = closest(eTarget, function(el) {
-                return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+                return (el.tagName && el.tagName.toUpperCase() === 'DIV');
             });
 
             if(!clickedListItem) {
@@ -187,16 +189,13 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
             // Pass data to PhotoSwipe and initialize it
             gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
             gallery.init();
-            
-            console.log("photoswipe viewport size: ", gallery.viewportSize);
-            
-            GLOBAL_PHOTOSWIPE = gallery;
         };
 
         // loop through all gallery elements and bind events
         var galleryElements = document.querySelectorAll(gallerySelector);
 
         for(var i = 0, l = galleryElements.length; i < l; i++) {
+            console.log("galleryElement ", i);
             galleryElements[i].setAttribute('data-pswp-uid', i + 1);
             galleryElements[i].onclick = onThumbnailsClick;
         }
@@ -301,6 +300,6 @@ ngPhotoSwipe.directive('photoGallery', [ function () {
             height: '='
         },
         replace: true,
-        template: template
+        templateUrl: "photoswipe_thumbnails.html",
     };
 }]);
