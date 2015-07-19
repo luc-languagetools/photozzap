@@ -653,8 +653,8 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
 
     $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
-                                                         width: 500, 
-                                                         height: 500,
+                                                         width: 200, 
+                                                         height: 200,
                                                          quality: DEFAULT_COMPRESSION,
                                                          sharpen: 400});
     };    
