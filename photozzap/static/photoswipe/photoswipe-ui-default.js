@@ -47,7 +47,7 @@ var PhotoSwipeUI_Default =
 
 		_options,
 		_defaultUIOptions = {
-			barsSize: {top:44, bottom:'auto'},
+			barsSize: {top:0, bottom:'auto'},
 			closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
 			timeToIdle: 4000, 
 			timeToIdleOutside: 1000,
