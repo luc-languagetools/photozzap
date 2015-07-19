@@ -426,6 +426,7 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         $scope.photoswipe_images = _.map($scope.sorted_images, function(image) {
             return {src:   $scope.cloudinary_photoswipe_original_url(image),
                     thumb: $scope.cloudinary_photoswipe_thumbnail_url(image),
+                    square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image),
                     type: 'image',
                     size: image.width + 'x' + image.height}
         });
@@ -650,6 +651,14 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          sharpen: 400});
     };
 
+    $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
+                                                         width: 500, 
+                                                         height: 500,
+                                                         quality: DEFAULT_COMPRESSION,
+                                                         sharpen: 400});
+    };    
+    
     
     $scope.cloudinary_photo_full_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
