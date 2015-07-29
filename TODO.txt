@@ -22,3 +22,10 @@ paid version features
 - auto downloading of images in a local directory
 - desktop/mobile notifications
 - better browsing of photos
+
+
+photoswipe integration followups
+================================
+integrate comments in photoswipe UI
+pre-load small images (currently not preloaded as the thumbnails are not good)
+
