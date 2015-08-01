@@ -150,13 +150,7 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
                 galleryUID: galleryElement.getAttribute('data-pswp-uid'),
                 getThumbBoundsFn: function(index) {
                     // See Options -> getThumbBoundsFn section of docs for more info
-                    /*
-                    var thumbnail = items[index].el.getElementsByTagName('img')[0]; // find thumbnail
-                    if (!thumbnail)
-                        thumbnail = items[index].el.getElementsByTagName('video')[0]
-                    */
-                    
-                    
+                    var thumbnail = document.getElementById('thumbnail_id_' + index);
                     var pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
                         rect = thumbnail.getBoundingClientRect();
 
