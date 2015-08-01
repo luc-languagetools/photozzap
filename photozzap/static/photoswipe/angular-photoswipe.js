@@ -150,9 +150,12 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
                 galleryUID: galleryElement.getAttribute('data-pswp-uid'),
                 getThumbBoundsFn: function(index) {
                     // See Options -> getThumbBoundsFn section of docs for more info
+                    /*
                     var thumbnail = items[index].el.getElementsByTagName('img')[0]; // find thumbnail
                     if (!thumbnail)
                         thumbnail = items[index].el.getElementsByTagName('video')[0]
+                    */
+                    
                     
                     var pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
                         rect = thumbnail.getBoundingClientRect();
@@ -272,26 +275,7 @@ ngPhotoSwipe.directive('photoSlider', [ function () {
 }]);
 
 ngPhotoSwipe.directive('photoGallery', [ function () {
-    var template = 
-        '<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject" ng-repeat="img in images">' +
-            '<div class="media-item" ng-switch on="img.type">' +
-                '<div ng-switch-when="video">' +
-                    '<a href="{{img.safeSrc}}" itemprop="contentUrl" data-size="{{img.size}}">' +
-                        '<video width="400" controls>' +
-                            '<source ng-src="{{img.safeSrc}}" type="video/mp4">' +
-                        '</video>' +
-                    '</a>' +
-                '</div>' +
-                '<div ng-switch-default>' +
-                    '<a href="{{img.src}}" itemprop="contentUrl" data-size="{{img.size}}">' +
-                        '<img ng-src="{{img.square_thumb}}" data-orig-src="{{img.thumb}}" itemprop="thumbnail" alt="{{img.caption}}" />' +
-                    '</a>' +
-                '</div>' +
-            '</div>' +
-            
-            '<figcaption itemprop="caption description">{{img.caption}}</figcaption>' +
-        '</figure>';
-            
+ 
     return {
         restrict: 'EA',
         scope: {
