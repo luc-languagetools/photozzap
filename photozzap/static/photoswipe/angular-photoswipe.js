@@ -44,7 +44,7 @@ ngPhotoSwipe.directive('photoSwipe', [ function () {
                     item.msrc = linkEl.children[0].getAttribute('data-orig-src');
                 } 
                
-                item.el = figureEl; // save link to element for getThumbBoundsFn
+                // item.el = figureEl; // save link to element for getThumbBoundsFn
                 items.push(item);
             }
 

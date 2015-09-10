@@ -425,10 +425,13 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
         
         $scope.photoswipe_images = _.map($scope.sorted_images, function(image) {
             return {src:   $scope.cloudinary_photoswipe_original_url(image),
-                    thumb: $scope.cloudinary_photoswipe_thumbnail_url(image),
-                    square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image),
-                    type: 'image',
-                    size: image.width + 'x' + image.height}
+                    msrc:  $scope.cloudinary_photoswipe_thumbnail_url(image),
+                    thumb: $scope.cloudinary_photoswipe_thumbnail_url(image), // remove
+                    square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image), 
+                    type: 'image', // remove
+                    w: image.width,
+                    h: image.height,
+                    size: image.width + 'x' + image.height} // remove
         });
         
         $log.info("photoswipe_images: ", $scope.photoswipe_images);

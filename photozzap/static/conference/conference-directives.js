@@ -1,4 +1,20 @@
 
+conferenceModule.directive('photoswipethumbnails', function() {
+  return {
+      restrict: 'AE',
+      replace: 'true',
+      controller: PhotoswipeThumbnailsCtrl,
+      scope: true,
+      templateUrl: 'photoswipe_thumbnails.html',
+      link: function (scope, elem, attrs) {
+        console.log("thumbnails directive link");
+        console.log("elem: ", elem);
+        scope.init("sorted_images", elem, true);
+      }
+  };
+});
+
+
 conferenceModule.directive('photothumbnails', function() {
   return {
       restrict: 'AE',
