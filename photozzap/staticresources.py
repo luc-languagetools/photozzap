@@ -38,6 +38,7 @@ conference_javascript_files = [
 "static/conference/conference-init-services.js",
 "static/conference/conference-config.js",
 "static/conference/conference-service-photozzap.js",
+"static/conference/conference-controller-home.js",
 "static/conference/conference-controller-nick-change.js",
 "static/conference/conference-controller-photozzap.js",
 "static/conference/conference-controller-thumbnails.js",
@@ -50,16 +51,7 @@ conference_javascript_files = [
 "static/conference/conference-initialize.js",
 ]
 
-home_javascript_files = [
-"static/jquery/jquery-1.10.2.min.js",
-"static/bootstrap3/js/bootstrap.min.js",
-"static/angular/angular.min.js",
-"static/angular/ui-bootstrap-tpls-0.10.0.min.js",
-"static/firebase/firebase.js",
-"static/firebase/firebase-simple-login.js",
-"static/firebase/angularfire.min.js",
-]
-
+home_javascript_files = conference_javascript_files
 
 conference_css_files = [
 "static/bootstrap3/css/bootstrap.min.css",

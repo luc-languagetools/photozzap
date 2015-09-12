@@ -1,6 +1,28 @@
 {
     "rules": {
         ".write": true,
+        
+        "photozzap":{
+            "conferences": {
+              // list of conferences not allowed
+              ".read": false,
+              ".write": true,
+              "$key": {
+                // if you know which key you're looking for, then reading is allowed
+                ".read": true,
+              },
+            },
+            "users": {
+              // list of users not allowed
+              ".read": false,
+              ".write": true,
+              "$key": {
+                // if you know which key you're looking for, then reading is allowed
+                ".read": true,
+              }          
+            }
+        },
+        
         "conferences": {
           // list of conferences not allowed
           ".read": false,
