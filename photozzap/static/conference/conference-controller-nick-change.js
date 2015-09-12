@@ -1,4 +1,5 @@
-function PhotozzapNickChangeModalCtrl($scope, $rootScope, $modalInstance, $log) {
+conferenceModule.controller("PhotozzapNickChangeModalCtrl", ["$scope", "$rootScope", "$modalInstance", "$log",
+function($scope, $rootScope, $modalInstance, $log) {
     $scope.user_object = {};
     
     $scope.change = function() {
@@ -9,4 +10,4 @@ function PhotozzapNickChangeModalCtrl($scope, $rootScope, $modalInstance, $log) 
     $scope.cancel = function() {
         $modalInstance.dismiss('close');
     }
-}
+}]);

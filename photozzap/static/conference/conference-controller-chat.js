@@ -1,4 +1,4 @@
-function ChatCtrl($scope, $log, $filter) {
+conferenceModule.controller("ChatCtrl", ["$scope", "$log", "$filter", function($scope, $log, $filter) {
     $scope.display_num_pages = 1;
     $scope.comment_pages = [];
     $scope.comment_data = {};
@@ -139,4 +139,4 @@ function ChatCtrl($scope, $log, $filter) {
         $scope.refresh_num_comment_groups();
     });    
     
-}
+}]);

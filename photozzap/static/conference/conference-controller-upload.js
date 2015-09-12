@@ -1,5 +1,4 @@
-
-function UploadCtrl($scope, $log) {
+conferenceModule.controller("UploadCtrl", ["$scope", "$log", function($scope, $log) {
     $scope.resize = true;
     
     $scope.uploadcare_on_upload_complete = function(info) {
@@ -78,4 +77,4 @@ function UploadCtrl($scope, $log) {
     
     $scope.init();
 
-}
+}]);

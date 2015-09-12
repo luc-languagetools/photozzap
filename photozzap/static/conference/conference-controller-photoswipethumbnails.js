@@ -1,5 +1,4 @@
-
-function PhotoswipeThumbnailsCtrl($scope, $log) {
+conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$log", function($scope, $log) {
 
     $scope.init = function() {
         $log.info("PhotoswipeThumbnailsCtrl.init");
@@ -51,4 +50,4 @@ function PhotoswipeThumbnailsCtrl($scope, $log) {
         
     };
     
-};
+}]);

@@ -1,5 +1,5 @@
-
-function DownloadCtrl($scope, $log, $timeout) {
+conferenceModule.controller("DownloadCtrl", ["$scope", "$log", "$timeout",
+function($scope, $log, $timeout) {
     $scope.awaiting_download = false;
     $scope.current_image_download_url = undefined;
 
@@ -37,4 +37,4 @@ function DownloadCtrl($scope, $log, $timeout) {
         ifrm.src = url;
     }
 
-}
+}]);

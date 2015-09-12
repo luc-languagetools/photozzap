@@ -1,4 +1,6 @@
-function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService) {
+conferenceModule.controller("PhotozzapCtrl", 
+["$scope", "$rootScope", "$firebase", "$firebaseSimpleLogin", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "conferenceService", 
+function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -703,4 +705,4 @@ function PhotozzapCtrl($scope, $rootScope, $firebase, $firebaseSimpleLogin, $mod
                                                          sharpen: 400});
     };        
     
-}
+}]);

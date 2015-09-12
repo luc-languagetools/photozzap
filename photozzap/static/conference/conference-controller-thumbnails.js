@@ -1,5 +1,4 @@
-
-function ThumbnailsCtrl($scope, $log, $element) {
+conferenceModule.controller("ThumbnailsCtrl", ["$scope", "$log", "$element", function($scope, $log, $element) {
     $scope.thumbnail_groups = [];
     $scope.num_rows = 1;
     $scope.num_cols = 3;
@@ -130,4 +129,4 @@ function ThumbnailsCtrl($scope, $log, $element) {
         
         return result;
     };
-}
+}]);

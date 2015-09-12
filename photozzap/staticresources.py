@@ -2,9 +2,9 @@
 conference_javascript_files = [
 "static/jquery/jquery-1.10.2.min.js",
 "static/bootstrap3/js/bootstrap.min.js",
-"static/angular/angular.min.js",
-"static/angular/angular-touch.min.js",
-"static/angular/angular-animate.min.js",
+"static/angular/angular.js",
+"static/angular/angular-animate.js",
+"static/angular/angular-touch.js",
 "static/angular/ui-bootstrap-tpls-0.10.0.min.js",
 "static/angular-carousel/angular-carousel.js",
 "static/jquery-libs/jquery-visibility.js",

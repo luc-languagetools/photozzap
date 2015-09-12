@@ -3,7 +3,7 @@ conferenceModule.directive('photoswipethumbnails', function() {
   return {
       restrict: 'AE',
       replace: 'true',
-      controller: PhotoswipeThumbnailsCtrl,
+      controller: "PhotoswipeThumbnailsCtrl",
       scope: true,
       templateUrl: 'photoswipe_thumbnails.html',
       link: function (scope, elem, attrs) {
@@ -19,7 +19,7 @@ conferenceModule.directive('photothumbnails', function() {
   return {
       restrict: 'AE',
       replace: 'true',
-      controller: ThumbnailsCtrl,
+      controller: "ThumbnailsCtrl",
       scope: true,
       templateUrl: 'photos-thumbnails.html',
       link: function (scope, elem, attrs) {
@@ -35,7 +35,7 @@ conferenceModule.directive('usersthumbnails', function() {
   return {
       restrict: 'AE',
       replace: 'true',
-      controller: ThumbnailsCtrl,
+      controller: "ThumbnailsCtrl",
       scope: true,
       templateUrl: 'users-thumbnails.html',
       link: function (scope, elem, attrs) {
@@ -48,7 +48,7 @@ conferenceModule.directive('upload', function() {
   return {
       restrict: 'AE',
       replace: 'true',
-      controller: UploadCtrl,
+      controller: "UploadCtrl",
       templateUrl: 'upload.html',
       link: function (scope, elem, attrs) {
       }
@@ -60,7 +60,7 @@ conferenceModule.directive('follow', function() {
   return {
       restrict: 'AE',
       replace: 'true',
-      controller: FollowCtrl,
+      controller: "FollowCtrl",
       scope: true,
       templateUrl: 'follow-controls.html',
   };

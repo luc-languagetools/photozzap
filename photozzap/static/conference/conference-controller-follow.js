@@ -1,5 +1,4 @@
-
-function FollowCtrl($scope, $log, $timeout) {
+conferenceModule.controller("FollowCtrl", ["$scope", "$log", "$timeout", function($scope, $log, $timeout) {
 
     $scope.follow_me = function() {
         $log.info("follow_me");
@@ -31,4 +30,4 @@ function FollowCtrl($scope, $log, $timeout) {
         requestRef.remove();
     }
     
-}
+}]);
