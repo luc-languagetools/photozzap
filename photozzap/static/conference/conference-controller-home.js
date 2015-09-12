@@ -18,25 +18,23 @@ conferenceModule.controller("PhotozzapHomeController", ["$scope", "$modal", "$lo
 conferenceModule.controller("PhotozzapNewConfModalController", ["$scope", "$rootScope", "$modalInstance", "$log", "$window", "photozzapService", 
 function ($scope, $rootScope, $modalInstance, $log, $window, photozzapService) {
     $scope.form_data = {};
-    $scope.form_data.logged_in = false;
-    $scope.alerts = [];
 
     $scope.init = function() {
+        photozzapService.getInitializedPromise().then(function(){
+            // setup 3 way binding with global user object
+            photozzapService.getGlobalUserNode().$bindTo($scope, "global_user_object");
+        });
+        
     }
-
     $scope.init();
-    
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };        
     
     $scope.ok = function () {
         photozzapService.create_conference($scope.form_data.confname).then(function(url){
             $log.info("created conference, url: ", url);
         });
-        // $scope.create_unique_conf_key($scope.form_data.confname, $scope.login_obj.user.uid);
     };
     
+    /*
     $scope.create_unique_conf_key = function(confName, owner_uid) {
         // set owner nickname
         $scope.global_user_object.$update({nickname: $scope.global_user_object.nickname});
@@ -76,6 +74,7 @@ function ($scope, $rootScope, $modalInstance, $log, $window, photozzapService) {
             }
         });            
     };
+    */
     
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');

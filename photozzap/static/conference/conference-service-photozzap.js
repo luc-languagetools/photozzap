@@ -7,6 +7,8 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
     
     $log.info("photozzapService initialize, photozzapConfig:", photozzapConfig);
     
+    var initialized_defer = $q.defer();
+       
     
     var authenticate = function(){
         $log.info("photozzapService.authenticate");
@@ -16,27 +18,47 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
         var ref = new Firebase(photozzapConfig.firebaseRoot);
         var auth = $firebaseAuth(ref);
         
-        auth.$authAnonymously().then(function(authData) {
+        var authData = auth.$getAuth();
+        
+        if(authData) {
+            $log.info("photozzapService: already authenticated");
             service.authData = authData;
-            $log.info("anonymous authentication successful");
             defer.resolve(authData);
-        }).catch(function(error) {
-            $log.error("anonymous authentication unsucessful");
-            defer.reject("authentication error" + error);
-        });
+        } else {
+        
+            auth.$authAnonymously().then(function(authData) {
+                service.authData = authData;
+                $log.info("anonymous authentication successful");
+                defer.resolve(authData);
+            }).catch(function(error) {
+                $log.error("anonymous authentication unsucessful");
+                defer.reject("authentication error" + error);
+            });
+            
+        };
         
         return defer.promise;
     };
 
     var createGlobalUserNode = function(authData){
+        var defer = $q.defer();
+    
         var ref = new Firebase(photozzapConfig.firebaseRoot);
         service.global_user_node = $firebaseObject(ref.child(photozzapConfig.firstNode).
                                                        child('users').
                                                        child(authData.uid));
-        service.global_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
-        service.global_user_node.$save();
+                                                       
+        service.global_user_node.$loaded().then(function(){
+            service.global_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
+            service.global_user_node.$save().then(function(){
+                defer.resolve();
+            });            
+        });
+                                                       
   
+        return defer.promise;
     };
+    
     
     var createConferenceUserNode = function(authData){
         // get user unique key
@@ -50,9 +72,20 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
                                                            child(authData.uid));
         
         service.conference_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
-        service.conference_user_node.$save();
+        return service.conference_user_node.$save();
     };
 
+    // **** service public API ****
+    
+    service.getInitializedPromise = function() {
+        return initialized_defer.promise;
+    };
+    
+    // only call when initialized
+    service.getGlobalUserNode = function() {
+        return service.global_user_node;
+    };
+    
     service.create_conference = function(conferenceName) {
         var defer = $q.defer();
     
@@ -94,6 +127,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
         return defer.promise;
     };
     
+    
     service.initialize = function(conference_key) {
         // service.conference_key = $location.path().substring(1);
         // $log.info("Conference Key: ", service.conference_key);
@@ -102,9 +136,17 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
         
         authenticate_promise.then(function(authData) {
             service.authData = authData;
-            if(conference_key != null) {
-                createConferenceUserNode(authData);
-            }
+            
+            createGlobalUserNode(authData).then(function(){
+                if(conference_key != null) {
+                    createConferenceUserNode(authData).then(function(){
+                        initialized_defer.resolve();
+                    });
+                } else {
+                    initialized_defer.resolve();
+                };
+            });
+            
         });
         
     };
