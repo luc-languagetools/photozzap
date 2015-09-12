@@ -5,4 +5,8 @@ function PhotoswipeThumbnailsCtrl($scope, $log) {
         $log.info("PhotoswipeThumbnailsCtrl.init");
     };
 
+    $scope.thumbnail_click = function(index) {
+        $log.info("photoswipeThumbnailsCtrl.thumbnail_click");
+    };
+    
 };
