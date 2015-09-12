@@ -8,7 +8,7 @@
           "$key": {
             // if you know which key you're looking for, then reading is allowed
             ".read": true,
-          }
+          },
         },
         "users": {
           // list of users not allowed
