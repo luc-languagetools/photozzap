@@ -28,7 +28,6 @@ conference_javascript_files = [
 
 # firebase
 "static/firebase/firebase.js",
-"static/firebase/firebase-simple-login.js",
 "static/firebase/angularfire.min.js",
 
 # angular moment
@@ -37,6 +36,8 @@ conference_javascript_files = [
 
 "static/conference/conference-ui.js",
 "static/conference/conference-init-services.js",
+"static/conference/conference-config.js",
+"static/conference/conference-service-photozzap.js",
 "static/conference/conference-controller-nick-change.js",
 "static/conference/conference-controller-photozzap.js",
 "static/conference/conference-controller-thumbnails.js",

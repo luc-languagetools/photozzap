@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapCtrl", 
-["$scope", "$rootScope", "$firebase", "$firebaseSimpleLogin", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "conferenceService", 
-function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService) {
+["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "conferenceService", "photozzapService", 
+function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService, photozzapService) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -57,6 +57,8 @@ function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $win
         $scope.server_name = server_name;
         $scope.server_env = server_env;
        
+        /*
+       
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
                                                                   server_name: $scope.server_name});
         // look at the conference, is it closed ?
@@ -79,7 +81,7 @@ function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $win
                 
                     // proceed to rest of initialization
                     var firebaseRef = new Firebase($scope.firebase_base);    
-                    $scope.login_obj = $firebaseSimpleLogin(firebaseRef);       
+                    $scope.login_obj = $firebaseAuth(firebaseRef);       
 
                     $scope.login_obj.$getCurrentUser().then(function(user){
                         $scope.status_string = "logging in";
@@ -97,6 +99,7 @@ function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $win
                 }
             }
         });
+        */
         
     
     }
@@ -202,7 +205,7 @@ function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $win
         $scope.conference_user_object.$update({connected: false});
     }
    
-    $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
+    $rootScope.$on("$firebaseAuth:login", function(e, user) {
         $log.info("User " + user.id + " logged in");
         $scope.self_uid = user.uid;
         
@@ -239,7 +242,7 @@ function($scope, $rootScope, $firebase, $firebaseSimpleLogin, $modal, $log, $win
     });
     
     $scope.setup_logout_handler = function() {
-        $rootScope.$on("$firebaseSimpleLogin:logout", function() {
+        $rootScope.$on("$firebaseAuth:logout", function() {
             $log.info("logout");
             $scope.mark_user_disconnected();
             $scope.logged_in_and_ready = false;
