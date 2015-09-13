@@ -1,29 +1,13 @@
 conferenceModule.controller("PhotozzapCtrl", 
 ["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "photozzapService", 
 function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  photozzapService) {
-    var DIMENSION_INCREMENT = 100;
-
-    var DEFAULT_THUMBNAIL_DIMENSION = 250;    
-    var DEFAULT_THUMBNAIL_SHORT_DIMENSION = 200;
-    var DEFAULT_DIMENSION = 500;
-    var DEFAULT_COMPRESSION = 75;
-    var FULL_COMPRESSION = 90;
-    
-    $scope.temp_data = {};
-    
-    $scope.global_data = {};
-    $scope.global_data.photo_index = 0;     
-    $scope.global_data.photo_state_by_id = {};
-
-    $scope.http_canceler = $q.defer();
+   
 
     $scope.show_default_nickname_notification = false;
     $scope.sorted_notifications = [];
 
-    $scope.sorted_images = [];
     $scope.sorted_users = [];
 
-    $scope.photoswipe_images = [];
     
     $scope.logged_in_and_ready = false;
     $scope.status_string = "loading";
@@ -48,117 +32,9 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         photozzapService.getInitializedPromise().then(function(){
             $scope.logged_in_and_ready = true;
         });
-    
-        // disable resize handler for photoswipe
-        /*
-        // call the resize method once after images loaded
-        $scope.retrieve_window_dimensions_internal();
-        if( $scope.sorted_images.length == 0 ){
-            $timeout($scope.retrieve_window_dimensions_internal, 10000);
-        } 
-        */
-    
-
-        /*
-       
-        var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,
-                                                                  server_name: $scope.server_name});
-        // look at the conference, is it closed ?
-        $scope.temp_conference_node = $firebase(new Firebase(temp_references.conference));
-        $scope.temp_conference_node.$on('loaded', function() {
-            // is it closed ?
-            if ($scope.temp_conference_node.status == "closed") {
-                // no need to load any more data
-                $scope.conference = {status: "closed"};
-            } else {
-                if ($scope.temp_conference_node.servername != $scope.server_name) {
-                    // redirect to other server
-                    $log.info("need to redirect to other server: ", $scope.temp_conference_node.permanent_url);
-                    $window.location.href = $scope.temp_conference_node.permanent_url;
-                    return false;
-                    
-                } else {
-                    $scope.temp_conference_node.$off('loaded');
-                    $scope.temp_conference_node = undefined;
-                
-                    // proceed to rest of initialization
-                    var firebaseRef = new Firebase($scope.firebase_base);    
-                    $scope.login_obj = $firebaseAuth(firebaseRef);       
-
-                    $scope.login_obj.$getCurrentUser().then(function(user){
-                        $scope.status_string = "logging in";
-                        $log.info("getCurrentUser: ", user);
-                        if (user == null) {
-                            // login with generated nickname
-                            var randomNick = "Guest" + randomNumString(5);
-                            $scope.perform_login(randomNick);
-                            $scope.show_default_nickname_notification = true;
-                            $timeout(function() {
-                                $scope.show_default_nickname_notification = false;
-                            }, 20000);
-                        }        
-                    });                       
-                }
-            }
-        });
-        */
-        
-    
     }
     
-    $scope.firebase_references = function() {
-        return $scope.compute_firebase_references({user_uid: $scope.login_obj.user.uid, 
-                                                   conf_key: $scope.conf_key,
-                                                   server_name: $scope.server_name});
-    }
-   
-    $scope.compute_firebase_references = function(inputs) {
-        // inputs is {user_uid: "<>", conf_key: "<>"}
-        
-        var connection_state = $scope.firebase_base + "/.info/connected";
-        var firebase_user = $scope.firebase_base + "users/" + inputs.user_uid;
-        var conference = $scope.firebase_base + "conferences/" + inputs.conf_key;
-        var conference_images = conference + "/images";
-        var conference_comments = conference + "/comments";
-        var requests = conference + "/requests";
-        var conference_users = conference + "/users";
-        var conference_user = conference + "/users/" + inputs.user_uid;
-        var connected = conference_user + "/connected";
-        
-        return {
-            firebase_user: firebase_user,
-            conference_user: conference_user,
-            conference_users: conference_users,
-            conference: conference,
-            conference_images: conference_images,
-            conference_comments: conference_comments,
-            requests: requests,
-            connected: connected,
-            connection_state: connection_state,
-        };
-    }
-   
-    $scope.initialize_user_bindings = function(user) {
-        var references = $scope.firebase_references();
-   
-        $scope.global_user_object = $firebase(new Firebase(references.firebase_user));
-        $scope.conference_user_object = $firebase(new Firebase(references.conference_user));
-    }
-   
-    $scope.initialize_bindings = function() {
-        var references = $scope.firebase_references();
-
-        $scope.conference = $firebase(new Firebase(references.conference));
-        $scope.images = $firebase(new Firebase(references.conference_images));
-        $scope.comments = $firebase(new Firebase(references.conference_comments));
-       
-        $scope.requests_ref = new Firebase(references.requests);
-        $scope.requests_ref.on('child_added', $scope.request_added);
-        
-        $scope.logged_in_and_ready = true;
-        
-    }
-   
+    // todo: fix
     $scope.watch_connection_state = function() {
         var references = $scope.firebase_references();        
         var connected_ref = new Firebase(references.connection_state);
@@ -171,6 +47,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         }); 
     }
    
+    // todo: fix
     $scope.watch_page_visibility = function() {
         if ($.support.pageVisibility) {
             $log.info("page visibility API supported");
@@ -192,6 +69,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         }
     }
    
+    // todo: fix
     $scope.mark_user_connected = function() {
         var references = $scope.firebase_references();
         
@@ -203,10 +81,12 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
                                                time_connected:Firebase.ServerValue.TIMESTAMP});
     }
     
+    // todo: fix
     $scope.mark_user_disconnected = function() {
         $scope.conference_user_object.$update({connected: false});
     }
    
+    // todo: fix
     $rootScope.$on("$firebaseAuth:login", function(e, user) {
         $log.info("User " + user.id + " logged in");
         $scope.self_uid = user.uid;
@@ -243,6 +123,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
 
     });
     
+    // todo: fix
     $scope.setup_logout_handler = function() {
         $rootScope.$on("$firebaseAuth:logout", function() {
             $log.info("logout");
@@ -252,7 +133,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         });
     }
     
-   
+    // todo: fix
     $scope.open_nick_change_modal = function() {
         $scope.show_default_nickname_notification = false;
         $scope.modalInstance = $modal.open({templateUrl: "nick_change_modal.html",
@@ -261,192 +142,19 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
                                             });
     };    
     
+    // todo: fix
     $scope.nickname_change = function(nickname) {
         $scope.global_user_object.$update({nickname: nickname});
         $scope.conference_user_object.$update({nickname: nickname});
     }
    
-    $scope.perform_login = function(nickname) {
-        $log.info("perform_login with nickname " + nickname);
-        $scope.perform_setup_on_login = true;
-        $scope.new_nickname = nickname;
-        $scope.login_obj.$login('anonymous', {rememberMe: true});        
-    }
-   
-    $scope.logout = function() {
-        $log.info("logout");
-        $scope.login_obj.$logout();
-    }
-   
+    // todo: fix
     $scope.close_conference = function() {
         $log.info("setting status to close_requested");
         $scope.conference.$update({status: "close_requested"});
     }
     
-    // watch window size    
-    $scope.retrieve_window_dimensions = function() {
-        $scope.retrieve_window_dimensions_internal();
-        $scope.$apply();
-    }
-
-    $scope.retrieve_window_dimensions_internal = function() {
-        $scope.window_width = $(window).width();
-        $scope.window_height = $(window).height();
-        $log.info("retrieved window dimensions: ", $scope.window_width, "x", $scope.window_height);
-    }
-    
-    
-    // disable resize handler for photoswipe
-    /*
-    angular.element($window).bind('resize', function () {
-        $scope.retrieve_window_dimensions();
-    });
-    */
-    
-    // watch height of photo-thumbnails element, we may need to adjust our image height
-    // to allow this element to be displayed
-    var photo_thumbnails_element = $("#photo-thumbnails");
-    $scope.photo_thumbnails_height = 0;
-    
-    // whether to display controls at the expense of full screen height or not
-    $scope.display_controls = true;
-    
-    /*
-    $scope.$watch
-    (
-        function () {
-            return photo_thumbnails_element.height();
-        },
-        function (newValue, oldValue) {
-            if (newValue != oldValue) {
-                $log.info("photo-thumbnails height: ", newValue);
-                $scope.photo_thumbnails_height = newValue;
-            }
-        }
-    );
-        */
-    
-    $scope.round_dimension = function(real_dimension) {
-        return Math.ceil(real_dimension / DIMENSION_INCREMENT) * DIMENSION_INCREMENT;
-    }
-
-    $scope.window_dimensions = {width: $(window).width(),
-                                height: $(window).height()};
-    
-    $scope.default_params = {width: DEFAULT_DIMENSION,
-                             height: DEFAULT_DIMENSION,
-                             quality: DEFAULT_COMPRESSION};
-    $scope.full_params = {width: $scope.round_dimension($(window).width()),
-                          height: $scope.round_dimension($(window).height()),
-                          quality: FULL_COMPRESSION};
-    
-
-    $scope.toggle_fullscreen = function() {
-        if ($scope.display_controls == true) {
-            $scope.display_controls = false;
-        } else {
-            $scope.display_controls = true;
-        }
-    }
-    
-    // watch variables which may cause us to resize window
-    /*
-    $scope.$watchCollection('[window_width, window_height, photo_thumbnails_height, display_controls]', 
-                            function(newValues, oldValues) {
-        $scope.resize_handler();
-    });    
-    */
-    
-    /*
-    $scope.resize_handler = function() {
-        var new_width = $scope.window_width;
-        var new_height = $scope.window_height;
-        
-        $log.info("resize_handler: new dimensions: ", new_width, "x", new_height,
-                  " current dimensions: ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height );
-        
-        var pixelRatio = 1;
-        if( window.devicePixelRatio != undefined ) {
-            pixelRatio = window.devicePixelRatio;
-        }
-        
-        $scope.full_params.width = $scope.round_dimension(new_width * pixelRatio);
-        $scope.full_params.height = $scope.round_dimension(new_height * pixelRatio);
-
-        if( $scope.display_controls && new_height > 400) { 
-            // substract space required to show photo thumbnails
-            // don't do this on mobile devices in landscape mode
-            
-            // special hack for ipad,: it seems the height of photo thumbnails
-            // is inaccurate in landscape mode, so add a few pixels
-            var ipad_hack_extra_height = 0;
-            if (new_width == 1024 && pixelRatio == 2) {
-                ipad_hack_extra_height = 20;
-            }
-            
-            new_height = new_height - $scope.photo_thumbnails_height - ipad_hack_extra_height;
-        }
-        
-        if (new_width == $scope.window_dimensions.width && 
-            Math.abs(new_height - $scope.window_dimensions.height) < 60) {
-            // don't do anything, window resize is due to user scrolling down
-        } else {
-        
-            $scope.window_dimensions.width = new_width;
-            $scope.window_dimensions.height = new_height;
-            $log.info("resize_handler: set dimensions to ", $scope.window_dimensions.width, "x", $scope.window_dimensions.height);
-        }
-    }
-    */
-    
-    // return true if new params have at least one dimension greater
-    $scope.params_greater = function(old_params, new_params) {
-        if (new_params.width > old_params.width ||
-            new_params.height > old_params.height ||
-            new_params.quality > old_params.quality) {
-                return true;
-            }
-        return false;
-    }
-    
-    $scope.$watch("conference.images", function(newValue, OldValue) {
-        if ($scope.conference == undefined) {
-            // cannot do anything yet
-            return;
-        }
-        
-        $log.info("change in images, sorting");
-        $scope.sorted_images =  $filter('orderObjectBy')($scope.conference.images, 'time_added');
-        
-        $scope.photoswipe_images = _.map($scope.sorted_images, function(image) {
-            return {src:   $scope.cloudinary_photoswipe_original_url(image),
-                    msrc:  $scope.cloudinary_photoswipe_thumbnail_url(image),
-                    thumb: $scope.cloudinary_photoswipe_thumbnail_url(image), // remove
-                    square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image), 
-                    type: 'image', // remove
-                    w: image.width,
-                    h: image.height,
-                    size: image.width + 'x' + image.height} // remove
-        });
-        
-        $log.info("photoswipe_images: ", $scope.photoswipe_images);
-        
-        angular.forEach($scope.sorted_images, function(image, index){
-            if (this[image.id] == undefined) {
-                this[image.id] = {photo_loaded_params: clone($scope.default_params),
-                                  photo_url: $scope.cloudinary_photo_default_url(image),
-                                  thumbnail_url: $scope.cloudinary_thumbnail_url(image),
-                                  photo_index: index};
-            }
-        }, $scope.global_data.photo_state_by_id);
-        
-        if (! $scope.watching_photo_index && $scope.sorted_images.length > 0) {
-            $scope.start_watch_photo_index();
-            $scope.watching_photo_index = true;
-        }
-        
-    }, true);
-
+    // todo: fix
     $scope.$watch("conference.users", function(newValue, OldValue) {
         if ($scope.conference == undefined) {
             // cannot do anything yet
@@ -459,6 +167,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         
     }, true);
     
+    // todo: fix
     $scope.request_added = function(snapshot) {
         var request_data = snapshot.val();
         $log.info("request_added: ", request_data);
@@ -498,6 +207,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         }
     }
     
+    // todo: fix
     $scope.rebuild_notifications = function() {
         if ($scope.conference == undefined) {
             // cannot do anything yet
@@ -524,14 +234,17 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         }
     }
     
+    // todo: fix
     $scope.$watch("show_default_nickname_notification", function(newValue, oldValue) {
         $scope.rebuild_notifications();
     });
     
+    // todo: fix
     $scope.$watch("conference.notifications", function(newValue, oldValue) {
         $scope.rebuild_notifications();
     }, true);
     
+    // todo: fix
     $scope.start_watch_photo_index = function() {
         $scope.$watch("global_data.photo_index", function(newValue, oldValue) {
             $log.info("global_data.photo_index changed: " + newValue);
@@ -564,12 +277,14 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         });
     }
  
+    // todo: fix
     $scope.show_image_following = function(image_id) {
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
         $("html, body").animate({ scrollTop: 0 }, 400);
     }
  
+    // todo: fix
     $scope.show_image = function(image_id) {
         var photo_index = $scope.global_data.photo_state_by_id[image_id].photo_index;
         $scope.global_data.photo_index = photo_index;
@@ -581,121 +296,10 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         return photo_index;
     }
  
-    $scope.$watch("full_params", function(newValue, oldValue) {
-        $scope.check_and_load_new_url($scope.global_data.photo_index);
-    }, true);
-   
-    $scope.check_and_load_new_url = function(photo_index) {
-        
-        var check_and_load_new_url_function = function(sorted_images, photo_index) {
-            var image_data = $scope.sorted_images[photo_index];
-            var loaded_params = $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params;
-            if ($scope.params_greater(loaded_params, $scope.full_params)) {
 
-                    if ($scope.load_new_url_promise != undefined) {
-                        $timeout.cancel($scope.load_new_url_promise);
-                        $scope.load_new_url_promise = undefined;
-                    }
-            
-                    var delay_load = 2000;
-                    if (new Date().getTime() - $scope.last_load_hires_timestamp > 2000) {
-                        // last load hires time was over two seconds ago, load this one instantly
-                        delay_load = 0;
-                    }
-                    $log.info("loading hires photo with delay ", delay_load);
-                    $scope.last_load_hires_timestamp = new Date().getTime();
-            
-                    $scope.load_new_url_promise = $timeout(function() {
-                            $log.info("loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
-                    
-                            // put new url in map - angular will load it automatically
-                            $scope.global_data.photo_state_by_id[image_data.id].photo_loaded_params = clone($scope.full_params);
-                            $scope.global_data.photo_state_by_id[image_data.id].photo_hires_url = $scope.cloudinary_photo_full_url(image_data);
-                            $scope.load_new_url_promise = undefined;
-                        }, delay_load);
-            
-                } else {
-                    $log.info("not loading new URL, loaded_params: ", loaded_params, " full_params: ", $scope.full_params);
-                }
-        }
-        
-        if ($scope.sorted_images == undefined || $scope.sorted_images.length == 0) {
-            // need this one-off handler for the first time a photo is loaded
-            var watch_handler = $scope.$watch("sorted_images", function(new_value) {
-                if ($scope.sorted_images != undefined && $scope.sorted_images.length > 0) {
-                    $log.info("sorted_images changed, can run check_and_load_new_url_function: ", $scope.sorted_images);
-                    check_and_load_new_url_function($scope.sorted_images, photo_index);
-                    watch_handler();
-                }
-            });
-        } else {
-            // run directly
-            check_and_load_new_url_function($scope.sorted_images, photo_index);
-        }
-    
-
-    }
-    
-    
-    $scope.cloudinary_photoswipe_original_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg");
-    };    
-
-    $scope.cloudinary_photoswipe_thumbnail_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
-                                                         width: 500, 
-                                                         height: 500,
-                                                         quality: DEFAULT_COMPRESSION,
-                                                         sharpen: 400});
-    };
-
-    $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
-                                                         width: 200, 
-                                                         height: 200,
-                                                         quality: DEFAULT_COMPRESSION,
-                                                         sharpen: 400});
-    };    
-    
-    
-    $scope.cloudinary_photo_full_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
-                                                         width: $scope.full_params.width, 
-                                                         height: $scope.full_params.height,
-                                                         quality: $scope.full_params.quality});
-    };
-   
-    $scope.cloudinary_photo_default_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
-                                                         width: $scope.default_params.width, 
-                                                         height: $scope.default_params.height,
-                                                         quality: $scope.default_params.quality});
-    };
-    
+    // todo: integrate with photoswipe
     $scope.cloudinary_photo_download_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {flags: 'attachment'});
     };
-    
-    $scope.cloudinary_thumbnail_url = function(image_id) {
-        if (image_id == undefined) {
-            return "holder.js/100x100/text:na";
-        }
-        return $.cloudinary.url(image_id + ".jpg", {crop: 'fill', 
-                                                         width: DEFAULT_THUMBNAIL_DIMENSION, 
-                                                         height: DEFAULT_THUMBNAIL_DIMENSION,
-                                                         quality: DEFAULT_COMPRESSION,
-                                                         sharpen: 400});
-    };    
-    
-    $scope.cloudinary_thumbnail_short_url = function(image_id) {
-        if (image_id == undefined) {
-            return "holder.js/100x100/text:na";
-        }
-        return $.cloudinary.url(image_id + ".jpg", {crop: 'fill', 
-                                                         width: DEFAULT_THUMBNAIL_DIMENSION, 
-                                                         height: DEFAULT_THUMBNAIL_SHORT_DIMENSION,
-                                                         quality: DEFAULT_COMPRESSION,
-                                                         sharpen: 400});
-    };        
     
 }]);
