@@ -218,7 +218,9 @@
             <a ng-click="thumbnail_click($index)">
               <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />
               <img style="display: none;" ng-src="{{img.msrc}}" />
-              <div class="overlay">test</div>
+              <div ng-if="img.currentlyViewingUsers.length > 0" class="overlay">
+                <span ng-repeat="user in img.currentlyViewingUsers">{{user.nickname}}</span>
+              </div>
             </a>        
         </div>
     </div>

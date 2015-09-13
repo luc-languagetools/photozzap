@@ -111,6 +111,28 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         return defer.promise;
     };
 
+    var createConferenceUsersArray = function(conference_key) {
+        var defer = $q.defer();
+        
+        service.conference_users_array = $firebaseArray(getConferenceRef(conference_key).
+                                                        child('users'));
+        
+        service.conference_users_array.$loaded().then(function(){
+            $log.info("users loaded");
+            $rootScope.$emit("users_changed", service.conference_users_array);
+            watchUsersArray();
+        });
+        
+        return defer.promise;        
+    };
+    
+    var watchUsersArray = function() {
+        service.conference_users_array.$watch(function(event_data){
+            $log.info("users array changed");
+            $rootScope.$emit("users_changed", service.conference_users_array);
+        });
+    };
+    
     var watchImagesArray = function() {
         // get notified on changes
         service.conference_images_array.$watch(function(event_data){
@@ -203,6 +225,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 
                     createConferenceUserNode(authData, conference_key).then(function(){
                         createConferenceImagesArray(conference_key).then(function(){
+                            createConferenceUsersArray(conference_key);
                             initialized_defer.resolve();                        
                         });
                     });

@@ -12,6 +12,25 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $log.info("PhotoswipeThumbnailsCtrl.init");
     };
 
+    $rootScope.$on("users_changed", function(event, users_array) {
+        $log.info("users array: ", users_array);
+        // build index by currently viewing
+        var groupedByCurrentlyViewing = _.groupBy(users_array, function(user) {
+            return user.currently_viewing;
+        });
+        $log.info("groupedByCurrentlyViewing: ", groupedByCurrentlyViewing);
+        
+        // iterate over images array and indicate who is viewing what
+        _.each($scope.images, function(image, index, list){
+            if(groupedByCurrentlyViewing[index]) {
+                $log.info("found currently viewing users: ", groupedByCurrentlyViewing[index].length);
+                image.currentlyViewingUsers = groupedByCurrentlyViewing[index];
+            } else {
+                image.currentlyViewingUsers = [];
+            }
+        });
+    });
+    
     $rootScope.$on("images_loaded", function(event, images_array){
         $log.info("images loaded", images_array);
         $scope.images = _.map(images_array, function(image_data){
