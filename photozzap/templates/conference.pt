@@ -239,6 +239,9 @@
             <div class="pswp__ui pswp__ui--hidden">
                 <div class="pswp__top-bar">
                     <div class="pswp__counter"></div>
+                    <div style="color: #FFFFFF;">
+                        <span ng-repeat="user in currently_viewing_users">{{user.nickname}}</span>
+                    </div>
                     <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
                     <button class="pswp__button pswp__button--share" title="Share"></button>
                     <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>

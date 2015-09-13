@@ -9,7 +9,13 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
 
     $scope.init = function() {
         $log.info("PhotoswipeUI.init");
+        $scope.currently_viewing_users = [];
     };
+    
+    $rootScope.$on("update_current_viewing_users", function(event, user_list){
+        $log.info("PhotoswipeUICtrl, update_current_viewing_users", user_list);
+        $scope.currently_viewing_users = user_list;
+    });
     
 }]);
 
@@ -38,6 +44,8 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
                 image.currentlyViewingUsers = [];
             }
         });
+        
+        $scope.reportCurrentlyViewingUsers();
     });
     
     $rootScope.$on("images_loaded", function(event, images_array){
@@ -143,6 +151,14 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         });
         
         $scope.photoswipe.init();
+    };
+    
+    $scope.reportCurrentlyViewingUsers = function() {
+        if($scope.photoswipe_open) {
+            var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
+            // get list of users currently viewing image
+            $rootScope.$emit("update_current_viewing_users", $scope.images[currentlyViewingIndex].currentlyViewingUsers);
+        }
     };
     
     $scope.reportCurrentlyViewingIndex = function() {
