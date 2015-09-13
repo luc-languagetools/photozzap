@@ -1,9 +1,60 @@
-conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$log", function($scope, $log) {
+
+conferenceModule.filter('photoswipeArray', function(){
+    return function(input) {
+        
+    };
+});
+
+conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", function($scope, $rootScope, $log) {
 
     $scope.init = function() {
+        $scope.photoswipe_open = false;
         $log.info("PhotoswipeThumbnailsCtrl.init");
     };
 
+    $rootScope.$on("images_loaded", function(event, images_array){
+        $log.info("images loaded", images_array);
+        $scope.images = _.map(images_array, function(image_data){
+            return $scope.convert_image(image_data);
+        });
+    });    
+    
+    $rootScope.$on("image_added", function(event, eventData){
+        var imageIndex = eventData.imageIndex;
+        var imageData = eventData.imageData;
+        $log.info("image added at index ", imageIndex, imageData);
+        $scope.images.push($scope.convert_image(imageData));
+    });
+    
+    $scope.convert_image = function(image_data){
+        var photoswipe_image = {src:   $scope.cloudinary_photoswipe_original_url(image_data),
+                                msrc:  $scope.cloudinary_photoswipe_thumbnail_url(image_data),
+                                square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image_data), 
+                                w: image_data.width,
+                                h: image_data.height};
+        return photoswipe_image;
+    };
+    
+    $scope.cloudinary_photoswipe_original_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg");
+    };    
+
+    $scope.cloudinary_photoswipe_thumbnail_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
+                                                         width: 500, 
+                                                         height: 500,
+                                                         quality: 75,
+                                                         sharpen: 400});
+    };    
+    
+    $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
+        return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
+                                                         width: 200, 
+                                                         height: 200,
+                                                         quality: 75,
+                                                         sharpen: 400});
+    };        
+    
     $scope.thumbnail_click = function(index) {
         $log.info("photoswipeThumbnailsCtrl.thumbnail_click");
         
@@ -45,9 +96,16 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$log", funct
         };
 
         // Pass data to PhotoSwipe and initialize it
-        gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, $scope.photoswipe_images, options);
-        gallery.init();        
-        
+        $scope.photoswipe_open = true;
+        $scope.photoswipe = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, $scope.images, options);
+        $scope.photoswipe.listen('close', function() { 
+            $log.info("photoswipe gallery closed");
+            $scope.photoswipe_open = false;
+            $scope.$apply();
+        });
+        $scope.photoswipe.init();
     };
+    
+    
     
 }]);

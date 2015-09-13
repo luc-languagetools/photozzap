@@ -213,9 +213,9 @@
 
 
 <script type="text/ng-template" id="photoswipe_thumbnails.html">
-  <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="img in photoswipe_images">
-    <a ng-click="thumbnail_click($index)" class="thumbnail" data-size="{{img.size}}">
-      <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" data-orig-src="{{img.thumb}}" />
+  <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" ng-repeat="img in images">
+    <a ng-click="thumbnail_click($index)" class="thumbnail" >
+      <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />
     </a>
   </div>
 </script>

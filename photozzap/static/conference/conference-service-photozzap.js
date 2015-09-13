@@ -103,12 +103,25 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                                                          child('images'));
         
         service.conference_images_array.$loaded().then(function(){
+            $rootScope.$emit("images_loaded", service.conference_images_array);
+            watchImagesArray();
             defer.resolve();
         });
         
         return defer.promise;
     };
 
+    var watchImagesArray = function() {
+        // get notified on changes
+        service.conference_images_array.$watch(function(event_data){
+            if(event_data.event == "child_added") {
+                var imageIndex = service.conference_images_array.$indexFor(event_data.key);
+                var imageData = service.conference_images_array.$getRecord(event_data.key);
+                $rootScope.$emit("image_added", {imageData: imageData, imageIndex: imageIndex});
+            }
+        });    
+    };
+    
     // **** service public API ****
     
     service.getInitializedPromise = function() {
