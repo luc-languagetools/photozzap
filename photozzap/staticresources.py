@@ -17,6 +17,11 @@ conference_javascript_files = [
 "static/photoswipe/photoswipe-ui-default.js",
 "static/photoswipe/angular-photoswipe.js",
 
+# masonry
+"static/masonry/masonry.pkgd.js",
+"static/masonry/angular-masonry.js",
+"static/masonry/imagesloaded.pkgd.js",
+
 # cloudinary files
 "static/cloudinary/jquery.ui.widget.js",
 "static/cloudinary/jquery.iframe-transport.js",

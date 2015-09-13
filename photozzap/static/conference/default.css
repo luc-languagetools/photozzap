@@ -1,4 +1,12 @@
 
+.masonry-brick {
+    margin: 1em;
+    display: none;
+}
+
+.masonry-brick.loaded {
+    display: block;
+}
 
 
 .outer_empty_container {
