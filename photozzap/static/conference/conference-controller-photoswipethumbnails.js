@@ -5,7 +5,7 @@ conferenceModule.filter('photoswipeArray', function(){
     };
 });
 
-conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", function($scope, $rootScope, $log) {
+conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", "photozzapService", function($scope, $rootScope, $log, photozzapService) {
 
     $scope.init = function() {
         $scope.photoswipe_open = false;
@@ -101,7 +101,13 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $scope.photoswipe.listen('close', function() { 
             $log.info("photoswipe gallery closed");
             $scope.photoswipe_open = false;
+            photozzapService.currentlyViewing(null);
             $scope.$apply();
+        });
+        $scope.photoswipe.listen('afterChange', function(){
+            var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
+            $log.info("currently viewing index: ", currentlyViewingIndex);
+            photozzapService.currentlyViewing(currentlyViewingIndex);
         });
         $scope.photoswipe.init();
     };

@@ -12,6 +12,15 @@
     display: block;
 }
 
+.masonry-brick .overlay {
+    position: absolute;
+    top: 80%;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    display: block;
+    background: rgba(0, 0, 0, .6);
+}
 
 .outer_empty_container {
     padding: 6%;

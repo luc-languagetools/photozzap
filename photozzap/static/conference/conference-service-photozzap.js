@@ -133,6 +133,12 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         return service.global_user_node;
     };
     
+    // indicate which image the user is currently viewing
+    service.currentlyViewing = function(index) {
+        service.conference_user_node.currently_viewing = index;
+        service.conference_user_node.$save();
+    };
+    
     service.addImage = function(imageData) {
         var image = {id: imageData.id,
                      width: imageData.width,
