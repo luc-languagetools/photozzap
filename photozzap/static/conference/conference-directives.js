@@ -14,6 +14,19 @@ conferenceModule.directive('photoswipethumbnails', function() {
   };
 });
 
+conferenceModule.directive('photoswipeui', function() {
+  return {
+      restrict: 'AE',
+      replace: 'true',
+      controller: "PhotoswipeUICtrl",
+      scope: true,
+      templateUrl: 'photoswipe_ui.html',
+      link: function (scope, elem, attrs) {
+        scope.init();
+      }
+  };
+});
+
 
 conferenceModule.directive('photothumbnails', function() {
   return {

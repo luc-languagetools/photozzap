@@ -5,6 +5,15 @@ conferenceModule.filter('photoswipeArray', function(){
     };
 });
 
+conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log", "photozzapService", function($scope, $rootScope, $log, photozzapService) {
+
+    $scope.init = function() {
+        $log.info("PhotoswipeUI.init");
+    };
+    
+}]);
+
+
 conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", "photozzapService", function($scope, $rootScope, $log, photozzapService) {
 
     $scope.init = function() {
