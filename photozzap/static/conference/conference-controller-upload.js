@@ -1,4 +1,4 @@
-conferenceModule.controller("UploadCtrl", ["$scope", "$log", function($scope, $log) {
+conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService", function($scope, $log, photozzapService) {
     $scope.resize = true;
     
     $scope.uploadcare_on_upload_complete = function(info) {
@@ -63,11 +63,13 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", function($scope, $l
                                       "height",
                                       data.result.height);
                             
-                            var image = {id: data.result.public_id,
-                                         width: data.result.width,
-                                         height: data.result.height};
+                            var imageData = {id: data.result.public_id,
+                                             width: data.result.width,
+                                             height: data.result.height};
 
-                            $(document).trigger('upload_image', image);
+                            // $(document).trigger('upload_image', image);
+                            photozzapService.addImage(imageData);
+                            
                             
                         })
             );            

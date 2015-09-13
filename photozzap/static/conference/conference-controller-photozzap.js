@@ -41,8 +41,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
     $scope.show_photo_counter = false;
     $scope.show_photo_timeout = undefined;
   
-    $scope.init = function(firebase_base, server_name, server_env) {
-        // $scope.conf_key = $location.path().substring(1);
+    $scope.init = function() {
         var conference_key = $location.path().substring(1);
         
         photozzapService.initialize(conference_key);
@@ -59,10 +58,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         } 
         */
     
-        $scope.firebase_base = firebase_base;
-        $scope.server_name = server_name;
-        $scope.server_env = server_env;
-       
+
         /*
        
         var temp_references = $scope.compute_firebase_references({conf_key: $scope.conf_key,

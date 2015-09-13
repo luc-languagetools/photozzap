@@ -1,6 +1,6 @@
 
-conferenceModule.factory('photozzapService', ["$rootScope", "$log", "$firebaseAuth", "$firebaseObject", "$q", "photozzapConfig", 
-function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig) {
+conferenceModule.factory('photozzapService', ["$rootScope", "$log", "$firebaseAuth", "$firebaseObject", "$firebaseArray", "$q", "photozzapConfig", 
+function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, photozzapConfig) {
     var service = {
     
     };
@@ -54,11 +54,16 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
                 defer.resolve();
             });            
         });
-                                                       
+
   
         return defer.promise;
     };
     
+    
+    var getConferenceRef = function(conference_key) {
+        var ref = new Firebase(photozzapConfig.firebaseRoot);
+        return ref.child(photozzapConfig.firstNode).child('conferences').child(conference_key);
+    };
     
     var createConferenceUserNode = function(authData, conference_key){
         var defer = $q.defer();
@@ -66,18 +71,39 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
         // get user unique key
         $log.info("user uid: ", authData.uid);
         
-        var ref = new Firebase(photozzapConfig.firebaseRoot);
-        service.conference_user_node = $firebaseObject(ref.child(photozzapConfig.firstNode).
-                                                           child('conferences').
-                                                           child(conference_key).
+        service.conference_user_node = $firebaseObject(getConferenceRef(conference_key).
                                                            child('users').
                                                            child(authData.uid));
         
         service.conference_user_node.$loaded().then(function(){
             service.conference_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
+            if(! service.conference_user_node.nickname) {
+                // no nickname defined
+                // do we have one in the global user node ?
+                var global_nickname = service.global_user_node.nickname;
+                if( global_nickname ) {
+                    $log.info("copying nickname from global user node: ", global_nickname);
+                    service.conference_user_node.nickname = global_nickname;
+                } else {
+                    // emit broadcast to request nickname change
+                }
+            }
             service.conference_user_node.$save().then(function(){
                 defer.resolve();
             });
+        });
+        
+        return defer.promise;
+    };
+    
+    var createConferenceImagesArray = function(conference_key) {
+        var defer = $q.defer();
+        
+        service.conference_images_array = $firebaseArray(getConferenceRef(conference_key).
+                                                         child('images'));
+        
+        service.conference_images_array.$loaded().then(function(){
+            defer.resolve();
         });
         
         return defer.promise;
@@ -92,6 +118,16 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
     // only call when initialized
     service.getGlobalUserNode = function() {
         return service.global_user_node;
+    };
+    
+    service.addImage = function(imageData) {
+        var image = {id: imageData.id,
+                     width: imageData.width,
+                     height: imageData.height,
+                     time_added: Firebase.ServerValue.TIMESTAMP,
+                     user_id: service.authData.uid};
+        $log.info("adding image ", image);
+        service.conference_images_array.$add(image);
     };
     
     service.create_conference = function(conferenceName) {
@@ -147,7 +183,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
                     $log.info("conference key: ", conference_key);
                 
                     createConferenceUserNode(authData, conference_key).then(function(){
-                        initialized_defer.resolve();
+                        createConferenceImagesArray(conference_key).then(function(){
+                            initialized_defer.resolve();                        
+                        });
                     });
                 } else {
                     initialized_defer.resolve();
@@ -157,8 +195,6 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
         });
         
     };
-    
-    // initialize();
    
     return service;
 }]);
