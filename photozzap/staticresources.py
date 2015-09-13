@@ -15,7 +15,6 @@ conference_javascript_files = [
 # photoswipe
 "static/photoswipe/photoswipe.js",
 "static/photoswipe/photoswipe-ui-default.js",
-"static/photoswipe/angular-photoswipe.js",
 
 # masonry
 "static/masonry/masonry.pkgd.js",
@@ -66,7 +65,6 @@ conference_css_files = [
 "static/icomoon/style.css",
 "static/photoswipe/photoswipe.css",
 "static/photoswipe/default-skin.css",
-"static/photoswipe/angular-photoswipe.css",
 ]
 
 home_css_files = [
