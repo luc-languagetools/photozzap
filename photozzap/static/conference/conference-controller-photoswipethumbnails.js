@@ -123,14 +123,23 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
             photozzapService.currentlyViewing(null);
             $scope.$apply();
         });
-        $scope.photoswipe.listen('afterChange', function(){
-            var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
-            $log.info("currently viewing index: ", currentlyViewingIndex);
-            photozzapService.currentlyViewing(currentlyViewingIndex);
+        
+        // wait until photoswipe is opened once before using beforeChange event
+        
+        $scope.photoswipe.listen('initialZoomInEnd', function() {
+            $scope.reportCurrentlyViewingIndex();
+            $scope.photoswipe.listen('beforeChange', function(){
+                $scope.reportCurrentlyViewingIndex();
+            });            
         });
+        
         $scope.photoswipe.init();
     };
     
-    
+    $scope.reportCurrentlyViewingIndex = function() {
+        var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
+        $log.info("currently viewing index: ", currentlyViewingIndex);
+        photozzapService.currentlyViewing(currentlyViewingIndex);    
+    };
     
 }]);
