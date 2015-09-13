@@ -213,7 +213,7 @@
 
 
 <script type="text/ng-template" id="photoswipe_thumbnails.html">
-    <div masonry>
+    <div class="masonry-container" masonry="{ isFitWidth: true }">
         <div class="masonry-brick" ng-repeat="img in images">
             <a ng-click="thumbnail_click($index)">
               <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />

@@ -1,6 +1,10 @@
 
+.masonry-container {
+    margin: 0 auto;
+}
+
 .masonry-brick {
-    margin: 1em;
+    margin: 5px;
     display: none;
 }
 

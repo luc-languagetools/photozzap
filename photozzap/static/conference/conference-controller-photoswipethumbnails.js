@@ -43,15 +43,15 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
                                                          width: 500, 
                                                          height: 500,
-                                                         quality: 75,
+                                                         quality: 80,
                                                          sharpen: 400});
     };    
     
     $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
-                                                         width: 200, 
+                                                         width: 250, 
                                                          height: 200,
-                                                         quality: 75,
+                                                         quality: 80,
                                                          sharpen: 400});
     };        
     
