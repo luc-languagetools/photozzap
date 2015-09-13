@@ -60,19 +60,27 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
     };
     
     
-    var createConferenceUserNode = function(authData){
+    var createConferenceUserNode = function(authData, conference_key){
+        var defer = $q.defer();
+    
         // get user unique key
         $log.info("user uid: ", authData.uid);
         
         var ref = new Firebase(photozzapConfig.firebaseRoot);
         service.conference_user_node = $firebaseObject(ref.child(photozzapConfig.firstNode).
                                                            child('conferences').
-                                                           child(service.conference_key).
+                                                           child(conference_key).
                                                            child('users').
                                                            child(authData.uid));
         
-        service.conference_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
-        return service.conference_user_node.$save();
+        service.conference_user_node.$loaded().then(function(){
+            service.conference_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
+            service.conference_user_node.$save().then(function(){
+                defer.resolve();
+            });
+        });
+        
+        return defer.promise;
     };
 
     // **** service public API ****
@@ -129,9 +137,6 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
     
     
     service.initialize = function(conference_key) {
-        // service.conference_key = $location.path().substring(1);
-        // $log.info("Conference Key: ", service.conference_key);
-        
         var authenticate_promise = authenticate();
         
         authenticate_promise.then(function(authData) {
@@ -139,7 +144,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $q, photozzapConfig)
             
             createGlobalUserNode(authData).then(function(){
                 if(conference_key != null) {
-                    createConferenceUserNode(authData).then(function(){
+                    $log.info("conference key: ", conference_key);
+                
+                    createConferenceUserNode(authData, conference_key).then(function(){
                         initialized_defer.resolve();
                     });
                 } else {

@@ -42,7 +42,13 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
     $scope.show_photo_timeout = undefined;
   
     $scope.init = function(firebase_base, server_name, server_env) {
-        $scope.conf_key = $location.path().substring(1);
+        // $scope.conf_key = $location.path().substring(1);
+        var conference_key = $location.path().substring(1);
+        
+        photozzapService.initialize(conference_key);
+        photozzapService.getInitializedPromise().then(function(){
+            $scope.logged_in_and_ready = true;
+        });
     
         // disable resize handler for photoswipe
         /*
