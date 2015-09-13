@@ -37,14 +37,3 @@ conferenceModule.filter('orderObjectByAndInsertId', function(){
     return array;
  }
 });
-
-conferenceModule.factory('conferenceService', function ($rootScope, $log) {
-    var service = {};
-    
-    $(document).bind('upload_image', function(ev, image_data) {
-        $log.info("conferenceService: received upload_image event");
-        $rootScope.$broadcast('upload_image_data', image_data);
-    });
-    
-    return service;
-});

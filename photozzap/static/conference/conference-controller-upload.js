@@ -56,8 +56,6 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
                             
-                            // $log.info("cloudinary upload done, data: ", data);                            
-                            
                             $log.info("cloudinary upload done, dimensions: width: ",
                                       data.result.width,
                                       "height",
@@ -67,7 +65,6 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
                                              width: data.result.width,
                                              height: data.result.height};
 
-                            // $(document).trigger('upload_image', image);
                             photozzapService.addImage(imageData);
                             
                             

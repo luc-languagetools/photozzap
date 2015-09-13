@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapCtrl", 
-["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "conferenceService", "photozzapService", 
-function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout, conferenceService, photozzapService) {
+["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "photozzapService", 
+function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  photozzapService) {
     var DIMENSION_INCREMENT = 100;
 
     var DEFAULT_THUMBNAIL_DIMENSION = 250;    
@@ -282,18 +282,6 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         $log.info("setting status to close_requested");
         $scope.conference.$update({status: "close_requested"});
     }
-    
-    $scope.$on('upload_image_data', function(event, data){ 
-        $log.info("upload_image_data, cloudinary id: " + data.id);
-        $scope.images.$add({id: data.id,
-                            width: data.width,
-                            height: data.height,
-                            time_added: Firebase.ServerValue.TIMESTAMP,
-                            user_id: $scope.login_obj.user.uid});
-    });
-    
-    
-    
     
     // watch window size    
     $scope.retrieve_window_dimensions = function() {
