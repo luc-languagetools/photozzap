@@ -256,6 +256,18 @@ a.pswp__share--download:hover {
   opacity: 0.75;
   padding: 0 10px; }
 
+.pwsp__users  {
+  position: absolute;
+  left: 45%;
+  top: 0;
+  height: 44px;
+  font-size: 18px;
+  line-height: 44px;
+  color: #FFF;
+  opacity: 0.75;
+  padding: 0 10px; 
+}
+  
 /*
 	
 	4. Caption
