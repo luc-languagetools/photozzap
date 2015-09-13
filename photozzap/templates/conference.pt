@@ -217,6 +217,7 @@
         <div class="masonry-brick" ng-repeat="img in images">
             <a ng-click="thumbnail_click($index)">
               <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />
+              <img style="display: none;" ng-src="{{img.msrc}}" />
             </a>        
         </div>
     </div>
