@@ -12,47 +12,67 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
         $scope.currently_viewing_users = [];
     };
     
-    $rootScope.$on("update_current_viewing_users", function(event, user_list){
-        $log.info("PhotoswipeUICtrl, update_current_viewing_users", user_list);
-        $scope.currently_viewing_users = user_list;
+    $rootScope.$on("update_current_viewing_users", function(event, userViewingMap){
+        $log.info("PhotoswipeUICtrl, update_current_viewing_users", userViewingMap);
+        // $scope.currently_viewing_users = user_list;
     });
     
 }]);
 
 
-conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", "photozzapService", function($scope, $rootScope, $log, photozzapService) {
+conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", "$q", "photozzapService", function($scope, $rootScope, $log, $q, photozzapService) {
 
     $scope.init = function() {
         $scope.photoswipe_open = false;
         $log.info("PhotoswipeThumbnailsCtrl.init");
+        
+        // map from user id to image index
+        $scope.userIdToCurrentlyViewingIndex = {};
+        
+        $scope.imagesLoaded = $q.defer();
+        photozzapService.getInitializedPromise().then(function(){
+           // setup watch on users array
+           $scope.watchUsersArray(photozzapService.getUsersArray());
+        });        
     };
 
-    $rootScope.$on("users_changed", function(event, users_array) {
-        $log.info("users array: ", users_array);
-        // build index by currently viewing
-        var groupedByCurrentlyViewing = _.groupBy(users_array, function(user) {
-            return user.currently_viewing;
+    $scope.watchUsersArray = function(conferenceUsersArray) {
+        $scope.imagesLoaded.promise.then(function(){
+            // setup watch on children change or additions
+            conferenceUsersArray.$watch(function(event_data){
+                if(event_data.event == "child_changed" || event_data.event == "child_added") {
+                    var user = conferenceUsersArray.$getRecord(event_data.key);
+                    $scope.processUserChange(user);
+                };
+            });
+            // process all existing items
+            _.each(conferenceUsersArray, $scope.processUserChange);
         });
-        $log.info("groupedByCurrentlyViewing: ", groupedByCurrentlyViewing);
-        
-        // iterate over images array and indicate who is viewing what
-        _.each($scope.images, function(image, index, list){
-            if(groupedByCurrentlyViewing[index]) {
-                $log.info("found currently viewing users: ", groupedByCurrentlyViewing[index].length);
-                image.currentlyViewingUsers = groupedByCurrentlyViewing[index];
-            } else {
-                image.currentlyViewingUsers = [];
-            }
-        });
-        
-        $scope.reportCurrentlyViewingUsers();
-    });
+    };
     
+    $scope.processUserChange = function(user) {
+        var uid = user.$id;
+        
+        $log.info("PhotoswipeThumbnailsCtrl, processUserChange: ", uid);
+        // need to process a change in currently_viewing ?
+        var userCurrentlyViewing = user.currently_viewing;
+        if(userCurrentlyViewing) {
+            if(_.has($scope.userIdToCurrentlyViewingIndex, uid)) {
+                // user was previous viewing an image
+                delete $scope.images[$scope.userIdToCurrentlyViewingIndex[uid]].userViewingMap[uid];
+            }
+            $scope.userIdToCurrentlyViewingIndex[uid] = userCurrentlyViewing;
+            $scope.images[userCurrentlyViewing].userViewingMap[uid] = user;
+        }
+    };
+    
+   
     $rootScope.$on("images_loaded", function(event, images_array){
         $log.info("images loaded", images_array);
         $scope.images = _.map(images_array, function(image_data){
             return $scope.convert_image(image_data);
         });
+        $scope.imagesLoaded.resolve();
     });    
     
     $rootScope.$on("image_added", function(event, eventData){
@@ -67,7 +87,8 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
                                 msrc:  $scope.cloudinary_photoswipe_thumbnail_url(image_data),
                                 square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image_data), 
                                 w: image_data.width,
-                                h: image_data.height};
+                                h: image_data.height,
+                                userViewingMap: {}};
         return photoswipe_image;
     };
     
@@ -157,7 +178,7 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         if($scope.photoswipe_open) {
             var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
             // get list of users currently viewing image
-            $rootScope.$emit("update_current_viewing_users", $scope.images[currentlyViewingIndex].currentlyViewingUsers);
+            $rootScope.$emit("update_current_viewing_users", $scope.images[currentlyViewingIndex].userViewingMap);
         }
     };
     

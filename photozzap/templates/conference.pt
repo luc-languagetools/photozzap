@@ -213,14 +213,14 @@
 
 
 <script type="text/ng-template" id="photoswipe_thumbnails.html">
-    <div class="masonry-container" masonry="{ isFitWidth: true }">
+     <div class="masonry-container" masonry="{ isFitWidth: true }">
         <div class="masonry-brick" ng-repeat="img in images">
             <a ng-click="thumbnail_click($index)">
               <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />
               <img style="display: none;" ng-src="{{img.msrc}}" />
               <div ng-if="img.currentlyViewingUsers.length > 0" class="overlay">
                 <span ng-repeat="user in img.currentlyViewingUsers">{{user.nickname}}</span>
-              </div>
+              </div>              
             </a>        
         </div>
     </div>
@@ -240,7 +240,7 @@
                 <div class="pswp__top-bar">
                     <div class="pswp__counter"></div>
                     <div class="pwsp__users" ng-if="currently_viewing_users.length >  0">
-                        <span ng-repeat="user in currently_viewing_users">{{user.nickname}}</span>
+                        <span class="icon-eye"></span><span ng-repeat="user in currently_viewing_users">{{user.nickname}} </span>
                     </div>
                     <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
                     <button class="pswp__button pswp__button--share" title="Share"></button>

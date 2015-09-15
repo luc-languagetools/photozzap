@@ -88,6 +88,8 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                     // emit broadcast to request nickname change
                 }
             }
+            // the user is not viewing any image at startup
+            service.conference_user_node.currently_viewing = null;
             service.conference_user_node.$save().then(function(){
                 defer.resolve();
             });
@@ -119,19 +121,24 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         
         service.conference_users_array.$loaded().then(function(){
             $log.info("users loaded");
+            /*
             $rootScope.$emit("users_changed", service.conference_users_array);
             watchUsersArray();
+            */
+            defer.resolve();
         });
         
         return defer.promise;        
     };
     
+    /*
     var watchUsersArray = function() {
         service.conference_users_array.$watch(function(event_data){
             $log.info("users array changed");
             $rootScope.$emit("users_changed", service.conference_users_array);
         });
     };
+    */
     
     var watchImagesArray = function() {
         // get notified on changes
@@ -151,6 +158,11 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     // only call when initialized
+    
+    service.getUsersArray = function() {
+        return service.conference_users_array;
+    };
+    
     service.getGlobalUserNode = function() {
         return service.global_user_node;
     };
@@ -225,8 +237,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 
                     createConferenceUserNode(authData, conference_key).then(function(){
                         createConferenceImagesArray(conference_key).then(function(){
-                            createConferenceUsersArray(conference_key);
-                            initialized_defer.resolve();                        
+                            createConferenceUsersArray(conference_key).then(function(){
+                                initialized_defer.resolve();                        
+                            });
                         });
                     });
                 } else {
