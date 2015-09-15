@@ -27,15 +27,14 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
             multiWidget1.value(null);
             multiWidget2.value(null);
         })
-        .fail(function() {
-            $log.error("couldn't load file group");
+        .fail(function(error) {
+            $log.error("couldn't load file group ", error);
         });    
     };
     
     $scope.init = function() {
    
         $(document).ready(function() {
-            UPLOADCARE_PUBLIC_KEY = '071cc18cd47faf518850';
             
             var multiWidget1 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-1]');
             var multiWidget2 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-2]');

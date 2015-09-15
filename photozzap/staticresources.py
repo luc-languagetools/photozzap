@@ -26,7 +26,7 @@ conference_javascript_files = [
 "static/cloudinary/jquery.cloudinary.js",
 
 # upload care
-"static/uploadcare/uploadcare.full.min.js",
+"static/uploadcare/uploadcare.min.js",
 
 # firebase
 "static/firebase/firebase.js",
