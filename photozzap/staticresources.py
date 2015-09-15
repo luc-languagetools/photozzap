@@ -20,7 +20,7 @@ conference_javascript_files = [
 
 # cloudinary files
 # not needed
-# "static/cloudinary/jquery.ui.widget.js",
+"static/cloudinary/jquery.ui.widget.js",
 "static/cloudinary/jquery.iframe-transport.js",
 "static/cloudinary/jquery.fileupload.js",
 "static/cloudinary/jquery.cloudinary.js",
