@@ -6,10 +6,7 @@ conference_javascript_files = [
 "static/angular/angular-animate.js",
 "static/angular/angular-touch.js",
 "static/angular/ui-bootstrap-tpls-0.10.0.min.js",
-"static/angular-carousel/angular-carousel.js",
 "static/jquery-libs/jquery-visibility.js",
-"static/jquery-libs/md5.js",
-"static/jquery-libs/jquery.browser-fingerprint-1.1.js",
 "static/jquery-libs/underscore-min.js",
 
 # photoswipe
@@ -22,7 +19,8 @@ conference_javascript_files = [
 "static/masonry/angular-masonry.js",
 
 # cloudinary files
-"static/cloudinary/jquery.ui.widget.js",
+# not needed
+# "static/cloudinary/jquery.ui.widget.js",
 "static/cloudinary/jquery.iframe-transport.js",
 "static/cloudinary/jquery.fileupload.js",
 "static/cloudinary/jquery.cloudinary.js",
@@ -34,12 +32,7 @@ conference_javascript_files = [
 "static/firebase/firebase.js",
 "static/firebase/angularfire.min.js",
 
-# angular moment
-"static/angular-moment/moment.min.js",
-"static/angular-moment/angular-moment.min.js",
-
-"static/conference/conference-ui.js",
-"static/conference/conference-init-services.js",
+"static/conference/conference-angular-setup.js",
 "static/conference/conference-config.js",
 "static/conference/conference-service-photozzap.js",
 "static/conference/conference-controller-home.js",
@@ -52,7 +45,7 @@ conference_javascript_files = [
 "static/conference/conference-controller-upload.js",
 "static/conference/conference-controller-download.js",
 "static/conference/conference-directives.js",
-"static/conference/conference-initialize.js",
+"static/conference/conference-helperfunctions.js",
 ]
 
 home_javascript_files = conference_javascript_files
