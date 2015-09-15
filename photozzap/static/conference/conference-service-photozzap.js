@@ -139,6 +139,10 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     // **** service public API ****
     
+    service.getUid = function() {
+        return service.authData.uid;
+    };
+    
     service.getInitializedPromise = function() {
         return initialized_defer.promise;
     };

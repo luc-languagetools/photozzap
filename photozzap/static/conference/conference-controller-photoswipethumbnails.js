@@ -9,12 +9,40 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
 
     $scope.init = function() {
         $log.info("PhotoswipeUI.init");
-        $scope.currently_viewing_users = [];
+        // photo that we're looking at right now
+        $scope.currentlyViewingIndex = -1;
+        // map from image id to list of users viewing that photo
+        $scope.imageIdToUserListMap = {};
+        
+        // get user id
+        photozzapService.getInitializedPromise().then(function(){
+            $scope.uid = photozzapService.getUid();
+            $scope.watchUsersArray(photozzapService.getUsersArray());
+        });
     };
     
-    $rootScope.$on("update_current_viewing_users", function(event, userViewingMap){
-        $log.info("PhotoswipeUICtrl, update_current_viewing_users", userViewingMap);
-        // $scope.currently_viewing_users = user_list;
+    $scope.watchUsersArray = function(conferenceUsersArray){
+        $scope.conference_users = conferenceUsersArray;
+        $scope.updateMap();
+        $scope.conference_users.$watch(function(){
+            $scope.updateMap();
+        });
+    };
+    
+    $scope.updateMap = function() {
+        var usersWithoutMe = _.filter($scope.conference_users, function(user){
+            return user.$id != $scope.uid;
+        });
+        $scope.imageIdToUserListMap = _.groupBy(usersWithoutMe, function(user){
+            return user.currently_viewing;
+        });    
+        
+        $log.info("PhotoswipeUICtrl.updateMap ", $scope.imageIdToUserListMap);
+    };
+    
+    $rootScope.$on("currently_viewing_index", function(event, index){
+        $log.info("PhotoswipeUICtrl, currently viewing index ", index);
+        $scope.currentlyViewingIndex = index;
     });
     
 }]);
@@ -171,18 +199,14 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $scope.photoswipe.init();
     };
     
-    $scope.reportCurrentlyViewingUsers = function() {
-        if($scope.photoswipe_open) {
-            var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
-            // get list of users currently viewing image
-            $rootScope.$emit("update_current_viewing_users", $scope.images[currentlyViewingIndex].userViewingMap);
-        }
-    };
-    
     $scope.reportCurrentlyViewingIndex = function() {
         var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
         $log.info("currently viewing index: ", currentlyViewingIndex);
         photozzapService.currentlyViewing(currentlyViewingIndex);    
+
+        // the photoswipe UI controller listen to this
+        $rootScope.$emit("currently_viewing_index", currentlyViewingIndex);
+        
     };
     
 }]);
