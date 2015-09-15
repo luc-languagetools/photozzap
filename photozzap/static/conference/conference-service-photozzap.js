@@ -105,7 +105,6 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                                                          child('images'));
         
         service.conference_images_array.$loaded().then(function(){
-            $rootScope.$emit("images_loaded", service.conference_images_array);
             watchImagesArray();
             defer.resolve();
         });
@@ -121,24 +120,11 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         
         service.conference_users_array.$loaded().then(function(){
             $log.info("users loaded");
-            /*
-            $rootScope.$emit("users_changed", service.conference_users_array);
-            watchUsersArray();
-            */
             defer.resolve();
         });
         
         return defer.promise;        
     };
-    
-    /*
-    var watchUsersArray = function() {
-        service.conference_users_array.$watch(function(event_data){
-            $log.info("users array changed");
-            $rootScope.$emit("users_changed", service.conference_users_array);
-        });
-    };
-    */
     
     var watchImagesArray = function() {
         // get notified on changes
@@ -158,6 +144,10 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     // only call when initialized
+    
+    service.getImagesArray = function() {
+        return service.conference_images_array;
+    };
     
     service.getUsersArray = function() {
         return service.conference_users_array;

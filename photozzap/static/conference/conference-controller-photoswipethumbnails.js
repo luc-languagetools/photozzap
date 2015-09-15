@@ -29,25 +29,24 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         // map from user id to image index
         $scope.userIdToCurrentlyViewingIndex = {};
         
-        $scope.imagesLoaded = $q.defer();
         photozzapService.getInitializedPromise().then(function(){
-           // setup watch on users array
-           $scope.watchUsersArray(photozzapService.getUsersArray());
+            // process initial image array
+            $scope.processInitialImageArray(photozzapService.getImagesArray());
+            // setup watch on users array
+            $scope.watchUsersArray(photozzapService.getUsersArray());
         });        
     };
 
     $scope.watchUsersArray = function(conferenceUsersArray) {
-        $scope.imagesLoaded.promise.then(function(){
-            // setup watch on children change or additions
-            conferenceUsersArray.$watch(function(event_data){
-                if(event_data.event == "child_changed" || event_data.event == "child_added") {
-                    var user = conferenceUsersArray.$getRecord(event_data.key);
-                    $scope.processUserChange(user);
-                };
-            });
-            // process all existing items
-            _.each(conferenceUsersArray, $scope.processUserChange);
+        // setup watch on children change or additions
+        conferenceUsersArray.$watch(function(event_data){
+            if(event_data.event == "child_changed" || event_data.event == "child_added") {
+                var user = conferenceUsersArray.$getRecord(event_data.key);
+                $scope.processUserChange(user);
+            };
         });
+        // process all existing items
+        _.each(conferenceUsersArray, $scope.processUserChange);
     };
     
     $scope.processUserChange = function(user) {
@@ -67,13 +66,11 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     };
     
    
-    $rootScope.$on("images_loaded", function(event, images_array){
+    // $rootScope.$on("images_loaded", function(event, images_array){
+    $scope.processInitialImageArray = function(images_array){
         $log.info("images loaded", images_array);
-        $scope.images = _.map(images_array, function(image_data){
-            return $scope.convert_image(image_data);
-        });
-        $scope.imagesLoaded.resolve();
-    });    
+        $scope.images = _.map(images_array, $scope.convert_image);
+    };    
     
     $rootScope.$on("image_added", function(event, eventData){
         var imageIndex = eventData.imageIndex;
