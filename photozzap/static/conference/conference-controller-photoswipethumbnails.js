@@ -94,31 +94,26 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     $rootScope.$on("follow_user", function(event, follow_data){
         $log.info("PhotoswipeThumbnailsCtrl now following: ", follow_data.user_id);
         
-        // start watching user id
-        var userRecord = $scope.conference_users.$getRecord(follow_data.user_id);
-        $log.info("following user: ", userRecord);
+        $scope.following_user = true;
         
-        // open currently viewing index
+        var userRecord = $scope.conference_users.$getRecord(follow_data.user_id);
         $scope.open_image_index_follow(userRecord.currently_viewing);
         
-        // now get a reference to that record
-        var followingUserNowViewingRef = $scope.conference_users.$ref().child(userRecord.$id).child("currently_viewing");
-        // $log.info("userRef; ", userRef);
-        var followingUserNowViewingObj = $firebaseObject(followingUserNowViewingRef);
-        $scope.following_user_now_viewing_id_watch = followingUserNowViewingObj.$watch(function(){
-            var imageIndex = followingUserNowViewingObj.$value;
-            $log.info("following user data changed: ", imageIndex);
-            $scope.open_image_index_follow(imageIndex);
-        });
-        $scope.following_user = true;
+        photozzapService.startFollowing(follow_data.user_id);
+        
     });    
     
     $scope.unFollow = function() {
         // stop following user
         $log.info("PhotoswipeThumbnailsCtrl, unfollowing");
-        $scope.following_user_now_viewing_id_watch();
+        photozzapService.unfollow();
         $scope.following_user = false;
     };
+    
+    $rootScope.$on("followed_user_viewing", function(event, data){
+        var imageIndex = data.image_index;
+        $scope.open_image_index_follow(imageIndex);
+    });
     
     $rootScope.$on("image_added", function(event, eventData){
         var imageIndex = eventData.imageIndex;

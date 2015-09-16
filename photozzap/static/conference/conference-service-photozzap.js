@@ -189,6 +189,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         service.conference_user_node.$save();
     };
     
+    // follow related functions
     service.requestFollowMe = function() {
         service.requests_array.$add({user_id: service.getUid(),
                                      timestamp: Firebase.ServerValue.TIMESTAMP,
@@ -200,6 +201,26 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 ref.remove();
             }, 5000);
         });
+    };
+    
+    service.startFollowing = function(userId) {
+        // get a reference to this user id's currently_viewing key
+        var userCurrentlyViewingRef = service.conference_users_array.$ref().child(userId).child('currently_viewing');
+        var userCurrentlyViewingObj = $firebaseObject(userCurrentlyViewingRef);
+        service.followUserWatch = userCurrentlyViewingObj.$watch(function(){
+            var imageIndex = userCurrentlyViewingObj.$value;
+            if(imageIndex != undefined) {
+                $log.info("followed user on image index: ", imageIndex);
+                $rootScope.$emit("followed_user_viewing", {image_index: imageIndex});
+            }
+        });        
+    };
+    
+    service.unfollow =  function() {
+        if(service.followUserWatch != undefined) {
+            service.followUserWatch();
+            service.followUserWatch = undefined;
+        }
     };
     
     service.addImage = function(imageData) {
