@@ -53,7 +53,7 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
 }]);
 
 
-conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", "$q", "photozzapService", function($scope, $rootScope, $log, $q, photozzapService) {
+conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope", "$log", "$q", "$firebaseObject", "photozzapService", function($scope, $rootScope, $log, $q, $firebaseObject, photozzapService) {
 
     $scope.init = function() {
         $scope.photoswipe_open = false;
@@ -61,9 +61,6 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         
         // map from image index to viewers currently viewing
         $scope.imageIdToUserListMap = {};
-        
-        // map from user id to image index
-        $scope.userIdToCurrentlyViewingIndex = {};
         
         photozzapService.getInitializedPromise().then(function(){
             // process initial image array
@@ -92,6 +89,36 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $log.info("images loaded", images_array);
         $scope.images = _.map(images_array, $scope.convert_image);
     };    
+    
+    // TODO: move this notification under the photozzapService
+    $rootScope.$on("follow_user", function(event, follow_data){
+        $log.info("PhotoswipeThumbnailsCtrl now following: ", follow_data.user_id);
+        
+        // start watching user id
+        var userRecord = $scope.conference_users.$getRecord(follow_data.user_id);
+        $log.info("following user: ", userRecord);
+        
+        // open currently viewing index
+        $scope.open_image_index_follow(userRecord.currently_viewing);
+        
+        // now get a reference to that record
+        var followingUserNowViewingRef = $scope.conference_users.$ref().child(userRecord.$id).child("currently_viewing");
+        // $log.info("userRef; ", userRef);
+        var followingUserNowViewingObj = $firebaseObject(followingUserNowViewingRef);
+        $scope.following_user_now_viewing_id_watch = followingUserNowViewingObj.$watch(function(){
+            var imageIndex = followingUserNowViewingObj.$value;
+            $log.info("following user data changed: ", imageIndex);
+            $scope.open_image_index_follow(imageIndex);
+        });
+        $scope.following_user = true;
+    });    
+    
+    $scope.unFollow = function() {
+        // stop following user
+        $log.info("PhotoswipeThumbnailsCtrl, unfollowing");
+        $scope.following_user_now_viewing_id_watch();
+        $scope.following_user = false;
+    };
     
     $rootScope.$on("image_added", function(event, eventData){
         var imageIndex = eventData.imageIndex;
@@ -128,6 +155,23 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
                                                          quality: 80,
                                                          sharpen: 400});
     };        
+    
+    $scope.open_image_index_follow = function(imageIndex) {
+        $scope.follow_event = true;
+        $scope.open_image_index(imageIndex);
+    };
+    
+    $scope.open_image_index = function(imageIndex) {
+        if(imageIndex != undefined) {    
+            if(! $scope.photoswipe_open) {
+                // open at the right index
+                $scope.thumbnail_click(imageIndex);
+            } else {
+                // move existing photoswipe instance to the correct index
+                $scope.photoswipe.goTo(imageIndex);
+            }    
+        }
+    };
     
     $scope.thumbnail_click = function(index) {
         $log.info("photoswipeThumbnailsCtrl.thumbnail_click");
@@ -184,6 +228,7 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $scope.photoswipe.listen('initialZoomInEnd', function() {
             $scope.reportCurrentlyViewingIndex();
             $scope.photoswipe.listen('beforeChange', function(){
+                $log.info("PhotoswipeThumbnailsCtrl, event beforeChange");
                 $scope.reportCurrentlyViewingIndex();
             });            
         });
@@ -198,7 +243,15 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
 
         // the photoswipe UI controller listen to this
         $rootScope.$emit("currently_viewing_index", currentlyViewingIndex);
-        
+      
+        // was this event triggered by a follow event ? if not, it's a user-initiated click and we should unfollow
+        if(! $scope.follow_event) {
+            if($scope.following_user) {
+                $scope.unFollow();
+            }
+        }
+        $scope.follow_event = false;
+      
     };
     
 }]);

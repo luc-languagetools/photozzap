@@ -141,6 +141,20 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         // get a ref to the requests array
         service.requests_array = $firebaseArray(getConferenceRef(conference_key).
                                                                  child('requests'));
+                                                                 
+        service.requests_array.$watch(function(event_data){
+            if(event_data.event == "child_added") {
+                var key = event_data.key;
+                var request_data = service.requests_array.$getRecord(key);
+                if(request_data.type == "follow_me" ) {
+                    if(request_data.user_id != service.getUid()) { // don't follow self requests
+                        // broadcast 
+                        $log.info("received follow_me request");
+                        $rootScope.$emit("follow_user", {user_id: request_data.user_id});
+                    }
+                }
+            }
+        });
         
     };
     
