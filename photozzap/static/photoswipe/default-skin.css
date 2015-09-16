@@ -67,6 +67,17 @@
   .pswp--svg .pswp__button--arrow--right {
     background: none; } }
 
+.pwsp__follow {
+    right: 185px;
+    top: 5px;
+    position: absolute;
+    color: #FFFFFF;
+    font-size: 150%;
+    opacity: 0.9;
+    cursor: pointer;
+    z-index: 1800;
+}
+    
 .pswp__button--close {
   background-position: 0 -44px; }
 

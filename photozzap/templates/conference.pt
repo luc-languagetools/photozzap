@@ -242,6 +242,9 @@
                     <div class="pwsp__users" ng-if="imageIdToUserListMap[currentlyViewingIndex].length >  0">
                         <span class="icon-eye"></span><span ng-repeat="user in imageIdToUserListMap[currentlyViewingIndex]">{{user.nickname}} </span>
                     </div>
+                    <div class="pwsp__follow" ng-click="follow_me()" title="Follow Me">
+                        <span class="icon-users2"></span>
+                    </div>
                     <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
                     <button class="pswp__button pswp__button--share" title="Share"></button>
                     <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
