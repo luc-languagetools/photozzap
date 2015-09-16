@@ -45,6 +45,11 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
         $scope.currentlyViewingIndex = index;
     });
     
+    $scope.follow_me = function() {
+        $log.info("Requesting follow");
+        photozzapService.requestFollowMe();
+    };
+    
 }]);
 
 

@@ -1,6 +1,6 @@
 
-conferenceModule.factory('photozzapService', ["$rootScope", "$log", "$firebaseAuth", "$firebaseObject", "$firebaseArray", "$q", "photozzapConfig", 
-function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, photozzapConfig) {
+conferenceModule.factory('photozzapService', ["$rootScope", "$log", "$firebaseAuth", "$firebaseObject", "$firebaseArray", "$q", "$timeout", "photozzapConfig", 
+function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, $timeout, photozzapConfig) {
     var service = {
     
     };
@@ -137,6 +137,13 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         });    
     };
     
+    var watchRequestsArray = function(conference_key) {
+        // get a ref to the requests array
+        service.requests_array = $firebaseArray(getConferenceRef(conference_key).
+                                                                 child('requests'));
+        
+    };
+    
     // **** service public API ****
     
     service.getUid = function() {
@@ -146,6 +153,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     service.getInitializedPromise = function() {
         return initialized_defer.promise;
     };
+    
     
     // only call when initialized
     
@@ -165,6 +173,19 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     service.currentlyViewing = function(index) {
         service.conference_user_node.currently_viewing = index;
         service.conference_user_node.$save();
+    };
+    
+    service.requestFollowMe = function() {
+        service.requests_array.$add({user_id: service.getUid(),
+                                     timestamp: Firebase.ServerValue.TIMESTAMP,
+                                     type: "follow_me"}).
+        then(function(ref) {
+            $timeout(function() {
+                $log.info("Removing request: ");
+                // service.requests_array.$remove(ref);
+                ref.remove();
+            }, 5000);
+        });
     };
     
     service.addImage = function(imageData) {
@@ -232,6 +253,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                     createConferenceUserNode(authData, conference_key).then(function(){
                         createConferenceImagesArray(conference_key).then(function(){
                             createConferenceUsersArray(conference_key).then(function(){
+                                watchRequestsArray(conference_key);
                                 initialized_defer.resolve();                        
                             });
                         });
