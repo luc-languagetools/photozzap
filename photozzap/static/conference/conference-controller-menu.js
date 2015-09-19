@@ -26,11 +26,14 @@ function($scope, $rootScope, photozzapService) {
     };    
     
     $scope.processUsersArray = function() {
+        // build map of users by uid
+        $scope.user_map = _.indexBy($scope.conference_users, '$id');
+
         // retain users who are connected only
         var onlineUsers = _.filter($scope.conference_users, function(user) {
             return user.connected == true;
         });
-        
+       
         // don't keep us
         onlineUsers = _.filter(onlineUsers, function(user) {
             return user.$id != $scope.self_uid;

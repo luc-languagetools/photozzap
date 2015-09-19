@@ -99,6 +99,8 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                     service.conference_user_node.nickname = global_nickname;
                 } else {
                     // emit broadcast to request nickname change
+                    var nickname = "Guest" + randomNumString(5);
+                    service.conference_user_node.nickname = nickname;
                 }
             }
             // the user is not viewing any image at startup
