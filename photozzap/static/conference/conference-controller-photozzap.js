@@ -136,7 +136,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
     $scope.open_nick_change_modal = function() {
         $scope.show_default_nickname_notification = false;
         $scope.modalInstance = $modal.open({templateUrl: "nick_change_modal.html",
-                                            controller: PhotozzapNickChangeModalCtrl,
+                                            controller: "PhotozzapNickChangeModalCtrl",
                                             scope: $scope
                                             });
     };    

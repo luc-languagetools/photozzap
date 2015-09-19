@@ -191,6 +191,13 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         return service.conference_key;
     };
     
+    service.changeNickname = function(newNickname) {
+        service.conference_user_node.nickname = newNickname;
+        service.conference_user_node.$save();
+        service.global_user_node.nickname = newNickname;
+        service.global_user_node.$save();        
+    };
+    
     // only call when initialized
     
     service.getConferenceNode = function(){

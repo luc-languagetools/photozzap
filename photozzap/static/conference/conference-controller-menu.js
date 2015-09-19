@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapMenuCtrl", 
-["$scope", "$rootScope", "photozzapService", 
-function($scope, $rootScope, photozzapService) {
+["$scope", "$rootScope", "$modal", "photozzapService", 
+function($scope, $rootScope, $modal, photozzapService) {
     
     $scope.active_user_list = [];
     $scope.inactive_user_list = [];
@@ -46,6 +46,15 @@ function($scope, $rootScope, photozzapService) {
         $scope.active_user_list = userByState[true];
         $scope.inactive_user_list = userByState[false];
     };
+    
+    $scope.open_nick_change_modal = function() {
+        $scope.temp_data = {};
+        $scope.modalInstance = $modal.open({templateUrl: "nick_change_modal.html",
+                                            controller: "PhotozzapNickChangeModalCtrl",
+                                            scope: $scope
+                                            });
+    };        
+    
     
     $scope.init();
     

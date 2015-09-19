@@ -1,9 +1,8 @@
-conferenceModule.controller("PhotozzapNickChangeModalCtrl", ["$scope", "$rootScope", "$modalInstance", "$log",
-function($scope, $rootScope, $modalInstance, $log) {
-    $scope.user_object = {};
+conferenceModule.controller("PhotozzapNickChangeModalCtrl", ["$scope", "$rootScope", "$modalInstance", "$log", "photozzapService",
+function($scope, $rootScope, $modalInstance, $log, photozzapService) {
     
     $scope.change = function() {
-        $scope.nickname_change($scope.temp_data.new_nickname);
+        photozzapService.changeNickname($scope.temp_data.new_nickname);
         $modalInstance.dismiss('close');
     }
     

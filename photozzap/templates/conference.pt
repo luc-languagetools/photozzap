@@ -290,7 +290,7 @@
     <div class="row" ng-controller="PhotozzapMenuCtrl">
         <div class="col-md-4 col-sm-4">
             <h1>{{conference_name}}</h1>
-            <h4>{{user_map[self_uid].nickname}}</h4>
+            <h4>{{user_map[conference_owner_uid].nickname}}</h4>
         </div>
         <div class="col-md-5 col-sm-5">
             <h2 style="margin-top: 20px;">
@@ -306,8 +306,8 @@
             </h2>
         </div>
         <div class="col-md-3 col-sm-3">
-            <button class="btn btn-default btn-lg" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
-                <span class="icon-users3"></span> User1
+            <button class="btn btn-default btn-lg" ng-click="open_nick_change_modal()" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
+                <span class="icon-users3"></span> {{user_map[self_uid].nickname}}
             </button>
         </div>
     </div>
