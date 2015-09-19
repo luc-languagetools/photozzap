@@ -1,4 +1,4 @@
-conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService", function($scope, $log, photozzapService) {
+conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService", "photozzapConfig", function($scope, $log, photozzapService, photozzapConfig) {
     $scope.resize = true;
     
     $scope.uploadcare_on_upload_complete = function(info) {
@@ -34,7 +34,9 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
     
     $scope.init = function() {
    
-        $(document).ready(function() {
+        photozzapService.getInitializedPromise().then(function(){
+   
+
             
             var multiWidget1 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-1]');
             var multiWidget2 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-2]');
@@ -45,12 +47,10 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
                 $scope.uploadcare_on_upload_complete(info);
             });            
             
-            $.cloudinary.config({ cloud_name: 'photozzap', api_key: '751779366151643'});
-
             // setup cloudinary unsigned upload
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
-                        { cloud_name: 'photozzap', tags: [$scope.conf_key, $scope.server_name, $scope.server_env] },
+                        { cloud_name: 'photozzap', tags: [photozzapService.getConferenceKey(), photozzapConfig.serverName, photozzapConfig.environment] },
                         {dropZone: $("#cloudinary_drop_zone")})
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
@@ -70,8 +70,10 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
                         })
             );            
 
+
         });
-    }
+            
+    };
     
     $scope.init();
 

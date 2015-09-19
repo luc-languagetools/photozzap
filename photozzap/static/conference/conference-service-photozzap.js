@@ -168,6 +168,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         return initialized_defer.promise;
     };
     
+    service.getConferenceKey = function() {
+        return service.conference_key;
+    };
     
     // only call when initialized
     
@@ -277,13 +280,14 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     service.initialize = function(conference_key) {
         var authenticate_promise = authenticate();
-        
+                
         authenticate_promise.then(function(authData) {
             service.authData = authData;
             
             createGlobalUserNode(authData).then(function(){
                 if(conference_key != null) {
                     $log.info("conference key: ", conference_key);
+                    service.conference_key = conference_key;
                 
                     createConferenceUserNode(authData, conference_key).then(function(){
                         createConferenceImagesArray(conference_key).then(function(){
