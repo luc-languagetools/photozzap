@@ -293,7 +293,17 @@
             <h4>User</h4>
         </div>
         <div class="col-md-5 col-sm-5">
-            <h2 style="margin-top: 20px;"><span class="icon-eye"></span> User1, User2, User3</h2>
+            <h2 style="margin-top: 20px;">
+            <span ng-show="active_user_list.length > 0">
+                <span class="icon-eye"></span> 
+                <span ng-repeat="user in active_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>
+            
+            <span ng-show="inactive_user_list.length > 0">
+                <span class="icon-eye-blocked"></span> 
+                <span ng-repeat="user in inactive_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>            
+            </h2>
         </div>
         <div class="col-md-3 col-sm-3">
             <button class="btn btn-default btn-lg" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
