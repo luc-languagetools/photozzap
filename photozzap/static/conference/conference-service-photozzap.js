@@ -104,6 +104,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
             // the user is not viewing any image at startup
             service.conference_user_node.currently_viewing = null;
             service.conference_user_node.connected = true;
+            service.conference_user_node.page_visible = true;
             service.conference_user_node.$save().then(function(){
                 // add on-disconnect call
                 connectedRef.onDisconnect().set(false);
@@ -210,6 +211,17 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     service.currentlyViewing = function(index) {
         service.conference_user_node.currently_viewing = index;
         service.conference_user_node.$save();
+    };
+    
+    // visibility related functions
+    service.markPageVisible = function() {
+        service.conference_user_node.page_visible = true;
+        service.conference_user_node.$save();
+    };
+    
+    service.markPageNotVisible = function() {
+        service.conference_user_node.page_visible = false;
+        service.conference_user_node.$save();    
     };
     
     // follow related functions

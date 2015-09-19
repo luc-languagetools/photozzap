@@ -31,6 +31,7 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         photozzapService.initialize(conference_key);
         photozzapService.getInitializedPromise().then(function(){
             $scope.logged_in_and_ready = true;
+            $scope.watch_page_visibility();
         });
     }
     
@@ -55,13 +56,11 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
             $(document).on({
                 'show.visibility': function() {
                     $log.info("page visible");
-                    $scope.conference_user_object.$update({page_visible: true});
-                    $scope.$apply();
+                    photozzapService.markPageVisible();
                 },
                 'hide.visibility': function() {
                     $log.info("page not visible");
-                    $scope.conference_user_object.$update({page_visible: false});
-                    $scope.$apply();
+                    photozzapService.markPageNotVisible();
                 }
             });            
         } else {
