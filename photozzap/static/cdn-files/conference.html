@@ -35,8 +35,8 @@
 </style>
 
 </head>
-<body ng-controller="PhotozzapCtrl" ng-init="init('https://photozzap-test.firebaseio.com/', 'test-20150329-dns-test-6', 'test')">
-<script charset="utf-8" defer src="conference-all.min.js"></script>
+<body ng-controller="PhotozzapCtrl" ng-init="init()">
+<script charset="utf-8" src="conference-all.min.js"></script>
 
 
 <script>
@@ -212,6 +212,66 @@
 </script>  
 
 
+<script type="text/ng-template" id="photoswipe_thumbnails.html">
+     <div class="masonry-container" masonry="{ isFitWidth: true }">
+        <div class="masonry-brick" ng-repeat="img in images">
+            <a ng-click="thumbnail_click($index)">
+              <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />
+              <img style="display: none;" ng-src="{{img.msrc}}" />
+              <div ng-if="imageIdToUserListMap[$index].length > 0" class="overlay">
+                <span ng-repeat="user in imageIdToUserListMap[$index]">{{user.nickname}}</span>
+              </div>              
+            </a>        
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="photoswipe_ui.html">
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="pswp__bg"></div>
+        <div class="pswp__scroll-wrap">
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <div class="pswp__counter"></div>
+                    <div class="pwsp__users" ng-if="imageIdToUserListMap[currentlyViewingIndex].length >  0">
+                        <span class="icon-eye"></span><span ng-repeat="user in imageIdToUserListMap[currentlyViewingIndex]">{{user.nickname}} </span>
+                    </div>
+                    <div class="pwsp__follow" ng-click="follow_me()" title="Follow Me">
+                        <span class="icon-users2"></span>
+                    </div>
+                    <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                    <button class="pswp__button pswp__button--share" title="Share"></button>
+                    <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                    <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                          <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+                <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+                </button>
+                <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+                </button>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 
 <div id="loading-screen" ng-hide="logged_in_and_ready && conference.status != 'closed'">
     <div class="loading-screen-content">
@@ -225,37 +285,48 @@
     </div>
 </div>
 
-<div id="main_image" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak">
-    <div class="photo-counter" ng-show="show_photo_counter">
-        {{global_data.photo_index + 1}}/{{sorted_images.length}}
-    </div>
-    <div id="displayed_image">
-        <ul rn-carousel rn-carousel-buffered rn-carousel-control rn-carousel-index="global_data.photo_index" class="ng-cloak"
-          ng-style="{'width': window_dimensions.width,
-                    'height': window_dimensions.height}"
-            ng-if="sorted_images.length > 0">
-            <li class="image_layer_container" ng-repeat="image in sorted_images track by image.id">
-                <div class="image_layer image_layer_top"
-                ng-if="global_data.photo_state_by_id[image.id].photo_hires_url != undefined"
-                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_hires_url + ')'}">
-                </div>
-                <div class="image_layer image_layer_bottom"
-                ng-style="{'background-image': 'url(' + global_data.photo_state_by_id[image.id].photo_url + ')'}">
-                </div>                
-            </li>        
-        </ul>
-        <div class="outer_empty_container" ng-if="sorted_images.length == 0" 
-             ng-style="{'width': window_dimensions.width,
-                       'height': window_dimensions.height}">
-            <div class="empty_container">
-                <h1>No Photos</h1>
-                <h3>Upload Photos using <span class="icon-upload"></span> Upload tab below.</h3>
-            </div>
-        </div>            
-    </div>
-</div> <!-- main_image -->
 
 <div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
+    <div class="row" ng-controller="PhotozzapMenuCtrl">
+        <div class="col-md-4 col-sm-4">
+            <h1>{{conference_name}}</h1>
+            <h4>{{user_map[conference_owner_uid].nickname}}</h4>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <h2 style="margin-top: 20px;">
+            <span ng-show="active_user_list.length > 0">
+                <span class="icon-eye"></span> 
+                <span ng-repeat="user in active_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>
+            
+            <span ng-show="inactive_user_list.length > 0">
+                <span class="icon-eye-blocked"></span> 
+                <span ng-repeat="user in inactive_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>            
+            </h2>
+        </div>
+        <div class="col-md-3 col-sm-3">
+            <button class="btn btn-default btn-lg" ng-click="open_nick_change_modal()" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
+                <span class="icon-users3"></span> {{user_map[self_uid].nickname}}
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        <div id="photoswipe-container">
+            <div class="image-thumbs">
+                <photoswipethumbnails/>
+            </div>
+                
+            <!-- Dem photoswipe -->
+            <photoswipeui/>
+
+            </div>
+        </div>
+    </div>
+
+    <!--
     <div class="row">
         <div id="photo-thumbnails" class="col-xs-12 col-sm-12 col-md-6">
             <div class="row">
@@ -283,10 +354,12 @@
             </div>
         </div>
     </div>
+    -->
     
     <div class="row">
         <div class="col-md-12">
             <tabset>
+                <!--
                 <tab ng-controller="ChatCtrl">
                     <tab-heading>
                         <span class="icon-bubble"></span> Chat
@@ -395,6 +468,7 @@
                         </div>
                     </div>
                 </tab>    
+                -->
                 
                 <tab>
                     <tab-heading>
@@ -451,6 +525,7 @@
 </div>
 
 <!-- notifications area -->
+<!--
 <div class="notifications-container" ng-show="sorted_notifications.length > 0">
     <p class="notification-text">
         <span class="notification-item" ng-repeat="notification in sorted_notifications track by notification.id">
@@ -484,6 +559,7 @@
         </span>
     </p>
 </div>
+-->
 
 <iframe id="download_frame" style="display:none"></iframe>
 </body>
