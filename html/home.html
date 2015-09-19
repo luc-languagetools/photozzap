@@ -10,8 +10,8 @@
 <!-- favicon -->
 <link rel="shortcut icon" type="image/png" href="${icon_path}"/>
 
-<link tal:repeat="file css_files" tal:attributes="href file" rel="stylesheet" media="screen">
-<script tal:repeat="file javascript_files" tal:attributes="src file"></script>
+<!-- inject:css -->
+<!-- endinject -->
 
     <style type="text/css">
       body {
@@ -286,6 +286,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
 
     </div> <!-- /container -->
 
+<!-- inject:js -->
+<!-- endinject -->    
 
 </body>
 </html>
