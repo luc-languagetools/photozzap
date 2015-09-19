@@ -1,0 +1,24 @@
+{
+  "name": "photozzap",
+  "version": "0.0.1",
+  "description": "Photozzap Realtime Gallery",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.0"
+  },
+  "devDependencies": {
+    "gulp-uglify": "^1.4.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/lucwastiaux/photozzap.git"
+  },
+  "author": "Luc Wastiaux",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucwastiaux/photozzap/issues"
+  }
+}
