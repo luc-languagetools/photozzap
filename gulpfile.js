@@ -22,13 +22,18 @@ gulp.task('scripts', function() {
 });
 
 
+gulp.task('copy_icons', function() {
+    return gulp.src('./src/icomoon/icomoon.*')
+    .pipe(gulp.dest('debug/app/icomoon'));
+});
+
 gulp.task('copy_js_css_debug', function() {
     return gulp.src(['./src/**/*.js', './src/**/*.css'])
     .pipe(gulp.dest('debug/app'));
 });
 
 // inject JS and CSS assets into JS
-gulp.task('build_html_debug', ['copy_js_css_debug'], function() {
+gulp.task('build_html_debug', ['copy_js_css_debug', 'copy_icons'], function() {
     var target = gulp.src('./html/home.html');
     var sources = gulp.src(['./debug/app/**/*.js', './debug/app/**/*.css'], {read: false});
     
