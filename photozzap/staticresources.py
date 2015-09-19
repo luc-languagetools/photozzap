@@ -36,6 +36,7 @@ conference_javascript_files = [
 "static/conference/conference-config.js",
 "static/conference/conference-service-photozzap.js",
 "static/conference/conference-controller-home.js",
+"static/conference/conference-controller-menu.js",
 "static/conference/conference-controller-nick-change.js",
 "static/conference/conference-controller-photozzap.js",
 "static/conference/conference-controller-thumbnails.js",

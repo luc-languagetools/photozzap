@@ -65,6 +65,17 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         return ref.child(photozzapConfig.firstNode).child('conferences').child(conference_key);
     };
     
+    var createConferenceNode = function(conference_key) {
+        var defer = $q.defer();
+        
+        service.conference_node = $firebaseObject(getConferenceRef(conference_key));
+        service.conference_node.$loaded().then(function(){
+            defer.resolve();
+        });
+        
+        return defer.promise;
+    };
+    
     var createConferenceUserNode = function(authData, conference_key){
         var defer = $q.defer();
     
@@ -74,6 +85,8 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         service.conference_user_node = $firebaseObject(getConferenceRef(conference_key).
                                                            child('users').
                                                            child(authData.uid));
+        
+        var connectedRef = getConferenceRef(conference_key).child('users').child(authData.uid).child('connected');
         
         service.conference_user_node.$loaded().then(function(){
             service.conference_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
@@ -90,7 +103,10 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
             }
             // the user is not viewing any image at startup
             service.conference_user_node.currently_viewing = null;
+            service.conference_user_node.connected = true;
             service.conference_user_node.$save().then(function(){
+                // add on-disconnect call
+                connectedRef.onDisconnect().set(false);
                 defer.resolve();
             });
         });
@@ -173,6 +189,10 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     // only call when initialized
+    
+    service.getConferenceNode = function(){
+        return service.conference_node;
+    };
     
     service.getImagesArray = function() {
         return service.conference_images_array;
@@ -289,11 +309,13 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                     $log.info("conference key: ", conference_key);
                     service.conference_key = conference_key;
                 
-                    createConferenceUserNode(authData, conference_key).then(function(){
-                        createConferenceImagesArray(conference_key).then(function(){
-                            createConferenceUsersArray(conference_key).then(function(){
-                                watchRequestsArray(conference_key);
-                                initialized_defer.resolve();                        
+                    createConferenceNode(conference_key).then(function(){
+                        createConferenceUserNode(authData, conference_key).then(function(){
+                            createConferenceImagesArray(conference_key).then(function(){
+                                createConferenceUsersArray(conference_key).then(function(){
+                                    watchRequestsArray(conference_key);
+                                    initialized_defer.resolve();                        
+                                });
                             });
                         });
                     });

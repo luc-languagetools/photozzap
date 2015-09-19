@@ -287,12 +287,25 @@
 
 
 <div class="container-fluid" ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
+    <div class="row" ng-controller="PhotozzapMenuCtrl">
+        <div class="col-md-4 col-sm-4">
+            <h1>{{conference_name}}</h1>
+            <h4>User</h4>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <h2 style="margin-top: 20px;"><span class="icon-eye"></span> User1, User2, User3</h2>
+        </div>
+        <div class="col-md-3 col-sm-3">
+            <button class="btn btn-default btn-lg" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
+                <span class="icon-users3"></span> User1
+            </button>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
         <div id="photoswipe-container">
             <div class="image-thumbs">
-                <h2>Image gallery:</h2>
                 <photoswipethumbnails/>
             </div>
                 
