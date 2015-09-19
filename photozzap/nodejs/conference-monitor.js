@@ -18,7 +18,7 @@ cloudinary.config({
   api_secret: config.cloudinaryApiSecret
 });
 
-var conferencesPath = config.firebaseRoot + "/conferences";
+var conferencesPath = config.firebaseRoot + "/photozzap/conferences";
 var conferencesRef = new Firebase(conferencesPath);
 conferencesRef.auth(config.firebaseSecret);
 
