@@ -4,6 +4,7 @@ var concat = require('gulp-concat');
 var debug = require('gulp-debug');
 var inject = require('gulp-inject');
 var webserver = require('gulp-webserver');
+var main_bower_files = require('gulp-main-bower-files');
 
 // var js_path = './photozzap/static/*/**.js';
 var js_path = './src/**/*.js';
@@ -11,6 +12,12 @@ var js_path = './src/**/*.js';
 gulp.task('default', function() {
   return gulp.src(js_path)
   .pipe(debug());
+});
+
+gulp.task('main-bower-files', function() {
+    return gulp.src('./bower.json')
+        .pipe(main_bower_files())
+        .pipe(debug());
 });
 
 
