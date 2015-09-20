@@ -47,7 +47,7 @@ gulp.task('bower_files_debug', function() {
 });
 
 gulp.task('copy_lib_css_debug', function() {
-    return gulp.src('./bower_components/bootstrap/**/*.css')
+    return gulp.src(['./bower_components/bootstrap/**/*.css', '!./bower_components/bootstrap/**/*.min.css'])
         .pipe(gulp.dest('debug/lib'));
 });
 
