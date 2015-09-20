@@ -46,16 +46,22 @@ gulp.task('bower_files_debug', function() {
         .pipe(gulp.dest('debug/lib'));
 });
 
+gulp.task('copy_lib_css_debug', function() {
+    return gulp.src('./bower_components/bootstrap/**/*.css')
+        .pipe(gulp.dest('debug/lib'));
+});
+
 gulp.task('copy_js_css_debug', function() {
     return gulp.src(['./src/**/*.js', './src/**/*.css'])
     .pipe(gulp.dest('debug/app'));
 });
 
 // inject JS and CSS assets into JS
-gulp.task('build_html_debug', ['bower_files_debug', 'copy_js_css_debug', 'copy_icons'], function() {
+gulp.task('build_html_debug', ['bower_files_debug', 'copy_js_css_debug', 'copy_lib_css_debug', 'copy_icons'], function() {
     var target = gulp.src('./html/home.html');
     var sources = gulp.src(['./debug/lib/*.js',
                             './debug/app/**/*.js', 
+                            './debug/lib/**/*.css',
                             './debug/app/**/*.css'], {read: false});
     
     return target.pipe(inject(sources, {ignorePath: 'debug'}))
