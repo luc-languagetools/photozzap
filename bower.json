@@ -1,6 +1,20 @@
 {
   "name": "photozzap",
   "version": "0.0.1",
+  "dependencies": {
+    "angular": "~1.4",
+    "jquery": "~1.10.2",
+    "bootstrap": "~3.3",
+    "angular-bootstrap": "latest",
+    "jquery-visibility": "latest",
+    "underscore": "latest",
+    "imagesloaded": "latest",
+    "masonry": "latest",
+    "angular-masonry": "latest",
+    "cloudinary_js": "latest",
+    "uploadcare": "latest",
+    "angularfire": "latest"
+  },
   "homepage": "https://github.com/lucwastiaux/photozzap",
   "authors": [
     "Luc Wastiaux <luc.wastiaux@airpost.net>"
