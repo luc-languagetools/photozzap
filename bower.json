@@ -1,0 +1,22 @@
+{
+  "name": "photozzap",
+  "version": "0.0.1",
+  "homepage": "https://github.com/lucwastiaux/photozzap",
+  "authors": [
+    "Luc Wastiaux <luc.wastiaux@airpost.net>"
+  ],
+  "description": "Photozzap Realtime Gallery",
+  "keywords": [
+    "gallery",
+    "firebase",
+    "photozzap"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
