@@ -4,6 +4,7 @@
   "dependencies": {
     "angular": "~1.4",
     "jquery": "~1.10.2",
+    "jquery-ui": "latest",
     "bootstrap": "~3.3",
     "angular-bootstrap": "latest",
     "jquery-visibility": "latest",
