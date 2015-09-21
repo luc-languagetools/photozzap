@@ -8,7 +8,7 @@
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
 <!-- favicon -->
-<link rel="shortcut icon" type="image/png" href="letter_p.png"/>
+<link rel="shortcut icon" type="image/png" href="graphic/letter_p.png"/>
 
 <!-- inject:css -->
 <!-- endinject -->
@@ -286,8 +286,46 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbeffc', end
 
     </div> <!-- /container -->
 
-<!-- inject:js -->
-<!-- endinject -->    
+<!-- build:js photozzap.js -->
+<!-- base libraries -->
+<script type="text/javascript" src="bower_components/jquery/jquery.js"></script> 
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script> 
+<script type="text/javascript" src="bower_components/angular/angular.js"></script> 
+<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script> 
+<script type="text/javascript" src="bower_components/jquery-visibility/jquery-visibility.js"></script> 
+<script type="text/javascript" src="bower_components/underscore/underscore.js"></script> 
+<!-- masonry -->
+<script type="text/javascript" src="bower_components/imagesloaded/imagesloaded.pkgd.js"></script> 
+<script type="text/javascript" src="bower_components/masonry/dist/masonry.pkgd.js"></script> 
+<script type="text/javascript" src="bower_components/angular-masonry/angular-masonry.js"></script> 
+<!-- cloudinary -->
+<script type="text/javascript" src="bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget.js"></script> 
+<script type="text/javascript" src="bower_components/blueimp-file-upload/js/jquery.fileupload.js"></script> 
+<script type="text/javascript" src="bower_components/cloudinary_js/js/jquery.cloudinary.js"></script> 
+<!-- uploadcare -->
+<script type="text/javascript" src="bower_components/uploadcare/uploadcare.js"></script> 
+<!-- firebase -->
+<script type="text/javascript" src="bower_components/firebase/firebase.js"></script> 
+<script type="text/javascript" src="bower_components/angularfire/dist/angularfire.js"></script> 
+
+<!-- photozzap code -->
+<script type="text/javascript" src="js/conference/conference-angular-setup.js"></script> 
+<script type="text/javascript" src="js/conference/conference-config.js"></script> 
+<script type="text/javascript" src="js/conference/conference-service-photozzap.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-home.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-menu.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-nick-change.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-photozzap.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-thumbnails.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-photoswipethumbnails.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-follow.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-chat.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-upload.js"></script> 
+<script type="text/javascript" src="js/conference/conference-controller-download.js"></script> 
+<script type="text/javascript" src="js/conference/conference-directives.js"></script> 
+<script type="text/javascript" src="js/conference/conference-helperfunctions.js"></script> 
+
+<!-- endbuild -->
 
 </body>
 </html>

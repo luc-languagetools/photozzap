@@ -85,6 +85,7 @@ gulp.task('build_html_debug', ['bower_files_debug', 'copy_js_css_debug', 'copy_l
     
     
     
+    
     var stream1 = target.pipe(inject(sources, {ignorePath: 'debug'}))
         .pipe(gulp.dest('./debug'));    
         
@@ -95,6 +96,18 @@ gulp.task('build_html_debug', ['bower_files_debug', 'copy_js_css_debug', 'copy_l
         .pipe(gulp.dest('debug/lib'));
     
     return merge(stream2, stream1);
+});
+
+gulp.task('webserver_debug', function() {
+    gulp.src('./')
+        .pipe(webserver({
+            livereload: false,
+            directoryListing: {enable: true,
+                               path: './'},
+            open: true,
+            host: '0.0.0.0',
+            port: 8000,
+        }));
 });
 
 gulp.task('webserver', ['build_html_debug'], function() {
