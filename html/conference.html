@@ -6,9 +6,10 @@
 <!-- google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One|Raleway:700' rel='stylesheet' type='text/css'>
 <!-- favicon -->
-<link rel="shortcut icon" type="image/png" href="${icon_path}"/>
-<!-- css files -->
-<link tal:repeat="file css_files" tal:attributes="href file" rel="stylesheet" media="screen">
+<link rel="shortcut icon" type="image/png" href="letter_p.png"/>
+
+<!-- inject:css -->
+<!-- endinject -->
 
 <style type="text/css">
 #loading-screen {
@@ -277,7 +278,7 @@
     <div class="loading-screen-content">
         <span id="photozzap-title">Photozzap</span>
         <div ng-if="conference.status != 'closed'">
-            <img src="${preloader_path}"/>
+            <img src="preloader.gif"/>
         </div>
         <p id="connection-status-text" ng-if="conference.status == 'closed'" ng-cloak class="ng-cloak">
             Conference {{conference.status}}
@@ -562,5 +563,10 @@
 -->
 
 <iframe id="download_frame" style="display:none"></iframe>
+
+<!-- inject:js -->
+<!-- endinject -->    
+
+
 </body>
 </html>
