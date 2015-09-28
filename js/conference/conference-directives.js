@@ -5,7 +5,7 @@ conferenceModule.directive('photoswipethumbnails', function() {
       replace: 'true',
       controller: "PhotoswipeThumbnailsCtrl",
       scope: true,
-      templateUrl: 'photoswipe_thumbnails.html',
+      templateUrl: 'partials/photoswipe_thumbnails.html',
       link: function (scope, elem, attrs) {
         console.log("thumbnails directive link");
         console.log("elem: ", elem);
@@ -20,7 +20,7 @@ conferenceModule.directive('photoswipeui', function() {
       replace: 'true',
       controller: "PhotoswipeUICtrl",
       scope: true,
-      templateUrl: 'photoswipe_ui.html',
+      templateUrl: 'partials/photoswipe_ui.html',
       link: function (scope, elem, attrs) {
         scope.init();
       }
@@ -34,7 +34,7 @@ conferenceModule.directive('photothumbnails', function() {
       replace: 'true',
       controller: "ThumbnailsCtrl",
       scope: true,
-      templateUrl: 'photos-thumbnails.html',
+      templateUrl: 'partials/photos-thumbnails.html',
       link: function (scope, elem, attrs) {
         console.log("thumbnails directive link");
         console.log("elem: ", elem);
@@ -50,7 +50,7 @@ conferenceModule.directive('usersthumbnails', function() {
       replace: 'true',
       controller: "ThumbnailsCtrl",
       scope: true,
-      templateUrl: 'users-thumbnails.html',
+      templateUrl: 'partials/users-thumbnails.html',
       link: function (scope, elem, attrs) {
         scope.init("sorted_users", elem, false);
       }
@@ -62,23 +62,11 @@ conferenceModule.directive('upload', function() {
       restrict: 'AE',
       replace: 'true',
       controller: "UploadCtrl",
-      templateUrl: 'upload.html',
+      templateUrl: 'partials/upload.html',
       link: function (scope, elem, attrs) {
       }
   };
 });
-
-
-conferenceModule.directive('follow', function() {
-  return {
-      restrict: 'AE',
-      replace: 'true',
-      controller: "FollowCtrl",
-      scope: true,
-      templateUrl: 'follow-controls.html',
-  };
-});
-
 
 conferenceModule.directive('holderFix', function () {
     return {

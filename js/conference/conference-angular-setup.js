@@ -4,7 +4,13 @@ conferenceModule.config(['$stateProvider', '$urlRouterProvider', function($state
     $stateProvider
         .state('home' , {
             url: '/home',
-            templateUrl: 'partials/home.html'
+            templateUrl: 'partials/home.html',
+            controller: "PhotozzapHomeController"
+        })
+        .state('view', {
+            url: '/v/:conferenceKey',
+            templateUrl: 'partials/view.html',
+            controller: "PhotozzapCtrl"
         });
         
     $urlRouterProvider.when('', '/home');

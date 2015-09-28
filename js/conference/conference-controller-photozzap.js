@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapCtrl", 
-["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "photozzapService", 
-function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  photozzapService) {
+["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "$stateParams", "photozzapService", 
+function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  $stateParams, photozzapService) {
    
 
     $scope.show_default_nickname_notification = false;
@@ -26,7 +26,8 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
     $scope.show_photo_timeout = undefined;
   
     $scope.init = function() {
-        var conference_key = $location.path().substring(1);
+        var conference_key = $stateParams.conferenceKey;
+        $log.info("initializing PhotozzapCtrl, conference_key: ", conference_key);
         
         photozzapService.initialize(conference_key);
         photozzapService.getInitializedPromise().then(function(){
@@ -300,5 +301,9 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
     $scope.cloudinary_photo_download_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {flags: 'attachment'});
     };
+    
+    
+    // run init
+    $scope.init();
     
 }]);

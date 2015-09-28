@@ -15,8 +15,8 @@ conferenceModule.controller("PhotozzapHomeController", ["$scope", "$modal", "$lo
     
 }]);
 
-conferenceModule.controller("PhotozzapNewConfModalController", ["$scope", "$rootScope", "$modalInstance", "$log", "$window", "photozzapService", 
-function ($scope, $rootScope, $modalInstance, $log, $window, photozzapService) {
+conferenceModule.controller("PhotozzapNewConfModalController", ["$scope", "$rootScope", "$modalInstance", "$log", "$window", "$state", "photozzapService", 
+function ($scope, $rootScope, $modalInstance, $log, $window, $state, photozzapService) {
     $scope.form_data = {};
 
     $scope.init = function() {
@@ -29,9 +29,10 @@ function ($scope, $rootScope, $modalInstance, $log, $window, photozzapService) {
     $scope.init();
     
     $scope.ok = function () {
-        photozzapService.create_conference($scope.form_data.confname).then(function(url){
-            $log.info("created conference, url: ", url);
-            $window.location = url;
+        photozzapService.create_conference($scope.form_data.confname).then(function(confKey){
+            $log.info("created conference, key: ", confKey);
+            $modalInstance.dismiss('ok');
+            $state.go('view', {conferenceKey: confKey});
         });
     };
     

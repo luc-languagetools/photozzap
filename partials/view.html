@@ -1,0 +1,87 @@
+<div ng-show="logged_in_and_ready && conference.status != 'closed'" ng-cloak class="ng-cloak" style="margin-top: 15px; margin-bottom: 20px;">
+    <div class="row" ng-controller="PhotozzapMenuCtrl">
+        <div class="col-md-4 col-sm-4">
+            <h1>{{conference_name}}</h1>
+            <h4>{{user_map[conference_owner_uid].nickname}}</h4>
+        </div>
+        <div class="col-md-5 col-sm-5">
+            <h2 style="margin-top: 20px;">
+            <span ng-show="active_user_list.length > 0">
+                <span class="icon-eye"></span> 
+                <span ng-repeat="user in active_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>
+            
+            <span ng-show="inactive_user_list.length > 0">
+                <span class="icon-eye-blocked"></span> 
+                <span ng-repeat="user in inactive_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>            
+            </h2>
+        </div>
+        <div class="col-md-3 col-sm-3">
+            <button class="btn btn-default btn-lg" ng-click="open_nick_change_modal()" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
+                <span class="icon-users3"></span> {{user_map[self_uid].nickname}}
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        <div id="photoswipe-container">
+            <div class="image-thumbs">
+                <photoswipethumbnails/>
+            </div>
+                
+            <!-- Dem photoswipe -->
+            <photoswipeui/>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <tabset>
+                 
+                <tab>
+                    <tab-heading>
+                        <span class="icon-upload"></span> Upload
+                    </tab-heading>
+                    <upload/>
+                </tab>                
+                
+                <tab>
+                    <tab-heading>
+                        <span class="icon-cog"></span> Options
+                    </tab-heading>
+                    <div class="row">
+                        <div class="col-sm-4 col-md-2">
+                            <h3>Views</h3>
+                            <b>{{conference.views}}</b> views
+                        </div>
+                        <div class="col-sm-5 col-md-4">
+                            <h3>Change Nickname</h3>
+                            You are logged in as <b>{{conference_user_object.nickname}}</b>&nbsp;&nbsp;
+                            <button class="btn btn-default" ng-click="open_nick_change_modal()">
+                                Change Nickname
+                            </button>                                
+                        </div>
+                        <div class="col-sm-4 col-md-4" ng-show="login_obj.user.uid == conference.owner_uid">
+                            <h3>Close Conference</h3>
+                            Remove all photos, disconnect all users.
+                            <button class="btn btn-default" ng-click="close_conference()">
+                                Close
+                            </button>                            
+                        </div>                        
+                        <div class="col-sm-4 col-md-2">
+                            <h3>Logout</h3>
+                            <button class="btn btn-default" ng-click="logout()">
+                                Logout
+                            </button>                            
+                        </div>
+                    </div>
+                </tab> 
+            </tabset>
+        </div>
+    </div>
+    
+</div>

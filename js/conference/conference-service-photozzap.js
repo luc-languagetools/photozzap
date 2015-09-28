@@ -306,7 +306,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 conferenceObject.close_after_time = new Date().getTime() + 7 * 24 * 60 * 60 * 1000; // shutdown after 7 days
                 
                 conferenceObject.$save().then(function(ref) {
-                    defer.resolve(conferenceObject.url);
+                    defer.resolve(tentativeConfKey);
                 });;
                 
             } else {

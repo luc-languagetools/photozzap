@@ -1,0 +1,52 @@
+<div>
+    <!-- upload controls here -->
+    <div class="row" style="margin-top: 10px;">
+        <!-- upload panel 1, resized -->
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <b><span class="icon-contract"></span> Resize to 1024x768</b>
+                            <br/>(faster upload, lower quality)
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="hidden" name="picture" role="uploadcare-uploader" 
+                                   data-public-key="071cc18cd47faf518850"
+                                   data-multiple
+                                   data-images-only
+                                   data-image-shrink="1024x768"
+                                   data-widget-1
+                            />                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- upload panel 2, full size -->            
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <b><span class="icon-expand"></span> Upload full picture</b>
+                            <br/>(slower upload, higher quality)
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <input type="hidden" name="picture" role="uploadcare-uploader" 
+                            data-public-key="071cc18cd47faf518850"
+                            data-multiple
+                            data-images-only
+                            data-widget-2
+                            />               
+                        </div>
+                    </div>                
+                </div>
+            </div>
+        </div>            
+    </div>
+    <div class="row" style="display: none;">
+        <div id="cloudinary_unsigned_upload_form"></div>
+        <div id="cloudinary_drop_zone">CLOUDINARY DROP ZONE</div>
+    </div>        
+</div>
