@@ -1,0 +1,133 @@
+<div>
+<div class="row section1">
+<div class="col-md-5 col-lg-6" ng-controller="PhotozzapHomeController">
+    <script type="text/ng-template" id="create_conf_modal.html">
+        <div class="modal-header">
+            <h3>Create new Photozzap Conference</h3>
+            <p>Your conference and photos will stay online for 7 days, after which they will be
+            automatically deleted.</p>                    
+        </div>
+        <div class="modal-body">
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+            <form name="form.form" class="form-horizontal" role="form">
+                <div class="form-group has-feedback" ng-class="{'has-error': form.form.nickname.$invalid, 'has-success': form.form.nickname.$valid}">
+                    <label class="control-label col-sm-4" for="nickname">Nickname
+                        <small ng-show="form.form.nickname.$error.minlength"><br/>Min 3 characters</small>
+                        <small ng-show="form.form.nickname.$error.maxlength"><br/>Max 30 characters</small>
+                    </label>
+                    <div class="col-sm-8">
+                    <input type="text" name="nickname" class="form-control" id="nickname" 
+                      ng-model="global_user_object.nickname" 
+                      ng-minlength="3"
+                      ng-maxlength="30"
+                      placeholder="Enter your nickname" required>
+                    <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.nickname.$valid, 'icon-close': form.form.nickname.$invalid}" ></span>
+                    </div>
+                </div>
+                <div class="form-group has-feedback" ng-class="{'has-error': form.form.name.$invalid, 'has-success': form.form.name.$valid}">
+                    <label class="control-label col-sm-4" for="confName">Conference Name
+                        <small ng-show="form.form.name.$error.minlength"><br/>Min 3 characters</small>
+                        <small ng-show="form.form.name.$error.maxlength"><br/>Max 30 characters</small>
+                    </label>
+                    <div class="col-sm-8">
+                    <input type="text" name="name" class="form-control" id="confName" 
+                      ng-model="form_data.confname" 
+                      ng-minlength="3"
+                      ng-maxlength="30"
+                      placeholder="Enter a description, for example 'my photos'" required>
+                    <span class="form-control-feedback" ng-class="{'icon-checkmark': form.form.name.$valid, 'icon-close': form.form.name.$invalid}" ></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success btn-lg" ng-click="ok()"  ng-disabled="form.form.$invalid">
+                <span class="icon-checkmark"></span> OK</button>
+            <button class="btn btn-default btn-lg" ng-click="cancel()">
+                <span class="icon-close"></span> Cancel</button>
+        </div>
+    </script>        
+  <div class="intro">
+    <h3><span class="icon-image"></span> Photozzap</h3>
+    <h1>Share and Browse Photos in Real Time</h1>
+    <h2>Want to show a few photos to friends or family online ? <b><span class="icon-image"></span> Photozzap</b> is a web app which turns photo viewing into an interactive experience, allowing you to see what photos your friends are looking at, and take turns in controlling the slideshow.</h2>
+    <div style="text-align: center;">
+        <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()'>
+        <span class="icon-redo"></span> Start Conference</a>
+        <p class="small-print">Free, no registration.</p>
+    </div>
+  </div>
+</div>
+<div class="col-md-7 col-lg-6">
+    <img class="img-responsive" src="http://res.cloudinary.com/photozzap/image/upload/c_scale,w_800/v1407058561/static_assets/photozzap_header.png"/>
+</div>
+</div>
+
+<div class="row section2">
+<div class="col-md-12" style="text-align: center;">
+    <h1>Features</h1>
+    <h3>See what Photozzap does differently</h3>
+</div>
+</div>
+<div class="row section2">
+<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-users3"></span></div></div>
+    <h3>Interactive Photo Viewing</h3>
+    View photos together, in realtime. Use the Look Here or Follow Me buttons to show friends the photo you are currently looking at.
+    You can see which photo they are looking at in the Users tab.
+</div>
+<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-lightning"></span></div></div>
+    <h3>Instant Photo Gallery</h3>
+    Create a photo gallery faster than any other site out there. Just type your nickname, the gallery name, click OK and start uploading pictures. Upload from Dropbox, Flickr, Facebook and Instagram. No login needed.
+</div>        
+<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-mobile"></span></div></div>
+    <h3>Desktop, Tablet and Mobile Friendly</h3>
+    Create or view photos on your desktop PC/Mac, iPad, iPhone or Android phone. The interface and photos are resized based on which device you are using.
+</div>        
+<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+    <div class="feature-icon-container"><div class="feature-icon"><span class="icon-lock"></span></div></div>
+    <h3>Privacy Oriented</h3>
+    No registration needed. Private by default. Only people who have the URL can access your pictures. Pictures don't stay online forever, you can remove them immediately, or they get deleted after 7 days.
+</div>                
+</div>
+
+<div class="row section3">
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12" style="text-align: center;">
+            <h1>Stay in Touch</h1>
+            <h3>What we've been up to recently, and how to contact us.</h3>
+        </div>
+    </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-icon-container"><div class="feature-icon"><span class="icon-radio"></span></div></div>
+            <h3>Recent Changes</h3>
+            <h4>2015-03-28</h4>
+            Added uploading from Dropbox, Flickr, Facebook, Instagram and others. Added notification when photos are uploaded.
+            <h4>2014-09-07</h4>
+            Speeded up loading of high-res images. Added download links for current photo or all photos.
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="feature-icon-container"><div class="feature-icon"><span class="icon-envelop"></span></div></div>
+            <h3>Questions ?</h3>
+            Do you have any questions or suggestions regarding Photozzap ? You can use our <a href="https://www.facebook.com/photozzap" target="_blank">Facebook page</a>, <a href="https://twitter.com/Photozzap" target="_blank">Twitter</a>, or 
+            <a href="ma&#105;lto&#58;ph&#37;6Ft%6&#70;%7&#65;za&#112;%40&#109;a&#105;lc&#46;ne%74">Email Us</a>.
+            We'd love to hear your feedback.
+        </div>                
+        <div class="col-xs-12 col-sm-12 col-md-4 likebox">
+            <div class="feature-icon-container"><div class="feature-icon"><span class="icon-facebook"></span></div></div>
+            <h3>Facebook</h3>
+            <div class="fb-like-box" data-href="http://www.facebook.com/photozzap" data-width="280" data-colorscheme="light" data-show-faces="false" data-header="false" data-stream="true" data-show-border="false"></div>
+        </div>                
+      </div>
+     <div class="row">
+        <div class="col-md-12" style="text-align: center;">
+        &copy; Photozzap 2015 - running on ${server_name}
+        </div>
+     </div>
+  </div>
+</div>
+</div>
