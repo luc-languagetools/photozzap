@@ -49,7 +49,7 @@ function($scope, $rootScope, $modal, photozzapService) {
     
     $scope.open_nick_change_modal = function() {
         $scope.temp_data = {};
-        $scope.modalInstance = $modal.open({templateUrl: "nick_change_modal.html",
+        $scope.modalInstance = $modal.open({templateUrl: "partials/nick_change_modal.html",
                                             controller: "PhotozzapNickChangeModalCtrl",
                                             scope: $scope
                                             });
