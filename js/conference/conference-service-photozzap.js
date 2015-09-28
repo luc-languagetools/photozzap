@@ -7,8 +7,12 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     $log.info("photozzapService initialize, photozzapConfig:", photozzapConfig);
     
-    var initialized_defer = $q.defer();
-       
+    // this promise will be resolved after basic authentication and global user node setup is done
+    var authentication_init_defer = $q.defer();
+    
+    // this promise will be resolved after a conference is initialized
+    var conference_init_defer = $q.defer();
+    
     
     var authenticate = function(){
         $log.info("photozzapService.authenticate");
@@ -184,7 +188,11 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     service.getInitializedPromise = function() {
-        return initialized_defer.promise;
+        return authentication_init_defer.promise;
+    };
+    
+    service.getConferenceInitializedPromise = function() {
+        return conference_init_defer.promise;
     };
     
     service.getConferenceKey = function() {
@@ -320,34 +328,45 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     
     service.initialize = function(conference_key) {
+    
+        if( service.initializeInProgress ) {
+            $log.info("photozzapService, initialization in progress, skipping");
+            
+        };
+        service.initializeInProgress = true;
+    
+        $log.info("photozzapService.initialize");
         var authenticate_promise = authenticate();
                 
         authenticate_promise.then(function(authData) {
             service.authData = authData;
             
             createGlobalUserNode(authData).then(function(){
-                if(conference_key != null) {
-                    $log.info("conference key: ", conference_key);
-                    service.conference_key = conference_key;
-                
-                    createConferenceNode(conference_key).then(function(){
-                        createConferenceUserNode(authData, conference_key).then(function(){
-                            createConferenceImagesArray(conference_key).then(function(){
-                                createConferenceUsersArray(conference_key).then(function(){
-                                    watchRequestsArray(conference_key);
-                                    initialized_defer.resolve();                        
-                                });
-                            });
-                        });
-                    });
-                } else {
-                    initialized_defer.resolve();
-                };
+                authentication_init_defer.resolve();
             });
             
         });
         
     };
+    
+    service.initializeConference = function(conference_key) {
+        service.initialize();
+        service.getInitializedPromise().then(function(){
+            $log.info("photozzapService.initializeConference conference key: ", conference_key);
+            service.conference_key = conference_key;
+        
+            createConferenceNode(conference_key).then(function(){
+                createConferenceUserNode(service.authData, conference_key).then(function(){
+                    createConferenceImagesArray(conference_key).then(function(){
+                        createConferenceUsersArray(conference_key).then(function(){
+                            watchRequestsArray(conference_key);
+                            conference_init_defer.resolve();                        
+                        });
+                    });
+                });
+            });
+        });
+   };
    
     return service;
 }]);

@@ -34,7 +34,7 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
     
     $scope.init = function() {
    
-        photozzapService.getInitializedPromise().then(function(){
+        photozzapService.getConferenceInitializedPromise().then(function(){
    
 
             

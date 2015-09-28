@@ -15,7 +15,7 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
         $scope.imageIdToUserListMap = {};
         
         // get user id
-        photozzapService.getInitializedPromise().then(function(){
+        photozzapService.getConferenceInitializedPromise().then(function(){
             $scope.uid = photozzapService.getUid();
             $scope.watchUsersArray(photozzapService.getUsersArray());
         });
@@ -62,7 +62,7 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         // map from image index to viewers currently viewing
         $scope.imageIdToUserListMap = {};
         
-        photozzapService.getInitializedPromise().then(function(){
+        photozzapService.getConferenceInitializedPromise().then(function(){
             // process initial image array
             $scope.processInitialImageArray(photozzapService.getImagesArray());
             // setup watch on users array

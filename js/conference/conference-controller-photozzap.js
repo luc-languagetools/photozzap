@@ -29,8 +29,8 @@ function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout
         var conference_key = $stateParams.conferenceKey;
         $log.info("initializing PhotozzapCtrl, conference_key: ", conference_key);
         
-        photozzapService.initialize(conference_key);
-        photozzapService.getInitializedPromise().then(function(){
+        photozzapService.initializeConference(conference_key);
+        photozzapService.getConferenceInitializedPromise().then(function(){
             $scope.logged_in_and_ready = true;
             $scope.watch_page_visibility();
         });

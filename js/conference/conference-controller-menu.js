@@ -6,7 +6,7 @@ function($scope, $rootScope, $modal, photozzapService) {
     $scope.inactive_user_list = [];
 
     $scope.init = function() {
-        photozzapService.getInitializedPromise().then(function(){
+        photozzapService.getConferenceInitializedPromise().then(function(){
             // init here
             var conferenceNode = photozzapService.getConferenceNode();
             $scope.conference_name = conferenceNode.name;
