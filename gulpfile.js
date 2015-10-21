@@ -7,6 +7,7 @@ var webserver = require('gulp-webserver');
 var gulp_main_bower_files = require('gulp-main-bower-files');
 var main_bower_files = require('main-bower-files');
 var gulp_filter = require('gulp-filter');
+var livereload = require('gulp-livereload');
 
 // var js_path = './photozzap/static/*/**.js';
 var js_path = './src/**/*.js';
@@ -98,10 +99,12 @@ gulp.task('build_html_debug', ['bower_files_debug', 'copy_js_css_debug', 'copy_l
     return merge(stream2, stream1);
 });
 
+
+
 gulp.task('webserver_debug', function() {
     gulp.src('./')
         .pipe(webserver({
-            livereload: false,
+            livereload: true,
             directoryListing: {enable: true,
                                path: './'},
             open: true,
@@ -109,6 +112,7 @@ gulp.task('webserver_debug', function() {
             port: 8000,
         }));
 });
+
 
 gulp.task('webserver', ['build_html_debug'], function() {
     gulp.src('debug')
