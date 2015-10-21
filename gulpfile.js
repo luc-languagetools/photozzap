@@ -14,13 +14,13 @@ gulp.task('default', ['webserver_debug'], function() {
 });
 
 gulp.task('watch_copy_bower_components', function() {
-    return gulp.src(bower_glob)
+    gulp.src(bower_glob)
     .pipe(watch(bower_glob))
     .pipe(gulp.dest('debug/bower_components'));
 });
 
 gulp.task('watch_copy_debug', function() {
-    return gulp.src([app_glob])
+    gulp.src([app_glob])
     .pipe(watch(app_glob))
     .pipe(gulp.dest('debug'));
 });
