@@ -5,23 +5,28 @@ var debug = require('gulp-debug');
 var inject = require('gulp-inject');
 var webserver = require('gulp-webserver');
 var gulp_filter = require('gulp-filter');
-var livereload = require('gulp-livereload');
+watch = require('gulp-watch');
+
+var bower_glob = './bower_components/**/*';
+var app_glob = './app/**/*';
 
 gulp.task('default', ['webserver_debug'], function() {
 });
 
-gulp.task('copy_bower_components', function() {
-    return gulp.src('./bower_components/**/*')
+gulp.task('watch_copy_bower_components', function() {
+    return gulp.src(bower_glob)
+    .pipe(watch(bower_glob))
     .pipe(gulp.dest('debug/bower_components'));
 });
 
-gulp.task('copy_debug', function() {
-    return gulp.src(['./app/**/*'])
+gulp.task('watch_copy_debug', function() {
+    return gulp.src([app_glob])
+    .pipe(watch(app_glob))
     .pipe(gulp.dest('debug'));
 });
 
 
-gulp.task('webserver_debug', ['copy_bower_components', 'copy_debug'], function() {
+gulp.task('webserver_debug', ['watch_copy_bower_components', 'watch_copy_debug'], function() {
     gulp.src('./debug/')
         .pipe(webserver({
             livereload: true,
