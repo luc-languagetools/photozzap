@@ -22,10 +22,10 @@ gulp.task('copy_debug', function() {
 
 
 gulp.task('webserver_debug', ['copy_bower_components', 'copy_debug'], function() {
-    gulp.src('./app/')
+    gulp.src('./debug/')
         .pipe(webserver({
             livereload: true,
-            directoryListing: {path: './app/',
+            directoryListing: {path: './debug/',
                                enable: true},
             open: true,
             host: '0.0.0.0',
