@@ -4,8 +4,6 @@ var concat = require('gulp-concat');
 var debug = require('gulp-debug');
 var inject = require('gulp-inject');
 var webserver = require('gulp-webserver');
-var gulp_main_bower_files = require('gulp-main-bower-files');
-var main_bower_files = require('main-bower-files');
 var gulp_filter = require('gulp-filter');
 var livereload = require('gulp-livereload');
 
@@ -16,26 +14,6 @@ gulp.task('default', function() {
   return gulp.src(js_path)
   .pipe(debug());
 });
-
-var get_all_javascript_files =  function() {
-    var filter = gulp_filter('**/*.js');
-    var files = main_bower_files();
-    files.push('./src/**/*.js');
-    return gulp.src(files).pipe(filter);    
-};
-
-gulp.task('main-bower-files2', function() {
-    return get_all_javascript_files().pipe(debug());
-});
-
-gulp.task('main-bower-files', function() {
-    var filter = gulp_filter('**/*.js');
-    return gulp.src('./bower.json')
-        .pipe(main_bower_files())
-        .pipe(filter)
-        .pipe(debug());
-});
-
 
 gulp.task('scripts', function() {
   return gulp.src(js_path)
