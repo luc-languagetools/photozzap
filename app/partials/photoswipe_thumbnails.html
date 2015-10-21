@@ -4,6 +4,7 @@
           <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" />
           <img style="display: none;" ng-src="{{img.msrc}}" />
           <div ng-if="imageIdToUserListMap[$index].length > 0" class="overlay">
+            <span class="icon-eye"></span>
             <span ng-repeat="user in imageIdToUserListMap[$index]">{{user.nickname}}</span>
           </div>              
         </a>        

@@ -19,7 +19,10 @@
     width: 100%;
     height: 20%;
     display: block;
-    background: rgba(0, 0, 0, .6);
+    font-size: 125%;
+    color: #444444;
+    padding-left: 20px;
+    background: rgba(255, 255, 255, .6);
 }
 
 .outer_empty_container {
