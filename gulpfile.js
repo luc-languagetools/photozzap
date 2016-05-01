@@ -5,7 +5,7 @@ var debug = require('gulp-debug');
 var inject = require('gulp-inject');
 var webserver = require('gulp-webserver');
 var gulp_filter = require('gulp-filter');
-watch = require('gulp-watch');
+var watch = require('gulp-watch');
 
 var bower_glob = './bower_components/**/*';
 var app_glob = './app/**/*';
@@ -29,12 +29,13 @@ gulp.task('watch_copy_debug', function() {
 gulp.task('webserver_debug', ['watch_copy_bower_components', 'watch_copy_debug'], function() {
     gulp.src('./debug/')
         .pipe(webserver({
-            livereload: true,
-            directoryListing: {path: './debug/',
+            livereload: {enable: true,
+                         port: 8082},
+            directoryListing: {path: 'debug',
                                enable: true},
             open: true,
             host: '0.0.0.0',
-            port: 8000,
+            port: process.env.PORT,
         }));
 });
 
