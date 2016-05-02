@@ -30,7 +30,7 @@ gulp.task('webserver_debug', ['watch_copy_bower_components', 'watch_copy_debug']
     gulp.src('./debug/')
         .pipe(webserver({
             livereload: {enable: false,
-                         port: 8082},
+                         port: 8081},
             directoryListing: {path: 'debug',
                                enable: true},
             open: true,
