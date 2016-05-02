@@ -45,7 +45,7 @@ gulp.task('build', ['templates', 'assets'], function() {
     .pipe(useref({searchPath: ['./app/', '.']}))
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', minifyCss()))
-    .pipe(inject(gulp.src('./dist/templates.js', {read: false}), {ignorePath: build_dir, addRootSlash: false}))
+    .pipe(gulpif('index.html', inject(gulp.src('./dist/templates.js', {read: false}), {ignorePath: build_dir, addRootSlash: false})))
     .pipe(gulp.dest(build_dir));
 });
 
