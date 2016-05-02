@@ -11,23 +11,31 @@ var useref = require('gulp-useref');
 var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify');
 var minifyCss = require('gulp-minify-css');
+var templateCache = require('gulp-angular-templatecache');
 
 var bower_glob = './bower_components/**/*';
 var app_glob = './app/**/*';
 var html_file = './app/index.html';
+var html_templates = './app/partials/*.html';
 var build_dir = 'dist'
 
 gulp.task('default', ['webserver_debug'], function() {
 });
 
 
-gulp.task('build', function() {
+gulp.task('build', ['templates'], function() {
     return gulp.src(html_file)
     .pipe(useref({searchPath: ['./app/', '.']}))
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', minifyCss()))    
     .pipe(gulp.dest(build_dir));
-})
+});
+
+gulp.task('templates', function() {
+   return gulp.src(html_templates)
+   .pipe(templateCache())
+   .pipe(gulp.dest(build_dir));
+});
 
 gulp.task('watch_copy_debug', function() {
     gulp.src([app_glob])
