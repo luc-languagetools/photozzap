@@ -12,6 +12,7 @@ var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify');
 var minifyCss = require('gulp-minify-css');
 var templateCache = require('gulp-angular-templatecache');
+var inject = require('gulp-inject');
 
 var bower_glob = './bower_components/**/*';
 var app_glob = './app/**/*';
@@ -27,7 +28,8 @@ gulp.task('build', ['templates'], function() {
     return gulp.src(html_file)
     .pipe(useref({searchPath: ['./app/', '.']}))
     .pipe(gulpif('*.js', uglify()))
-    .pipe(gulpif('*.css', minifyCss()))    
+    .pipe(gulpif('*.css', minifyCss()))
+    .pipe(inject(gulp.src('./dist/templates.js', {read: false}), {ignorePath: build_dir, addRootSlash: false}))
     .pipe(gulp.dest(build_dir));
 });
 
