@@ -8,6 +8,9 @@ var gulp_filter = require('gulp-filter');
 var watch = require('gulp-watch');
 var debug = require('gulp-debug');
 var useref = require('gulp-useref');
+var gulpif = require('gulp-if');
+var uglify = require('gulp-uglify');
+var minifyCss = require('gulp-minify-css');
 
 var bower_glob = './bower_components/**/*';
 var app_glob = './app/**/*';
@@ -21,6 +24,8 @@ gulp.task('default', ['webserver_debug'], function() {
 gulp.task('build', function() {
     return gulp.src(html_file)
     .pipe(useref({searchPath: ['./app/', '.']}))
+    .pipe(gulpif('*.js', uglify()))
+    .pipe(gulpif('*.css', minifyCss()))    
     .pipe(gulp.dest(build_dir));
 })
 
