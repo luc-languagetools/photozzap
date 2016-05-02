@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapCtrl", 
-["$scope", "$rootScope", "$modal", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "$stateParams", "photozzapService", 
-function($scope, $rootScope, $modal, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  $stateParams, photozzapService) {
+["$scope", "$rootScope", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "$stateParams", "photozzapService", 
+function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  $stateParams, photozzapService) {
    
 
     $scope.show_default_nickname_notification = false;

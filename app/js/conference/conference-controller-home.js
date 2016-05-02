@@ -1,11 +1,11 @@
 
-conferenceModule.controller("PhotozzapHomeController", ["$scope", "$modal", "$log", "photozzapService", function ($scope, $modal, $log, photozzapService) { 
+conferenceModule.controller("PhotozzapHomeController", ["$scope", "$uibModal", "$log", "photozzapService", function ($scope, $uibModal, $log, photozzapService) { 
    
     photozzapService.initialize(null);
    
     $scope.open_add_conf_modal = function() {
         $log.info("PhotozzapHomeController.open_add_conf_modal");
-        $scope.modalInstance = $modal.open({templateUrl: "create_conf_modal.html",
+        $scope.modalInstance = $uibModal.open({templateUrl: "create_conf_modal.html",
                                             controller: "PhotozzapNewConfModalController"});
     };
     
@@ -15,8 +15,8 @@ conferenceModule.controller("PhotozzapHomeController", ["$scope", "$modal", "$lo
     
 }]);
 
-conferenceModule.controller("PhotozzapNewConfModalController", ["$scope", "$rootScope", "$modalInstance", "$log", "$window", "$state", "photozzapService", 
-function ($scope, $rootScope, $modalInstance, $log, $window, $state, photozzapService) {
+conferenceModule.controller("PhotozzapNewConfModalController", ["$scope", "$rootScope", "$uibModalInstance", "$log", "$window", "$state", "photozzapService", 
+function ($scope, $rootScope, $uibModalInstance, $log, $window, $state, photozzapService) {
     $scope.form_data = {};
 
     $scope.init = function() {
@@ -31,12 +31,12 @@ function ($scope, $rootScope, $modalInstance, $log, $window, $state, photozzapSe
     $scope.ok = function () {
         photozzapService.create_conference($scope.form_data.confname).then(function(confKey){
             $log.info("created conference, key: ", confKey);
-            $modalInstance.dismiss('ok');
+            $uibModalInstance.dismiss('ok');
             $state.go('view', {conferenceKey: confKey});
         });
     };
     
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };        
 }]);

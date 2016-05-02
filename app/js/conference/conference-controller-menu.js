@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapMenuCtrl", 
-["$scope", "$rootScope", "$modal", "photozzapService", 
-function($scope, $rootScope, $modal, photozzapService) {
+["$scope", "$rootScope", "$uibModal", "photozzapService", 
+function($scope, $rootScope, $uibModal, photozzapService) {
     
     $scope.active_user_list = [];
     $scope.inactive_user_list = [];
@@ -49,7 +49,7 @@ function($scope, $rootScope, $modal, photozzapService) {
     
     $scope.open_nick_change_modal = function() {
         $scope.temp_data = {};
-        $scope.modalInstance = $modal.open({templateUrl: "partials/nick_change_modal.html",
+        $scope.modalInstance = $uibModal.open({templateUrl: "partials/nick_change_modal.html",
                                             controller: "PhotozzapNickChangeModalCtrl",
                                             scope: $scope
                                             });
