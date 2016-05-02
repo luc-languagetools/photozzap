@@ -7,13 +7,22 @@ var webserver = require('gulp-webserver');
 var gulp_filter = require('gulp-filter');
 var watch = require('gulp-watch');
 var debug = require('gulp-debug');
+var useref = require('gulp-useref');
 
 var bower_glob = './bower_components/**/*';
 var app_glob = './app/**/*';
+var html_file = './app/index.html';
+var build_dir = 'dist'
 
 gulp.task('default', ['webserver_debug'], function() {
 });
 
+
+gulp.task('build', function() {
+    return gulp.src(html_file)
+    .pipe(useref({searchPath: ['./app/', '.']}))
+    .pipe(gulp.dest(build_dir));
+})
 
 gulp.task('watch_copy_debug', function() {
     gulp.src([app_glob])
