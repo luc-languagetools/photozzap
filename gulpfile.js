@@ -20,11 +20,27 @@ var html_file = './app/index.html';
 var html_templates = './app/partials/*.html';
 var build_dir = 'dist'
 
+var assets_glob = ['./graphics/*',
+'./app/js/icomoon/*.{eot,svg,ttf,woff}',
+'./app/js/photoswipe/*.{png,svg,gif}'
+];
+
 gulp.task('default', ['webserver_debug'], function() {
 });
 
 
-gulp.task('build', ['templates'], function() {
+gulp.task('build_serve', ['build'], function() {
+    gulp.src(build_dir)
+    .pipe(webserver({
+            directoryListing: {path: build_dir,
+                               enable: true},
+            open: true,
+            host: '0.0.0.0',
+            port: process.env.PORT,        
+    }));
+})
+
+gulp.task('build', ['templates', 'assets'], function() {
     return gulp.src(html_file)
     .pipe(useref({searchPath: ['./app/', '.']}))
     .pipe(gulpif('*.js', uglify()))
@@ -35,8 +51,13 @@ gulp.task('build', ['templates'], function() {
 
 gulp.task('templates', function() {
    return gulp.src(html_templates)
-   .pipe(templateCache())
+   .pipe(templateCache({root: 'partials/', module: "conferenceModule"}))
    .pipe(gulp.dest(build_dir));
+});
+
+gulp.task('assets', function() {
+    return gulp.src(assets_glob)
+    .pipe(gulp.dest(build_dir))
 });
 
 gulp.task('watch_copy_debug', function() {
