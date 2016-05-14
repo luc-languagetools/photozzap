@@ -1,12 +1,12 @@
-conferenceModule.controller("PhotozzapNickChangeModalCtrl", ["$scope", "$rootScope", "$modalInstance", "$log", "photozzapService",
-function($scope, $rootScope, $modalInstance, $log, photozzapService) {
+conferenceModule.controller("PhotozzapNickChangeModalCtrl", ["$scope", "$rootScope", "$uibModalInstance", "$log", "photozzapService",
+function($scope, $rootScope, $uibModalInstance, $log, photozzapService) {
     
     $scope.change = function() {
         photozzapService.changeNickname($scope.temp_data.new_nickname);
-        $modalInstance.dismiss('close');
+        $uibModalInstance.dismiss('close');
     }
     
     $scope.cancel = function() {
-        $modalInstance.dismiss('close');
+        $uibModalInstance.dismiss('close');
     }
 }]);
