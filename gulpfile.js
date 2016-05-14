@@ -22,7 +22,7 @@ var angular_config_template = "./app/config-template.ejs";
 var angular_config_dest = "./angular_config_generated/";
 
 var bower_glob = './bower_components/**/*';
-var app_glob = './app/**/*';
+var app_glob = ['./app/**/*', './angular_config_generated/angular-config.js'];
 var html_file = './app/index.html';
 var html_templates = './app/partials/*.html';
 var build_dir = 'dist'
@@ -49,7 +49,7 @@ gulp.task('build_serve', ['build'], function() {
 
 gulp.task('build', ['config', 'templates', 'assets'], function() {
     return gulp.src(html_file)
-    .pipe(useref({searchPath: ['./app/', '.']}))
+    .pipe(useref({searchPath: ['./app/', './angular_config_generated/', '.']}))
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', minifyCss()))
     .pipe(gulpif('index.html', inject(gulp.src('./dist/templates.js', {read: false}), {ignorePath: build_dir, addRootSlash: false})))
@@ -77,12 +77,7 @@ gulp.task('config', function() {
   if(!fb_root) {
     throw "FB_ROOT not set [FB_ROOT=photozzap2-dev.firebaseio.com]";
   }
-  /*
-  var constants = {"config": {"firebase_root": 'https://' + fb_root + '/',
-                              "environment": environment}
-  };
-  */
-  var constants = {"firebase_root": 'https://' + fb_root + '/',
+  var constants = {"firebaseRoot": 'https://' + fb_root + '/',
                    "environment": environment};
   ngconstant({
       name: angular_modulename,
@@ -95,7 +90,7 @@ gulp.task('config', function() {
 });
 
 gulp.task('watch_copy_debug', function() {
-    gulp.src([app_glob])
+    gulp.src(app_glob)
     .pipe(watch(app_glob))
     .pipe(debug({title: "updated"}))
     .pipe(gulp.dest('debug'));
