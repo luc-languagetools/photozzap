@@ -14,6 +14,12 @@ var minifyCss = require('gulp-minify-css');
 var templateCache = require('gulp-angular-templatecache');
 var inject = require('gulp-inject');
 var cachebust = require('gulp-cache-bust');
+var ngconstant = require('gulp-ng-constant');
+var rename = require('gulp-rename');
+
+var angular_modulename = "photozzap";
+var angular_config_template = "./app/config-template.ejs";
+var angular_config_dest = "./angular_config_generated/";
 
 var bower_glob = './bower_components/**/*';
 var app_glob = './app/**/*';
@@ -41,7 +47,7 @@ gulp.task('build_serve', ['build'], function() {
     }));
 })
 
-gulp.task('build', ['templates', 'assets'], function() {
+gulp.task('build', ['config', 'templates', 'assets'], function() {
     return gulp.src(html_file)
     .pipe(useref({searchPath: ['./app/', '.']}))
     .pipe(gulpif('*.js', uglify()))
@@ -62,6 +68,32 @@ gulp.task('assets', function() {
     .pipe(gulp.dest(build_dir))
 });
 
+gulp.task('config', function() {
+  var environment = process.env.ENVIRONMENT;
+  if(!environment) {
+      throw "ENVIRONMENT not set [ENVIRONMENT=dev]";
+  }
+  var fb_root = process.env.FB_ROOT;
+  if(!fb_root) {
+    throw "FB_ROOT not set [FB_ROOT=photozzap2-dev.firebaseio.com]";
+  }
+  /*
+  var constants = {"config": {"firebase_root": 'https://' + fb_root + '/',
+                              "environment": environment}
+  };
+  */
+  var constants = {"firebase_root": 'https://' + fb_root + '/',
+                   "environment": environment};
+  ngconstant({
+      name: angular_modulename,
+      templatePath: angular_config_template,
+      constants: constants,
+      stream: true
+    })
+    .pipe(rename("angular-config.js"))
+    .pipe(gulp.dest(angular_config_dest));
+});
+
 gulp.task('watch_copy_debug', function() {
     gulp.src([app_glob])
     .pipe(watch(app_glob))
@@ -70,7 +102,7 @@ gulp.task('watch_copy_debug', function() {
 });
 
 
-gulp.task('webserver_debug', ['watch_copy_debug'], function() {
+gulp.task('webserver_debug', ['config', 'watch_copy_debug'], function() {
     gulp.src('./debug/')
         .pipe(webserver({
             livereload: {enable: true,

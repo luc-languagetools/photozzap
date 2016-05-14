@@ -1,5 +1,6 @@
 *.sqlite
 *.log
+angular_config_generated
 node_modules
 bower_components
 dist
