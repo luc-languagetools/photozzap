@@ -305,9 +305,6 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 
                 var conferenceObject = $firebaseObject(tentativeConferenceRef);
                 conferenceObject.name = conferenceName;
-                conferenceObject.url = photozzapConfig.conferenceUrlTemplate.replace("confkey", tentativeConfKey);
-                conferenceObject.permanent_url = photozzapConfig.permanentUrlTemplate.replace("confkey", tentativeConfKey);
-                conferenceObject.servername = photozzapConfig.serverName;
                 conferenceObject.owner_uid = service.authData.uid;
                 conferenceObject.status = "open";
                 conferenceObject.create_time = new Date().getTime();

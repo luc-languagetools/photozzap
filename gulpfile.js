@@ -77,7 +77,7 @@ gulp.task('config', function() {
   if(!fb_root) {
     throw "FB_ROOT not set [FB_ROOT=photozzap2-dev.firebaseio.com]";
   }
-  var constants = {"firebaseRoot": 'https://' + fb_root + '/',
+  var constants = {"firebaseRoot": 'https://' + fb_root,
                    "environment": environment};
   ngconstant({
       name: angular_modulename,
