@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
     <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
-    <form name="form.form" class="form-horizontal" role="form">
+    <form name="form.form" class="form-horizontal" role="form" ng-submit="change()">
         <div class="form-group has-feedback" ng-class="{'has-error': form.form.nickname.$invalid, 'has-success': form.form.nickname.$valid}">
             <label class="control-label col-sm-4" for="nickname">Nickname
                 <small ng-show="form.form.nickname.$error.minlength"><br/>Min 3 characters</small>
