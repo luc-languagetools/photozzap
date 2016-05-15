@@ -49,27 +49,7 @@
                     </tab-heading>
                     <upload/>
                 </tab>                
-                
-                <tab>
-                    <tab-heading>
-                        <span class="icon-cog"></span> Options
-                    </tab-heading>
-                    <div class="row">
-                        <div class="col-sm-4 col-md-4" ng-show="login_obj.user.uid == conference.owner_uid">
-                            <h3>Close Conference</h3>
-                            Remove all photos, disconnect all users.
-                            <button class="btn btn-default" ng-click="close_conference()">
-                                Close
-                            </button>                            
-                        </div>                        
-                        <div class="col-sm-4 col-md-2">
-                            <h3>Logout</h3>
-                            <button class="btn btn-default" ng-click="logout()">
-                                Logout
-                            </button>                            
-                        </div>
-                    </div>
-                </tab> 
+
             </tabset>
         </div>
     </div>

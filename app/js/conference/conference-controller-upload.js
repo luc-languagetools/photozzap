@@ -47,6 +47,9 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
                 $scope.uploadcare_on_upload_complete(info);
             });            
             
+            $("#upload-frame-resize .uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Upload Images (Resized)")
+            $("#upload-frame-full .uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Upload Images (Full Size)")
+            
             // setup cloudinary unsigned upload
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
