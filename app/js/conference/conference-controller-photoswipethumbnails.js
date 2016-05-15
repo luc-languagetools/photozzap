@@ -59,6 +59,8 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $scope.photoswipe_open = false;
         $log.info("PhotoswipeThumbnailsCtrl.init");
         
+        $scope.determine_image_sizes();
+        
         // map from image index to viewers currently viewing
         $scope.imageIdToUserListMap = {};
         
@@ -70,6 +72,17 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         });        
     };
 
+    $scope.determine_image_sizes = function() {
+        var screen_width = screen.width;
+        if(screen_width <= 1024) {
+            $scope.thumbnail_width = 220;
+        } 
+        if(screen_width <= 600) {
+            var avail_width = screen_width - 50;
+            $scope.thumbnail_width = avail_width / 2;
+        }
+        
+    };
     
     $scope.watchUsersArray = function(conferenceUsersArray){
         $scope.conference_users = conferenceUsersArray;
@@ -139,15 +152,15 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
                                                          width: 500, 
                                                          height: 500,
-                                                         quality: 80,
+                                                         quality: 85,
                                                          sharpen: 400});
     };    
     
     $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
-                                                         width: 250, 
-                                                         height: 200,
-                                                         quality: 80,
+                                                         width: 300, 
+                                                         height: 240,
+                                                         quality: 85,
                                                          sharpen: 400});
     };        
     
