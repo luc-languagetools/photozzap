@@ -10,7 +10,7 @@
             <div class="pswp__top-bar">
                 <div class="pswp__counter"></div>
                 <div class="pwsp__users" ng-if="imageIdToUserListMap[currentlyViewingIndex].length >  0">
-                    <span class="icon-eye"></span><span ng-repeat="user in imageIdToUserListMap[currentlyViewingIndex]">{{user.nickname}} </span>
+                    <span class="icon-eye"></span>&nbsp;<span ng-repeat="user in imageIdToUserListMap[currentlyViewingIndex]">{{user.nickname}}{{$last ? "" : ", "}}</span>
                 </div>
                 <div class="pwsp__follow" ng-click="follow_me()" title="Follow Me">
                     <span class="icon-users2"></span>
