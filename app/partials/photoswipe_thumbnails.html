@@ -1,3 +1,4 @@
+<div>
  <div class="masonry-container" masonry="{ isFitWidth: true }">
     <div class="masonry-brick" ng-repeat="img in images">
         <a ng-click="thumbnail_click($index)">
@@ -9,4 +10,15 @@
           </div>              
         </a>        
     </div>
+</div>
+<div class="outer_empty_container" ng-if="images.length == 0">
+      <div class="empty_container">
+        <h1>No Photos</h1>
+        <h3>
+        Upload Photos using
+        <span class="icon-upload"></span>
+        Upload buttons below.
+        </h3>
+      </div>
+</div>
 </div>
