@@ -92,7 +92,7 @@ gulp.task('config', function() {
 gulp.task('watch_copy_debug', function() {
     gulp.src(app_glob)
     .pipe(watch(app_glob))
-    .pipe(debug({title: "updated"}))
+    //.pipe(debug({title: "updated"}))
     .pipe(gulp.dest('debug'));
 });
 
