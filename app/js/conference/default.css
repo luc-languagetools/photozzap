@@ -25,6 +25,12 @@
     background: rgba(255, 255, 255, .6);
 }
 
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+ }
+
 .outer_empty_container {
     padding: 10px;
 }
