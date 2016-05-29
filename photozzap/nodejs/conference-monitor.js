@@ -3,14 +3,19 @@ var cloudinary = require('cloudinary');
 var push = require( 'pushover-notifications' );
 //var config = require('./' + process.argv[2]);
 
-var env = process.env.ENV;
+var env = process.env.PHOTOZZAP_ENV;
 if(!env) {
-    throw "ENV not set [ENV=dev]";
+    throw "PHOTOZZAP_ENV not set [PHOTOZZAP_ENV=dev]";
 }
 
-var fb_root = process.env.FB_ROOT;
+var fb_root = process.env.PHOTOZZAP_FB_ROOT;
 if(!fb_root) {
-    throw "FB_ROOT not set [FB_ROOT=photozzap2-dev.firebaseio.com]";
+    throw "PHOTOZZAP_FB_ROOT not set [PHOTOZZAP_FB_ROOT=photozzap2-dev.firebaseio.com]";
+}
+
+var config_file = process.env.PHOTOZZAP_CONFIG_FILE;
+if(!config_file) {
+    throw "PHOTOZZAP_CONFIG_FILE not set [PHOTOZZAP_CONFIG_FILE=photozzap2-dev.json]";
 }
 
 firebase.initializeApp({
