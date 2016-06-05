@@ -243,6 +243,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     // follow related functions
     service.requestFollowMe = function() {
+        // unfollow, if we were following someone else
+        service.unfollow();
+        
         service.requests_array.$add({user_id: service.getUid(),
                                      timestamp: Firebase.ServerValue.TIMESTAMP,
                                      type: "follow_me"}).
