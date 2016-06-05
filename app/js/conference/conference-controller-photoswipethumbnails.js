@@ -14,6 +14,8 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
         // map from image id to list of users viewing that photo
         $scope.imageIdToUserListMap = {};
         
+        $scope.mobile_view = screen.width < 768;
+        
         // get user id
         photozzapService.getConferenceInitializedPromise().then(function(){
             $scope.uid = photozzapService.getUid();

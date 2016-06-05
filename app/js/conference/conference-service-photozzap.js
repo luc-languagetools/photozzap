@@ -259,6 +259,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     service.startFollowing = function(userId) {
+        // unfollow first
+        service.unfollow();
+        
         // get a reference to this user id's currently_viewing key
         var userCurrentlyViewingRef = service.conference_users_array.$ref().child(userId).child('currently_viewing');
         var userCurrentlyViewingObj = $firebaseObject(userCurrentlyViewingRef);
