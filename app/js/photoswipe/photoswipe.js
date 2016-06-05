@@ -965,6 +965,12 @@ var publicMethods = {
 		framework.addClass(template, 'pswp--visible');
 	},
 
+
+	// user requesting follow
+	followMe: function() {
+		_shout('followme');
+	},
+
 	// Closes the gallery, then destroy it
 	close: function() {
 		if(!_isOpen) {

@@ -44,12 +44,7 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
         $log.info("PhotoswipeUICtrl, currently viewing index ", index);
         $scope.currentlyViewingIndex = index;
     });
-    
-    $scope.follow_me = function() {
-        $log.info("Requesting follow");
-        photozzapService.requestFollowMe();
-    };
-    
+
 }]);
 
 
@@ -224,6 +219,10 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         // Pass data to PhotoSwipe and initialize it
         $scope.photoswipe_open = true;
         $scope.photoswipe = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, $scope.images, options);
+        $scope.photoswipe.listen('followme', function() {
+           $log.info("follow requested"); 
+           photozzapService.requestFollowMe();
+        });
         $scope.photoswipe.listen('close', function() { 
             $log.info("photoswipe gallery closed");
             $scope.photoswipe_open = false;

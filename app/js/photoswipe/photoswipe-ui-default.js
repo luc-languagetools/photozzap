@@ -486,9 +486,7 @@ var PhotoSwipeUI_Default =
 		{
 			name: 'button--follow',
 			option: 'followEl',
-			onTap: function() {
-				// alert('touched');
-			}
+			onTap: pswp.followMe
 		},
 		{ 
 			name: 'preloader', 
