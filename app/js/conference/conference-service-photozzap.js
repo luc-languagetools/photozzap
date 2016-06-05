@@ -35,7 +35,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 $log.info("anonymous authentication successful");
                 defer.resolve(authData);
             }).catch(function(error) {
-                $log.error("anonymous authentication unsucessful");
+                $log.error("anonymous authentication unsucessful", error);
                 defer.reject("authentication error" + error);
             });
             
