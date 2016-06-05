@@ -66,6 +66,8 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
         widget.onUploadComplete(function(info) {
             $scope.uploadcare_on_upload_complete(info);
         });        
+        
+        $(".uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Choose Images")
     }
     
     $scope.init = function() {
@@ -75,8 +77,6 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
             $scope.rebuild_widget();
             $scope.watch_resize_mode();
    
-            $(".uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Upload Images (Resized)")
-            
             // setup cloudinary unsigned upload
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
