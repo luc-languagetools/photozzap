@@ -67,17 +67,7 @@
   .pswp--svg .pswp__button--arrow--right {
     background: none; } }
 
-.pwsp__follow {
-    right: 185px;
-    top: 5px;
-    position: absolute;
-    color: #FFFFFF;
-    font-size: 150%;
-    opacity: 0.9;
-    cursor: pointer;
-    z-index: 1800;
-}
-    
+
 .pswp__button--close {
   background-position: 0 -44px; }
 
@@ -97,11 +87,19 @@
   display: none;
   background-position: -88px 0; }
 
+.pswp__button--follow {
+  background-position: -176px 0;
+  font-size: 150%;
+  opacity: 0.9;
+  color: #FFFFFF;
+}
+
 .pswp--zoom-allowed .pswp__button--zoom {
   display: block; }
 
 .pswp--zoomed-in .pswp__button--zoom {
   background-position: -132px 0; }
+
 
 /* no arrows on touch screens */
 .pswp--touch .pswp__button--arrow--left,

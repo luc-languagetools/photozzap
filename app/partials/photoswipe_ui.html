@@ -12,13 +12,13 @@
                 <div class="pwsp__users" ng-if="imageIdToUserListMap[currentlyViewingIndex].length >  0">
                     <span class="icon-eye"></span>&nbsp;<span ng-repeat="user in imageIdToUserListMap[currentlyViewingIndex]">{{user.nickname}}{{$last ? "" : ", "}}</span>
                 </div>
-                <div class="pwsp__follow" ng-click="follow_me()" title="Follow Me">
-                    <span class="icon-users2"></span>
-                </div>
                 <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
                 <button class="pswp__button pswp__button--share" title="Share"></button>
                 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
                 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <button class="pswp__button pswp__button--follow" ng-click="follow_me()" title="Follow Me">
+                    <span class="icon-users2"></span>
+                </button>
                 <div class="pswp__preloader">
                     <div class="pswp__preloader__icn">
                       <div class="pswp__preloader__cut">

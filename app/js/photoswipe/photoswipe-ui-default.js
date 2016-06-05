@@ -70,6 +70,7 @@ var PhotoSwipeUI_Default =
 			counterEl: true,
 			arrowEl: true,
 			preloaderEl: true,
+			followEl: true,
 
 			tapToClose: false,
 			tapToToggleControls: true,
@@ -482,6 +483,13 @@ var PhotoSwipeUI_Default =
 				}
 			} 
 		},
+		{
+			name: 'button--follow',
+			option: 'followEl',
+			onTap: function() {
+				// alert('touched');
+			}
+		},
 		{ 
 			name: 'preloader', 
 			option: 'preloaderEl',
@@ -829,7 +837,7 @@ var PhotoSwipeUI_Default =
 
 		if(api) {
 			api.enter = function() { 
-				// disable close-on-scroll in fullscreen
+				// disable close-on-scroll in fullscreen/
 				_initalCloseOnScrollValue = _options.closeOnScroll; 
 				_options.closeOnScroll = false; 
 
