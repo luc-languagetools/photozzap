@@ -1,6 +1,6 @@
 conferenceModule.controller("PhotozzapCtrl", 
-["$scope", "$rootScope", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "$stateParams", "photozzapService", 
-function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  $stateParams, photozzapService) {
+["$scope", "$rootScope", "$log", "$window", "$filter", "$http", "$q", "$timeout", "$location", "$timeout", "$state", "$stateParams", "photozzapService", 
+function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $location, $timeout,  $state, $stateParams, photozzapService) {
    
 
     $scope.show_default_nickname_notification = false;
@@ -25,6 +25,8 @@ function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $locat
     $scope.show_photo_counter = false;
     $scope.show_photo_timeout = undefined;
   
+    $scope.conference_closed = false;
+  
     $scope.init = function() {
         var conference_key = $stateParams.conferenceKey;
         $log.info("initializing PhotozzapCtrl, conference_key: ", conference_key);
@@ -33,9 +35,29 @@ function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $locat
         photozzapService.getConferenceInitializedPromise().then(function(){
             $scope.logged_in_and_ready = true;
             $scope.watch_page_visibility();
+            $scope.watch_conference_status();
         });
     }
     
+    $scope.go_to_homepage = function() {
+        $state.go('home');
+    }
+  
+    $scope.evaluate_conference_status = function(status) {
+        if( status == "closed" ){
+            // close
+            $log.info("conference closed");
+            $scope.conference_closed = true;
+        }
+    }
+  
+    $scope.watch_conference_status = function() {
+        $scope.conference_node = photozzapService.getConferenceNode();
+        $scope.evaluate_conference_status($scope.conference_node.status);
+        $scope.conference_node.$watch(function() {
+            $scope.evaluate_conference_status($scope.conference_node.status);
+        })
+    }
   
     $scope.watch_page_visibility = function() {
         if ($.support.pageVisibility) {
