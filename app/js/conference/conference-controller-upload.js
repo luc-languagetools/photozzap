@@ -1,5 +1,9 @@
+/* globals conferenceModule */
+/* globals uploadcare */
+/* globals $ */
+
 conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService", "photozzapConfig", function($scope, $log, photozzapService, photozzapConfig) {
-    $scope.resize = true;
+    $scope.resize_mode = "resize";
     
     $scope.uploadcare_on_upload_complete = function(info) {
         $log.info("UploadCtrl, onUploadComplete: ", info);
@@ -23,32 +27,55 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
 
             // clear file list
             var multiWidget1 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-1]');
-            var multiWidget2 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-2]');
             multiWidget1.value(null);
-            multiWidget2.value(null);
         })
         .fail(function(error) {
             $log.error("couldn't load file group ", error);
         });    
     };
+   
+    $scope.watch_resize_mode = function() {
+        $scope.$watch("resize_mode", function() {
+           $scope.rebuild_widget();
+        });
+    }
+   
+    $scope.rebuild_widget = function () {
+        if( $scope.resize_mode == "resize" ) {
+            $log.info("upload resized");
+            $('#uploader').attr('data-image-shrink', '1024x768');
+        } else {
+            $log.info("upload full size");
+            $('#uploader').attr('data-image-shrink', '');
+        }
+
+        
+        var oldWidget = uploadcare.MultipleWidget('#uploader');
+        $(oldWidget.inputElement)
+            .next('.uploadcare-widget')
+            .remove();
+        var input = $(oldWidget.inputElement).clone()
+            .replaceAll(oldWidget.inputElement);
+
+        var widget = uploadcare.MultipleWidget(input);
+        widget.value(oldWidget.value());
+        for (var i = 0; i < oldWidget.validators.length; i++) {
+            widget.validators.push(oldWidget.validators[i]);
+        }
+        
+        widget.onUploadComplete(function(info) {
+            $scope.uploadcare_on_upload_complete(info);
+        });        
+    }
     
     $scope.init = function() {
    
         photozzapService.getConferenceInitializedPromise().then(function(){
-   
 
-            
-            var multiWidget1 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-1]');
-            var multiWidget2 = uploadcare.MultipleWidget('[role=uploadcare-uploader][data-multiple][data-widget-2]');
-            multiWidget1.onUploadComplete(function(info) {
-                $scope.uploadcare_on_upload_complete(info);
-            });
-            multiWidget2.onUploadComplete(function(info) {
-                $scope.uploadcare_on_upload_complete(info);
-            });            
-            
-            $("#upload-frame-resize .uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Upload Images (Resized)")
-            $("#upload-frame-full .uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Upload Images (Full Size)")
+            $scope.rebuild_widget();
+            $scope.watch_resize_mode();
+   
+            $(".uploadcare-widget-button-open").html("<span class=\"icon-upload\"></span> Upload Images (Resized)")
             
             // setup cloudinary unsigned upload
             $('#cloudinary_unsigned_upload_form').append(
