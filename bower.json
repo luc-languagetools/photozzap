@@ -2,7 +2,7 @@
   "name": "photozzap",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "~1.4",
+    "angular": "1.4.10",
     "angular-ui-router": "latest",
     "jquery": "~1.10.0",
     "jquery-ui": "latest",
@@ -16,7 +16,7 @@
     "angular-masonry": "latest",
     "cloudinary_js": "latest",
     "uploadcare": "latest",
-    "angularfire": "latest"
+    "angularfire": "2.0.1"
   },
   "homepage": "https://github.com/lucwastiaux/photozzap",
   "authors": [
