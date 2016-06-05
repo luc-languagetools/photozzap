@@ -89,6 +89,9 @@
 
 .pswp__button--follow {
   background-position: -176px 0;
+}
+
+.pswp__button--follow--child {
   font-size: 140%;
   opacity: 0.8;
   color: #FFFFFF;
