@@ -1,0 +1,12 @@
+{
+    "photozzapConfig": {
+        "env": "dev",
+        "firstNode": "photozzap",
+        "firebaseConfig":{
+            "apiKey": "AIzaSyD-_24EqQNqkLUGglm4Ue467BMOvRepS74",
+            "authDomain": "photozzap2-dev.firebaseapp.com",
+            "databaseURL": "https://photozzap2-dev.firebaseio.com",
+            "storageBucket": "photozzap2-dev.appspot.com"
+          }
+    }
+}

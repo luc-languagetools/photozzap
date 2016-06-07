@@ -1,3 +1,2 @@
-export FB_ROOT=photozzap2-dev.firebaseio.com
 export ENVIRONMENT=dev
 gulp webserver_debug
