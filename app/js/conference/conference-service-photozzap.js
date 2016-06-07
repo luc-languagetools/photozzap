@@ -1,3 +1,6 @@
+/* global conferenceModule */
+/* global firebase */
+
 
 conferenceModule.factory('photozzapService', ["$rootScope", "$log", "$firebaseAuth", "$firebaseObject", "$firebaseArray", "$q", "$timeout", "photozzapConfig", 
 function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, $timeout, photozzapConfig) {
@@ -7,6 +10,10 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     $log.info("photozzapService initialize, photozzapConfig:", photozzapConfig);
     
+    firebase.initializeApp(photozzapConfig.firebaseConfig);
+    
+    service.rootRef = firebase.database().ref().child(photozzapConfig.firstNode);
+
     // this promise will be resolved after basic authentication and global user node setup is done
     var authentication_init_defer = $q.defer();
     
@@ -19,8 +26,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
         var defer = $q.defer();
     
-        var ref = new Firebase(photozzapConfig.firebaseRoot);
-        var auth = $firebaseAuth(ref);
+        var auth = $firebaseAuth();
         
         var authData = auth.$getAuth();
         
@@ -30,7 +36,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
             defer.resolve(authData);
         } else {
         
-            auth.$authAnonymously().then(function(authData) {
+            auth.$signInAnonymously().then(function(authData) {
                 service.authData = authData;
                 $log.info("anonymous authentication successful");
                 defer.resolve(authData);
@@ -47,8 +53,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     var createGlobalUserNode = function(authData){
         var defer = $q.defer();
     
-        var ref = new Firebase(photozzapConfig.firebaseRoot);
-        service.global_user_node = $firebaseObject(ref.child(photozzapConfig.firstNode).
+        service.global_user_node = $firebaseObject(service.rootRef.
                                                        child('users').
                                                        child(authData.uid));
                                                        
@@ -65,8 +70,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     
     var getConferenceRef = function(conference_key) {
-        var ref = new Firebase(photozzapConfig.firebaseRoot);
-        return ref.child(photozzapConfig.firstNode).child('conferences').child(conference_key);
+        return service.rootRef.child('conferences').child(conference_key);
     };
     
     var createConferenceNode = function(conference_key) {
@@ -300,8 +304,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         var conferenceNameEncoded = conferenceName.replace(/[^a-zA-Z0-9]/g, "-");
         var tentativeConfKey = prefix + "-" + conferenceNameEncoded;        
         
-        var ref = new Firebase(photozzapConfig.firebaseRoot);
-        var tentativeConferenceRef = ref.child(photozzapConfig.firstNode).
+        var tentativeConferenceRef = service.rootRef.
                                          child('conferences').
                                          child(tentativeConfKey)
 

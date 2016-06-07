@@ -15,6 +15,7 @@ var templateCache = require('gulp-angular-templatecache');
 var inject = require('gulp-inject');
 var cachebust = require('gulp-cache-bust');
 var ngconstant = require('gulp-ng-constant');
+var ngconfig = require('gulp-ng-config');
 var rename = require('gulp-rename');
 
 var angular_modulename = "photozzap";
@@ -73,20 +74,14 @@ gulp.task('config', function() {
   if(!environment) {
       throw "ENVIRONMENT not set [ENVIRONMENT=dev]";
   }
-  var fb_root = process.env.FB_ROOT;
-  if(!fb_root) {
-    throw "FB_ROOT not set [FB_ROOT=photozzap2-dev.firebaseio.com]";
-  }
-  var constants = {"firebaseRoot": 'https://' + fb_root,
-                   "environment": environment};
-  ngconstant({
-      name: angular_modulename,
-      templatePath: angular_config_template,
-      constants: constants,
-      stream: true
-    })
-    .pipe(rename("angular-config.js"))
-    .pipe(gulp.dest(angular_config_dest));
+
+  gulp.src('./config/config-' + environment + '.json')
+  .pipe(ngconfig('conferenceModule', {
+     createModule: false
+  }))
+  .pipe(rename("angular-config.js"))
+  .pipe(gulp.dest(angular_config_dest));    
+  
 });
 
 gulp.task('watch_copy_debug', function() {

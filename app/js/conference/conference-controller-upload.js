@@ -81,8 +81,8 @@ conferenceModule.controller("UploadCtrl", ["$scope", "$log", "photozzapService",
             $('#cloudinary_unsigned_upload_form').append(
                     $.cloudinary.unsigned_upload_tag("photozzap_unsigned", 
                         { cloud_name: 'photozzap', 
-                          tags: [photozzapService.getConferenceKey(), photozzapConfig.environment, "photozzap"],
-                          folder: "photozzap_" + photozzapConfig.environment},
+                          tags: [photozzapService.getConferenceKey(), photozzapConfig.env, "photozzap"],
+                          folder: "photozzap_" + photozzapConfig.env},
                         {dropZone: $("#cloudinary_drop_zone")})
                         .bind('cloudinarydone', function(e, data) {            
                             $log.info("cloudinary upload data: ", data);
