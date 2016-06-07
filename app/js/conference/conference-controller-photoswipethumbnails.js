@@ -35,7 +35,8 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
     $scope.updateMap = function() {
         var validUsers = _.filter($scope.conference_users, function(user){
             return user.$id != $scope.uid // not us 
-                   && user.connected == true; // connected
+                   && user.connected == true
+                   && user.page_visible == true; 
         });
         $scope.imageIdToUserListMap = _.groupBy(validUsers, function(user){
             return user.currently_viewing;
@@ -93,7 +94,7 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     
     $scope.updateUsersMap = function() {
         var validUsers = _.filter($scope.conference_users, function(user){
-            return user.connected == true; // connected
+            return user.connected == true && user.page_visible == true; // connected
         });        
         $scope.imageIdToUserListMap = _.groupBy(validUsers, function(user){
             return user.currently_viewing;
