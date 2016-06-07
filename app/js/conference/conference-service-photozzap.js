@@ -28,24 +28,34 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
         var auth = $firebaseAuth();
         
-        var authData = auth.$getAuth();
+        //var authData = auth.$getAuth();
         
-        if(authData) {
-            $log.info("photozzapService: already authenticated");
-            service.authData = authData;
-            defer.resolve(authData);
-        } else {
-        
-            auth.$signInAnonymously().then(function(authData) {
-                service.authData = authData;
-                $log.info("anonymous authentication successful");
-                defer.resolve(authData);
-            }).catch(function(error) {
-                $log.error("anonymous authentication unsucessful", error);
-                defer.reject("authentication error" + error);
-            });
+
+        auth.$onAuthStateChanged(function(authData) {
+            $log.info("authData: ", authData);            
             
-        };
+            
+            if(authData) {
+                $log.info("photozzapService: already authenticated");
+                service.authData = authData;
+                defer.resolve(authData);
+            } else {
+            
+                auth.$signInAnonymously().then(function(authData) {
+                    service.authData = authData;
+                    $log.info("anonymous authentication successful");
+                    defer.resolve(authData);
+                }).catch(function(error) {
+                    $log.error("anonymous authentication unsucessful", error);
+                    defer.reject("authentication error" + error);
+                });
+                
+            };            
+            
+        });
+        
+        
+
         
         return defer.promise;
     };
