@@ -58,7 +58,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                                                        child(authData.uid));
                                                        
         service.global_user_node.$loaded().then(function(){
-            service.global_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
+            service.global_user_node.time_connected = firebase.database.ServerValue.TIMESTAMP;
             service.global_user_node.$save().then(function(){
                 defer.resolve();
             });            
@@ -97,7 +97,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         var connectedRef = getConferenceRef(conference_key).child('users').child(authData.uid).child('connected');
         
         service.conference_user_node.$loaded().then(function(){
-            service.conference_user_node.time_connected = Firebase.ServerValue.TIMESTAMP;
+            service.conference_user_node.time_connected = firebase.database.ServerValue.TIMESTAMP;
             if(! service.conference_user_node.nickname) {
                 // no nickname defined
                 // do we have one in the global user node ?
@@ -251,7 +251,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         service.unfollow();
         
         service.requests_array.$add({user_id: service.getUid(),
-                                     timestamp: Firebase.ServerValue.TIMESTAMP,
+                                     timestamp: firebase.database.ServerValue.TIMESTAMP,
                                      type: "follow_me"}).
         then(function(ref) {
             $timeout(function() {
@@ -289,7 +289,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         var image = {id: imageData.id,
                      width: imageData.width,
                      height: imageData.height,
-                     time_added: Firebase.ServerValue.TIMESTAMP,
+                     time_added: firebase.database.ServerValue.TIMESTAMP,
                      user_id: service.authData.uid};
         $log.info("adding image ", image);
         service.conference_images_array.$add(image);

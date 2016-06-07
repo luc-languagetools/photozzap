@@ -22,7 +22,7 @@ function($scope, $log, $timeout) {
         
             // request download
             var requestRef = $scope.requests_ref.push({user_id: $scope.login_obj.user.uid,
-                                                      timestamp: Firebase.ServerValue.TIMESTAMP,
+                                                      timestamp: firebase.database.ServerValue.TIMESTAMP,
                                                       type: "download_all"});
             $timeout(function() {
                         requestRef.remove();
