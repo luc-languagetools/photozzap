@@ -130,6 +130,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         
         service.conference_images_array = $firebaseArray(getConferenceRef(conference_key).
                                                          child('images'));
+        service.conference_images_array_upload_only = $firebaseArray(getConferenceRef(conference_key).
+                                                         child('images'));        
+        
         
         service.conference_images_array.$loaded().then(function(){
             watchImagesArray();
@@ -292,7 +295,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                      time_added: firebase.database.ServerValue.TIMESTAMP,
                      user_id: service.authData.uid};
         $log.info("adding image ", image);
-        service.conference_images_array.$add(image);
+        service.conference_images_array_upload_only.$add(image);
     };
     
     service.create_conference = function(conferenceName) {
