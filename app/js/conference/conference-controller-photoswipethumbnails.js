@@ -1,3 +1,4 @@
+/* global _ */
 
 conferenceModule.filter('photoswipeArray', function(){
     return function(input) {
@@ -32,10 +33,11 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
     };
     
     $scope.updateMap = function() {
-        var usersWithoutMe = _.filter($scope.conference_users, function(user){
-            return user.$id != $scope.uid;
+        var validUsers = _.filter($scope.conference_users, function(user){
+            return user.$id != $scope.uid // not us 
+                   && user.connected == true; // connected
         });
-        $scope.imageIdToUserListMap = _.groupBy(usersWithoutMe, function(user){
+        $scope.imageIdToUserListMap = _.groupBy(validUsers, function(user){
             return user.currently_viewing;
         });    
         
@@ -90,7 +92,10 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     };
     
     $scope.updateUsersMap = function() {
-        $scope.imageIdToUserListMap = _.groupBy($scope.conference_users, function(user){
+        var validUsers = _.filter($scope.conference_users, function(user){
+            return user.connected == true; // connected
+        });        
+        $scope.imageIdToUserListMap = _.groupBy(validUsers, function(user){
             return user.currently_viewing;
         });    
     };    
