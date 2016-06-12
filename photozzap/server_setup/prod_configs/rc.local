@@ -1,3 +1,0 @@
-#!/bin/bash
-bash /home/prod/env/photozzap/photozzap/server_setup/git_photozzap_setup.sh &>> /var/log/rc.local.log
-bash /home/prod/env/photozzap/photozzap/server_setup/setup_photozzap_server.sh &>> /var/log/rc.local.log

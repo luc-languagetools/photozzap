@@ -1,0 +1,2 @@
+export ENVIRONMENT=dev
+gulp webserver_debug

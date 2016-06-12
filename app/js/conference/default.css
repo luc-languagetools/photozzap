@@ -1,0 +1,92 @@
+
+.masonry-container {
+    margin: 0 auto;
+}
+
+.masonry-brick {
+    margin: 5px;
+    display: none;
+}
+
+.masonry-brick.loaded {
+    display: block;
+}
+
+.masonry-brick .overlay {
+    position: absolute;
+    top: 80%;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    display: block;
+    font-size: 125%;
+    color: #444444;
+    padding-left: 10px;
+    background: rgba(255, 255, 255, .6);
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+ }
+
+.outer_empty_container {
+    padding: 10px;
+}
+
+
+.empty_container_inner {
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.less_bottom_padding {
+    padding-bottom: 1%;
+}
+
+.empty_container {
+    border-style: dashed;
+    border-width: 8px;
+    border-color: #BBBBBB;
+    border-radius: 20px;
+    color: #BBBBBB;
+    left: 0%;
+    top: 0%;    
+    width: 100%;
+    height: 200px;    
+    text-align: center;
+}
+
+.empty_container h1 { 
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-size: 300%;
+}
+
+.upload-header {
+    margin-top: 50px;
+}
+
+body {
+	background: #FFFFFF;
+    color: #444444;
+    font-family: 'Pathway Gothic One', sans-serif;
+    font-size: 18px;
+}
+
+.below-tab-spacing {
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+
+.upload_drop_container {
+    padding: 4%;
+}
+
+.cloudinary-input-style-override {
+    border-width: 0px;
+    box-shadow: none;
+    height: auto;
+}

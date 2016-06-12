@@ -1,0 +1,21 @@
+{
+  "name": "photozzap-conference-monitor",
+  "version": "1.0.0",
+  "description": "Backend for Photozzap",
+  "main": "conference-monitor.js",
+  "dependencies": {
+    "cloudinary": "^1.0.8",
+    "express": "^4.10.0",
+    "firebase": "^3.0.3",
+    "node-bufferapp": "^0.1.2",
+    "pushover-notifications": "^0.1.8",
+    "underscore": "^1.7.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node conference-monitor.js"
+  },
+  "author": "luc wastiaux",
+  "license": "ISC"
+}

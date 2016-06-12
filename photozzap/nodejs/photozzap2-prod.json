@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "photozzap2-prod",
+  "private_key_id": "1a2f21673965d6e26ae64d7f1d19d21b57064b4b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCM1KajFG5AVnFO\noG4y2GOAeuT4EnrDszCAM96+y09qUDZ48Sjh/CTdwuGuebGoh80fSLXOTsEtdUO1\n49Ogg8XpLVhN38dBu6uZ44FMHICqPNQCsLpWZeYmCXXvaRHi7Ux8IP1YB9HxmN4q\nkrvjY3CuQkd8ZqMgt0QjjN0vRgiQ3ifxl69sMPXFa1YkrRFf7mJBLh/SyWV7ecfo\nHxh8gIYUHMunz6HrF3O97W1e6p2duq7DFsUwr6U8O/VB20nw9FnyIZk3SczlZeRl\nfKYf17J0nZ6+M+LFckZTCMp6GohpchICUSMBJTCupoRnYDteENmlO7loJsuhK19E\nBdxxahZ5AgMBAAECggEAM2WQg0f7jMN/isCGN0w91DAFzHuCDlYhR0im7F7q1tP7\nbVwmHYOWONDc6H5FVkpplBdHMsoPOnXnhkRlgdlVq2n/JjybTeQeFoWvNIXad0bH\n4Ut6VfnOauddAUkJXBZaqZqomy4PcurleggfRjeOciqCSGZ09oWr+oV4W75ldejy\nNylhOpw8hiKPEcPV21zG5fReJ/cYpRtwnJng9FB+CAYWvD/VwSLPqroq618X41QA\njqJKx+Q3z/jpvltLunSldSJrmJlb0YR/l/1BwGszAhcLLqlzcKxXbvfjWiLf6osq\naBy83lG2674dhEHOdxGOgprYyn+E5VODfAA59N4QAQKBgQDZI6J2u14oVsJnwKBY\nI9luxGMScpWDFWg+fF/GiP4yxZTCi7PeaKan9rRpWTr/ELjNUW/RVJTopAqXWZJU\nYdFTjzTBfRQRgTmWnYXKJSC++lu8m/Fjf9/9bIUSl4rILeP/9QJaWY4dqTICFMRR\nDIyd9azW/CWl/fTHzpceoWTFeQKBgQCmCOTtTBceqnU+O8ZB7HFnI4k55c73vSCy\nEkNWrhKJgJ8KF0O1SQW70F10DBYfF5gR1lFVPGFLrF8Sm3Iv6nPrwlXKccgVZWlH\naw0U/P62Ms1PvPUiERBNs/Az72yky7dKCaKO6PsM+BYdTTNQyCamCAm4pLpyq58h\n1dm1xgCZAQKBgCcrRG1Ck1OXgu4QU1xS6zAOAQkc3leNDwbmjKhVofUqqxEE/mdK\nXXXDDPxL+lZ0f8GZxR/vsATfQoHWyIysMIRwOsYEeBBITUkcFTxHwkZxBwdY4gxe\nztr6Lm8SIxjFHnHXkpsVuIslMD4r3NX5+4uq+4i0Z14wF23LmHsQBguRAoGBAId3\n+lEjJDoBGmgMnVZsdJqShASZXKUFywd/nzG6FaXbK+gv0y62xdbXy2hD9EiqF4l2\nNCY3fasgmPG1oxU1Vh+mEBl9fKL4e02qKqJVSf2etaW5psiE46iCiBnX3+0Vyha+\nhcPUlAGg6Wo+8v+WTvJo3IWq4fVt0gjpUxjc1OABAoGAQh/Dnb5saofXhFd1yuIK\nb8qiRbAAOIStdr3rTMF8HFco0oIEewQlmAPWKZgDfzV0KWWykTdZnxG430HzRj5v\nmRlFz3u7L+U3xwWunnfbBjGuJuM/h8KCvpXgT7guzqKfjWYxD9Gs53Q+wSB5yukB\nIfV4p8OqVDIpJOrgg88mRXk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "photozzap2-prod@photozzap2-prod.iam.gserviceaccount.com",
+  "client_id": "113174473917409867426",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/photozzap2-prod%40photozzap2-prod.iam.gserviceaccount.com"
+}

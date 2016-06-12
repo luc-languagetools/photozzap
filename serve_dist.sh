@@ -1,0 +1,2 @@
+export ENVIRONMENT=dev
+gulp build_serve

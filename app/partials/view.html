@@ -1,0 +1,70 @@
+<div ng-show="logged_in_and_ready && conference_closed != true" ng-cloak class="ng-cloak" style="margin-bottom: 20px;">
+    <div class="row" ng-controller="PhotozzapMenuCtrl">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <h1>{{conference_name}}</h1>
+        </div>
+        <div class="col-md-5 col-sm-5 hidden-xs">
+            <h2 style="margin-top: 20px;">
+            <span ng-show="active_user_list.length > 0">
+                <span class="icon-eye"></span> 
+                <span ng-repeat="user in active_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>
+            
+            <span ng-show="inactive_user_list.length > 0">
+                <span class="icon-eye-blocked"></span> 
+                <span ng-repeat="user in inactive_user_list">{{user.nickname}}<span ng-show="!$last">, </span></span>
+            </span>            
+            </h2>
+        </div>
+        <div class="col-md-3 col-sm-3 hidden-xs">
+            <button class="btn btn-primary btn-lg pull-right" ng-click="open_nick_change_modal()" tooltip-placement="bottom" tooltip="Change Name" style="margin-top: 20px;">
+                <span class="icon-users3"></span> {{user_map[self_uid].nickname}}
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        <div id="photoswipe-container">
+            <div class="image-thumbs">
+                <photoswipethumbnails/>
+            </div>
+                
+            <!-- Dem photoswipe -->
+            <photoswipeui/>
+            
+
+            </div>
+        </div>
+    </div>
+    
+    <upload/>
+
+    
+</div>
+
+<div ng-show="logged_in_and_ready && conference_closed == true" ng-cloak class="ng-cloak" style="margin-bottom: 20px;">
+    <div class="row">
+        <div class="outer_empty_container">
+              <div class="empty_container">
+                <h1>Conference Closed</h1>
+                <h3>
+                    <b>{{conference_node.name}}</b> was closed. <button class="btn btn-large btn-primary" ng-click="go_to_homepage()">Go to Homepage</button>
+                </h3>
+              </div>
+        </div>
+    </div>
+</div>
+
+<div ng-show="conference_error == true" ng-cloak class="ng-cloak" style="margin-bottom: 20px;">
+    <div class="row">
+        <div class="outer_empty_container">
+              <div class="empty_container">
+                <h1>Error opening conference</h1>
+                <h3>
+                    {{conference_error_msg}} <button class="btn btn-large btn-primary" ng-click="go_to_homepage()">Go to Homepage</button>
+                </h3>
+              </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+{
+  "name": "photozzap",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "1.4.10",
+    "angular-ui-router": "latest",
+    "jquery": "~1.10.0",
+    "jquery-ui": "latest",
+    "jquery-bridget": "latest",
+    "bootstrap": "~3.3",
+    "angular-bootstrap": "^1.3.2",
+    "jquery-visibility": "latest",
+    "underscore": "latest",
+    "imagesloaded": "latest",
+    "masonry": "latest",
+    "angular-masonry": "latest",
+    "cloudinary_js": "latest",
+    "uploadcare": "latest",
+    "angularfire": "2.0.1"
+  },
+  "homepage": "https://github.com/lucwastiaux/photozzap",
+  "authors": [
+    "Luc Wastiaux <luc.wastiaux@airpost.net>"
+  ],
+  "description": "Photozzap Realtime Gallery",
+  "keywords": [
+    "gallery",
+    "firebase",
+    "photozzap"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
