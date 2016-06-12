@@ -87,7 +87,12 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         var defer = $q.defer();
         
         service.conference_node = $firebaseObject(getConferenceRef(conference_key));
-        service.conference_node.$loaded().then(function(){
+        service.conference_node.$loaded().then(function(data){
+            $log.info("createConferenceNode data", data);
+            if(data.name == undefined) {
+                $log.error("no name for conference");
+                defer.reject("conference " + conference_key + " doesn't exist")
+            }
             defer.resolve();
         });
         
@@ -383,6 +388,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                         });
                     });
                 });
+            }, function(msg) {
+                $log.error("could not initialize conference: ", msg);
+                conference_init_defer.reject(msg);
             });
         });
    };

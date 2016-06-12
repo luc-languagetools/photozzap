@@ -14,6 +14,9 @@ function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $locat
             $scope.logged_in_and_ready = true;
             $scope.watch_page_visibility();
             $scope.watch_conference_status();
+        }, function(msg) {
+            $scope.conference_error = true;
+            $scope.conference_error_msg = msg;
         });
     }
     

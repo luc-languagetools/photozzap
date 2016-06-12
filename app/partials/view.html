@@ -55,3 +55,16 @@
         </div>
     </div>
 </div>
+
+<div ng-show="conference_error == true" ng-cloak class="ng-cloak" style="margin-bottom: 20px;">
+    <div class="row">
+        <div class="outer_empty_container">
+              <div class="empty_container">
+                <h1>Error opening conference</h1>
+                <h3>
+                    {{conference_error_msg}} <button class="btn btn-large btn-primary" ng-click="go_to_homepage()">Go to Homepage</button>
+                </h3>
+              </div>
+        </div>
+    </div>
+</div>
