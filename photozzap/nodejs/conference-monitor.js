@@ -8,19 +8,11 @@ if(!env) {
     throw "PHOTOZZAP_ENV not set [PHOTOZZAP_ENV=dev]";
 }
 
-var fb_root = process.env.PHOTOZZAP_FB_ROOT;
-if(!fb_root) {
-    throw "PHOTOZZAP_FB_ROOT not set [PHOTOZZAP_FB_ROOT=photozzap2-dev.firebaseio.com]";
-}
-
-var config_file = process.env.PHOTOZZAP_CONFIG_FILE;
-if(!config_file) {
-    throw "PHOTOZZAP_CONFIG_FILE not set [PHOTOZZAP_CONFIG_FILE=photozzap2-dev.json]";
-}
+var fb_root = "photozzap2-"+env+".firebaseio.com";
 
 firebase.initializeApp({
   databaseURL: "https://" + fb_root,
-  serviceAccount: "photozzap2-dev.json"
+  serviceAccount: "photozzap2-"+ env + ".json"
 });
 
 var rootRef = firebase.database().ref();
