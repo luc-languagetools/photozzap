@@ -4,9 +4,9 @@
         <a ng-click="thumbnail_click($index)">
           <img id="{{'thumbnail_id_' + $index}}" ng-src="{{img.square_thumb}}" width="{{thumbnail_width}}" />
           <img style="display: none;" ng-src="{{img.msrc}}" />
-          <div ng-if="imageIdToUserListMap[$index].length > 0" class="overlay">
+          <div ng-if="imageIdToUserListMap[img.image_id].length > 0" class="overlay">
             <span class="icon-eye"></span>
-            <span ng-repeat="user in imageIdToUserListMap[$index]">{{user.nickname}}{{$last ? "" : ", "}}</span>
+            <span ng-repeat="user in imageIdToUserListMap[img.image_id]">{{user.nickname}}{{$last ? "" : ", "}}</span>
           </div>              
         </a>        
     </div>

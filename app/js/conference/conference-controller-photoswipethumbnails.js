@@ -45,9 +45,9 @@ conferenceModule.controller("PhotoswipeUICtrl", ["$scope", "$rootScope", "$log",
         $log.info("PhotoswipeUICtrl.updateMap ", $scope.imageIdToUserListMap);
     };
     
-    $rootScope.$on("currently_viewing_index", function(event, index){
-        $log.info("PhotoswipeUICtrl, currently viewing index ", index);
-        $scope.currentlyViewingIndex = index;
+    $rootScope.$on("currently_viewing_id", function(event, image_id){
+        $log.info("PhotoswipeUICtrl, currently viewing image_id ", image_id);
+        $scope.currentlyViewingId = image_id;
     });
 
 }]);
@@ -101,9 +101,20 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         });    
     };    
     
+    $scope.buildImageIndexMaps = function() {
+        // build map from cloudinary image id to image index
+        var i = 0;
+        $scope.image_id_to_index = {};
+        _.each($scope.images, function(image) {
+            $scope.image_id_to_index[image.image_id] = i;
+            i = i + 1;
+        })
+    }
+    
     $scope.processInitialImageArray = function(images_array){
         $log.info("images loaded", images_array);
         $scope.images = _.map(images_array, $scope.convert_image);
+        $scope.buildImageIndexMaps();
     };    
     
     // TODO: move this notification under the photozzapService
@@ -113,7 +124,8 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $scope.following_user = true;
         
         var userRecord = $scope.conference_users.$getRecord(follow_data.user_id);
-        $scope.open_image_index_follow(userRecord.currently_viewing);
+        var image_index = $scope.image_id_to_index[userRecord.currently_viewing];
+        $scope.open_image_index_follow(image_index);
         
         photozzapService.startFollowing(follow_data.user_id);
         
@@ -127,8 +139,10 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     };
     
     $rootScope.$on("followed_user_viewing", function(event, data){
-        var imageIndex = data.image_index;
-        $scope.open_image_index_follow(imageIndex);
+        $log.info("followed_user_viewing", data);
+        var image_id = data.image_id;
+        var image_index = $scope.image_id_to_index[image_id];
+        $scope.open_image_index_follow(image_index);
     });
     
     $rootScope.$on("image_added", function(event, eventData){
@@ -136,6 +150,7 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         var imageData = eventData.imageData;
         $log.info("image added at index ", imageIndex, imageData);
         $scope.images.push($scope.convert_image(imageData));
+        $scope.image_id_to_index[imageData.id] = $scope.images.length - 1;
     });
     
     $scope.convert_image = function(image_data){
@@ -143,7 +158,8 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
                                 msrc:  $scope.cloudinary_photoswipe_thumbnail_url(image_data),
                                 square_thumb: $scope.cloudinary_photoswipe_square_thumbnail_url(image_data), 
                                 w: image_data.width,
-                                h: image_data.height};
+                                h: image_data.height,
+                                image_id: image_data.id};
         return photoswipe_image;
     };
     
@@ -253,11 +269,13 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     
     $scope.reportCurrentlyViewingIndex = function() {
         var currentlyViewingIndex = $scope.photoswipe.getCurrentIndex();
-        $log.info("currently viewing index: ", currentlyViewingIndex);
-        photozzapService.currentlyViewing(currentlyViewingIndex);    
+        $log.info("reportCurrentlyVewingIndex: ", currentlyViewingIndex);
+        var image_id = $scope.images[currentlyViewingIndex].image_id;
+        $log.info("currently viewing index: ", currentlyViewingIndex, "cloudinary id:", image_id);
+        photozzapService.currentlyViewing(image_id);
 
         // the photoswipe UI controller listen to this
-        $rootScope.$emit("currently_viewing_index", currentlyViewingIndex);
+        $rootScope.$emit("currently_viewing_id", image_id);
       
         // was this event triggered by a follow event ? if not, it's a user-initiated click and we should unfollow
         if(! $scope.follow_event) {

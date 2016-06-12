@@ -247,8 +247,8 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     // indicate which image the user is currently viewing
-    service.currentlyViewing = function(index) {
-        service.conference_user_node.currently_viewing = index;
+    service.currentlyViewing = function(image_id) {
+        service.conference_user_node.currently_viewing = image_id;
         service.conference_user_node.$save();
     };
     
@@ -288,10 +288,10 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
         var userCurrentlyViewingRef = service.conference_users_array.$ref().child(userId).child('currently_viewing');
         var userCurrentlyViewingObj = $firebaseObject(userCurrentlyViewingRef);
         service.followUserWatch = userCurrentlyViewingObj.$watch(function(){
-            var imageIndex = userCurrentlyViewingObj.$value;
-            if(imageIndex != undefined) {
-                $log.info("followed user on image index: ", imageIndex);
-                $rootScope.$emit("followed_user_viewing", {image_index: imageIndex});
+            var imageId = userCurrentlyViewingObj.$value;
+            if(imageId != undefined) {
+                $log.info("followed user on image id: ", imageId);
+                $rootScope.$emit("followed_user_viewing", {image_id: imageId});
             }
         });        
     };

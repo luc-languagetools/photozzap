@@ -9,10 +9,10 @@
         <div class="pswp__ui pswp__ui--hidden">
             <div class="pswp__top-bar">
                 <div class="pswp__counter"></div>
-                <div class="pwsp__users" ng-if="imageIdToUserListMap[currentlyViewingIndex].length >  0">
+                <div class="pwsp__users" ng-if="imageIdToUserListMap[currentlyViewingId].length >  0">
                     <span class="icon-eye"></span>&nbsp;
-                    <span ng-if="! mobile_view" ng-repeat="user in imageIdToUserListMap[currentlyViewingIndex]">{{user.nickname}}{{$last ? "" : ", "}}</span>
-                    <span ng-if="mobile_view">{{imageIdToUserListMap[currentlyViewingIndex].length}}</span>
+                    <span ng-if="! mobile_view" ng-repeat="user in imageIdToUserListMap[currentlyViewingId]">{{user.nickname}}{{$last ? "" : ", "}}</span>
+                    <span ng-if="mobile_view">{{imageIdToUserListMap[currentlyViewingId].length}}</span>
                 </div>
                 <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
                 <button class="pswp__button pswp__button--share" title="Share"></button>
