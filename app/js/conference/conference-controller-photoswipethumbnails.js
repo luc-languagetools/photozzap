@@ -164,22 +164,26 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     };
     
     $scope.cloudinary_photoswipe_original_url = function(image_data) {
-        return $.cloudinary.url(image_data.id + ".jpg");
+        return $.cloudinary.url(image_data.id + ".jpg", {fetch_format: 'auto',
+                                                         quality: 'auto'});
     };    
 
     $scope.cloudinary_photoswipe_thumbnail_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fit', 
                                                          width: 500, 
                                                          height: 500,
-                                                         quality: 85,
+                                                         quality: 'auto',
+                                                         fetch_format: 'auto',
                                                          sharpen: 400});
     };    
     
     $scope.cloudinary_photoswipe_square_thumbnail_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {crop: 'fill', 
+                                                         gravity: 'auto',
                                                          width: 300, 
                                                          height: 240,
-                                                         quality: 85,
+                                                         quality: 'auto',
+                                                         fetch_format: 'auto',
                                                          sharpen: 400});
     };        
     
