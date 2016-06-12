@@ -36,7 +36,10 @@ cloudinary.config({
 });
 
 var conferencesRef = rootRef.child("/photozzap/conferences");
+var usersRef = rootRef.child("/photozzap/users");
 
+var cleanupConferencesRef = rootRef.child("/photozzap/conferences");
+var cleanupUsersRef = rootRef.child("/photozzap/users");
 
 function ConferenceObject(key, ref, close_after_time, env) {
     this.key = key;
@@ -145,9 +148,48 @@ function ConferenceObject(key, ref, close_after_time, env) {
 }
 
 function deleteConferenceEntry(key) {
-    console.log("deleteConferenceEntry: " + key);
+    console.log((new Date()).toUTCString(), "deleteConferenceEntry: " + key);
     delete Globals.conferences[key];
 }
+
+
+var cleanupTimeout = setInterval(function() {
+    console.log((new Date()).toUTCString(), "performing cleanup");
+    
+    var current_time = new Date().getTime();
+    var delete_after_delay = 30 * 24 * 60 * 60 * 1000;
+    
+    cleanupConferencesRef.off();
+    cleanupUsersRef.off();
+    
+    // open all of the conferences children
+    cleanupConferencesRef.on('child_added', function(snapshot){
+        var conference_data = snapshot.val();
+        var conference_key = snapshot.key;
+        if(conference_data.status == "closed") {
+            // look at how long it's been closed
+            if (conference_data.close_after_time + delete_after_delay < current_time) {
+                console.log(new Date().toUTCString(), "deleting conference", conference_key);
+                var deleteRef = cleanupConferencesRef.child(conference_key);
+                deleteRef.remove();
+            }
+        }
+    });
+    
+    // open all of the users children
+    cleanupUsersRef.on('child_added', function(snapshot){
+        var user_data = snapshot.val();
+        var user_key = snapshot.key;
+        // look at how long it's been since the user logged in
+        if (user_data.time_connected + delete_after_delay < current_time) {
+            console.log(new Date().toUTCString(), "deleting user", user_key);
+            var deleteRef = cleanupUsersRef.child(user_key);
+            deleteRef.remove();
+        }
+    });
+        
+    
+}, 600000)
 
 conferencesRef.on('child_added', function(snapshot){
     var ref = snapshot.ref;
