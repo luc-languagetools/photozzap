@@ -52,7 +52,7 @@
     <h1>Share and Browse Photos in Real Time</h1>
     <h2>Want to show a few photos to friends or family online ? <b><span class="icon-image"></span> Photozzap</b> is a web app which turns photo viewing into an interactive experience, allowing you to see what photos your friends are looking at, and take turns in controlling the slideshow.</h2>
     <div style="text-align: center;">
-        <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()'>
+        <a id='new-conf-button' class="btn btn-large btn-success" ng-click='open_add_conf_modal()' ng-disabled='! start_conference_enabled'>
         <span class="icon-redo"></span> Start Conference</a>
         <p class="small-print">Free, no registration.</p>
     </div>

@@ -1,7 +1,17 @@
 
 conferenceModule.controller("PhotozzapHomeController", ["$scope", "$uibModal", "$log", "photozzapService", function ($scope, $uibModal, $log, photozzapService) { 
    
-    photozzapService.initialize(null);
+    $scope.start_conference_enabled = false;
+   
+    $scope.init = function() {
+        photozzapService.initialize(null);    
+        photozzapService.getInitializedPromise().then(function(){
+            $scope.start_conference_enabled = true;
+        });        
+    };
+    $scope.init();
+   
+   
    
     $scope.open_add_conf_modal = function() {
         $log.info("PhotozzapHomeController.open_add_conf_modal");
