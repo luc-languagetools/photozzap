@@ -146,7 +146,6 @@ function deleteConferenceEntry(key) {
 
 
 var cleanupTimeout = setInterval(function() {
-    console.log((new Date()).toUTCString(), "performing cleanup");
     
     var current_time = new Date().getTime();
     var delete_after_delay = 30 * 24 * 60 * 60 * 1000;
