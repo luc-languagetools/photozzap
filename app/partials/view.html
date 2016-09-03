@@ -38,10 +38,36 @@
         </div>
     </div>
     
-    <upload/>
-    <a ng-href="{{conference_node.download_zip_url}}" >Download All</a>
-
     
+    <div>
+        <!-- upload controls here -->
+        <div class="row" style="margin-top: 10px;">
+            <upload/>
+            
+            <div class="hidden-xs col-sm-4 col-md-4 col-lg-6" id="upload-frame-resize">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                <span class="icon-download" style="font-size: 200%;"></span>
+                                <br/>
+                                Download
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-xs-8 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                <a ng-href="{{conference_node.download_zip_url}}">
+                                <button class="btn btn-info btn-lg">
+                                    <span class="icon-file-download"></span> Download All</button>
+                                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            
+        </div>
+    </div>
+
 </div>
 
 <div ng-show="logged_in_and_ready && conference_closed == true" ng-cloak class="ng-cloak" style="margin-bottom: 20px;">

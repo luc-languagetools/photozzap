@@ -1,54 +1,50 @@
-<div>
-    <!-- upload controls here -->
-    <div class="row" style="margin-top: 10px;">
-
-        
-        <!-- upload panel 1, resized -->
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3" id="upload-frame-resize">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="row">
-                        
-                        <div class="col-md-2 col-sm-2 col-xs-2">
-                            <span class="icon-upload" style="font-size: 200%;"></span>
-                            <br/>
-                            Upload
-                        </div>
-                        
-                        <div class="col-md-6 col-sm-6 col-xs-10">
-                             <div class="btn-group">
-                                <label class="btn btn-primary" ng-model="resize_mode" uib-btn-radio="'resize'">
-                                    <span class="icon-contract"></span>
-                                    Resize
-                                </label>
-                                <label class="btn btn-primary" ng-model="resize_mode" uib-btn-radio="'fullsize'">
-                                    <span class="icon-expand"></span>
-                                    Full Size
-                                </label>
-                             </div>
-                             <br/>
-                             <span ng-if="resize_mode == 'resize'">Resize to 1024x768 - Faster upload</span>
-                             <span ng-if="resize_mode == 'fullsize'">Upload full size - Higher quality</span>
-                        </div>
-                        
-                        <div class="col-md-4 col-md-offset-0 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-2">
-                            <input id="uploader" type="hidden" name="picture" role="uploadcare-uploader" 
-                                   data-public-key="071cc18cd47faf518850"
-                                   data-multiple
-                                   data-images-only
-                                   data-image-shrink="1024x768"
-                                   data-widget-1
-                            />                            
-                        </div>
-                        
-                    </div>
+<div class="col-xs-12 col-sm-8 col-md-8 col-lg-6" id="upload-frame-resize">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                    <span class="icon-upload" style="font-size: 200%;"></span>
+                    <br/>
+                    Upload
                 </div>
+                
+                <div class="col-md-6 col-sm-6 col-xs-10">
+                     <div class="btn-group">
+                        <label class="btn btn-primary" ng-model="resize_mode" uib-btn-radio="'resize'">
+                            <span class="icon-contract"></span>
+                            Resize
+                        </label>
+                        <label class="btn btn-primary" ng-model="resize_mode" uib-btn-radio="'fullsize'">
+                            <span class="icon-expand"></span>
+                            Full Size
+                        </label>
+                     </div>
+                     <br/>
+                     <span ng-if="resize_mode == 'resize'">Resize to 1024x768 - Faster upload</span>
+                     <span ng-if="resize_mode == 'fullsize'">Upload full size - Higher quality</span>
+                </div>
+                
+                <div class="col-md-4 col-md-offset-0 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-2">
+                    <input id="uploader" type="hidden" name="picture" role="uploadcare-uploader" 
+                           data-public-key="071cc18cd47faf518850"
+                           data-multiple
+                           data-images-only
+                           data-image-shrink="1024x768"
+                           data-widget-1
+                    />                            
+                </div>
+                
             </div>
         </div>
-
     </div>
+    
     <div class="row" style="display: none;">
         <div id="cloudinary_unsigned_upload_form"></div>
         <div id="cloudinary_drop_zone">CLOUDINARY DROP ZONE</div>
-    </div>        
+    </div>                
+    
 </div>
+
+
+
