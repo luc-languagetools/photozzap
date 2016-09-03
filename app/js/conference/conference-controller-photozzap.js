@@ -64,16 +64,7 @@ function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $locat
     $scope.cloudinary_photo_download_url = function(image_data) {
         return $.cloudinary.url(image_data.id + ".jpg", {flags: 'attachment'});
     };
-    
-    $scope.download_all_images = function() {
-        $log.info("download all images");
-        
-        $.cloudinary.utils.download_archive_url({tags: [photozzapService.conference_key]}, function(error,result) {
-            console.log(result) 
-            
-        });
-    };
-    
+
     // run init
     $scope.init();
     
