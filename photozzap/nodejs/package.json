@@ -4,9 +4,9 @@
   "description": "Backend for Photozzap",
   "main": "conference-monitor.js",
   "dependencies": {
-    "cloudinary": "^1.0.8",
+    "cloudinary": "^1.4.1",
     "express": "^4.10.0",
-    "firebase": "^3.0.3",
+    "firebase": "^3.3.0",
     "node-bufferapp": "^0.1.2",
     "pushover-notifications": "^0.1.8",
     "underscore": "^1.7.0"

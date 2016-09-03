@@ -45,18 +45,30 @@ function ConferenceObject(key, ref, close_after_time, env) {
     this.zipUrlRef = ref.child('download_zip_url');
     this.notifyPushoverRef = ref.child('notify_pushover');
     
+    this.image_ids = [];
+    
+
     this.log_event = function(message) {
         console.log((new Date()).toUTCString(), ": [", this.key ,"] ", message);
     };
     
 
-    this.imageChildAdded = function(snapshot) {
+    this.imageChildAdded = function(snapshot, prevChildKey) {
         this.log_event("image added");
         
-        // invalidate download zip url, if any
-        this.zipUrlRef.remove();
+        var image_data = snapshot.val();
+        var image_id = image_data.id;
+        this.image_ids.push(image_id);
+
+        // generate zip url
+        var zip_url = cloudinary.utils.download_zip_url({public_ids: this.image_ids, resource_type: 'image'});
+        this.zipUrlRef.set(zip_url);
     };   
 
+
+    this.zip_url_complete = function(error, result) {
+      console.log("zip_url_complete", error, result);
+    };
 
     this.requestChildAdded = function(snapshot) {
         var request_data = snapshot.val();
