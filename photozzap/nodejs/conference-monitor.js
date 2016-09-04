@@ -43,6 +43,7 @@ function ConferenceObject(key, ref, close_after_time, env) {
     this.requestsRef = ref.child('request');
     this.statusRef = ref.child('status');
     this.zipUrlRef = ref.child('download_zip_url');
+    this.requestZipUrlRef = ref.child('request_zip_url');
     this.notifyPushoverRef = ref.child('notify_pushover');
     
     this.image_ids = [];
@@ -60,15 +61,16 @@ function ConferenceObject(key, ref, close_after_time, env) {
         var image_id = image_data.id;
         this.image_ids.push(image_id);
 
-        // generate zip url
-        var zip_url = cloudinary.utils.download_zip_url({public_ids: this.image_ids, resource_type: 'image'});
-        this.zipUrlRef.set(zip_url);
     };   
 
 
-    this.zip_url_complete = function(error, result) {
-      console.log("zip_url_complete", error, result);
-    };
+    this.requestZipUrl = function(snapshot)
+    {
+        this.log_event("requestZipUrl");
+        var zip_url = cloudinary.utils.download_zip_url({public_ids: this.image_ids, resource_type: 'image'});
+        this.zipUrlRef.set(zip_url);            
+        
+    }
 
     this.requestChildAdded = function(snapshot) {
         var request_data = snapshot.val();
@@ -77,17 +79,15 @@ function ConferenceObject(key, ref, close_after_time, env) {
         if (request_data.type == "download_all") {
             // create download link for all photos
             this.log_user_event(user_key, "creating download zip");
-            var self = this;
-            cloudinary.uploader.multi(this.key, function(result){
-                self.log_event("created download link: " + result.url);
-                var download_link = result.url;
-                self.zipUrlRef.set(download_link)
-            }, {format: "zip", tags: this.key + "," + this.env + "," + this.server_name});
+            // generate zip url
+
+            
         }
         
         
     }
     
+
    this.statusChanged = function(snapshot) {
       if(snapshot.val() === null) {
         return;
@@ -127,6 +127,7 @@ function ConferenceObject(key, ref, close_after_time, env) {
         this.imagesRef.on('child_added', this.imageChildAdded, function(){}, this);
         this.requestsRef.on('child_added', this.requestChildAdded, function(){}, this);
         this.statusRef.on('value', this.statusChanged, function(){}, this);
+        this.requestZipUrlRef.on('value', this.requestZipUrl, function(){}, this);
     }
     
     this.removeCallbacks = function() {
@@ -134,6 +135,7 @@ function ConferenceObject(key, ref, close_after_time, env) {
         this.imagesRef.off('child_added');
         this.requestsRef.off('child_added');
         this.statusRef.off('value');
+        this.requestZipUrl.off('value');
         this.notifyPushoverRef.off('value');
         clearTimeout(this.closeTimeout);
     }        

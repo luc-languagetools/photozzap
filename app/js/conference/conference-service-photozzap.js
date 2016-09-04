@@ -351,6 +351,43 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     };
     
     
+    service.request_zip_url = function()
+    {
+        var defer = $q.defer();
+        
+        var zip_url_ref = service.conference_node.$ref().child('download_zip_url');
+        var request_zip_url = service.conference_node.$ref().child('request_zip_url');
+        zip_url_ref.on('value', function(snapshot){
+           var download_zip_url = snapshot.val();
+           
+           if (download_zip_url != null)
+           {
+           
+                $log.info('saw download_zip_url', download_zip_url);
+               
+               setTimeout( function(){
+                   $log.info("cleaning up zip urls");
+                   // now remove the value
+                   zip_url_ref.set(null);
+               }, 1000);
+               
+               defer.resolve(download_zip_url);
+               
+               zip_url_ref.off('value');
+               
+           }
+           
+
+        });
+        
+        // request download link
+        service.conference_node.request_zip_url = firebase.database.ServerValue.TIMESTAMP;
+        service.conference_node.$save();
+        
+        return defer.promise;
+        
+    }
+    
     service.initialize = function(conference_key) {
     
         if( service.initializeInProgress ) {
