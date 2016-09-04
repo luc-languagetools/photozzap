@@ -201,6 +201,8 @@ conferencesRef.on('child_added', function(snapshot){
     var key = snapshot.key;
     var conference_data = snapshot.val();
     
+    console.log("saw new conference", key, "data", conference_data);
+    
     if (conference_data.status != "closed") {
         console.log("monitoring conference ", key, " ", conference_data.name);
         Globals.conferences[key] = new ConferenceObject(key, 
