@@ -1046,6 +1046,10 @@ var publicMethods = {
 	},
 
 
+	getNumItems: function() {
+		return _getNumItems();
+	},
+
 	goTo: function(index) {
 
 		index = _getLoopedId(index);
