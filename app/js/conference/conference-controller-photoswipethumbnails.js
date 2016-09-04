@@ -141,8 +141,13 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
     $rootScope.$on("followed_user_viewing", function(event, data){
         $log.info("followed_user_viewing", data);
         var image_id = data.image_id;
-        var image_index = $scope.image_id_to_index[image_id];
-        $scope.open_image_index_follow(image_index);
+        if (image_id in $scope.image_id_to_index)
+        {
+            var image_index = $scope.image_id_to_index[image_id];
+            $scope.open_image_index_follow(image_index);
+        } else {
+            $log.error("followed_user_viewing: image_id", image_id, "not present!");
+        }
     });
     
     $rootScope.$on("image_added", function(event, eventData){
@@ -197,9 +202,15 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
             if(! $scope.photoswipe_open) {
                 // open at the right index
                 $scope.thumbnail_click(imageIndex);
-            } else {
-                // move existing photoswipe instance to the correct index
-                $scope.photoswipe.goTo(imageIndex);
+            } else { 
+                var num_items = $scope.photoswipe.getNumItems();
+                if (imageIndex >= num_items)
+                {
+                    $log.error("Cannot move to index",imageIndex,"only have",num_items,"items");
+                } else {
+                    // move existing photoswipe instance to the correct index
+                    $scope.photoswipe.goTo(imageIndex);
+                }
             }    
         }
     };

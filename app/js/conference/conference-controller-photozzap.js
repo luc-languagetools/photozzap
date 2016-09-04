@@ -65,6 +65,18 @@ function($scope, $rootScope, $log, $window, $filter, $http, $q, $timeout, $locat
         return $.cloudinary.url(image_data.id + ".jpg", {flags: 'attachment'});
     };
 
+
+    $scope.request_zip_url = function() {
+        $log.info("requesting zip url");
+        
+        // request download link
+        photozzapService.request_zip_url().then(function(download_zip_url){
+            $log.info("got zip url: ", download_zip_url);
+            
+            window.location = download_zip_url;
+        });
+    }
+
     // run init
     $scope.init();
     
