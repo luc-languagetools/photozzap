@@ -17,6 +17,8 @@ var cachebust = require('gulp-cache-bust');
 var ngconstant = require('gulp-ng-constant');
 var ngconfig = require('gulp-ng-config');
 var rename = require('gulp-rename');
+var sourcemaps = require('gulp-sourcemaps');
+var lazypipe = require('lazypipe');
 
 var angular_modulename = "photozzap";
 var angular_config_template = "./app/config-template.ejs";
@@ -50,11 +52,12 @@ gulp.task('build_serve', ['build'], function() {
 
 gulp.task('build', ['config', 'templates', 'assets'], function() {
     return gulp.src(html_file)
-    .pipe(useref({searchPath: ['./app/', './angular_config_generated/', '.']}))
+    .pipe(useref({searchPath: ['./app/', './angular_config_generated/', '.']}, lazypipe().pipe(sourcemaps.init, { loadMaps: true })))
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', minifyCss()))
     .pipe(gulpif('index.html', inject(gulp.src('./dist/templates.js', {read: false}), {ignorePath: build_dir, addRootSlash: false})))
     .pipe(cachebust())
+    .pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest(build_dir));
 });
 
