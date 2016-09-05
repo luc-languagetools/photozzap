@@ -27,6 +27,8 @@ cloudinary.config({
   api_secret: 'OxGxJe0f-jGo1BAsmmlDdRPb7NM'
 });
 
+var delete_after_delay = 30 * 24 * 60 * 60 * 1000;
+
 var conferencesRef = rootRef.child("/photozzap/conferences");
 var usersRef = rootRef.child("/photozzap/users");
 
@@ -66,9 +68,12 @@ function ConferenceObject(key, ref, close_after_time, env) {
 
     this.requestZipUrl = function(snapshot)
     {
-        this.log_event("requestZipUrl");
-        var zip_url = cloudinary.utils.download_zip_url({public_ids: this.image_ids, resource_type: 'image'});
-        this.zipUrlRef.set(zip_url);            
+        if(snapshot.val() != undefined)
+        {
+            this.log_event("requestZipUrl, num images: " + this.image_ids.length);
+            var zip_url = cloudinary.utils.download_zip_url({public_ids: this.image_ids, resource_type: 'image'});
+            this.zipUrlRef.set(zip_url);            
+        }
         
     }
 
@@ -159,39 +164,42 @@ function deleteConferenceEntry(key) {
 }
 
 
-var cleanupTimeout = setInterval(function() {
-    
-    var current_time = new Date().getTime();
-    var delete_after_delay = 30 * 24 * 60 * 60 * 1000;
-    
-    cleanupConferencesRef.off();
-    cleanupUsersRef.off();
-    
-    // open all of the conferences children
-    cleanupConferencesRef.on('child_added', function(snapshot){
+function cleanupConferenceChild(snapshot){
         var conference_data = snapshot.val();
         var conference_key = snapshot.key;
         if(conference_data.status == "closed") {
             // look at how long it's been closed
+            var current_time = new Date().getTime();
             if (conference_data.close_after_time + delete_after_delay < current_time) {
                 console.log(new Date().toUTCString(), "deleting conference", conference_key);
                 var deleteRef = cleanupConferencesRef.child(conference_key);
                 deleteRef.remove();
             }
         }
-    });
-    
-    // open all of the users children
-    cleanupUsersRef.on('child_added', function(snapshot){
+    }
+
+function cleanupUserChild(snapshot){
         var user_data = snapshot.val();
         var user_key = snapshot.key;
         // look at how long it's been since the user logged in
+        var current_time = new Date().getTime();
         if (user_data.time_connected + delete_after_delay < current_time) {
             console.log(new Date().toUTCString(), "deleting user", user_key);
             var deleteRef = cleanupUsersRef.child(user_key);
             deleteRef.remove();
         }
-    });
+    }
+
+var cleanupTimeout = setInterval(function() {
+    
+    cleanupConferencesRef.off('child_added', cleanupConferenceChild);
+    cleanupUsersRef.off('child_added', cleanupUserChild);
+    
+    // open all of the conferences children
+    cleanupConferencesRef.on('child_added', cleanupConferenceChild);
+    
+    // open all of the users children
+    cleanupUsersRef.on('child_added', cleanupUserChild);
         
     
 }, 600000)
@@ -201,8 +209,7 @@ conferencesRef.on('child_added', function(snapshot){
     var key = snapshot.key;
     var conference_data = snapshot.val();
     
-    console.log("saw new conference", key, "data", conference_data);
-    
+
     if (conference_data.status != "closed") {
         console.log("monitoring conference ", key, " ", conference_data.name);
         Globals.conferences[key] = new ConferenceObject(key, 
