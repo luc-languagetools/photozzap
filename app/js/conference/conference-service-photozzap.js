@@ -292,6 +292,9 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
             if(imageId != undefined) {
                 $log.info("followed user on image id: ", imageId);
                 $rootScope.$emit("followed_user_viewing", {image_id: imageId});
+            } else {
+                $log.info("followed user closed photoswipe");
+                $rootScope.$emit("followed_user_closed");
             }
         });        
     };

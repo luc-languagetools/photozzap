@@ -138,6 +138,13 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         $scope.following_user = false;
     };
     
+    
+    $rootScope.$on("followed_user_closed", function(event, data){
+       $log.info("followed user closed photoswipe");
+       $scope.close_image();
+       
+    });
+    
     $rootScope.$on("followed_user_viewing", function(event, data){
         $log.info("followed_user_viewing", data);
         var image_id = data.image_id;
@@ -215,6 +222,15 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
         }
     };
     
+    $scope.close_image = function()
+    {
+        if( $scope.photoswipe_open) {
+            // close photoswipe
+            $scope.dont_apply_next = true;
+            $scope.photoswipe.close();
+        }
+    }
+    
     $scope.thumbnail_click = function(index) {
         $log.info("photoswipeThumbnailsCtrl.thumbnail_click");
         
@@ -266,7 +282,14 @@ conferenceModule.controller("PhotoswipeThumbnailsCtrl", ["$scope", "$rootScope",
             $log.info("photoswipe gallery closed");
             $scope.photoswipe_open = false;
             photozzapService.currentlyViewing(null);
-            $scope.$apply();
+            if($scope.dont_apply_next != undefined && $scope.dont_apply_next == true)
+            {
+                // skip
+            } else 
+            {
+                $scope.$apply();            
+            }
+            $scope.dont_apply_next = false;
         });
         
         // wait until photoswipe is opened once before using beforeChange event
