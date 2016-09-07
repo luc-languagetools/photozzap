@@ -139,7 +139,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
             
             service.connectionDetectionRef.on('value', function(snapshot)
             {
-               if (snapshot.value() === true ) {
+               if (snapshot.val() === true ) {
                    service.conference_user_node.connected = true;
                    service.conference_user_node.$save();
                }
