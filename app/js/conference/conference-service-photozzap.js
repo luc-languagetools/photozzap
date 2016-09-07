@@ -13,6 +13,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     firebase.initializeApp(photozzapConfig.firebaseConfig);
     
     service.rootRef = firebase.database().ref().child(photozzapConfig.firstNode);
+    service.connectionDetectionRef = firebase.database().ref().child(".info/connected");
 
     // this promise will be resolved after basic authentication and global user node setup is done
     var authentication_init_defer = $q.defer();
@@ -110,7 +111,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                                                            child(authData.uid));
         
         var connectedRef = getConferenceRef(conference_key).child('users').child(authData.uid).child('connected');
-        
+
         service.conference_user_node.$loaded().then(function(){
             service.conference_user_node.time_connected = firebase.database.ServerValue.TIMESTAMP;
             if(! service.conference_user_node.nickname) {
@@ -134,6 +135,14 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
                 // add on-disconnect call
                 connectedRef.onDisconnect().set(false);
                 defer.resolve();
+            });
+            
+            service.connectionDetectionRef.on('value', function(snapshot)
+            {
+               if (snapshot.value() === true ) {
+                   service.conference_user_node.connected = true;
+                   service.conference_user_node.$save();
+               }
             });
         });
         
@@ -254,6 +263,7 @@ function ($rootScope, $log, $firebaseAuth, $firebaseObject, $firebaseArray, $q, 
     
     // visibility related functions
     service.markPageVisible = function() {
+        service.conference_user_node.connected = true;
         service.conference_user_node.page_visible = true;
         service.conference_user_node.$save();
     };
