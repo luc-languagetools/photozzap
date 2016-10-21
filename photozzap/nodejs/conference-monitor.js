@@ -140,7 +140,7 @@ function ConferenceObject(key, ref, close_after_time, env) {
         this.imagesRef.off('child_added');
         this.requestsRef.off('child_added');
         this.statusRef.off('value');
-        this.requestZipUrl.off('value');
+        this.requestZipUrlRef.off('value');
         this.notifyPushoverRef.off('value');
         clearTimeout(this.closeTimeout);
     }        
