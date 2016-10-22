@@ -111,7 +111,9 @@ function ConferenceObject(key, ref, close_after_time, env) {
         // close conference
         var self = this;
         cloudinary.api.delete_resources_by_tag(this.key, function(result){
-            self.log_event("cloudinary delete result: " + result);
+            self.log_event("cloudinary delete result: ");
+            console.log(result);
+            
         });
         // remove callbacks
         this.removeCallbacks();
